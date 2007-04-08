@@ -1,0 +1,20 @@
+/* $Id: ErrorObj.cc,v 2.0 1998/11/11 07:12:00 sanjay Exp $ */
+#include <ErrorObj.h>
+/*----------------------------------------------------------------------*/
+ErrorObj::ErrorObj(const char *m, const char *i, int l):Id(i,strlen(i)),Msg(m,strlen(m))
+{
+  Level=l;
+}
+/*----------------------------------------------------------------------*/
+void ErrorObj::SetSource(const char *s)
+{
+  Src=s;
+}
+const char* ErrorObj::what()
+{return (Id+": "+Msg).c_str();}
+/*----------------------------------------------------------------------*/
+ostream &operator<<(ostream& o, const ErrorObj &E)
+{
+  if (E.Msg.size() > 0) o << E.Id << E.Msg;
+  return o;
+}

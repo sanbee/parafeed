@@ -1,0 +1,82 @@
+#****************************************************************
+#
+# Some critical paths and complier options...
+#
+#
+# Path for offline libraries and include files
+#
+ROOT=$(GROOT)
+OSDIR=IRIX
+OFFLIBPATH=$(ROOT)/lib/$(OSDIR)
+OFFINC=$(ROOT)/include
+PUB = $(ROOT)
+SHELL=/bin/sh
+#
+# Path for the lib. for optimization package
+#
+OPT = $(ROOT)/lib
+#
+# Path for the location of compliers
+#
+COMPPATH=
+#
+# The optmization libraries
+#
+OPTLIBS=$(OPT)/subplex.a $(OPT)/subblas.a 
+OPTFLAGS=-O3
+#
+#
+DEFINES=-DGNU_REGEX -DGNUREADLINE -DHAVE_STRING_H \
+	-DREGEXINC=\"/astro/local/include/regex.h\"
+#
+#
+INCL = -I. -I$(OFFINC)
+COMMONOPTS= $(OPTFLAGS) -64 $(INCL)\
+	-I/astro/local/include \
+        -L/usr/lib64 \
+	-L/astro/local/lib \
+	$(DEFINES)
+#
+# Support libraries
+#
+READLINELIB= -lreadline
+REGEXLIB=/astro/local/lib/libregex.a
+KUMLIB=$(OFFLIBPATH)/libkum.a
+#----------------------------------------------------------------
+CFLAGS = $(COMMONOPTS)
+FFLAGS = $(COMMONOPTS)
+CLIBS=  $(OFFLIBPATH)/liboff.a \
+	$(OFFLIBPATH)/liboffer.a \
+	$(OFFLIBPATH)/liblta.a \
+	$(REGEXLIB) \
+	$(OFFLIBPATH)/libshccl.a \
+	$(OFFLIBPATH)/libsh.a \
+	$(OFFLIBPATH)/libcalc.a \
+	$(KUMLIB)
+FLIBS = $(CLIBS) $(OFFLIBPATH)/libfcl.a
+SYSLIBS= $(READLINELIB) -lg2c -ltermcap -lm -ll
+#
+LIBINCS=$(OFFINC)/hlib.h \
+	$(OFFINC)/glib.h \
+	$(OFFINC)/glib++.h \
+	$(OFFINC)/gstd.h \
+	$(OFFINC)/gstruct.h \
+	$(OFFINC)/cl.h \
+	$(OFFINC)/clinteract.h \
+	$(OFFINC)/clshelldefs.h \
+	$(OFFINC)/clconvert.h
+#----------------------------------------------------------------
+CC =  cc $(CFLAGS)
+C++ = CC $(CFLAGS)
+CPP = cpp
+F77 = f77 $(FFLAGS)
+MAKE = make
+#----------------------------------------------------------------
+LEX  = lex
+YACC = bison -y -p cl_
+#----------------------------------------------------------------
+#
+# The 'ranlib' program to be run, if it exists
+#
+RANLIB=/bin/ranlib
+#

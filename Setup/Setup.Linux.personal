@@ -1,0 +1,99 @@
+#****************************************************************
+#
+# Some critical paths and complier options...
+#
+#
+# Path for offline libraries and include files
+#
+ROOT=/home/sanjay/
+OSDIR=Linux
+XFORMSPATH=/usr/local
+OFFLIBPATH=$(ROOT)/lib/$(OSDIR)
+OFFINC=$(ROOT)/include
+PUB = $(ROOT)
+#
+# Path for the lib. for optimization package
+#
+OPT = $(ROOT)/lib
+#
+# Path for the location of compliers
+#
+COMPPATH=
+#
+# The optmization libraries
+#
+OPTLIBS=$(OPT)/subplex.a $(OPT)/subblas.a 
+OPTLIBS=$(OPT)/subplex.a $(OPT)/subblas.a 
+OPTFLAGS=-O3
+#
+#
+DEFINES=-DGNU_REGEX -DGNUREADLINE -DHAVE_STRING_H \
+	-DREGEXINC=\"/usr/local/include/local/regex.h\"
+#
+#
+#
+#
+INCL = -I. -I/usr/include/g++ -I$(OFFINC)
+COMMONOPTS= -Wall $(OPTFLAGS) $(INCL)\
+	-I/usr/local/include \
+	-L$(GLIB) \
+	-L/usr/local/lib \
+	-L/usr/openwin/lib \
+	$(DEFINES)
+#
+# Support libraries
+#
+READLINELIB= -lreadline -lhistory
+REGEXLIB=/usr/local/lib/libregex.a
+KUMLIB=$(OFFLIBPATH)/libkum.a
+#----------------------------------------------------------------
+CFLAGS = $(COMMONOPTS)
+FFLAGS = $(COMMONOPTS)
+
+CLIBS=	$(OFFLIBPATH)/liboff.a \
+	$(OFFLIBPATH)/liblta.a \
+	$(REGEXLIB) \
+	$(KUMLIB) \
+	$(OFFLIBPATH)/libshccl.a \
+	$(OFFLIBPATH)/libsh.a \
+	$(OFFLIBPATH)/libcalc.a \
+	$(OFFLIBPATH)/liboffer.a
+
+FLIBS = $(CLIBS) $(OFFLIBPATH)/libfcl.a
+SYSLIBS= $(READLINELIB) \
+	-ltermcap -lm -ll -lc -lf2c
+#
+LIBINCS=$(OFFINC)/ltaview.h \
+	$(OFFINC)/ltafmt.h \
+	$(OFFINC)/int.Vec.h \
+	$(OFFINC)/float.Vec.h \
+	$(OFFINC)/int.defs.h \
+	$(OFFINC)/float.defs.h \
+	$(OFFINC)/defs.h \
+	$(OFFINC)/scaninfo.h \
+	$(OFFINC)/hlib.h \
+	$(OFFINC)/glib.h \
+	$(OFFINC)/glib++.h \
+	$(OFFINC)/gstd.h \
+	$(OFFINC)/gstruct.h \
+	$(OFFINC)/cl.h \
+	$(OFFINC)/clinteract.h \
+	$(OFFINC)/clshelldefs.h \
+	$(OFFINC)/clconvert.h
+#----------------------------------------------------------------
+CC =  gcc $(CFLAGS)
+C++ = g++ $(CFLAGS)
+CPP = cpp
+F77 = f77 $(FFLAGS)
+MAKE = gmake
+AWK = awk
+#----------------------------------------------------------------
+LEX =lex
+YACC=bison -y -p cl_
+#----------------------------------------------------------------
+#
+# The 'ranlib' program to be run, if it exists
+#
+RANLIB=/bin/ranlib
+#----------------------------------------------------------------
+
