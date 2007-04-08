@@ -1,0 +1,109 @@
+#****************************************************************
+#
+# Some critical paths and complier options...
+#
+#
+# Path for offline libraries and include files
+#
+ROOT=$(GSRCROOT)
+OSDIR=$(GOSDIR)
+XFORMSPATH=/usr/local
+OFFLIBPATH=$(GLIB)
+OFFINC=$(GSRCROOT)/include
+PUB = $(ROOT)
+#
+# Path for the lib. for optimization package
+#
+OPT = $(ROOT)/lib
+#
+# Path for the location of compliers
+#
+COMPPATH=
+#
+# The optmization libraries
+#
+OPTLIBS=$(OPT)/subplex.a $(OPT)/subblas.a 
+OPTLIBS=$(OPT)/subplex.a $(OPT)/subblas.a 
+#OPTFLAGS=-O3
+#
+#
+# -D_FILE_OFFSET_BITS=64
+# The above define is expected to link to file manipulation
+# routines which will have 64 bit file offset lenght.  This
+# has been found from the kernel code and needs to be tested
+# though (courtsey Rajiv Singh).
+#
+DEFINES=-DGNU_REGEX -DGNUREADLINE -DHAVE_STRING_H \
+	-DREGEXINC=\"/usr/include/regex.h\" \
+	-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+#
+#
+#
+#
+
+INCL = -I. -I/usr/include/g++ -I$(OFFINC) -I/aips++/local/lib/cfitsio 
+LDOPTS= -dynamic
+COMMONOPTS= -Wall $(OPTFLAGS) $(INCL)\
+	-I/usr/local/include \
+	-L$(GLIB) \
+	-L/usr/openwin/lib \
+        -L/aips++/local/lib/cfitsio/lib \
+	$(DEFINES)
+#
+# Support libraries
+#
+READLINELIB= -lreadline -lhistory
+#REGEXLIB=/usr/lib/libregex.a
+KUMLIB=$(OFFLIBPATH)/libkum.a
+#----------------------------------------------------------------
+CFLAGS = $(COMMONOPTS)
+FFLAGS = $(COMMONOPTS)
+CLIBS=	$(OFFLIBPATH)/liboff.a \
+	$(OFFLIBPATH)/liblta.a \
+	$(REGEXLIB) \
+	$(KUMLIB) \
+	$(OFFLIBPATH)/libshccl.a \
+	$(OFFLIBPATH)/libsh.a \
+	$(OFFLIBPATH)/libcalc.a \
+	$(OFFLIBPATH)/liboffer.a
+	
+
+FLIBS = $(CLIBS) $(OFFLIBPATH)/libfcl.a
+SYSLIBS= $(READLINELIB) -ltermcap -lm -lfl -lc -lg2c 
+#
+LIBINCS=$(OFFINC)/ltaview.h \
+	$(OFFINC)/ltafmt.h \
+	$(OFFINC)/int.Vec.h \
+	$(OFFINC)/float.Vec.h \
+	$(OFFINC)/int.defs.h \
+	$(OFFINC)/float.defs.h \
+	$(OFFINC)/defs.h \
+	$(OFFINC)/scaninfo.h \
+	$(OFFINC)/hlib.h \
+	$(OFFINC)/glib.h \
+	$(OFFINC)/glib++.h \
+	$(OFFINC)/gstd.h \
+	$(OFFINC)/gstruct.h \
+	$(OFFINC)/cl.h \
+	$(OFFINC)/clinteract.h \
+	$(OFFINC)/clshelldefs.h \
+	$(OFFINC)/clconvert.h
+#----------------------------------------------------------------
+#CC =  /usr/local/compilers/9/gcc_3.2.3/bin/gcc $(CFLAGS)
+#C++ = /usr/local/compilers/9/gcc_3.2.3/bin/g++ $(CFLAGS)
+CC = gcc $(CFLAGS)
+C++ = g++ $(CFLAGS)
+CPP = cpp
+F77 = f77 $(FFLAGS)
+MAKE = gmake
+AWK = awk
+#----------------------------------------------------------------
+LEX =lex
+YACC=bison -y -p cl_
+#----------------------------------------------------------------
+#
+# The 'ranlib' program to be run, if it exists
+#
+RANLIB=/bin/ranlib
+#----------------------------------------------------------------
+

@@ -1,0 +1,92 @@
+#****************************************************************
+#
+# Some critical paths and complier options...
+#
+#
+# Path for offline libraries and include files
+#
+ROOT=$(GSRCROOT)
+OSDIR=$(GOSDIR)
+XFORMSPATH=/astro/local
+OFFLIBPATH=$(GLIB)
+OFFINC=$(ROOT)/include
+PUB = $(ROOT)
+#
+# Path for the lib. for optimization package
+#
+OPT = $(ROOT)/lib
+#
+# Path for the location of compliers
+#
+COMPPATH=
+#
+# The optmization libraries
+#
+OPTLIBS=$(OPT)/subplex.a $(OPT)/subblas.a 
+OPTFLAGS=-O3
+#
+#
+DEFINES=-DGNU_REGEX -DGNUREADLINE -DHAVE_STRING_H \
+	-DREGEXINC=\"/astro/local/include/regex.h\"
+#
+#
+INCL = -I. -I$(OFFINC)
+COMMONOPTS= $(OPTFLAGS) $(INCL)\
+	-I/astro/local/include \
+        -L/opt/SUNWspro/SC3.0.1/lib \
+	-L/opt/SUNWspro/lib \
+	-L/astro/local/lib \
+	-L/usr/openwin/lib \
+	$(DEFINES)
+#
+# Support libraries
+#
+READLINELIB= -lreadline -lhistory
+REGEXLIB=/astro/local/lib/libregex.a
+KUMLIB=$(OFFLIBPATH)/libkum.a
+#----------------------------------------------------------------
+CFLAGS = $(COMMONOPTS)
+FFLAGS = $(COMMONOPTS)
+CLIBS=  $(OFFLIBPATH)/liboff.a \
+	$(REGEXLIB) \
+	$(OFFLIBPATH)/libshccl.a \
+	$(OFFLIBPATH)/libsh.a \
+	$(OFFLIBPATH)/libcalc.a \
+	$(KUMLIB)
+FLIBS = $(CLIBS) $(OFFLIBPATH)/libfcl.a
+SYSLIBS= $(READLINELIB) -lf2c -lF77 -lM77 -lsunmath -ltermcap -lm -ll
+#
+LIBINCS=$(OFFINC)/ltaview.h \
+	$(OFFINC)/ltafmt.h \
+	$(OFFINC)/int.Vec.h \
+	$(OFFINC)/float.Vec.h \
+	$(OFFINC)/int.defs.h \
+	$(OFFINC)/float.defs.h \
+	$(OFFINC)/defs.h \
+	$(OFFINC)/scaninfo.h \
+	$(OFFINC)/hlib.h \
+	$(OFFINC)/glib.h \
+	$(OFFINC)/glib++.h \
+	$(OFFINC)/gstd.h \
+	$(OFFINC)/gstruct.h \
+	$(OFFINC)/cl.h \
+	$(OFFINC)/clinteract.h \
+	$(OFFINC)/clshelldefs.h \
+	$(OFFINC)/clconvert.h
+#----------------------------------------------------------------
+CC  = gcc $(CFLAGS)
+C++ = g++ $(CFLAGS)
+CPP = cpp
+F77 = g77 $(FFLAGS)
+MAKE = gmake
+AWK = nawk
+#----------------------------------------------------------------
+LEX =lex
+YACC=bison -y -p cl_
+#----------------------------------------------------------------
+#
+# The 'ranlib' program to be run, if it exists
+#
+RANLIB=/bin/ranlib
+#----------------------------------------------------------------
+

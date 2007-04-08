@@ -1,0 +1,17 @@
+#define clgetopt_            clgetOpt
+#define clclearOptsList      clclearOptsList
+#define clgetival_           clgetIVal
+#define cltruncatefromback_  cltruncateFromBack
+#define clloadbuf_           clloadBuf
+#define clgetOptsList        clgetOptsList
+#define clgetnival_          clgetNIVal
+#define clgetinputfile_      clgetInputFile
+#define clgetoutputfile_     clgetOutputFile
+#define clgetcommandline_    clgetCommandLine
+#define clgetfval_           clgetFVal
+#define clgetnvals_          clgetNVals
+#define InteractCL           clInteractive
+#define clcmdlinefirst_      clCmdLineFirst
+#define clgetsval_           clgetSVal
+#define clclearoptslist_     clclearOptsList
+#define clstrtstream         clstrtstream_

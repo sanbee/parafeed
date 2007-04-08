@@ -1,0 +1,439 @@
+/* $Id: callbacks.c,v 2.5 1999/07/12 09:49:34 sanjay Exp sanjay $ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <cl.h>
+#include <shell.h>
+#include <shell.tab.h>
+#include <string>
+
+#ifdef GNUREADLINE
+#include <readline/history.h>
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+extern Symbol    *cl_SymbTab,*cl_TabTail;
+extern CmdSymbol *cl_CmdTab;
+extern char      *cl_ProgName;
+extern unsigned short CL_DBG_ON;
+
+#define MAXBUF     256
+/*------------------------------------------------------------------------
+  A macro which is actually an nawk program!  If one arg is given to
+  this nawk program, it is treated to be the name of .doc file to
+  print on the stdout.  An optional 2nd. arg. can be provided which
+  should be the name of a keyword of the task.  This program will then
+  print help only for that keyword.
+  ------------------------------------------------------------------------*/
+#define KEYHELP_AWK "__REPLACE_ME_WITH_AWK_PROG_NAME__ 'BEGIN{\
+if (ARGC < 3) Key=\"\";\
+  else\
+    {\
+      Key=ARGV[2];\
+      FILENAME=ARGV[1];\
+      ARGC=2;\
+    }\
+  Stat=1;\
+  NLines=0;\
+}\
+{\
+  if (Key ==  \"\")\
+    while(Stat)\
+      {\
+	print $0;\
+	Stat=getline;\
+        NLines++;\
+      }\
+  else if (($1 ~ \"^%\") && ($2 == Key))\
+    do\
+      {\
+	print $0;\
+	Stat=getline;\
+        NLines++;\
+      }\
+    while (($1 !~ \"^%\") && Stat);\
+}\
+END{\
+   if (NLines == 0) printf(\"No help for keyword %c%s%c\",34,Key,34);\
+}'"
+
+/*----------------------------------------------------------------------*/
+int dogo(char *arg)
+{return EOF;}
+/*----------------------------------------------------------------------*/
+int doinp(char *arg)
+{
+  Symbol *t;
+
+  for (t=cl_SymbTab;t;t=t->Next)
+    {
+      if ((t->Class==CL_APPLNCLASS) || 
+	  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	{
+	  fprintf(stderr,"%-10.10s = ",t->Name);
+	  PrintVals(stderr,t);
+	}
+    }
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+int doquit(char *arg)
+{
+#ifdef GNUREADLINE
+/* Put the history in the history file*/
+  save_hist("GHIST",HIST_DEFAULT);
+#endif
+  
+  if (!arg) exit(0);
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+int dotypehelp(char *arg)
+{
+  Symbol *S;
+  fprintf(stderr,"   Key                Type    \n");
+  fprintf(stderr,"---------          ----------\n");
+  for (S=cl_SymbTab;S;S=S->Next)
+    if ((S->Class==CL_APPLNCLASS) ||
+	((S->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);
+  return 1;
+}
+/*------------------------------------------------------------------
+ The argument can be use to give help for a specific command only   
+-------------------------------------------------------------------*/
+int dohelp(char *arg)
+{
+  CmdSymbol *S;
+  fprintf(stderr,"Commands in the interactive mode:\n\n");
+  fprintf(stderr,"Use <Key>=<Val1,Val2,..> to set value for a keyword\n");
+  fprintf(stderr,"Use <Key>=<RETURN> to unset value(s) for a keywords\n\n");
+  for (S=cl_CmdTab;S;S=S->Next) 
+    fprintf(stderr," %-11s : %s\n",S->Name,S->Doc);
+  fprintf(stderr,"\nAny other input will be passed to the system shell\n\n");
+  return 1;
+}
+/*---------------------------------------------------------------------
+   Searches for the file <ProgName>.def in $GDOC or in ./ and "more's"
+   it. The argument can be used for giving explaination for a specific
+   context
+----------------------------------------------------------------------*/
+int doexplain(char *arg)
+{
+  char *path=(char *)getenv(DOCPATH);
+  char *sde_script="|sed -e \"s/%[ANP]//\"|more";
+  char *script = KEYHELP_AWK,*key=0,*task=0;
+  char *str=0;
+
+  str=(char *)calloc(1,strlen(script)+FILENAME_MAX);
+  
+  if (path)
+    sprintf(str,"%s %s/",script,path);
+  else
+    sprintf(str,"%s ",script);
+  
+  if (arg)
+    {
+    if(arg[0]==':') task=&arg[1];
+    else if ((key=strtok(arg,":"))!=NULL)
+      task = strtok(NULL,":");
+    }
+  if (task)
+    strcat(str,task);
+  else
+#ifdef GNUREADLINE
+    strncat(str,cl_ProgName,strlen(cl_ProgName)-1);
+#else
+    strncat(str,cl_ProgName,strlen(cl_ProgName));
+#endif
+
+  strcat(str,".doc ");
+  if (key) strncat(str,key,strlen(key));
+  strcat(str,sde_script);
+
+  system(str);
+  if (str) free(str);
+  return 1;
+}
+/*------------------------------------------------------------------------
+ Saves the current setting of the various keywords to the given file
+ If *f==NULL, save in ./<ProgName>.def
+ -------------------------------------------------------------------------*/
+int dosave(char *f)
+{
+  FILE *fd;
+  char str[MAXBUF];
+  
+  stripwhite(f);
+  if(f==NULL || strlen(f) == 0)
+    {
+      strcpy(str,cl_ProgName);
+#ifdef GNUREADLINE
+      str[strlen(cl_ProgName)-1]='\0';
+#endif
+      strcat(str,".def");
+    }
+  else strcpy(str,f);
+  
+  if ((fd=fopen(str,"w"))==NULL)
+    {
+      fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
+      return 2;
+    }
+  else
+    {
+      Symbol *t;
+      
+      for (t=cl_SymbTab;t;t=t->Next)
+	if ((t->Class==CL_APPLNCLASS) ||
+	    ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	  {
+	    fprintf(fd,"%-10.10s = ",t->Name);
+	    PrintVals(fd,t);
+	  }
+      fclose(fd);
+    }
+  return 1;
+}
+/*-----------------------------------------------------------------------
+ Loads the setting for the keywords from a file (typically written by
+ the save command). If *f==NULL, load from ./<ProgName>.def.  If f ends
+ with '!' character, do a complementary load; set only those keywords
+ are not already set.
+------------------------------------------------------------------------*/
+int doload(char *f)
+{
+  FILE *fd;
+  char str[MAXBUF];
+  int i=0,Complement=0;
+  
+  stripwhite(f);
+  if(f==NULL || strlen(f) == 0)
+    {
+      strcpy(str,cl_ProgName);
+#ifdef GNUREADLINE
+      str[strlen(cl_ProgName)-1]='\0';
+#endif
+      strcat(str,".def");
+    }
+  else strcpy(str,f);
+
+  if (str[strlen(str)-1] == '!') 
+    {Complement = 1; str[strlen(str)-1] = (char)NULL;}
+
+  if ((fd = fopen(str,"r"))==NULL)
+    {
+      fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
+      return 2;
+    }
+  else
+    {
+      char *Name=NULL, *Val=NULL;
+      Symbol *pos;
+
+      while(!feof(fd))
+	{
+	  for (i=0;i<MAXBUF;i++)str[i]='\0';
+	  if (fgets(str,MAXBUF,fd)!=NULL)
+	    {
+	      stripwhite(str);str[strlen(str)-1]='\0';
+	      if (strlen(str) > 0)
+		{
+		  BreakStr(str,&Name,&Val);
+		  pos = NULL;
+		  if (Complement)
+		    {
+		      //		      pos=SearchVSymb(Name,cl_SymbTab);
+		      pos=SearchVSymbFullMatch(Name,cl_SymbTab);
+		      if ((pos == (Symbol *)NULL))
+			pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
+		      if ((pos->NVals == 0))
+			pos = (Symbol *)NULL;
+		    }
+		  if (!pos) SetVar(Name,Val,cl_SymbTab,0,1);
+		  if (Name != NULL) {free(Name);Name=NULL;}
+		  if (Val != NULL) {free(Val);Name=NULL;}
+		}
+	    }
+	}
+      fclose(fd);
+    }
+  return 1;
+}
+/*------------------------------------------------------------------------
+ Allow editing of the keyword values using the "favourate" editor.
+-------------------------------------------------------------------------*/
+int doedit(char *arg)
+{
+  char *tmpname=tempnam("/tmp","cl_");
+  char *editor=(char *)getenv(EDITORENV);
+  char str[MAXBUF];
+  
+  if (dosave(tmpname)>1) return 1;
+  
+  if (editor != NULL)
+    sprintf(str,"%s %s\n",editor,tmpname);
+  else
+    sprintf(str,"emacs -nw %s\n",tmpname);
+  system(str);
+  doload(tmpname);
+  strcpy(str,"/bin/rm -rf ");strcat(str,tmpname);strcat(str,"*");
+  system(str);
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+int docd(char *dir)
+{
+  char *s=dir;
+  
+  if (dir == NULL || strlen(dir)==0) s=(char *)getenv(HOMEENV);
+  
+  if (chdir(s)==-1)   perror(s);
+  else                system("/bin/pwd");
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+int dogob(char *arg)
+{
+  int PID,OUT=0,ERR=0;
+  char *gout=(char *)getenv(STDOUTENV), *gerr=(char *)getenv(STDERRENV);
+  
+  if (gout == NULL)
+    {
+      gout = (char *)malloc(10);
+      strcpy(gout,"/dev/null");
+      OUT=1;
+    }
+  
+  if (gerr == NULL)
+    {
+      gerr = (char *)malloc(10);
+      strcpy(gerr,"/dev/null");
+      ERR=1;
+    }
+  
+  if ((PID=fork()) != 0) 
+    {
+      /*
+	 Fork succeeded - this means that the parent can exit.
+	 Since the child will be executing the code, parent must exit.
+	 */
+      fprintf(stderr,"\"%s\" is running in background (PID=%d)\n",
+	      cl_ProgName,PID);
+      exit(0);
+    }
+  /*
+     This will be executed by the child after it's forked.  It will
+     first redirect the stderr and stdout and then return an EOF to 
+     the shell indicating that the user interaction is over and it 
+     must proceed further,  i.e. transfer control to the application 
+     code.
+     */
+  redirect(gout,gerr);
+  if (OUT) free(gout);
+  if (ERR) free(gerr);
+  return EOF;
+}
+/*----------------------------------------------------------------------*/
+int doprintdoc(char *val)
+{
+  Symbol *S;
+  if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
+    cl_ProgName[strlen(cl_ProgName)-1]='\0';
+
+  fprintf(stdout,"%%N %s\n",cl_ProgName);
+  fprintf(stdout,"\t<Put the explaination for the task here>\n\n");
+  fprintf(stdout,"%%P Author\n");
+  fprintf(stdout,"\t<Put your name and e-mail address here>\n\n");
+  
+  for (S=cl_SymbTab;S;S=S->Next)
+    {
+      string val;
+      clgetFullValp(string(S->Name),val);
+
+      if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
+	{
+	  //	  if (val.size() != 0)
+	    fprintf(stdout,"%%A %s (default=%s)",
+		    S->Name,val.c_str());
+	  //	  else
+	  //	    fprintf(stdout,"%%A %s (default=)", S->Name);
+	  fprintf(stdout,
+		  "\n\n\t<Put the explaination for the keyword here>\n\n\n");
+	}
+      if (S->Class==CL_DBGCLASS)
+	fprintf(stdout,
+		"\t***This keyword is used for debugging purposes only***\n");
+    }
+  exit(0);
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+int doademo(char *val)
+{
+  if (val) fprintf(stderr,"Argument to the command was: %s\n",val);
+  else fprintf(stderr,"No argument(s) given to the command\n");
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+int loadDefaults()
+{
+  char out[FILENAME_MAX+2]="./", *t;
+  FILE *fd;
+
+  /*
+    First, do a complimentary load from the .def file available
+    locally.
+  */
+
+#ifdef GNUREADLINE
+  strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+#else
+  strcat(out,cl_ProgName);
+#endif
+  strcat(out,".def");
+
+  if ((fd = fopen(out,"r")) != NULL)  
+    {
+      fclose(fd);  
+      strcat(out,"!");  /* Perform a complimentery load */
+      doload(out);
+    }
+
+  /*
+    If DEFAULTSENV env. var. is set, look for a .def file
+    there and if found, do a complimentary load from there too.
+  */
+  t=(char *)getenv(DEFAULTSENV);
+  if (t && strlen(t))     {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
+
+#ifdef GNUREADLINE
+  strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+#else
+  strcat(out,cl_ProgName);
+#endif
+  strcat(out,".def");
+
+  if ((fd = fopen(out,"r")) != NULL)  
+    {
+      fclose(fd);  
+      strcat(out,"!");  /* Perform a complimentery load */
+      doload(out);
+    }
+
+  /*
+    Final effect will be that first any commandline setting will be
+    set.  Next, the local .def file will be hououred for all those
+    keys which still remain unset.  Next, .def file from DEFAULTSENV
+    area will he honoured for those keys which continue to remain
+    unset.  */
+  
+  return 1;
+}
+#ifdef __cplusplus
+}
+#endif
+
