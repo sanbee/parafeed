@@ -5,8 +5,8 @@
 # code.  This is used by makefiles in various directories to
 # load the standard settings from $GSRCROOT/Setup/Setup.$GOSDIR
 #
-GROOT=/export/home/langur/sbhatnag
-GSRCROOT=$GROOT/Projects/cllib++
+GROOT=$PWD/..
+GSRCROOT=$GROOT
 #
 # Set the name of the OS in GOSDIR
 #
