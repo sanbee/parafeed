@@ -1,0 +1,168 @@
+	
+o A lib. of function calls (in C and  callable from C and FORTRAN) for
+  handling  the command line  of   the form <Key>=<Values>  has  been
+  written.  Multiple values are separated by ",".
+   
+   Unless stated otherwise, all calls are C and FORTRAN callable.
+   
+   The reason of writing this lib. was to have a uniform interface of
+   all the programs that we will write.  An added advantage of using
+   this kind of commandline interface is that the applications can be
+   made to run under 'miriad' or 'khoros' later.
+
+o  This library has a built-in interactive shell, which can be embeded
+   in the application.  The shell will let the user set the value of
+   various keywords that the application understands in a interactive
+   manner (simillar to Miriad).  While in the interactive shell, all
+   UNIX commands are also accessable.
+
+o  The lib. allows the user to get the value(s) associated with a given
+   Key.  If the given Key is not present in the command line, it
+   returns a FAIL status so that the caller can know of the absence of
+   the Key in the commandline.
+   
+   It also implements the logic for handling the input and output
+   streams that we discussed.  If the command line has the key "in",
+   the lib.  expects the associated value to be the name of the file
+   from which the input is to be read.  If this key is missing from
+   the command line, it accepts the input to come from "stdin".  By
+   the same logic, if key "out" is present it opens the associated
+   filename for output, else will output to "stdout".
+   
+   For input and output files, the lib. is sensitive to env. variables
+   LTA_DIR and OUT_DIR.  The user given input file is appended to the
+   path given by LTA_DIR before attempting to open the file.  If
+   LTA_DIR is not defined, it defaults to "" (NULL string).
+   Similarly, the user given output file name is appended to OUT_DIR.
+   If not declared, this also defaults to "" (NULL string).
+   
+   The input and output streams identified by the "in" and "out" key
+   words should ONLY be used to binary input/output.  This means that
+   reading from these streams and writing to these streams should be
+   ALWAYS done via the lib. calls to handle the LTA formats.  NO I/O
+   OPERATIONS SHOULD DONE ON THESE STREAMS FROM OUTSIDE.  For any
+   other i/o, other than LTA format i/o, the user has to open files
+   explicitly and work on them.
+   
+
+
+o  The various calls are:
+-----------------------------------------------------------------------   
+-    int BeginCL(int argc ,char *argv[])      (ONLY C CALLABLE)
+        
+   	This is first call that must be made  in the application.  The
+        two arguments  are the  ones which  comes  from main(int argc,
+        char *argv[]).
+          
+   	It returns  the no.   of <Key>=<Value(s)>   type command  line
+        argument found.
+   
+     The equivalent FORTRAN call is:
+-----------------------------------------------------------------------      
+-    int fBeginCL()                          (ONLY FORTRAN CALLABLE)
+        
+   	This does not take any argument.
+-----------------------------------------------------------------------        
+-    int EndCL()
+        
+        This clears up the memory allocated by the lib. - after a call
+        to this, the  return values of any  of the following  routines
+        will be undefined.
+         
+        This   call also reports  any unused  commandline  option as a
+        warning message.  A "used" commandline option is one which has
+        been accessed via any of the functions of this lib.
+-----------------------------------------------------------------------   
+-    void InteractCL(int)
+        
+        This tells the library to go  into an interactive shell when a
+        call to EndCL  is made.  If the  argument is 0, upon returning
+        from  the interactive shell,  the    lib. will NOT clear   the
+        internal tables and qurries to the lib. after  a call to EndCL
+        will still  be valid.   If the  argument  is  1, the  internal
+        tables are cleared.
+
+        This call should  be made immediately after  a call to BeginCL
+        or fBeginCL for the interactive shell to work properly.
+-----------------------------------------------------------------------      
+- void CLCmdLineFirst() 
+        
+        When in  the   interactive mode, this  tells   the  library to
+        present the keywords in the order in  which they appear on the
+        commandline.  By default, the order of the keywords will be in
+        the  order in   which  the application makes   qurries for the
+        keywords (the various "get" calls below).
+-----------------------------------------------------------------------   
+-    char *clgetCommandLine()
+        
+        Returns the entire commandline.  To  the best of my knowledge,
+        this has no business to fail (except if there is a bug!).
+-----------------------------------------------------------------------      
+-     int clgetOpt(char *Key)
+        	
+   	Returns the index of the commandline option which has the key
+   	Key. 
+   
+   	Returns -1 on failure (no match).
+-----------------------------------------------------------------------      
+-    int clgetFull(char *str, int *n)
+        
+        Returns  the   full nth.    options   in str  in    the format
+        <Key>=<Value(s)>.  The  return value  is  1 is  successful, -1
+        otherwise.   str should have   enough space allocated  for the
+        return string.
+-----------------------------------------------------------------------      
+-    int clgetNVals(char *Key)
+        
+   	Returns the number of value(s) associated with the key Key.
+-----------------------------------------------------------------------      
+-    int clGetIVal(char *Key, int *val , int *n)
+        
+   	Returns the  nth  value associated  with  the  key Key  as  an
+        integer.   The parameter "n" is 1-based  (first value is 1 and
+        NOT 0). Returns 1 on success and -1 on failure.
+-----------------------------------------------------------------------
+-    int clGetFVal(char *Key, float *val , int *n)
+        
+   	Returns the nth value associated with the  key Key as a float.
+        The parameter "n"  is 1-based (first value   is 1 and NOT  0).
+        Returns 1 on success and -1 on failure.
+-----------------------------------------------------------------------	
+-    int clGetSVal(char *Key, char *val , int *n) 
+        
+        Returns  the nth  value   assoicated with  the  key  Key  as a
+        character  string.  The parameter "n"  is 1-based (first value
+        is 1  and  NOT 0).  Returns 1   on success and -1 on  failure.
+        Space for receiving the  value should be allocated outside and
+        should of sufficient size.
+-----------------------------------------------------------------------
+-     int clgetKey(int *i, char *Key)
+        
+        Extracts the i th. key in the commandline (counting from 1) in
+        the parameter Key.  If  successful, it  returns the length  of
+        the  return Key, else will return  -1.  The only faliour would
+        be because of  i not being  between 0 and NoOfOpts. Space  for
+        receiving the key should be allocated outside and should be of
+   	sufficient size.
+-----------------------------------------------------------------------
+-     int clgetNIVal(char *Key, int **Val, int *n)
+        
+        Tries to return 'n' number  of interger values associated with
+        the key word Key.  It returns -1 if the Key was not found.  If
+        the return value is positive,  it will be  number of values it
+        has actually returned.  This   could potentially be less  than
+        *n.
+-----------------------------------------------------------------------
+-     int clgetNFVal(char *Key, float **Val, int *n)
+        
+        Same  as  clgetNIVal except that    it returns floating  point
+        values.
+-----------------------------------------------------------------------
+-     int clgetNSVal(char *Key, char **Val, int *n)
+        
+        Same as clgetNIVal except that it returns string values.
+-----------------------------------------------------------------------
+   clgetIVal() and clgetFVal will print a warning message on the "stderr"
+   if there was an error while doing the conversion to integer or float. 
+   
+
