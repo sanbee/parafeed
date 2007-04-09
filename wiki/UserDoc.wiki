@@ -1,6 +1,6 @@
-#summary One-sentence summary of this page.
+User reference manual
 
-= Introduction =
+== Introduction ==
 
 This document describes the user interface of the offline data
 analysis package.  The motivation behind developing this user
@@ -17,7 +17,7 @@ file by a single command.
 
 Numeric values of any of the keywords can be any algebraic expression.
 
-=The User Interface Commands=
+==The User Interface Commands==
 
 Upon startup, applications will present a list of parameters to which it
 is sensitive.  This will be in the form of various keywords.  The
@@ -97,125 +97,93 @@ always show all the commands available for a given application.
 
 Following is a short description of the shell commands:
 
-* Command {\tt inp} displays the current setting of the keywords.
+  * Command {{{inp}}} displays the current setting of the keywords.
   
-* Command {{{go}}} signifies the end of the interactive session.
-  After this commands is issued, the values of the keywords set by the
-  users are used by the application internally and the execution of
-  the main program proceeds.
+  * Command {{{go}}} signifies the end of the interactive session.  After this commands is issued, the values of the keywords set by the users are used by the application internally and the execution of the main program proceeds.
   
-* Command {{gob}}} is similar to {{{go}}} except that it will run
-  the application in the background and print the process ID (PID)
-  number of the background process on the screen (also see section
-  \ref{CUSTOMIZATION}).
+  * Command {{gob}}} is similar to {{{go}}} except that it will run the application in the background and print the process ID (PID) number of the background process on the screen (also see section (section *Customization*).
   
-* Command {{{cd}}} changes the current working directory within
-  the interactive shell.
+  * Command {{{cd}}} changes the current working directory within the interactive shell.
   
-* Command {{{'?'}}} gives some basic information
-  about the type and the number of values the keywords expects.
+  * Command {{{'?'}}} gives some basic information about the type and the number of values the keywords expects.
   
-* Command {{{explain}}} gives as detailed a help
-  about the application and the keywords as the author of the
-  application has cared to write in the help file.  These help files
-  are located in the directory specified by the environment variable
-  {{{GDOC}}} (see section \ref{CUSTOMIZATION}).
+  * Command {{{explain}}} gives as detailed a help about the application and the keywords as the author of the application has cared to write in the help file.  These help files are located in the directory specified by the environment variable {{{GDOC}}} (see section \ref{CUSTOMIZATION}).
   
-* Command {{{save}}} saves the current setting of the keywords in
-  a file.  By default, these values are saved in a file named {{{./<Application Name>.def}}}.  If a file name is supplied as an
-  argument of this command, the values will be saved in the file.
-  this command.
+  * Command {{{save}}} saves the current setting of the keywords in a file.  By default, these values are saved in a file named {{{./<Application Name>.def}}}.  If a file name is supplied as an argument of this command, the values will be saved in the file.
   
-* Command {{{load}}} is the conjugate of {{{save}}} - by default
-  it loads the settings for the keywords from the file {{{./<Application Name>.def}}}.  If this file is already present when
-  the application is started, it is loaded automatically.
-  Alternatively, it can load settings from a file provided as an
-  argument to the {{{load}}} command.
+  * Command {{{load}}} is the conjugate of {{{save}}} - by default it loads the settings for the keywords from the file {{{./<Application Name>.def}}}.  If this file is already present when the application is started, it is loaded automatically. Alternatively, it can load settings from a file provided as an argument to the {{{load}}} command.
   
-* Command {{{edit}}} allows user to edit the keyword values in an
-  editor of choice specified by the environment variable {{{EDITOR}}}
-  (see section \ref{CUSTOMIZATION}).
+  * Command {{{edit}}} allows user to edit the keyword values in an editor of choice specified by the environment variable {{{EDITOR}}} (see section \ref{CUSTOMIZATION}).
   
-\item Command {\tt quit} quits the interactive session without
-  executing the application.
-
-\end{itemize}
+  * Command {\tt quit} quits the interactive session without executing the application.
 
 All inputs to the interactive shell, which are not any of the above
 mentioned commands or any of the application specific commands, are
 passed to the underlying Operating System (OS) user shell.  Hence,
 most of the native OS commands shall still be available from this
 shell.  (Users however must be aware that certain OS shell commands
-like ``{\tt setenv}'' (for {\tt csh} users) or ``{\tt export}'' (for
-{\tt bash/sh} users) will seem to work, but will not have the desired
+like ``{{{setenv}}}'' (for {{{csh}}} users) or ``{{{export}}}'' (for
+{{{bash/sh}}} users) will seem to work, but will not have the desired
 effect).
 
 As mentioned earlier, the values of the keywords can be a list of
 comma-separated values.  The expected number of values will be
-reported by the shell-command {\tt '?'} along with the type of the
-values, enclosed in '{\tt [ }' and '{\tt ] }' pairs.  A blank set of
-square brackets (``{\tt []}'') will be printed for keywords which can
+reported by the shell-command {{{'?'}}} along with the type of the
+values, enclosed in '{{{[}}}' and '{{{ ] }}}' pairs.  A blank set of
+square brackets (``{{{ []}}}'') will be printed for keywords which can
 accept any number of values.  Some keywords may accept values of mixed
 types (e.g., string, floats, integers).  For such keywords, the
-reported type will be ``{\tt UNKNOWN}''.
+reported type will be ``{{{Mixed}}}''.
 
 Comma is treated as a separator in a list of values for a keyword.  To
 suppress its interpretation as a separator, it can to be ``escaped''
-using the backslash ('$\backslash$') before the comma.  For example,
-if the value of a keyword {\tt key} has to be set to a string {\tt
+using the backslash ({{{'\'}}}) before the comma.  For example,
+if the value of a keyword {{{key}}} has to be set to a string {\tt
 ``Funny, value with a comma''}, it can be done using
 
-\begin{verbatim}
+{{{
                 key=Funny\, value with a comma
-\end{verbatim}
+}}}
 
-The characters '$\backslash$', '{\tt [}', '{\tt ]}', '{\tt =}', which
+The characters '\', '{{{ [}}}', '{{{ ]}}}', '{{{ =}}}', which
 are part of the shell-command syntax, must also be escaped similarly
 to be used as part of the values of the keywords.
 
 Numeric values of keywords can be arbitrary mathematical expressions.
 Following functions and constants can be used in these expression:
 
-\begin{itemize}
-\item Functions
+  * Functions
 
-sin,cos,tan,asin,acos,atan,atan2,sinh,cosh,tanh,\\
-exp,ln,log,flog10,sqrt,fabs,floor,ceil,rint
+    sin,cos,tan,asin,acos,atan,atan2,sinh,cosh,tanh,exp,ln,log,flog10,sqrt,fabs,floor,ceil,rint
 
-
-\item Constants
-\begin{enumerate}
-
-\item {\tt PI:} value of $\pi$
-\item {\tt C:} speed of light in meters per second.
-\item {\tt R2D,D2R:} multiplicative constants for conversion from
-Radians to Deg. and vice versa
-\item {\tt H2R,R2H:} multiplicative constants for conversion from
-Hours to Radians and vice versa
-\item {\tt SOL2SID,SID2SOL:} multiplicative constants for conversion
-from Solar to Sidreal time and vice versa
-\end{enumerate}
-\end{itemize}
+  * Constants
+     # {{{PI:}}} value of $\pi$
+     # {{{C:}}} speed of light in meters per second.
+     # {{{R2D,D2R:}}} multiplicative constants for conversion from Radians to Deg. and vice versa
+     # {{{H2R,R2H:}}} multiplicative constants for conversion from Hours to Radians and vice versa
+     # {{{SOL2SID,SID2SOL:}}} multiplicative constants for conversion from Solar to Sidreal time and vice versa
 
 Numbers in the expression can be in any of the following
 representations:
 
-\begin{itemize}
-\item Integer format, real (float) format
+  * Integer format, real (float) format
+  * 1.0E-1 or 1.0e-1 (=0.1)
+  * 1.0D-1 or 1.0d-1 (=0.1)
+  * 1h10m0.1s: the time format - converts the number to seconds before using it.
+  * 1d1'1": The angular format - converts to arc seconds before using it.
 
-\item 1.0E-1 or 1.0e-1 (=0.1)
-        
-\item 1.0D-1 or 1.0d-1 (=0.1)
-        
-\item 1h10m0.1s: the time format - converts the number to seconds
-before using it.
-\item $1d1\arcmin1\arcsec$: The angular format - converts to arc
-seconds before using it.
-
-($1d1\arcmin = 3660.0\arcsec$ and $-1d1\arcmin = -3660.0\arcsec$)
-\end{itemize}
+    (1d1' = 3660.0" and -1d1' = -3660.0")
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
+
+
+
+
+
+
+
+
+
