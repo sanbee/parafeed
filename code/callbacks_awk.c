@@ -7,7 +7,7 @@
 #include <shell.h>
 #include <shell.tab.h>
 #include <string>
-
+#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
 #endif
@@ -63,17 +63,34 @@ END{\
 /*----------------------------------------------------------------------*/
 int dogo(char *arg)
 {return EOF;}
+
+/*----------------------------------------------------------------------*/
+
+  void namePrintFormat(char *format, char *append)
+  {
+    Symbol *t;
+    int maxNameLength=10;
+    for (t=cl_SymbTab;t;t=t->Next)
+      if (strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
+
+    sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
+  }
+
 /*----------------------------------------------------------------------*/
 int doinp(char *arg)
 {
   Symbol *t;
+
+  char format[12];
+  namePrintFormat(format," = ");
 
   for (t=cl_SymbTab;t;t=t->Next)
     {
       if ((t->Class==CL_APPLNCLASS) || 
 	  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	{
-	  fprintf(stderr,"%-10.10s = ",t->Name);
+	  
+	  fprintf(stderr,format,t->Name);
 	  PrintVals(stderr,t);
 	}
     }
@@ -93,13 +110,20 @@ int doquit(char *arg)
 /*----------------------------------------------------------------------*/
 int dotypehelp(char *arg)
 {
+  char format[12];
+  namePrintFormat(format,"");
+  string fullFormat;
+  //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
+  fullFormat = string("  ") + string(format) + string("         %-10.10s\n\0");
+
   Symbol *S;
   fprintf(stderr,"   Key                Type    \n");
   fprintf(stderr,"---------          ----------\n");
   for (S=cl_SymbTab;S;S=S->Next)
     if ((S->Class==CL_APPLNCLASS) ||
 	((S->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);
+      /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
+      fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
   return 1;
 }
 /*------------------------------------------------------------------
@@ -166,7 +190,8 @@ int dosave(char *f)
 {
   FILE *fd;
   char str[MAXBUF];
-  
+  char format[12];
+  namePrintFormat(format," = ");
   stripwhite(f);
   if(f==NULL || strlen(f) == 0)
     {
@@ -191,7 +216,7 @@ int dosave(char *f)
 	if ((t->Class==CL_APPLNCLASS) ||
 	    ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	  {
-	    fprintf(fd,"%-10.10s = ",t->Name);
+	    fprintf(fd,format,t->Name);
 	    PrintVals(fd,t);
 	  }
       fclose(fd);
