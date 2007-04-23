@@ -53,6 +53,7 @@ int clgetSValp(const string& Name, string& val, int& n)
     {
       if (N <= S->NVals) 
 	{
+          val.resize(0);
 	  buf = S->Val[N-1];
 	  while (*buf == ' ') buf++;
 	  val = val + buf;
