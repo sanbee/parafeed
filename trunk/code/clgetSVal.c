@@ -48,11 +48,11 @@ int clgetSValp(char *Name, string& val, int& n)
   else
     S=SearchQSymb(Name,"string");
   N = _ABS(n);
-
   if (S!=NULL) 
     {
       if (N <= S->NVals) 
 	{
+	  val=''; /* Initialize the output string */
 	  buf = S->Val[N-1];
 	  while (*buf == ' ') buf++;
 	  val = val + buf;
