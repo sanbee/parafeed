@@ -225,7 +225,12 @@ int BeginCL(int argc, char **argv)
   int N=ParseCmdLine(argc,argv);
   InstallSymb();
   //  clLoadSymb();
-  //  loadDefaults();
+  //
+  // Switched this ON here again.  With the setAuto?Defaults 
+  // used in clget?Valp, the defaults from the .def files are 
+  // never loaded if this is not called here.
+  //
+  loadDefaults();
   return argc-N;
 }
 /*------------------------------------------------------------------------

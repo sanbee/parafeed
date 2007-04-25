@@ -146,7 +146,7 @@ int       clgetSValp(const string& Name, string& Val, int& N);
 int       dbgclgetSValp(const string& Name, string& Val, int& N);
 int       clgetNIValp(const string& Key,  vector<int>& Val, int& m);
 int       dbgclgetNIValp(const string& Key,  int& Val, int& m);
-int       clgetNFValp(const string& Name, float& Val, int& N);
+int       clgetNFValp(const string& Name, vector<float>& Val, int& N);
 int       dbgclgetNFValp(const string& Name, float& Val, int& N);
 int       clgetNSValp(const string& Name, vector<string>& Val, int& N);
 int       dbgclgetNSValp(const string& Name, vector<string>& Val, int& N);
