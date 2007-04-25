@@ -1,7 +1,7 @@
 /* $Id: clgetNIVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
 #include <vector>
-
+#include <support.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,7 +45,7 @@ HANDLE_EXCEPTIONS(
 		      else sprintf(tmp,"int[%d]",m);
 		      
 		      S = SearchQSymb((char *)Key.c_str(), tmp);
-		      
+		      setAutoNIDefaults(S,val);
 		      int i=1;
 		      while((n=clparseVal(S,&i,&d))!=FAIL)
 			{
