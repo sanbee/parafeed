@@ -2,6 +2,7 @@
 #include <cllib.h>
 #include <shell.h>
 #include <string>
+#include <support.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -48,7 +49,7 @@ int clgetSValp(const string& Name, string& val, int& n)
   else
     S=SearchQSymb((char *)Name.c_str(),"string");
   N = _ABS(n);
-
+  setAutoSDefaults(S,val);
   if (S!=NULL) 
     {
       if (N <= S->NVals) 
