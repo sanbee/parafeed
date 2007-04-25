@@ -35,7 +35,7 @@ int clgetNSVal(char *Name, char **Val, int *m)
 
 int clgetNSValp(const string& Name, vector<string>& Val, int& m)
 {
-  int i,j,r=0,n=0;
+  int j,r=0,n=0;
   char tmp[8], *buf;
   Symbol *S;
 
