@@ -2,6 +2,7 @@
 #include <shell.h>
 #include <cllib.h>
 #include <string.h>
+#include <support.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -35,6 +36,7 @@ int clgetFValp(const string& Name, float &val, int &n)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else
     S=SearchQSymb((char *)Name.c_str(),"float");
+  setAutoFDefaults(S,val);
   if ((N=clparseVal(S,&n,&d))>0) val=(float)d;
   return N;
   )

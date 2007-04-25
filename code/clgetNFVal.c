@@ -27,6 +27,35 @@ HANDLE_EXCEPTIONS(
 )
   return i-1;
 }
+
+  int clgetNFValp(const string& Key, vector<float>& val, int& m)
+  {
+    int n;
+    double d;
+    char tmp[8];
+    Symbol *S;
+    
+    HANDLE_EXCEPTIONS(
+		      if (m <= 0) sprintf(tmp,"float[]");
+		      else sprintf(tmp,"float[%d]",m);
+		      
+		      S = SearchQSymb((char *)Key.c_str(), tmp);
+		      
+		      int i=1;
+		      while((n=clparseVal(S,&i,&d))!=FAIL)
+			{
+			  if (n==0) return i-1;
+			  else 
+			    {
+			      val.resize(i);
+			      val[i-1] = (float)d;
+			      i++;
+			    }
+			}
+		      return i-1;
+		     );
+  }
+
 #ifdef __cplusplus
 	   }
 #endif
