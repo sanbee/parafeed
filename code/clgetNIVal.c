@@ -33,6 +33,10 @@ HANDLE_EXCEPTIONS(
 )
 }
 
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
   int clgetNIValp(const string& Key, vector<int>& val, int& m)
   {
     int n;
@@ -60,6 +64,4 @@ HANDLE_EXCEPTIONS(
 		      return i-1;
 		     );
   }
-#ifdef __cplusplus
-	   }
 #endif

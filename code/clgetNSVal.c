@@ -33,6 +33,10 @@ int clgetNSVal(char *Name, char **Val, int *m)
     }
 }
 
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
 int clgetNSValp(const string& Name, vector<string>& Val, int& m)
 {
   int j,r=0,n=0;
@@ -58,7 +62,4 @@ int clgetNSValp(const string& Name, vector<string>& Val, int& m)
       return r;
     }
 }
-
-#ifdef __cplusplus
-	   }
 #endif
