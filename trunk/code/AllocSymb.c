@@ -11,7 +11,9 @@ Symbol *AllocVSymb(int n)
   Symbol *S;
   S = (Symbol *)getmem(sizeof(Symbol)*n,"AllocVSymb");
   S->Name = NULL;
+  S->Type = NULL;
   S->Val = NULL;
+  S->Exposed=1;
   S->Used = 0;
   S->Class = CL_APPLNCLASS;
   S->NVals=0;

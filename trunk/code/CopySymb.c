@@ -40,6 +40,8 @@ int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
 	  strcpy(t->Val[i],S->Val[i]);
 	}
     }
+  t->smap = S->smap;
+  t->Exposed = S->Exposed;
   return 1;
 }
 /*----------------------------------------------------------------------*/

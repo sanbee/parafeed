@@ -26,11 +26,6 @@
 #include <clError.h>
 #include <string.h>
 #include <vector>
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
 #define HANDLE_EXCEPTIONS(str)  try         \
                                   {         \
                                     str     \
@@ -44,6 +39,11 @@ extern "C" {
 #else
 #define HANDLE_EXCEPTIONS(str)  str
 #endif
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
 
 #define PROCEED      1
 #define GOBACK       2
@@ -135,22 +135,8 @@ int       dbgclgetNSVal(char *Name, char **Val, int *N);
 int       clTgetOptp(const string& Name, string& Type);
 int       clgetOptp(const string& Name);
 int       clgetNValsp(const string& Name);
-int       clgetFullp(const string& Arg,  int &N);
-int       clgetFullValp(const string& Name, string& Val);
-int       dbgclgetFullValp(const string& Name, string& Val);
-int       clgetIValp(const string& Name, int& Val, int& N);
-int       dbgclgetIValp(const string& Name, int& Val, int& N);
-int       clgetFValp(const string& Name, float& Val, int& N);
-int       dbgclgetFValp(const string& Name, float& Val, int& N);
-int       clgetSValp(const string& Name, string& Val, int& N);
-int       dbgclgetSValp(const string& Name, string& Val, int& N);
-int       clgetNIValp(const string& Key,  vector<int>& Val, int& m);
-int       dbgclgetNIValp(const string& Key,  int& Val, int& m);
-int       clgetNFValp(const string& Name, vector<float>& Val, int& N);
-int       dbgclgetNFValp(const string& Name, float& Val, int& N);
-int       clgetNSValp(const string& Name, vector<string>& Val, int& N);
-int       dbgclgetNSValp(const string& Name, vector<string>& Val, int& N);
 #endif
+
 void      clRestartShell();
 void      clStartInteractive(jmp_buf *, int);
 int       clfInteractive(int *);
@@ -176,7 +162,7 @@ int       BreakStr(char *, char **, char **);
 int       dogo(char *);
 int       dogob(char *);
 int       docd(char *);
-int       doinp(char *);
+int       doinp(char *arg=NULL);
 int       doquit(char *);
 int       doedit(char *);
 int       dohelp(char *);
@@ -211,6 +197,28 @@ void clDefaultErrorHandler();
 void clSigHandler(int);
 #ifdef	__cplusplus
 }
+#endif
+#ifdef __cplusplus
+int       clgetFullp(const string& Arg,  int &N);
+int       clgetFullValp(const string& Name, string& Val);
+int       dbgclgetFullValp(const string& Name, string& Val);
+
+int       clgetIValp(const string& Name, int& Val, int& N);
+int       dbgclgetIValp(const string& Name, int& Val, int& N);
+int       clgetNIValp(const string& Key,  vector<int>& Val, int& m);
+int       dbgclgetNIValp(const string& Key,  int& Val, int& m);
+
+int       clgetFValp(const string& Name, float& Val, int& N);
+int       dbgclgetFValp(const string& Name, float& Val, int& N);
+int       clgetNFValp(const string& Name, vector<float>& Val, int& N);
+int       dbgclgetNFValp(const string& Name, float& Val, int& N);
+
+int       clgetSValp(const string& Name, string& Val, int& N);
+int       dbgclgetSValp(const string& Name, string& Val, int& N);
+int       clgetNSValp(const string& Name, vector<string>& Val, int& N);
+int       dbgclgetNSValp(const string& Name, vector<string>& Val, int& N);
+int       clgetSValp(const string& Name, string& Val, int& N, SMap &smap);
+
 #endif
 #if !defined(FORTRAN)
 #include <clconvert.h>

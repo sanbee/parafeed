@@ -2,8 +2,9 @@
 #include <stdio.h>
 #include <cl.h>
 #ifdef __cplusplus
-#include <iostream.h>
+#include <iostream>
 #include <clError.h>
+using namespace std;
 /*----------------------------------------------------------------------*/
 void clDefaultErrorHandler()
 {
