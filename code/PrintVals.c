@@ -8,7 +8,7 @@ extern "C" {
 /*----------------------------------------------------------------------*/
 int PrintVals(FILE *fd,Symbol *S)
 {
-  int i;
+  unsigned int i;
   if (S->NVals > 0)
     {
       for (i=0;i<S->NVals-1;i++)

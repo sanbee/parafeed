@@ -2,17 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
+#include <string>
 #include <cl.h>
 #include <shell.h>
 #include <shell.tab.h>
 #include <string>
-#include <strstream>
+//#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
 #endif
 
 #ifdef __cplusplus
+using namespace std;
 extern "C" {
 #endif
 extern Symbol    *cl_SymbTab,*cl_TabTail;
@@ -71,11 +72,70 @@ int dogo(char *arg)
     Symbol *t;
     int maxNameLength=10;
     for (t=cl_SymbTab;t;t=t->Next)
-      if (strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
+      if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
 
     sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
   }
+/*----------------------------------------------------------------------*/
+void printMap(SMap& smap)
+{
+  if ((smap.size() > 0))
+    {
+      for(SMap::iterator i=smap.begin(); i != smap.end(); i++)
+	{
+	  cout << "### " << (*i).first << ": ";
+	  vector<string> sv=(*i).second;
+	  for(unsigned int j=0;j<sv.size();j++)
+	    cout << sv[j] << " ";
+	  cout << endl;
+	}
+    }
+}
+/*----------------------------------------------------------------------*/
+int exposeKeys(Symbol *t)
+{
+  Symbol *S;
+  int exposedSomething=0;
 
+  if ((t->smap.size() > 0))
+    {
+      //
+      // Irrespective of the current value of the symbol, hide all
+      // keys on which a watch was set by this symbol
+      //
+      for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
+	{
+	  vector<string> sv=(*i).second;
+	  for(unsigned int j=0;j<sv.size();j++)
+	    {
+	      S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab);
+	      S->Exposed=0;
+	    }
+	}
+      //
+      // Now set for display, those watched-keys which are exposed by
+      // the current setting of this symbol. For now, the "current
+      // setting" is only the first value (i.e. ignores other possible
+      // comma seperated values).
+      //
+      if (t->NVals > 0)
+	{
+	  SMap::iterator loc = (t->smap.find(string(t->Val[0])));
+	  if (loc != t->smap.end())
+	    {
+	      vector<string> sv=(*loc).second;
+	      //printMap(t->smap);
+	      for(unsigned int j=0;j<sv.size();j++)
+		{
+		  S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
+		  S->Exposed=1;
+		  exposedSomething=1;
+		}
+	    }
+	}
+    }
+  return exposedSomething;
+}
 /*----------------------------------------------------------------------*/
 int doinp(char *arg)
 {
@@ -84,15 +144,27 @@ int doinp(char *arg)
   char format[12];
   namePrintFormat(format," = ");
 
-  for (t=cl_SymbTab;t;t=t->Next)
+  for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
+    
+  if (arg == NULL)
+    for (t=cl_SymbTab;t;t=t->Next)
+      {
+	if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
+	    ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	  {
+	    fprintf(stderr,format,t->Name);
+	    PrintVals(stderr,t);
+	  }
+      }
+  else
     {
-      if ((t->Class==CL_APPLNCLASS) || 
-	  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-	{
-	  
-	  fprintf(stderr,format,t->Name);
-	  PrintVals(stderr,t);
-	}
+      t=SearchVSymb((char*)arg,cl_SymbTab);
+	if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
+	    ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	  {
+	    fprintf(stderr,format,t->Name);
+	    PrintVals(stderr,t);
+	  }
     }
   return 1;
 }

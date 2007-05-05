@@ -28,6 +28,10 @@ HANDLE_EXCEPTIONS(
   return i-1;
 }
 
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
   int clgetNFValp(const string& Key, vector<float>& val, int& m)
   {
     int n;
@@ -55,7 +59,4 @@ HANDLE_EXCEPTIONS(
 		      return i-1;
 		     );
   }
-
-#ifdef __cplusplus
-	   }
 #endif
