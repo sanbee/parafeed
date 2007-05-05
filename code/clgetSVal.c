@@ -38,18 +38,23 @@ int clgetSVal(char *Name, char *val, int *n)
   else
     return FAIL;
 }
-int clgetSValp(char *Name, string& val, int& n)
+#ifdef __cplusplus
+	   }
+#endif
+
+#ifdef __cplusplus
+int clgetSValp(const string &Name, string& val, int& n)
 {
   Symbol *S;
   unsigned int N;
   char *buf,*c;
   
   if (n < 0)
-    S=SearchVSymb(Name,cl_SymbTab);
+    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else
-    S=SearchQSymb(Name,"string");
+    S=SearchQSymb((char *)Name.c_str(),"string");
   N = _ABS(n);
-  cout << val << endl;
+
   setAutoSDefaults(S,val);
   if (S!=NULL) 
     {
@@ -70,6 +75,4 @@ int clgetSValp(char *Name, string& val, int& n)
   else
     return FAIL;
 }
-#ifdef __cplusplus
-	   }
 #endif

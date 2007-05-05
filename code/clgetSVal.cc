@@ -38,6 +38,10 @@ int clgetSVal(char *Name, char *val, int *n)
   else
     return FAIL;
 }
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
 int clgetSValp(const string& Name, string& val, int& n)
 {
   Symbol *S;
@@ -69,6 +73,38 @@ int clgetSValp(const string& Name, string& val, int& n)
   else
     return FAIL;
 }
-#ifdef __cplusplus
-	   }
+
+int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
+{
+  Symbol *S;
+  unsigned int N;
+  char *buf,*c;
+  
+  if (n < 0)
+    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+  else
+    S=SearchQSymb((char *)Name.c_str(),"string");
+  N = _ABS(n);
+
+  setAutoSDefaults(S,val);
+  if (S!=NULL) 
+    {
+      S->smap = smap;
+      if (N <= S->NVals) 
+	{
+	  val.resize(0); /* Initialize the output string */
+	  buf = S->Val[N-1];
+	  while (*buf == ' ') buf++;
+	  val = val + buf;
+	  //	  strncpy(val,buf,strlen(buf)+1);
+	  if ((c=strstr(buf,"\\\""))) 
+	    while (*c) *c = *(++c);
+	  return strlen(buf);
+	}
+      else 
+	return FAIL;
+    }
+  else
+    return FAIL;
+}
 #endif

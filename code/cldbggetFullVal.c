@@ -3,8 +3,8 @@
 #include <cllib.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
+/* extern "C" { */
+/* #endif */
 /*------------------------------------------------------------------------
    Get the value associated with Key as one string.
 ------------------------------------------------------------------------*/
@@ -40,6 +40,6 @@ int dbgclgetFullValp(const string& Name, string& val)
     }
   return n;
 }
-#ifdef __cplusplus
-	   }
+/* #ifdef __cplusplus */
+/* 	   } */
 #endif

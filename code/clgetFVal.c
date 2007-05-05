@@ -25,6 +25,10 @@ HANDLE_EXCEPTIONS(
 )
 }   
 
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
 int clgetFValp(const string& Name, float &val, int &n)
 {
   Symbol *S;
@@ -40,8 +44,6 @@ int clgetFValp(const string& Name, float &val, int &n)
   if ((N=clparseVal(S,&n,&d))>0) val=(float)d;
   return N;
   )
-}   
+}
+#endif   
 
-#ifdef __cplusplus
-	   }
-#endif
