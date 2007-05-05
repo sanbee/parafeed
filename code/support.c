@@ -8,7 +8,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <cl.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -157,15 +156,15 @@ int redirect(char *out, char *err)
   return 1;
 }
 #include <clGlobals.h>
-#include <strstream>
+#include <sstream>
 void setAutoIDefaults(Symbol *S, const int& val)
 {
   if ((cl_RegistrationMode == 1) && (S->Val == NULL))
     {
-      ostrstream os;
+      ostringstream os;
       os << val;
       S->Val = (char **) getmem(sizeof(char *),"clgetIValp");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str())+1),"clgetIValp");
+      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
       sprintf(S->Val[0],"%d%c",val,NULL);
       S->NVals = 1;
     }
@@ -174,10 +173,10 @@ void setAutoFDefaults(Symbol *S, const float& val)
 {
   if ((cl_RegistrationMode == 1) && (S->Val == NULL))
     {
-      ostrstream os;
+      ostringstream os;
       os << val;
       S->Val = (char **) getmem(sizeof(char *),"clgetIValp");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str())+1),"clgetIValp");
+      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
       sprintf(S->Val[0],"%f%c",val,NULL);
       S->NVals = 1;
     }
@@ -186,10 +185,10 @@ void setAutoSDefaults(Symbol *S, const string& val)
 {
   if ((cl_RegistrationMode == 1) && (S->Val == NULL))
     {
-      ostrstream os;
+      ostringstream os;
       os << val;
       S->Val = (char **) getmem(sizeof(char *),"clgetIValp");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str())+1),"clgetIValp");
+      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
       sprintf(S->Val[0],"%s%c",val.c_str(),NULL);
       S->NVals = 1;
     }
@@ -203,9 +202,9 @@ void setAutoNIDefaults(Symbol *S, const vector<int>& val)
 
       for(int i=0;i<n;i++)
 	{
-	  ostrstream os;
+	  ostringstream os;
 	  os << val[i];
-	  S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str())+1),"clgetIValp");
+	  S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
 	  sprintf(S->Val[i],"%d%c",val[i],NULL);
 	}
       S->NVals = n;

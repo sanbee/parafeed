@@ -21,6 +21,7 @@ int FreeVSymb(Symbol *S)
 	    free((S->Val)[i]);
 	  free((S->Val));
 	}
+      S->smap.erase(S->smap.begin(),S->smap.end());
       free(S);
       return 1;
     }
