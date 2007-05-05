@@ -28,6 +28,10 @@ HANDLE_EXCEPTIONS(
   return N;
 )
 }
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
 int dbgclgetIValp(const string& Name, int& val, int& n)
 {
   Symbol *S;
@@ -44,6 +48,4 @@ HANDLE_EXCEPTIONS(
 		  return N;
 		  );
 }
-#ifdef __cplusplus
-	   }
 #endif

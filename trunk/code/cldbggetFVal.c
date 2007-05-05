@@ -27,6 +27,10 @@ HANDLE_EXCEPTIONS(
 )
 }
 
+#ifdef __cplusplus
+	   }
+#endif
+#ifdef __cplusplus
 int dbgclgetFValp(const string& Name, float &val, int &n)
 {
   Symbol *S;
@@ -46,7 +50,4 @@ int dbgclgetFValp(const string& Name, float &val, int &n)
   return N;
   )
 }   
-
-#ifdef __cplusplus
-	   }
 #endif

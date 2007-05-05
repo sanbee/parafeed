@@ -36,6 +36,11 @@ int clgetFullVal(char *Name, char **val)
     }
   return n;
 }
+#ifdef __cplusplus
+	   }
+#endif
+
+#ifdef __cplusplus
 int clgetFullValp(const string& Name, string& val)
 {
   int n,i,len=0;
@@ -65,6 +70,4 @@ int clgetFullValp(const string& Name, string& val)
     }
   return n;
 }
-#ifdef __cplusplus
-	   }
 #endif

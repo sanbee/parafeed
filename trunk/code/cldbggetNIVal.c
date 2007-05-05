@@ -2,8 +2,8 @@
 #include <cllib.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif
+/* extern "C" { */
+/* #endif */
 /*---------------------------------------------------------------------------*/
 /* Extract a m number of values associated with Key.  If *m is negative,     */
 /* fatal error occurs.  If the return value is positive, it is the number of */
@@ -30,6 +30,6 @@ HANDLE_EXCEPTIONS(
   return i-1;
 )
 }
-#ifdef __cplusplus
-	   }
+/* #ifdef __cplusplus */
+/* 	   } */
 #endif
