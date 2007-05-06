@@ -21,7 +21,8 @@ fi
 #
 # The path for lib, bin, doc, conf directories
 #
-GLIB=$GROOT/lib/$GOSDIR
+GLIB=~/lib/$GOSDIR
+GINCLUDE=~/include
 GBIN=$GROOT/bin/$GOSDIR
 GDOC=$GSRCROOT/doc/appdoc
 GCONF=$GSRCROOT/config
