@@ -10,14 +10,32 @@ extern "C" {
 /* #define getmem(a,b)   malloc((a))*/
 /*---------------------------------------------------------------------------*/
 /* Unset the value(s) of the variable indicated by the given symbol          */
+/* If setFactoryDefaults==1, then load the values from S->DefaultVal list    */
 /*---------------------------------------------------------------------------*/
-int UnsetVar(Symbol *S)
+int UnsetVar(Symbol *S, int setFactoryDefaults)
 {
   unsigned int j;
   for (j=0;j<S->NVals;j++)
     {if (S->Val[j]!=NULL) free(S->Val[j]);
      S->Val[j]=NULL;}
   S->NVals=0;
+
+  if (setFactoryDefaults)
+    {
+      int n=S->DefaultVal.size();
+      if (n>0)
+	{
+	  S->Val=(char **)calloc(1,sizeof(char **)*n);
+	  int m;
+	  for(int i=0;i<n;i++)
+	    {
+	      S->Val[i]=(char *)getmem(strlen(S->DefaultVal[i].c_str())+1,"cl:UnsetVar");
+	      strncpy(S->Val[i],S->DefaultVal[i].c_str(),(m=strlen(S->DefaultVal[i].c_str())));
+	      S->Val[i][m]='\0';
+	    }
+	  S->NVals=n;
+	}
+    }
   return 1;
  }
 /*---------------------------------------------------------------------------*/
@@ -52,7 +70,10 @@ int UnsetVar(Symbol *S)
 	*/
       }
 
-  if ((val==NULL) || (strlen(val) == 0)) return UnsetVar(pos);
+  if ((val==NULL) || (strlen(val) == 0)) 
+    {
+      return UnsetVar(pos,1);
+    }
 
   cltruncateFromBack(val);
   /*

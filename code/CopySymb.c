@@ -42,6 +42,7 @@ int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
     }
   t->smap = S->smap;
   t->Exposed = S->Exposed;
+  t->DefaultVal=S->DefaultVal;
   return 1;
 }
 /*----------------------------------------------------------------------*/
