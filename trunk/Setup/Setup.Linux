@@ -11,6 +11,7 @@ XFORMSPATH=/usr/local
 OFFLIBPATH=$(GLIB)
 OFFINC=$(GSRCROOT)/include
 PUB = $(ROOT)
+PUBINCL=~/include
 #
 # Path for the lib. for optimization package
 #
