@@ -23,6 +23,7 @@ int FreeVSymb(Symbol *S)
 	}
       S->smap.erase(S->smap.begin(),S->smap.end());
       free(S);
+      S->DefaultVal.resize(0);
       return 1;
     }
   return 0;

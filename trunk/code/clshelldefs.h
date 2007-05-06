@@ -25,6 +25,7 @@ extern "C" {
     char **Val;
 #ifdef __cplusplus
     SMap smap;
+    std::vector<std::string> DefaultVal;
 #endif
     struct SymbolType *Next, *Previous;
   } Symbol;

@@ -159,56 +159,74 @@ int redirect(char *out, char *err)
 #include <sstream>
 void setAutoIDefaults(Symbol *S, const int& val)
 {
-  if ((cl_RegistrationMode == 1) && (S->Val == NULL))
+  ostringstream os;
+  os << val;
+  if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+
+  if (S->Val == NULL)
     {
-      ostringstream os;
-      os << val;
-      S->Val = (char **) getmem(sizeof(char *),"clgetIValp");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
+      S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults");
+      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults");
       sprintf(S->Val[0],"%d%c",val,NULL);
-      S->NVals = 1;
     }
+  S->NVals = 1;
 }
 void setAutoFDefaults(Symbol *S, const float& val)
 {
-  if ((cl_RegistrationMode == 1) && (S->Val == NULL))
+  ostringstream os;
+  os << val;
+  if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+
+  if (S->Val == NULL)
     {
-      ostringstream os;
-      os << val;
-      S->Val = (char **) getmem(sizeof(char *),"clgetIValp");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
+      S->Val = (char **) getmem(sizeof(char *),"setAutoFDefaults");
+      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoFDefaults");
       sprintf(S->Val[0],"%f%c",val,NULL);
-      S->NVals = 1;
     }
+  S->NVals = 1;
 }
 void setAutoSDefaults(Symbol *S, const string& val)
 {
-  if ((cl_RegistrationMode == 1) && (S->Val == NULL))
+  ostringstream os;
+  os << val;
+  if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+
+  if (S->Val == NULL)
     {
-      ostringstream os;
-      os << val;
-      S->Val = (char **) getmem(sizeof(char *),"clgetIValp");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
-      sprintf(S->Val[0],"%s%c",val.c_str(),NULL);
-      S->NVals = 1;
+      S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults");
+      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoSDefaults");
+      sprintf(S->Val[0],"%s",os.str().c_str());
     }
+  S->NVals = 1;
 }
 void setAutoNIDefaults(Symbol *S, const vector<int>& val)
 {
-  if ((cl_RegistrationMode == 1) && (S->Val == NULL))
+  int n=val.size();
+  if (cl_RegistrationMode == 1)
     {
-      int n=val.size();
-      S->Val = (char **) getmem(sizeof(char *)*n,"clgetIValp");
-
+      S->DefaultVal.resize(n);
       for(int i=0;i<n;i++)
 	{
 	  ostringstream os;
 	  os << val[i];
-	  S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"clgetIValp");
+	  S->DefaultVal[i] = os.str().c_str();
+	}
+    }
+
+  if (S->Val == NULL)
+    {
+      S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults");
+      
+      for(int i=0;i<n;i++)
+	{
+	  ostringstream os;
+	  os << val[i];
+	  S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNIDefaults");
 	  sprintf(S->Val[i],"%d%c",val[i],NULL);
 	}
-      S->NVals = n;
     }
+
+  S->NVals = n;
 }
 #ifdef __cplusplus
 }

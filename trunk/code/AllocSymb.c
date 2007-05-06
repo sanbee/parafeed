@@ -17,6 +17,7 @@ Symbol *AllocVSymb(int n)
   S->Used = 0;
   S->Class = CL_APPLNCLASS;
   S->NVals=0;
+  S->DefaultVal.resize(0);
   return S;
 }
 
