@@ -185,19 +185,45 @@ void setAutoFDefaults(Symbol *S, const float& val)
     }
   S->NVals = 1;
 }
-void setAutoSDefaults(Symbol *S, const string& val)
+void setAutoSDefaults(Symbol *S, const string& val, const int fullVal)
 {
-  ostringstream os;
-  os << val;
-  if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
-
-  if (S->Val == NULL)
+  if (fullVal)
     {
-      S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults");
-      S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoSDefaults");
-      sprintf(S->Val[0],"%s",os.str().c_str());
+      int comma;
+      char *valstr; valstr=(char *)val.c_str();
+      if ((comma = ntok(valstr,",",ESC))==-1) 
+	{
+	  ostringstream os;
+	  os << "Error in counting commas in the string " << val << endl;
+	  throw(clError(os.str().c_str(), "setAutoSDefaults",0));
+	}
+
+      if (cl_RegistrationMode==1)
+	{
+	  S->DefaultVal.resize(comma);
+	  valstr=(char *)val.c_str();
+	  char *t;
+	  if ((t=clstrtok(valstr,",", ESC)) != NULL)
+	    {
+	      S->DefaultVal[0]=t;
+	      for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,",", ESC);
+	    }
+	}
     }
-  S->NVals = 1;
+  else
+    {
+      ostringstream os;
+      os << val;
+      if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+      
+      if (S->Val == NULL)
+	{
+	  S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults");
+	  S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoSDefaults");
+	  sprintf(S->Val[0],"%s",os.str().c_str());
+	}
+      S->NVals = 1;
+    }
 }
 void setAutoNIDefaults(Symbol *S, const vector<int>& val)
 {
