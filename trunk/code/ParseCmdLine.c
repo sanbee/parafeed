@@ -230,7 +230,7 @@ int BeginCL(int argc, char **argv)
   // used in clget?Valp, the defaults from the .def files are 
   // never loaded if this is not called here.
   //
-  loadDefaults();
+  if (!cl_NoPrompt) loadDefaults();
   return argc-N;
 }
 /*------------------------------------------------------------------------
