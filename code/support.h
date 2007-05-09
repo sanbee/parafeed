@@ -8,6 +8,7 @@ void setAutoSDefaults(Symbol *S, const string& val, const int fullVal=0);
 void setAutoNIDefaults(Symbol *S, const vector<int>& val);
 void setAutoNFDefaults(Symbol *S, const vector<float>& val);
 void setAutoNSDefaults(Symbol *S, const string& val);
+int sizeofTab(const Symbol *s);
 #ifdef __cplusplus
 	   }
 #endif

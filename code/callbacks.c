@@ -16,6 +16,8 @@
 using namespace std;
 extern "C" {
 #endif
+#include <rl_interface.h>
+
   extern Symbol    *cl_SymbTab,*cl_TabTail;
   extern CmdSymbol *cl_CmdTab;
   extern char      *cl_ProgName;

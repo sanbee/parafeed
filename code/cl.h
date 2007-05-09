@@ -176,11 +176,12 @@ int       loadDefaults();
 int       clparseVal(Symbol *, int *, double *);
 int       PrintVals(FILE *,Symbol *);
 int       clIsInteractive();
-
+  /*
 void mkfilename(char *out,char *envvar,char *name,char *type);
 void save_hist(char *EnvVar, char *Default);
 void limit_hist(char *EnvVar, int Default);
 void load_hist(char *EnvVar, char *Default);
+  */
 int  InstallSymb();
 int  sh_parse();
 int  UnsetVar(Symbol *,int);
@@ -191,6 +192,7 @@ int  FreeVSymb(Symbol *);
 int  FreeCSymb(CmdSymbol *);
 int  DeleteCmd(char *, CmdSymbol**, CmdSymbol**);
 void clSaneExit(int);
+int exposeKeys(Symbol *t);
   //int  clThrowUp(const char *, const char *,int);
 
 void clDefaultErrorHandler();

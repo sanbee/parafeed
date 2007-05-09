@@ -16,6 +16,7 @@
 #endif
 extern "C" {
 #endif
+#include <rl_interface.h>
 
 
 #define POSITIVE(str,a)   {if ((a) < 0)                                \
@@ -218,10 +219,13 @@ int ParseCmdLine(int argc, char *argv[])
   return cl_NoOfOpts;
 }
 /*------------------------------------------------------------------------
-  Start the CL library
+  CL library parser entry point
 ------------------------------------------------------------------------*/
 int BeginCL(int argc, char **argv)
 {
+#ifdef GNUREADLINE  
+  initialize_readline();
+#endif
   int N=ParseCmdLine(argc,argv);
   InstallSymb();
   //  clLoadSymb();
@@ -245,11 +249,11 @@ void clCmdLineFirst()
   cl_CmdLineFirst = 1; 
 }
 /*------------------------------------------------------------------------
-  Till this is called, all the symbols, as detected from the application
-  querry are NOT in the symbol table.  So load them now and clear the
-  temporary table (that is of no use for the rest of the life of the
-  application).
-------------------------------------------------------------------------*/
+  Till this is called, all the symbols, as detected from the
+  application query are NOT in the global symbol table (cl_SymbTab).
+  So load them now and clear the temporary table (that is of no use
+  for the rest of the life of the application).
+  ------------------------------------------------------------------------*/
 void clLoadSymb()
 {
   Symbol *S, *T;
@@ -283,7 +287,8 @@ void clLoadSymb()
   cl_SymbLoaded = 1;
 }
 /*------------------------------------------------------------------------
-  Start the interactive shell if it needs to.
+  Start the interactive shell if required.
+
   If InteractiveShell is true (i.e. the user wants the shell) and this
   is the first pass (i.e. the user has not yet interacted with the 
   shell) then, transfer the symbol table from the temp. table to the
@@ -342,8 +347,10 @@ int startShell()
     - "help" symbol is not found
     - the value of "help" is != "noprompt"
   This will also remove the "help" symbol from the symbol table.
+
   If the value of "help" is "doc", it will output a "empty" doc file
-  one the stdout and exit with value 0.
+  on the stdout and exit with value 0.
+
   If the value is "explain", it will print the help file and exit with
   a vaule of 0.  This is useful to get help on applications which are
   not intented to be interactive.
@@ -471,80 +478,6 @@ void allocargv_(int *n)
 {
   cl_fargv=(char **)calloc(n,sizeof(char **));
 }
-#endif
-#ifdef GNUREADLINE
-/*#include <readline/history.h>*/
-/************************************************************************/
-/*----------------------------------------------------------------------*/
-void mkfilename(char *out,char *envvar,char *name,char *type)
-{
-#ifdef vms
-  if(envvar && *envvar)sprintf(out,"%s:%s%s",envvar,name,type);
-  else       sprintf(out,"%s%s",name,type);
-#else
-  char *s;
-  if(envvar && *envvar){
-    s = (char *)getenv(envvar);
-    if(s == NULL)
-      fprintf(stderr,"Unable to find environment variable %s.",envvar);
-    else 
-      sprintf(out,"%s/%s%s",s,name,type);
-  }else sprintf(out,"%s%s",name,type);
-#endif
-}
-/************************************************************************/
-void save_hist(char *EnvVar, char *Default)
-{
-  char *HistFile;
-  char hfile[FILENAME_MAX];
-  if ((HistFile = (char *)getenv(EnvVar)) == NULL)
-    HistFile = Default;
-  mkfilename(hfile,"HOME",HistFile,"\0");
-  write_history(hfile);
-}
-/************************************************************************/
-void limit_hist(char *EnvVar, int Default)
-{
-  char *NHist;
-  int n;
-  
-  if ((NHist = (char *)getenv(EnvVar)) == NULL)
-    n = Default;
-  else
-    sscanf(NHist, "%d",&n);
-  
-  stifle_history(n);
-}
-/************************************************************************/
-void load_hist(char *EnvVar, char *Default)
-{
-  char *HistFile;
-  char hfile[FILENAME_MAX];
-  static unsigned int Loaded=0;
-
-  if (!Loaded)
-    {
-      if ((HistFile = (char *)getenv(EnvVar)) == NULL)
-	HistFile = Default;
-  
-      mkfilename(hfile,"HOME",HistFile,"\0");
-      read_history(hfile);
-      Loaded = !Loaded;
-    }
-}
-/************************************************************************/
-/*
-void list_hist()
-{
-  int i;
-  register HIST_ENTRY **list = history_list();
-  
-  if (list)
-    for (i = 0; list[i]; i++)
-      fprintf (stdout, "%d: %s\n",
-	       i + history_base, list[i]->line);
-}
-*/
 #endif
 #ifdef __cplusplus
 }
