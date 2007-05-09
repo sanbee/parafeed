@@ -14,6 +14,7 @@ extern "C" {
 #define   CL_USERCLASS   1
 #define   CL_APPLNCLASS  2
 #define   CL_DBGCLASS    3
+  inline void ClearMap(SMap &m) {m.erase(m.begin(),m.end());};
   
   typedef struct SymbolType {
     char *Name;
