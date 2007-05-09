@@ -10,11 +10,13 @@ extern "C" {
 #if !defined(CLSHELLDEFS_H)
 #define CLSHELLDEFS_H
 #define getmem(a,b)  calloc(1,(a))
+#ifdef __cplusplus
+  inline void ClearMap(SMap &m) {m.erase(m.begin(),m.end());};
+#endif
   
 #define   CL_USERCLASS   1
 #define   CL_APPLNCLASS  2
 #define   CL_DBGCLASS    3
-  inline void ClearMap(SMap &m) {m.erase(m.begin(),m.end());};
   
   typedef struct SymbolType {
     char *Name;
