@@ -64,11 +64,8 @@ END{									\
 }'"
   
   /*----------------------------------------------------------------------*/
-  int dogo(char *arg)
-  {return EOF;}
-  
+  int dogo(char *arg) {return EOF;}
   /*----------------------------------------------------------------------*/
-  
   void namePrintFormat(char *format, char *append)
   {
     Symbol *t;
@@ -194,10 +191,13 @@ END{									\
     fprintf(stderr,"   Key                Type          Factory defaults\n");
     fprintf(stderr,"---------          ----------       ----------------\n");
     for (S=cl_SymbTab;S;S=S->Next)
-      if ((S->Class==CL_APPLNCLASS) ||
-	  ((S->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+      if (((S->Class==CL_APPLNCLASS) ||
+	  ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
+          (S->Exposed)
+         )
 	{
 	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
+	  exposeKeys(S);
 	  fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
 	  int n=S->DefaultVal.size();
 	  if (n>0)
