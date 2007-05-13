@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 #ifdef GNUREADLINE
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +25,7 @@
 
 #include <cl.h>
 #include <cllib.h> // Get the extern definitions for cl_SymbTab
+#include <shell.h>
 #include <string>
 #include <vector>
 #include <support.h>
@@ -27,6 +46,21 @@ extern "C" {
     //    return (r);
   }
   //------------------------------------------------------------------------
+  Symbol* rl_isKeyword(char *s)
+  {
+    string tmp;
+    int len=0;
+    while( (s[len] != '=') && (s[len] != ' ') ) len++;
+    tmp.resize(len);
+    int j=0;
+    for(int i=0;i<len;i++)
+      tmp[j++]=s[i];
+    tmp[j]=(char)NULL;
+    Symbol *S=NULL;
+    if (tmp.size() > 0) S=SearchVSymb((char *)tmp.c_str(),cl_SymbTab);
+    return S;
+  }
+  //------------------------------------------------------------------------
   // CL Keyword generator function.
   // 
   char* rl_keyword_generator(const char *text,int state)
@@ -34,10 +68,10 @@ extern "C" {
     static Symbol *S;
     if (state == 0) S = cl_SymbTab;
     
-    char *tmp=NULL;
-    int len=strlen(text),m,exposed,showdbg=1;
     while((S != NULL))
       {
+	int len=strlen(text),m,exposed,showdbg=1,viewable;
+	char *tmp=NULL;
 	//
 	// Set/unset any keys watched by this symbol.  Only exposed
 	// keys are then available for completion.
@@ -47,39 +81,97 @@ extern "C" {
 	tmp = S->Name;
 	exposed=S->Exposed;
 	if (S->Class==CL_DBGCLASS) if (CL_DBG_ON) showdbg=1; else showdbg=0;
-
+	viewable = ((m==0) && (exposed==1) && showdbg && (S->Class!=CL_USERCLASS));
+        
 	S = S->Next;
-	if ((m==0) && (exposed == 1) && showdbg) return dupstr(tmp);
+	if (viewable) return dupstr(tmp);
       }
     return NULL;
   }
   //------------------------------------------------------------------------
-  // CL completor.  Completes keywords first.  And then switches to
-  // filename completion.
+  // Generate a context sensitive list of options.
   //
-  char **cl_command_completor(const char *text, int start, int end)
+  char *rl_options_generator(const char *text, int state)
+  {
+    static VString options;
+    static int which;
+    static int isKeyWord=0;
+    if (state==0) 
+      {
+	Symbol *S=rl_isKeyword((char *)rl_line_buffer);
+	if (S != NULL) {options = S->Options; isKeyWord=1;};
+	which=0;
+      }
+    int n=options.size(),len=strlen(text);
+    while(which < n)
+      {
+	which++;
+	if (strncmp((char *)(options[which-1].c_str()), text, len)==0)
+	  {
+	    //	    cout << "@#$@#$ " << which-1 << " " << state << endl;
+	    return dupstr((char *)(options[which-1].c_str()));
+	  }
+      }
+    return NULL;
+  }
+  //------------------------------------------------------------------------
+  // CL completor.  Completes keywords first. Followed by options completion 
+  // (if options are available).  And then switches to filename completion.
+  //
+  // The pseudo code for the completion logic is as follows:
+  //
+  // if in the initialization state
+  //   check if the rl_line_buffer matches a CL keyword.
+  //   if CL Keyword found and the last char. in the rl_line_buffer == ' ' 
+  //      replace it with '='
+  //   if (CL Keyword found)
+  //     if the associated Symbol has the list of options available
+  //         attempt options completion
+  //     else
+  //         attempt filename completion
+  //   else
+  //     attempt keyword completion
+  // else
+  //   attempt keyword completion
+  //
+  char **cl_completor(const char *text, int start, int end)
   {
     char **matches;
     matches = (char **)NULL;
-    
+    char *rlLine=(char *)rl_line_buffer;
     if (start > 0) 
-      matches=rl_completion_matches(text,rl_filename_completion_function);
+      {
+	Symbol *S=rl_isKeyword(rlLine);
+	if ((S != NULL ) && (rl_line_buffer[rl_point-1] == ' ')) 
+	  rl_line_buffer[rl_point-1]='=';
+	if (S != NULL)
+	  if (S->Options.size() > 0)
+	    matches = rl_completion_matches(text,rl_options_generator);
+	  else
+	    matches=rl_completion_matches(text,rl_filename_completion_function);
+	else
+	  matches = rl_completion_matches (text, rl_keyword_generator);
+      }
     else
       matches = rl_completion_matches (text, rl_keyword_generator);
-    
+
     return (matches);
   }
   //------------------------------------------------------------------------
-  // Initialize the readline lib.  Supplies cl_command_completor as the 
+  // Initialize the readline lib.  Supplies cl_completor as the 
   // completion function.
+  //
+  // The rl_readline_name bit has been copied from the example in the
+  // GNU Readline documentation without much understanding of it's use or 
+  // implications (SB ;-)).
   //
   void initialize_readline()
   {
     /* Allow conditional parsing of the ~/.inputrc file. */
-    //    rl_readline_name = "FileMan";
+    rl_readline_name = cl_ProgName;
     
     /* Tell the completer that we want a crack first. */
-    rl_attempted_completion_function = cl_command_completor;
+    rl_attempted_completion_function = cl_completor;
   }
   //------------------------------------------------------------------------
   

@@ -48,7 +48,7 @@
 
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 56 "shell.y"
+#line 74 "shell.y"
 typedef union YYSTYPE {
   double    Result;
   char      *String;

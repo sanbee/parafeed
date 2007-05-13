@@ -83,6 +83,24 @@
 /* Copy the first part of user declarations.  */
 #line 2 "shell.y"
 
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: shell.y,v 2.1 1999/04/19 03:41:07 sanjay Exp $ */
 #include <stdio.h>
 #include <clshelldefs.h>
@@ -151,7 +169,7 @@ char *sh_sys_cmd=NULL;
 #endif
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 56 "shell.y"
+#line 74 "shell.y"
 typedef union YYSTYPE {
   double    Result;
   char      *String;
@@ -159,7 +177,7 @@ typedef union YYSTYPE {
   CmdSymbol *cmd;
 } YYSTYPE;
 /* Line 191 of yacc.c.  */
-#line 163 "y.tab.c"
+#line 181 "y.tab.c"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -171,7 +189,7 @@ typedef union YYSTYPE {
 
 
 /* Line 214 of yacc.c.  */
-#line 175 "y.tab.c"
+#line 193 "y.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
@@ -353,9 +371,9 @@ static const yysigned_char yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const unsigned char yyrline[] =
 {
-       0,    73,    73,    75,    76,    79,    81,    86,    93,   106,
-     114,   116,   124,   126,   128,   136,   143,   145,   147,   152,
-     158,   164,   170,   172,   174
+       0,    91,    91,    93,    94,    97,    99,   104,   111,   124,
+     132,   134,   142,   144,   146,   154,   161,   163,   165,   170,
+     176,   182,   188,   190,   192
 };
 #endif
 
@@ -1069,27 +1087,27 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 73 "shell.y"
+#line 91 "shell.y"
     { PROMPT(sh_Prompt);return 1;}
     break;
 
   case 3:
-#line 75 "shell.y"
+#line 93 "shell.y"
     { PROMPT(sh_Prompt);return (int)yyvsp[-1].Result;}
     break;
 
   case 4:
-#line 76 "shell.y"
+#line 94 "shell.y"
     { exit(0);}
     break;
 
   case 5:
-#line 79 "shell.y"
+#line 97 "shell.y"
     {SetVar(yyvsp[-1].symb->Name,NULL,sh_SymbTab,0);yyval.symb=yyvsp[-1].symb;}
     break;
 
   case 6:
-#line 81 "shell.y"
+#line 99 "shell.y"
     { 
                                     if (yyvsp[0].String) SetVar(yyvsp[-2].symb->Name,yyvsp[0].String,sh_SymbTab,0);
 	                            yyval.symb=yyvsp[-2].symb;
@@ -1097,7 +1115,7 @@ yyreduce:
     break;
 
   case 7:
-#line 87 "shell.y"
+#line 105 "shell.y"
     { 
 	                            if (RangeOK(yyvsp[-5].symb,(int)yyvsp[-3].Result))
 				      SetVal(yyvsp[0].String,yyvsp[-5].symb,(int)yyvsp[-3].Result);
@@ -1106,7 +1124,7 @@ yyreduce:
     break;
 
   case 8:
-#line 94 "shell.y"
+#line 112 "shell.y"
     {
 				    if (RangeOK(yyvsp[-6].symb,(int)yyvsp[-4].Result))
 				      {
@@ -1121,7 +1139,7 @@ yyreduce:
     break;
 
   case 9:
-#line 106 "shell.y"
+#line 124 "shell.y"
     { 
 	                             unsigned int i;
 				     for(i=0;i<yyvsp[0].symb->NVals;i++)
@@ -1131,12 +1149,12 @@ yyreduce:
     break;
 
   case 10:
-#line 114 "shell.y"
+#line 132 "shell.y"
     {yyval.String=yyvsp[0].String;}
     break;
 
   case 11:
-#line 116 "shell.y"
+#line 134 "shell.y"
     {
                                    if ((unsigned int)yyvsp[-1].Result>=yyvsp[-3].symb->NVals)
 	                           {fprintf(stderr,"###Error: No. of vals=%d\n"
@@ -1146,17 +1164,17 @@ yyreduce:
     break;
 
   case 12:
-#line 124 "shell.y"
+#line 142 "shell.y"
     {CopyStr(&sh_sys_cmd,yyvsp[0].String);free(yyvsp[0].String);}
     break;
 
   case 13:
-#line 126 "shell.y"
+#line 144 "shell.y"
     {CopyStr(&sh_sys_cmd,yyvsp[0].symb->Name);}
     break;
 
   case 14:
-#line 128 "shell.y"
+#line 146 "shell.y"
     {
                                      unsigned int i;
 	                             CopyStr(&sh_sys_cmd,yyvsp[-2].String);free(yyvsp[-2].String);
@@ -1167,7 +1185,7 @@ yyreduce:
     break;
 
   case 15:
-#line 136 "shell.y"
+#line 154 "shell.y"
     { 
 	                              CopyStr(&sh_sys_cmd,yyvsp[-1].String);free(yyvsp[-1].String);
                                       CopyStr(&sh_sys_cmd," ");
@@ -1176,17 +1194,17 @@ yyreduce:
     break;
 
   case 16:
-#line 143 "shell.y"
+#line 161 "shell.y"
     {yyval.Result=1;}
     break;
 
   case 17:
-#line 145 "shell.y"
+#line 163 "shell.y"
     { if ((yyval.Result=yyvsp[0].cmd->func(NULL))==EOF) YYACCEPT;}
     break;
 
   case 18:
-#line 147 "shell.y"
+#line 165 "shell.y"
     { 
                                    if ((yyval.Result=yyvsp[-1].cmd->func(yyvsp[0].String))==EOF) 
 	                             YYACCEPT;
@@ -1194,7 +1212,7 @@ yyreduce:
     break;
 
   case 19:
-#line 152 "shell.y"
+#line 170 "shell.y"
     { 
                                    system(sh_sys_cmd); 
 	                           FreeStr(&sh_sys_cmd);
@@ -1203,7 +1221,7 @@ yyreduce:
     break;
 
   case 20:
-#line 158 "shell.y"
+#line 176 "shell.y"
     { 
                                    yyerror("undefined symbol");
 				   /*FreeVSymb($1);free($3);*/
@@ -1212,7 +1230,7 @@ yyreduce:
     break;
 
   case 21:
-#line 164 "shell.y"
+#line 182 "shell.y"
     { 
                                    yyerror("Illegal command syntax");
                                    yyval.Result=1;
@@ -1220,17 +1238,17 @@ yyreduce:
     break;
 
   case 22:
-#line 170 "shell.y"
+#line 188 "shell.y"
     {PrintVals(stderr,yyvsp[0].symb);yyval.Result=1;}
     break;
 
   case 23:
-#line 172 "shell.y"
+#line 190 "shell.y"
     {if (yyvsp[0].String) fprintf(stderr,"%s\n",yyvsp[0].String);yyval.Result=1; }
     break;
 
   case 24:
-#line 174 "shell.y"
+#line 192 "shell.y"
     {}
     break;
 
@@ -1238,7 +1256,7 @@ yyreduce:
     }
 
 /* Line 1000 of yacc.c.  */
-#line 1242 "y.tab.c"
+#line 1260 "y.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1463,6 +1481,6 @@ yyreturn:
 }
 
 
-#line 177 "shell.y"
+#line 195 "shell.y"
 
 

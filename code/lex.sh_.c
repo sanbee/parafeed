@@ -403,9 +403,27 @@ static char *yy_last_accepting_cpos;
 char *yytext;
 #line 1 "shell.l"
 #define INITIAL 0
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* -*- C -*- */
 /* $Id: shell.l,v 2.3 1999/06/18 09:57:28 sanjay Exp $ */
-#line 4 "shell.l"
+#line 22 "shell.l"
 #ifdef __cplusplus
   extern "C" {
 #endif
@@ -527,7 +545,7 @@ void LexReSet() { yyrestart( stdin );}
 #define ARG 3
 #define VARNAME 4
 
-#line 531 "lex.sh_.c"
+#line 549 "lex.sh_.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -678,9 +696,9 @@ YY_DECL
 	register char *yy_cp = NULL, *yy_bp = NULL;
 	register int yy_act;
 
-#line 128 "shell.l"
+#line 146 "shell.l"
 
-#line 684 "lex.sh_.c"
+#line 702 "lex.sh_.c"
 
 	if ( yy_init )
 		{
@@ -763,7 +781,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 129 "shell.l"
+#line 147 "shell.l"
 {/*Catch the dereferencing char.*/
                                        BEGIN(VARNAME);
                                        ECHO; 
@@ -772,7 +790,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 134 "shell.l"
+#line 152 "shell.l"
 {/*Catch the indexing chars. only for*/
                                       /*Arguments                         */
                                        ECHO;return yytext[0];
@@ -780,14 +798,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 138 "shell.l"
+#line 156 "shell.l"
 {
                                        ECHO;return yytext[0];
                                      }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 141 "shell.l"
+#line 159 "shell.l"
 {/*Catch numbers*/
                                       ECHO;
                                       sscanf(yytext,"%lf",&sh_lval.Result);
@@ -796,14 +814,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 146 "shell.l"
+#line 164 "shell.l"
 {/*Eat traling BLANKS and TABS */
                                        ECHOS("EAT");
                                      }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 149 "shell.l"
+#line 167 "shell.l"
 { /* ESCAPE the internal symbols */
                                        BEGIN(ARG);
                                        ECHOS("INIT");
@@ -820,7 +838,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 162 "shell.l"
+#line 180 "shell.l"
 {/*Catch internal commands and symbols.
                                         If non is detected, return UNDEF */
                                        BEGIN(ARG);
@@ -849,7 +867,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 187 "shell.l"
+#line 205 "shell.l"
 {/*Catch assignment syntax*/
                                       /*Eat initial whitespaces*/
                                       char c;
@@ -863,7 +881,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 197 "shell.l"
+#line 215 "shell.l"
 {/*Catch syntax for unsetting a var*/
                                       ECHOS("UNPUT");
                                       BEGIN(CMDARG); unput(yytext[0]);
@@ -871,7 +889,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 201 "shell.l"
+#line 219 "shell.l"
 {
                                       int i=strlen(yytext)-1; 
                                       ECHOS("DREF");
@@ -882,7 +900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 208 "shell.l"
+#line 226 "shell.l"
 {/*Catch STRINGS.  Anthing following*/
                                       /*command is a STRING              */
                                        int i=0;
@@ -901,7 +919,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 223 "shell.l"
+#line 241 "shell.l"
 {/*Catch a newline and set the state */
                                       /*to initial                        */
                                        ECHO;BEGIN(INITIAL);return '\n';
@@ -912,15 +930,15 @@ case YY_STATE_EOF(VARARG):
 case YY_STATE_EOF(CMDARG):
 case YY_STATE_EOF(ARG):
 case YY_STATE_EOF(VARNAME):
-#line 228 "shell.l"
+#line 246 "shell.l"
 {return FINIS;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 229 "shell.l"
+#line 247 "shell.l"
 ECHO;
 	YY_BREAK
-#line 924 "lex.sh_.c"
+#line 942 "lex.sh_.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1796,7 +1814,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 229 "shell.l"
+#line 247 "shell.l"
 
 
 

@@ -16,39 +16,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: AllocSymb.c,v 2.0 1998/11/11 07:12:00 sanjay Exp $ */
+/* $Id: clgetSVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
+#include <shell.h>
+#include <string>
+#include <support.h>
 #include <clshelldefs.h>
-#include <stdio.h>
-
+#include <clGlobals.h>
 #ifdef __cplusplus
-extern "C" {
-#endif
-Symbol *AllocVSymb(int n)
-{
-  Symbol *S;
-  S = (Symbol *)getmem(sizeof(Symbol)*n,"AllocVSymb");
-  S->Name = NULL;
-  S->Type = NULL;
-  S->Val = NULL;
-  S->Exposed=1;
-  S->Used = 0;
-  S->Class = CL_APPLNCLASS;
-  S->NVals=0;
-  S->DefaultVal.resize(0);
-  S->Options.resize(0);
-  return S;
-}
+/*------------------------------------------------------------------------
+   Return the Nth value of Name as a string
+------------------------------------------------------------------------*/
+  int clSetOptions(const string& Name, const VString& options)
+  {
+    Symbol *S;
+  
+    if (cl_RegistrationMode)
+      {
+	S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
 
-CmdSymbol *AllocCSymb(int n)
-{
-  CmdSymbol *S;
-  S = (CmdSymbol *)getmem(sizeof(CmdSymbol)*n,"AllocCSymb");
-  S->Name = NULL;
-  S->Doc  = NULL;
-  S->func = NULL;
-  return S;
-}
-#ifdef __cplusplus
-}
+	if (S!=NULL) S->Options = options;
+      }
+    return 1;
+  }
 #endif

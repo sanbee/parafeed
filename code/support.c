@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: support.c,v 2.3 1999/01/25 04:03:33 sanjay Exp sanjay $ */
 #include <stdio.h>
 #include <string.h>
@@ -192,7 +210,10 @@ extern "C" {
       {
 	S->Val = (char **) getmem(sizeof(char *),"setAutoFDefaults");
 	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoFDefaults");
-	sprintf(S->Val[0],"%f%c",val,NULL);
+	// It appears that C++ ostringstream default formatting is better than that of "%f" 
+	// in sprintf (print 0.1 as "0.1" vs. "0.1000000").
+	//	sprintf(S->Val[0],"%f%c",val,NULL);
+	strcpy(S->Val[0],os.str().c_str());
       }
     S->NVals = 1;
   }
@@ -207,7 +228,7 @@ extern "C" {
       {
 	int comma;
 	char *valstr; valstr=(char *)val.c_str();
-	if ((comma = ntok(valstr,",",ESC))==-1) 
+	if ((comma = ntok(valstr,",",CL_ESC))==-1) 
 	  {
 	    ostringstream os;
 	    os << "Error in counting commas in the string " << val << endl;
@@ -219,10 +240,10 @@ extern "C" {
 	    S->DefaultVal.resize(comma);
 	    valstr=(char *)val.c_str();
 	    char *t;
-	    if ((t=clstrtok(valstr,",", ESC)) != NULL)
+	    if ((t=clstrtok(valstr,",", CL_ESC)) != NULL)
 	      {
 		S->DefaultVal[0]=t;
-		for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,",", ESC);
+		for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,",", CL_ESC);
 	      }
 	  }
       }
@@ -270,6 +291,41 @@ extern "C" {
 	    os << val[i];
 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNIDefaults");
 	    sprintf(S->Val[i],"%d%c",val[i],NULL);
+	  }
+      }
+    
+    S->NVals = n;
+  }
+  /*----------------------------------------------------------------------
+    Set the defaults value of the given symbol to the value of the 
+    in which the user value is returned to the application layer via
+    clgetNFValp() call.
+    ----------------------------------------------------------------------*/
+  void setAutoNFDefaults(Symbol *S, const vector<float>& val)
+  {
+    int n=val.size();
+    if (cl_RegistrationMode == 1)
+      {
+	S->DefaultVal.resize(n);
+	for(int i=0;i<n;i++)
+	  {
+	    ostringstream os;
+	    os << val[i];
+	    S->DefaultVal[i] = os.str().c_str();
+	  }
+      }
+    
+    if (S->Val == NULL)
+      {
+	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNFDefaults");
+	
+	for(int i=0;i<n;i++)
+	  {
+	    ostringstream os;
+	    os << val[i];
+	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNFDefaults");
+	    //	    sprintf(S->Val[i],"%f%c",val[i],NULL);
+	    strcpy(S->Val[i],os.str().c_str());
 	  }
       }
     

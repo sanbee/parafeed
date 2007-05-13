@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: CopySymb.c,v 2.1 1999/06/16 16:50:36 sanjay Exp $ */
 #include <stdio.h>
 #include <string.h>
@@ -40,9 +58,16 @@ int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
 	  strcpy(t->Val[i],S->Val[i]);
 	}
     }
+  //
+  // The following are pure C++ objects. Features due to these are not available
+  // vis C interface
+  //
+#ifdef __cplusplus
   t->smap = S->smap;
   t->Exposed = S->Exposed;
   t->DefaultVal=S->DefaultVal;
+  t->Options = S->Options;
+#endif
   return 1;
 }
 /*----------------------------------------------------------------------*/

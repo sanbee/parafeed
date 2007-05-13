@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: ParseCmdLine.c,v 2.2 1999/07/17 17:03:44 sanjay Exp $ */
 #include <stdio.h>
 #include <string.h>
@@ -170,11 +188,11 @@ int ParseCmdLine(int argc, char *argv[])
 	  S->NVals = 0;    /* Copy multiple values in the Val list */
 	  n=j=0;
 
-	  n = ntok(buf,",",ESC);
+	  n = ntok(buf,",",CL_ESC);
 	  if (n) S->Val = (char **)
 		   getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
 	  n=0;
-	  tok=(char *)clstrtok(buf,",",ESC);
+	  tok=(char *)clstrtok(buf,",",CL_ESC);
 	  while (tok)
 	    {
 	      m = strlen(tok);
@@ -192,7 +210,7 @@ int ParseCmdLine(int argc, char *argv[])
 		      n++;
 		    }
 		}
-	      tok=(char *)clstrtok(NULL,",",ESC);
+	      tok=(char *)clstrtok(NULL,",",CL_ESC);
 	    }
 	  AddVNode(S,&cl_SymbTab,&cl_TabTail);
 	}
