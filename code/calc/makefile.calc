@@ -28,7 +28,7 @@ lex.yy.c: lex.l
 y.tab.h: calc.y
 	$(YACC) -d calc.y
 
-calcinit.o:calcinit.c calc.tab.h y.tab.h
+calcinit.o:calcinit.c symboltable.h y.tab.h
 	$(CC) $(CFLAGS) -c calcinit.c
 
 clean: 

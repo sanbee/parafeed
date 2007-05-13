@@ -81,7 +81,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 2 "calc.y"
+#line 20 "calc.y"
 
 /* $Id: calc.y,v 1.8 2000/02/22 15:08:15 sanjay Exp $ */
 #include <calc.h>
@@ -90,6 +90,7 @@
 #include <stdlib.h>
 double Result=0.0;
 
+ int calc_error(char *); /* dummy decleration */
 Calc_Symbol s2;
 double (*UserFunc)(char *) = 0;
 
@@ -108,13 +109,13 @@ double (*UserFunc)(char *) = 0;
 #endif
 
 #if ! defined (YYSTYPE) && ! defined (YYSTYPE_IS_DECLARED)
-#line 13 "calc.y"
+#line 32 "calc.y"
 typedef union YYSTYPE {
   double val;
   Calc_Symbol *symb;
 } YYSTYPE;
 /* Line 191 of yacc.c.  */
-#line 118 "y.tab.c"
+#line 119 "y.tab.c"
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -126,7 +127,7 @@ typedef union YYSTYPE {
 
 
 /* Line 214 of yacc.c.  */
-#line 130 "y.tab.c"
+#line 131 "y.tab.c"
 
 #if ! defined (yyoverflow) || YYERROR_VERBOSE
 
@@ -306,8 +307,8 @@ static const yysigned_char yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const unsigned char yyrline[] =
 {
-       0,    28,    28,    29,    30,    32,    33,    34,    35,    36,
-      37,    38,    39,    40,    41,    42,    43,    44,    45
+       0,    47,    47,    48,    49,    51,    52,    53,    54,    55,
+      56,    57,    58,    59,    60,    61,    62,    63,    64
 };
 #endif
 
@@ -1033,77 +1034,77 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 30 "calc.y"
+#line 49 "calc.y"
     { Result= yyvsp[-1].val; return 0;        }
     break;
 
   case 5:
-#line 32 "calc.y"
+#line 51 "calc.y"
     { yyval.val = yyvsp[0].val;                     }
     break;
 
   case 6:
-#line 33 "calc.y"
+#line 52 "calc.y"
     { yyval.val = (yyvsp[0].symb->value);            }
     break;
 
   case 7:
-#line 34 "calc.y"
+#line 53 "calc.y"
     { yyval.val = (*(yyvsp[-3].symb->func1))(yyvsp[-1].val);      }
     break;
 
   case 8:
-#line 35 "calc.y"
+#line 54 "calc.y"
     { yyval.val = (*(yyvsp[-5].symb->func2))(yyvsp[-3].val,yyvsp[-1].val);      }
     break;
 
   case 9:
-#line 36 "calc.y"
+#line 55 "calc.y"
     { yyval.val = yyvsp[-2].val + yyvsp[0].val;                }
     break;
 
   case 10:
-#line 37 "calc.y"
+#line 56 "calc.y"
     { yyval.val = yyvsp[-2].val - yyvsp[0].val;                }
     break;
 
   case 11:
-#line 38 "calc.y"
+#line 57 "calc.y"
     { yyval.val = yyvsp[-2].val * yyvsp[0].val;                }
     break;
 
   case 12:
-#line 39 "calc.y"
+#line 58 "calc.y"
     { yyval.val = yyvsp[-2].val / yyvsp[0].val;                }
     break;
 
   case 13:
-#line 40 "calc.y"
+#line 59 "calc.y"
     { yyval.val = (int)yyvsp[-2].val % (int)yyvsp[0].val;      }
     break;
 
   case 14:
-#line 41 "calc.y"
+#line 60 "calc.y"
     { yyval.val = -yyvsp[0].val;                    }
     break;
 
   case 15:
-#line 42 "calc.y"
+#line 61 "calc.y"
     { yyval.val = pow(yyvsp[-2].val,yyvsp[0].val);             }
     break;
 
   case 16:
-#line 43 "calc.y"
+#line 62 "calc.y"
     { yyval.val = pow(yyvsp[-3].val,yyvsp[0].val);             }
     break;
 
   case 17:
-#line 44 "calc.y"
+#line 63 "calc.y"
     { yyval.val = yyvsp[-1].val;                     }
     break;
 
   case 18:
-#line 45 "calc.y"
+#line 64 "calc.y"
     { if (yyvsp[0].symb->ufunc != NULL)
                                     {
 				     yyval.val = (*(yyvsp[0].symb->ufunc))(yyvsp[0].symb->Name);
@@ -1124,7 +1125,7 @@ yyreduce:
     }
 
 /* Line 1000 of yacc.c.  */
-#line 1128 "y.tab.c"
+#line 1129 "y.tab.c"
 
   yyvsp -= yylen;
   yyssp -= yylen;
@@ -1349,7 +1350,7 @@ yyreturn:
 }
 
 
-#line 60 "calc.y"
+#line 79 "calc.y"
 
 /* Set the user defined function to resolve "external" variables */
 /* Currently handles only true variables - not functions         */
@@ -1362,5 +1363,4 @@ void calcufunc(double (*func)(char *))
 #endif
 #include <lex.yy.c>
 #include <yyerror.c>
-
 
