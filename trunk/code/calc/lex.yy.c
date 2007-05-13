@@ -9,6 +9,7 @@
 #define YY_FLEX_MINOR_VERSION 5
 
 #include <stdio.h>
+#include <unistd.h>
 
 
 /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
@@ -22,7 +23,6 @@
 #ifdef __cplusplus
 
 #include <stdlib.h>
-#include <unistd.h>
 
 /* Use prototypes in function declarations. */
 #define YY_USE_PROTOS
@@ -438,6 +438,24 @@ char *yytext;
 #line 1 "lex.l"
 #define INITIAL 0
 #line 2 "lex.l"
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: lex.l,v 1.15 2000/07/01 18:15:40 sanjay Exp $ */
 #include <stdio.h>
 #include <string.h>
@@ -513,7 +531,7 @@ void split3(char *deg, int n, char *tok, float *d)
     }
 }
 
-#line 517 "lex.yy.c"
+#line 535 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -664,9 +682,9 @@ YY_DECL
 	register char *yy_cp = NULL, *yy_bp = NULL;
 	register int yy_act;
 
-#line 99 "lex.l"
+#line 117 "lex.l"
 
-#line 670 "lex.yy.c"
+#line 688 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -751,12 +769,12 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 100 "lex.l"
+#line 118 "lex.l"
 {;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 101 "lex.l"
+#line 119 "lex.l"
 {
                            int n=strlen(Calc_line);
                            while(Calc_index < n)
@@ -766,7 +784,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 107 "lex.l"
+#line 125 "lex.l"
 {
                             int i;
                             ECHO;
@@ -777,7 +795,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 114 "lex.l"
+#line 132 "lex.l"
 {/* Numer in the hour angle format */
                            float a[3];
                            split3(yytext,yyleng,"hms",a);
@@ -789,7 +807,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 122 "lex.l"
+#line 140 "lex.l"
 {/* Number in the angular format */
                            float a[3];
                            split3(yytext,yyleng,"d\'\"",a);
@@ -801,7 +819,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 130 "lex.l"
+#line 148 "lex.l"
 {
                             ECHO;
                             sscanf(yytext,"%lf",&yylval.val);
@@ -811,7 +829,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 136 "lex.l"
+#line 154 "lex.l"
 {
                            float m,e; char c;
 			   ECHO;
@@ -823,7 +841,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 144 "lex.l"
+#line 162 "lex.l"
 { Calc_Symbol *s;   /* A patch for atan2...*/
 			    ECHO;
                             INCR_INDEX;
@@ -833,7 +851,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 150 "lex.l"
+#line 168 "lex.l"
 {
                             Calc_Symbol *s;
 			    ECHO;
@@ -855,20 +873,20 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 168 "lex.l"
+#line 186 "lex.l"
 {ECHON;return '\n';}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 169 "lex.l"
+#line 187 "lex.l"
 {ECHO;return yytext[0];}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 173 "lex.l"
+#line 191 "lex.l"
 ECHO;
 	YY_BREAK
-#line 872 "lex.yy.c"
+#line 890 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1250,6 +1268,7 @@ register char *yy_bp;
 #endif	/* ifndef YY_NO_UNPUT */
 
 
+#ifndef YY_NO_INPUT
 #ifdef __cplusplus
 static int yyinput()
 #else
@@ -1321,7 +1340,7 @@ static int input()
 
 	return c;
 	}
-
+#endif /* YY_NO_INPUT */
 
 #ifdef YY_USE_PROTOS
 void yyrestart( FILE *input_file )
@@ -1432,11 +1451,6 @@ YY_BUFFER_STATE b;
 	}
 
 
-#ifndef YY_ALWAYS_INTERACTIVE
-#ifndef YY_NEVER_INTERACTIVE
-extern int isatty YY_PROTO(( int ));
-#endif
-#endif
 
 #ifdef YY_USE_PROTOS
 void yy_init_buffer( YY_BUFFER_STATE b, FILE *file )
@@ -1754,4 +1768,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 173 "lex.l"
+#line 191 "lex.l"
