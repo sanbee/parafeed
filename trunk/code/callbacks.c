@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: callbacks.c,v 2.5 1999/07/12 09:49:34 sanjay Exp sanjay $ */
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,7 +84,7 @@ END{									\
   /*----------------------------------------------------------------------*/
   int dogo(char *arg) {return EOF;}
   /*----------------------------------------------------------------------*/
-  void namePrintFormat(char *format, char *append)
+  int namePrintFormat(char *format, char *append)
   {
     Symbol *t;
     int maxNameLength=10;
@@ -74,8 +92,9 @@ END{									\
       if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
     
     sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
+    return maxNameLength;
   }
-  
+  /*----------------------------------------------------------------------*/
   void printMap(SMap& smap)
   {
     if ((smap.size() > 0))
@@ -188,8 +207,8 @@ END{									\
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
     
     Symbol *S;
-    fprintf(stderr,"   Key                Type          Factory defaults\n");
-    fprintf(stderr,"---------          ----------       ----------------\n");
+    fprintf(stderr,"   Key                Type          Factory defaults        Options\n");
+    fprintf(stderr,"---------          ----------       ----------------        -------\n");
     for (S=cl_SymbTab;S;S=S->Next)
       if (((S->Class==CL_APPLNCLASS) ||
 	  ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
@@ -199,16 +218,26 @@ END{									\
 	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
 	  exposeKeys(S);
 	  fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
-	  int n=S->DefaultVal.size();
-	  if (n>0)
+	  int n=S->DefaultVal.size(),nchar=0;
+	  if ((n=S->DefaultVal.size())>0)
 	    {
 	      fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
+              nchar += strlen(S->DefaultVal[0].c_str());
 	      for(int i=1;i<n;i++)
-		fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
-	      fprintf(stderr, "\n");
+                 {
+	           fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
+                   nchar += strlen(S->DefaultVal[i].c_str());
+                 }
 	    }
-	  else 
-	    fprintf(stderr, "\n");
+          for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
+	  if ((n=S->Options.size())>0)
+	    {
+	      fprintf(stderr, " [%-s",S->Options[0].c_str());
+	      for(int i=1;i<n;i++)
+		fprintf(stderr, " %-s",S->Options[i].c_str());
+              fprintf(stderr,"]");
+	    }
+	  fprintf(stderr, "\n");
 	}
     return 1;
   }

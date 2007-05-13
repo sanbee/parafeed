@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: SetVar.c,v 2.5 2002/04/11 20:31:09 sbhatnag Exp $ */
 #include <string.h>
 #include <stdio.h>
@@ -86,7 +104,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
      tokens from the new buffer and put it in Tab.
   */
 
-  if ((coma = ntok(val,",",ESC))==-1) return 1;
+  if ((coma = ntok(val,",",CL_ESC))==-1) return 1;
 
   i=0;j=0;
   while(val[j] == ' ')j++;
@@ -95,7 +113,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   k = (char *)getmem(strlen(&val[j])+1,"cl:loadParams");
   strncpy(k,&val[j],(i=strlen(&val[j])));k[i]='\0';
 
-  v = (char *)clstrtok(k,",",ESC);
+  v = (char *)clstrtok(k,",",CL_ESC);
 
   for (i=0;i<pos->NVals;i++) free(pos->Val[i]);
   pos->Val=(char **)calloc(1,sizeof(char **)*(coma));
@@ -104,7 +122,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   for (i=0;i<(unsigned int)coma;i++)
     {
       SetVal(v,pos,i);
-      if ((v = (char *)clstrtok(NULL,",",ESC))==NULL) break;
+      if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
     }
   free(k);
   return 1;
