@@ -191,7 +191,7 @@ END{									\
   {
 #ifdef GNUREADLINE
     /* Put the history in the history file*/
-    save_hist("GHIST",HIST_DEFAULT);
+    save_hist("GHIST",CL_HIST_DEFAULT);
 #endif
     
     if (!arg) exit(0);
@@ -262,7 +262,7 @@ END{									\
     ----------------------------------------------------------------------*/
   int doexplain(char *arg)
   {
-    char *path=(char *)getenv(DOCPATH);
+    char *path=(char *)getenv(CL_DOCPATH);
     char *sde_script="|sed -e \"s/%[ANP]//\"|more";
     char *script = KEYHELP_AWK,*key=0,*task=0;
     char *str=0;
@@ -409,7 +409,7 @@ END{									\
   int doedit(char *arg)
   {
     char *tmpname=tempnam("/tmp","cl_");
-    char *editor=(char *)getenv(EDITORENV);
+    char *editor=(char *)getenv(CL_EDITORENV);
     char str[MAXBUF];
     
     if (dosave(tmpname)>1) return 1;
@@ -429,7 +429,7 @@ END{									\
   {
     char *s=dir;
     
-    if (dir == NULL || strlen(dir)==0) s=(char *)getenv(HOMEENV);
+    if (dir == NULL || strlen(dir)==0) s=(char *)getenv(CL_HOMEENV);
     
     if (chdir(s)==-1)   perror(s);
     else                system("/bin/pwd");
@@ -439,7 +439,7 @@ END{									\
   int dogob(char *arg)
   {
     int PID,OUT=0,ERR=0;
-    char *gout=(char *)getenv(STDOUTENV), *gerr=(char *)getenv(STDERRENV);
+    char *gout=(char *)getenv(CL_STDOUTENV), *gerr=(char *)getenv(CL_STDERRENV);
     
     if (gout == NULL)
       {
@@ -496,17 +496,45 @@ END{									\
 	
 	if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
 	  {
-	    //	  if (val.size() != 0)
+	    //
+	    // Print name and default value
+	    //
 	    fprintf(stdout,"%%A %s (default=%s)",
 		    S->Name,val.c_str());
-	    //	  else
-	    //	    fprintf(stdout,"%%A %s (default=)", S->Name);
+	    //
+	    // Print options, if available
+	    //
+	    if (S->Options.size() > 0)
+	      {
+		fprintf(stdout," Options:[");
+		for(unsigned int i=0;i<S->Options.size();i++)
+		  fprintf(stdout,"%s ",S->Options[i].c_str());
+		fprintf(stdout,"]");
+	      }
+	    //
+	    // Print watched-keywords map, if available
+	    //
+	    if (S->smap.begin() != S->smap.end())
+	      fprintf(stdout,"\n\n\tWatched keywords (<VALUE>: <Keywords exposed>):\n");
+	    for(SMap::iterator i=S->smap.begin(); i != S->smap.end(); i++)
+	      {
+		fprintf(stdout,"          %s: ",(*i).first.c_str());
+		vector<string> sv=(*i).second;
+		for(unsigned int j=0;j<sv.size();j++)
+		  {
+		    fprintf(stdout,"%s ",(char *)sv[j].c_str());
+		  }
+		fprintf(stdout,"\n");
+	      }
+	    //
+	    // ...rest is upto a human to fill-in.
+	    //
 	    fprintf(stdout,
 		    "\n\n\t<Put the explaination for the keyword here>\n\n\n");
 	  }
 	if (S->Class==CL_DBGCLASS)
 	  fprintf(stdout,
-		  "\t***This keyword is used for debugging purposes only***\n");
+		  "\t***This keyword is exposed with a command-line argument of \"help=dbg\"***\n");
       }
     exit(0);
     return 1;
@@ -544,10 +572,10 @@ END{									\
       }
     
     /*
-      If DEFAULTSENV env. var. is set, look for a .def file
+      If CL_DEFAULTSENV env. var. is set, look for a .def file
       there and if found, do a complimentary load from there too.
     */
-    t=(char *)getenv(DEFAULTSENV);
+    t=(char *)getenv(CL_DEFAULTSENV);
     if (t && strlen(t))     {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
     
 #ifdef GNUREADLINE
@@ -567,7 +595,7 @@ END{									\
     /*
       Final effect will be that first any commandline setting will be
       set.  Next, the local .def file will be hououred for all those
-      keys which still remain unset.  Next, .def file from DEFAULTSENV
+      keys which still remain unset.  Next, .def file from CL_DEFAULTSENV
       area will he honoured for those keys which continue to remain
       unset.  */
     

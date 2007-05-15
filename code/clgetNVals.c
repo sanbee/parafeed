@@ -35,7 +35,7 @@ int clgetNVals(char *Name)
       return S->NVals;
     }
   else
-    return FAIL;
+    return CL_FAIL;
 }
 #ifdef __cplusplus
 	   }

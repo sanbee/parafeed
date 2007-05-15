@@ -40,7 +40,7 @@ HANDLE_EXCEPTIONS(
 
   if (S != NULL) S->Class=CL_DBGCLASS;
 
-  if ((N=clparseVal(S,n,&d))!=FAIL) *val=(float)d;
+  if ((N=clparseVal(S,n,&d))!=CL_FAIL) *val=(float)d;
   return N;
 )
 }

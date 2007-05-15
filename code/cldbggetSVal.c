@@ -50,10 +50,10 @@ int dbgclgetSVal(char *Name, char *val, int *n)
 	    while (*c) *c = *(++c);
 	  return strlen(buf);
 	}
-      else return FAIL;
+      else return CL_FAIL;
     }
   else
-    return FAIL;
+    return CL_FAIL;
 }
 #ifdef __cplusplus
 	   }

@@ -21,18 +21,19 @@
 #define CL_H
 
 /*
-  Names of the environment variables used for user customizaion.
-  */
-#define HIST_DEFAULT   ".g_hist"
-#define DOCPATH        "GDOC"
-#define EDITORENV      "EDITOR"
-#define HOMEENV        "HOME"
-#define STDOUTENV      "GOUT"
-#define STDERRENV      "GERR"
-#define DEFAULTSENV    "GDEFAULTS"
-#define CONFIGENV      "GCONF"
-#define HIST_LIMIT     100
-#define FAIL           -1
+  Names of the environment variables and other default values used for
+  user customizaion.
+*/
+#define CL_HIST_DEFAULT   ".g_hist"
+#define CL_DOCPATH        "GDOC"
+#define CL_EDITORENV      "EDITOR"
+#define CL_HOMEENV        "HOME"
+#define CL_STDOUTENV      "GOUT"
+#define CL_STDERRENV      "GERR"
+#define CL_DEFAULTSENV    "GDEFAULTS"
+#define CL_CONFIGENV      "GCONF"
+#define CL_HIST_LIMIT     100
+#define CL_FAIL           -1
 
 #include <clshelldefs.h>
 /* #include <clinteract.h> */

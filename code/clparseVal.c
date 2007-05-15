@@ -40,11 +40,11 @@ HANDLE_EXCEPTIONS(
 	{
 	  char msg[128];
 	  sprintf(msg,"In conversion of %s[%d]=%s",S->Name,N-1,S->Val[N-1]);
-	  clThrowUp(msg,"###Error",FAIL);
+	  clThrowUp(msg,"###Error",CL_FAIL);
 	}
       return 1;
     }
-  else return FAIL;
+  else return CL_FAIL;
 )
 }
 #ifdef __cplusplus

@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 
-#define FAIL -1      
+#define CL_FAIL -1      
 #define CL_ESC  '\\'    /* The character used for 'escaping' chars. */
                      /* in a string                              */
 /* Bits to determine what needs to be copied in Copy[V,C]Symb routines. */
