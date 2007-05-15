@@ -106,11 +106,9 @@ extern "C" {
     while(which < n)
       {
 	which++;
-	if (strncmp((char *)(options[which-1].c_str()), text, len)==0)
-	  {
-	    //	    cout << "@#$@#$ " << which-1 << " " << state << endl;
-	    return dupstr((char *)(options[which-1].c_str()));
-	  }
+	int m;
+	if ((m=strncmp((char *)(options[which-1].c_str()), text, len))==0)
+	  return dupstr((char *)(options[which-1].c_str()));
       }
     return NULL;
   }
@@ -122,8 +120,10 @@ extern "C" {
   //
   // if in the initialization state
   //   check if the rl_line_buffer matches a CL keyword.
-  //   if CL Keyword found and the last char. in the rl_line_buffer == ' ' 
-  //      replace it with '='
+  //   if ((CL Keyword found) and (the last char. in the rl_line_buffer == ' ')
+  //       and (there is no '=' sign in the rl_line_buffer))
+  //      replace the last char in rl_line_buffer with '=';
+  //
   //   if (CL Keyword found)
   //     if the associated Symbol has the list of options available
   //         attempt options completion
@@ -139,11 +139,14 @@ extern "C" {
     char **matches;
     matches = (char **)NULL;
     char *rlLine=(char *)rl_line_buffer;
+
     if (start > 0) 
       {
 	Symbol *S=rl_isKeyword(rlLine);
-	if ((S != NULL ) && (rl_line_buffer[rl_point-1] == ' ')) 
-	  rl_line_buffer[rl_point-1]='=';
+	if ((S != NULL ) && 
+	    (rl_line_buffer[rl_point-1] == ' ') && 
+	    (strchr(rl_line_buffer,'=') == NULL))
+	  rl_line_buffer[rl_point-1] = '=';
 	if (S != NULL)
 	  if (S->Options.size() > 0)
 	    matches = rl_completion_matches(text,rl_options_generator);
@@ -249,8 +252,6 @@ extern "C" {
     }
   */
 #endif
-  
-  
   
 #ifdef __cplusplus
 }

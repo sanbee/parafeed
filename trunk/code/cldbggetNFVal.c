@@ -38,7 +38,7 @@ HANDLE_EXCEPTIONS(
   i=1;
   if (S) S->Class = CL_DBGCLASS;
   while(i <= *m)
-    if ((n=clparseVal(S,&i,&d))==FAIL) return n;
+    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
     else if (n==0) break;
     else {val[i-1] = (float)d;i++;}
 

@@ -80,7 +80,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     if (pos->Class == CL_USERCLASS)
       {
 	clThrowUp("Tying to set a constant, hun?  Not allowd.",
-		  "###Error",FAIL);
+		  "###Error",CL_FAIL);
 	return -2;
 	/*
 	fprintf(stderr,"###Error: Trying to set a constant, hun?  Not allowed.\n");

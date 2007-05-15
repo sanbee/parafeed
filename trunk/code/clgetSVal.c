@@ -51,10 +51,10 @@ int clgetSVal(char *Name, char *val, int *n)
 	  return strlen(buf);
 	}
       else 
-	return FAIL;
+	return CL_FAIL;
     }
   else
-    return FAIL;
+    return CL_FAIL;
 }
 #ifdef __cplusplus
 	   }
@@ -88,9 +88,9 @@ int clgetSValp(const string &Name, string& val, int& n)
 	  return strlen(buf);
 	}
       else 
-	return FAIL;
+	return CL_FAIL;
     }
   else
-    return FAIL;
+    return CL_FAIL;
 }
 #endif

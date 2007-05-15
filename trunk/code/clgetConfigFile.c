@@ -32,7 +32,7 @@ int clgetConfigFile(char *FullName, char *Name)
   char *s=NULL;
 
   if (Name == NULL) return -1;
-  if ((s=(char *)getenv(CONFIGENV)) == NULL) s=(char *)getenv(DOCPATH);
+  if ((s=(char *)getenv(CL_CONFIGENV)) == NULL) s=(char *)getenv(CL_DOCPATH);
   if (s == NULL)  strcpy(FullName,"./");
   else strcpy(FullName,s);
 

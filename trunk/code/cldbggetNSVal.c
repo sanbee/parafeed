@@ -33,7 +33,7 @@ int dbgclgetNSVal(char *Name, char **Val, int *m)
 
   sprintf(tmp,"string[%d]",*m);
   S = SearchQSymb(Name, tmp);
-  if (S==NULL) return FAIL;
+  if (S==NULL) return CL_FAIL;
   else 
     {
       S->Class = CL_DBGCLASS;

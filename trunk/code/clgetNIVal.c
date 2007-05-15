@@ -43,7 +43,7 @@ HANDLE_EXCEPTIONS(
   S = SearchQSymb(Key, tmp);
   i=1;
   while(i <= *m)
-    if ((n=clparseVal(S,&i,&d))==FAIL) return n;
+    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
     else if (n==0) break;
     else {val[i-1] = (int)d;i++;}
 
@@ -69,7 +69,7 @@ HANDLE_EXCEPTIONS(
 		      S = SearchQSymb((char *)Key.c_str(), tmp);
 		      setAutoNIDefaults(S,val);
 		      int i=1;
-		      while((n=clparseVal(S,&i,&d))!=FAIL)
+		      while((n=clparseVal(S,&i,&d))!=CL_FAIL)
 			{
 			  if (n==0) return i-1;
 			  else 

@@ -329,8 +329,8 @@ int startShell()
 
 #ifdef GNUREADLINE
 /* Load the history from the history file*/
-	  limit_hist("MAXGHIST",HIST_LIMIT);
-	  load_hist("GHIST",HIST_DEFAULT);
+	  limit_hist("MAXGHIST",CL_HIST_LIMIT);
+	  load_hist("GHIST",CL_HIST_DEFAULT);
 #endif
 	}
 #if defined(FORTRAN)
@@ -410,7 +410,7 @@ int EndCL()
       exit(0);
     }
 
-  if ((i==FAIL) || !cl_NoPrompt)
+  if ((i==CL_FAIL) || !cl_NoPrompt)
     {
       i=startShell();
 
@@ -426,7 +426,7 @@ int EndCL()
 
 #ifdef GNUREADLINE
 /* Put the history in the history file */
-       save_hist("GHIST",HIST_DEFAULT);
+       save_hist("GHIST",CL_HIST_DEFAULT);
 #endif
   return 1;
 }
@@ -469,7 +469,7 @@ int clTgetOpt(char *Name, char *Type)
 	      &cl_tmpTab, &cl_tmpTabTail);
       return N+1;
     }
-  else return FAIL;
+  else return CL_FAIL;
 }
 #if defined(FORTRAN)
 /*---------------------------------------------------------------------------*/
