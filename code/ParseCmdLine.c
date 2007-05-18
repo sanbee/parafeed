@@ -25,6 +25,7 @@
 #include "shell.tab.h"
 #include <stdlib.h>
 #include <clError.h>
+#include <support.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -35,7 +36,6 @@
 extern "C" {
 #endif
 #include <rl_interface.h>
-
 
 #define POSITIVE(str,a)   {if ((a) < 0)                                \
                              {fprintf(stderr,"%s: Index is negative\n" \
@@ -322,8 +322,8 @@ int startShell()
   if ((cl_InteractiveShell || cl_FORTRAN==1) && cl_Pass==0)
     {
       if (!cl_SymbLoaded) 
-	{
 	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
+	{
 	  loadDefaults(); /* Load the defaults */
 	  doinp(NULL);    /* Display the keywords */
 
@@ -382,6 +382,7 @@ int EndCL()
   i = clgetSVal("help",val,&i);
   DeleteVar("help",&cl_SymbTab,&cl_TabTail);
 
+  //  if (!cl_NoPrompt) loadDefaults(0);
   if (!strcmp(val,"doc")) 
     {
       if (!cl_SymbLoaded) 

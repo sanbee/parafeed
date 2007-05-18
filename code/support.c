@@ -31,6 +31,20 @@
 extern "C" {
 #endif
   /*---------------------------------------------------------------------------*/
+  string clMakeDefaultsFilename(int complement)
+  {
+    string fname;
+    char out[FILENAME_MAX+2]="./";
+#ifdef GNUREADLINE
+    strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+#else
+    strcat(out,cl_ProgName);
+#endif
+    fname = out;
+    fname = fname + ".def";
+    if (complement) fname = fname + "!";
+    return fname;
+  }
   /*----------------------------------------------------------------------
     Puts a NULL character after the first alpha-numeric character 
     that it finds in buf, starting from the back.
