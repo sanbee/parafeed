@@ -163,12 +163,20 @@ END{									\
     char format[12];
     namePrintFormat(format," = ");
     
+    //
+    // First expose the keywords for this session
+    //
+    for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
+
+    //    
+    // Now print the viewable keywords.
+    //
     if (arg == NULL)
       for (t=cl_SymbTab;t;t=t->Next)
 	{
-	  exposeKeys(t);
-	  if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
-	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	  if ((t->Exposed) && 
+              ((t->Class==CL_APPLNCLASS) || 
+	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
 	      fprintf(stderr,format,t->Name);
 	      PrintVals(stderr,t);
@@ -547,7 +555,7 @@ END{									\
     return 1;
   }
   /*----------------------------------------------------------------------*/
-  int loadDefaults()
+  int loadDefaults(int complement)
   {
     char out[FILENAME_MAX+2]="./", *t;
     FILE *fd;
@@ -567,7 +575,7 @@ END{									\
     if ((fd = fopen(out,"r")) != NULL)  
       {
 	fclose(fd);  
-	strcat(out,"!");  /* Perform a complimentery load */
+	if (complement) strcat(out,"!");  /* Perform a complimentery load */
 	doload(out);
       }
     
@@ -588,7 +596,7 @@ END{									\
     if ((fd = fopen(out,"r")) != NULL)  
       {
 	fclose(fd);  
-	strcat(out,"!");  /* Perform a complimentery load */
+	if (complement) strcat(out,"!");  /* Perform a complimentery load */
 	doload(out);
       }
     

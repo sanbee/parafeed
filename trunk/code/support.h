@@ -27,6 +27,7 @@ void setAutoNIDefaults(Symbol *S, const vector<int>& val);
 void setAutoNFDefaults(Symbol *S, const vector<float>& val);
 void setAutoNSDefaults(Symbol *S, const string& val);
 int sizeofTab(const Symbol *s);
+  string clMakeDefaultsFilename(int complement=1);
 #ifdef __cplusplus
 	   }
 #endif

@@ -192,7 +192,7 @@ int       doload(char *);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(char *);
-int       loadDefaults();
+int       loadDefaults(int complement=1);
 int       clparseVal(Symbol *, int *, double *);
 int       PrintVals(FILE *,Symbol *);
 int       clIsInteractive();
