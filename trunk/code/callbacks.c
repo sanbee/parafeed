@@ -122,6 +122,7 @@ END{									\
 	// Irrespective of the current value of the symbol, hide all
 	// keys on which a watch was set by this symbol
 	//
+        t->Attributes=CL_HIDINGKEYWORD;
 	for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
 	  {
 	    vector<string> sv=(*i).second;
@@ -129,6 +130,7 @@ END{									\
 	      {
 		S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab);
 		S->Exposed=0;
+                S->Attributes=CL_HIDDENKEYWORD;
 	      }
 	  }
 	//
@@ -178,10 +180,11 @@ END{									\
               ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
-              if (t->smap.begin() != t->smap.end())
+//              if (t->smap.begin() != t->smap.end())
+              if (t->Attributes!=CL_KEYWORD)
                {
                  string startSeq,endSeq;
-                 clTextColouring(t->Name,CL_HIDINGKEYWORD, startSeq,endSeq);
+                 clTextColouring(t->Name,(int)t->Attributes, startSeq,endSeq);
                  fprintf(stderr,"%s",startSeq.c_str());
                  fprintf(stderr,format,t->Name);
                  fprintf(stderr,"%s",endSeq.c_str());

@@ -36,17 +36,17 @@ void clTextColouring(const string& text, const int textType,string& startSeq,str
   FGColourMap["magenta"] = "35";
   FGColourMap["cyan"]    = "36";
   FGColourMap["white"]   = "37";
-  /*
-  BGColourMap["default"] = 0;
-  BGColourMap["black"]   = 40;
-  BGColourMap["red"]     = 41;
-  BGColourMap["green"]   = 42;
-  BGColourMap["yellow"]  = 43;
-  BGColourMap["blue"]    = 44;
-  BGColourMap["magenta"] = 45;
-  BGColourMap["cyan"]    = 46;
-  BGColourMap["white"]   = 47;
-  */
+
+  BGColourMap["default"] = "0";
+  BGColourMap["black"]   = "40";
+  BGColourMap["red"]     = "41";
+  BGColourMap["green"]   = "42";
+  BGColourMap["yellow"]  = "43";
+  BGColourMap["blue"]    = "44";
+  BGColourMap["magenta"] = "45";
+  BGColourMap["cyan"]    = "46";
+  BGColourMap["white"]   = "47";
+
   string E="[";
   char *userColourMapFile=(char *)getenv(CL_COLOURMAP);
 

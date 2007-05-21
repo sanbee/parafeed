@@ -49,6 +49,7 @@ extern "C" {
     unsigned short Used;
     unsigned short Class;
     unsigned int NVals;
+    unsigned int Attributes;
     char **Val;
 #ifdef __cplusplus
     SMap smap;

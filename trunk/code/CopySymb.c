@@ -68,6 +68,7 @@ int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
   t->DefaultVal=S->DefaultVal;
   t->Options = S->Options;
 #endif
+  t->Attributes = S->Attributes;
   return 1;
 }
 /*----------------------------------------------------------------------*/
