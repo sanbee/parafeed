@@ -65,7 +65,7 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
 	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
-	 clSetOptions.o
+	 clSetOptions.o clTextColouring.o
 
 FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
@@ -172,6 +172,9 @@ rl_interface.o: rl_interface.cc cllib.h
 
 clSetOptions.o: clSetOptions.cc clshelldefs.h
 	$(C++) -c $(INCL) clSetOptions.cc
+
+clTextColouring.o: clTextColouring.cc clshelldefs.h
+	$(C++) -c $(INCL) clTextColouring.cc
 #
 # The CL library package related targets.  libshccl.a depends on 
 # the shell library libsh.a
