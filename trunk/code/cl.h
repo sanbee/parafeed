@@ -32,6 +32,7 @@
 #define CL_STDERRENV      "GERR"
 #define CL_DEFAULTSENV    "GDEFAULTS"
 #define CL_CONFIGENV      "GCONF"
+#define CL_COLOURMAP      "GCOLOURMAP"
 #define CL_HIST_LIMIT     100
 #define CL_FAIL           -1
 
@@ -240,7 +241,7 @@ int       dbgclgetSValp(const string& Name, string& Val, int& N);
 int       clgetNSValp(const string& Name, vector<string>& Val, int& N);
 int       dbgclgetNSValp(const string& Name, vector<string>& Val, int& N);
 int       clgetSValp(const string& Name, string& Val, int& N, SMap &smap);
-
+void      clTextColouring(const string& text, const int textType, string& startSeq, string& endSeq);
 #endif
 #if !defined(FORTRAN)
 #include <clconvert.h>

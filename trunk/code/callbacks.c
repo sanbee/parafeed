@@ -178,7 +178,16 @@ END{									\
               ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
-	      fprintf(stderr,format,t->Name);
+              if (t->smap.begin() != t->smap.end())
+               {
+                 string startSeq,endSeq;
+                 clTextColouring(t->Name,CL_HIDINGKEYWORD, startSeq,endSeq);
+                 fprintf(stderr,"%s",startSeq.c_str());
+                 fprintf(stderr,format,t->Name);
+                 fprintf(stderr,"%s",endSeq.c_str());
+               }
+              else
+	        fprintf(stderr,format,t->Name);
 	      PrintVals(stderr,t);
 	    }
 	}
