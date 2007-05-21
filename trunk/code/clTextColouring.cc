@@ -30,6 +30,7 @@ void clTextColouring(const string& text, const int textType,string& startSeq,str
     {
       startSeq="";
       endSeq="";
+      return;
     }
   map<string,string> FGColourMap, BGColourMap;
   FGColourMap["default"] = "0";
