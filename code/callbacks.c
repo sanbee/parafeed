@@ -110,6 +110,7 @@ END{									\
       }
   }
   /*----------------------------------------------------------------------*/
+  
   int exposeKeys(Symbol *t)
   {
     Symbol *S;
@@ -147,7 +148,6 @@ END{									\
 	    SMap::iterator loc = (t->smap.find(string(t->Val[0])));
 	    if (loc != t->smap.end())
 	      {
-                t->Attributes=CL_KEYWORD;
 		vector<string> sv=(*loc).second;
 		//	      printMap(t->smap);
 		for(unsigned int j=0;j<sv.size();j++)
