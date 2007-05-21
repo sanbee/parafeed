@@ -26,6 +26,11 @@ using namespace std;
 
 void clTextColouring(const string& text, const int textType,string& startSeq,string& endSeq)
 {
+  if (strcmp(getenv("TERM"),"xterm")) // The current terminal cannot display colours
+    {
+      startSeq="";
+      endSeq="";
+    }
   map<string,string> FGColourMap, BGColourMap;
   FGColourMap["default"] = "0";
   FGColourMap["black"]   = "30";
