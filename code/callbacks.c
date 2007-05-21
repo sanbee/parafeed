@@ -122,7 +122,10 @@ END{									\
 	// Irrespective of the current value of the symbol, hide all
 	// keys on which a watch was set by this symbol
 	//
-        t->Attributes=CL_HIDINGKEYWORD;
+        if (t->Attributes==CL_HIDDENKEYWORD) 
+          t->Attributes=CL_HIDENSEEKKEYWORD;
+        else
+          t->Attributes=CL_HIDINGKEYWORD;
 	for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
 	  {
 	    vector<string> sv=(*i).second;
@@ -144,6 +147,7 @@ END{									\
 	    SMap::iterator loc = (t->smap.find(string(t->Val[0])));
 	    if (loc != t->smap.end())
 	      {
+                t->Attributes=CL_KEYWORD;
 		vector<string> sv=(*loc).second;
 		//	      printMap(t->smap);
 		for(unsigned int j=0;j<sv.size();j++)
