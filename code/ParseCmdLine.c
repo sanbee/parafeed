@@ -252,7 +252,7 @@ int BeginCL(int argc, char **argv)
   // used in clget?Valp, the defaults from the .def files are 
   // never loaded if this is not called here.
   //
-  if (!cl_NoPrompt) loadDefaults();
+  //  if (!cl_NoPrompt) loadDefaults();
   return argc-N;
 }
 /*------------------------------------------------------------------------
@@ -324,7 +324,7 @@ int startShell()
       if (!cl_SymbLoaded) 
 	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
 	{
-	  loadDefaults(); /* Load the defaults */
+	  loadDefaults(0); /* Load the defaults */
 	  doinp(NULL);    /* Display the keywords */
 
 #ifdef GNUREADLINE
@@ -388,7 +388,7 @@ int EndCL()
       if (!cl_SymbLoaded) 
 	{
 	  clLoadSymb();
-	  loadDefaults();
+	  loadDefaults(0);
 	}
       //      DeleteVar("help",&cl_SymbTab,&cl_TabTail);
       doprintdoc(val);
