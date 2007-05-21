@@ -388,7 +388,16 @@ int EndCL()
       if (!cl_SymbLoaded) 
 	{
 	  clLoadSymb();
-	  loadDefaults(0);
+	  //
+	  // Now load the defaults from .def file.  This is not done
+	  // in BeginCL() (since that made the order in which the
+	  // keywords are displayed tied to the order in which the
+	  // keywords are stored in the .def file).  By the time
+	  // control reaches here, the order of the keywords in the
+	  // table (cl_SymbTab) is already defined by the clget* calls
+	  // of the application.
+	  //
+	  loadDefaults(1);
 	}
       //      DeleteVar("help",&cl_SymbTab,&cl_TabTail);
       doprintdoc(val);
