@@ -50,6 +50,7 @@ unsigned short cl_DOCLEANUP=1, cl_SymbLoaded = 0;
 unsigned short cl_Pass = 0, cl_FORTRAN=0, cl_NoOfOpts=0;
 unsigned short cl_RegistrationMode=1, cl_NoPrompt=0;
 unsigned short CL_DBG_ON=0;
+static short cl_defaultsLoaded=0;
 jmp_buf *cl_env=0;
 
 Symbol *cl_tmpTab, *cl_tmpTabTail;
@@ -324,7 +325,7 @@ int startShell()
       if (!cl_SymbLoaded) 
 	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
 	{
-	  loadDefaults(0); /* Load the defaults */
+	  if (!cl_defaultsLoaded) {loadDefaults(0); cl_defaultsLoaded=1;} /* Load the defaults */
 	  doinp(NULL);    /* Display the keywords */
 
 #ifdef GNUREADLINE
@@ -397,7 +398,7 @@ int EndCL()
 	  // table (cl_SymbTab) is already defined by the clget* calls
 	  // of the application.
 	  //
-	  loadDefaults(1);
+	  if (!cl_defaultsLoaded) {loadDefaults(1);cl_defaultsLoaded=1;}
 	}
       //      DeleteVar("help",&cl_SymbTab,&cl_TabTail);
       doprintdoc(val);
