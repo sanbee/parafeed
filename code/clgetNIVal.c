@@ -57,29 +57,37 @@ HANDLE_EXCEPTIONS(
 #ifdef __cplusplus
   int clgetNIValp(const string& Key, vector<int>& val, int& m)
   {
-    int n;
+    int n,n0;
     double d;
     char tmp[8];
     Symbol *S;
     
-    HANDLE_EXCEPTIONS(
+   HANDLE_EXCEPTIONS(
 		      if (m <= 0) sprintf(tmp,"int[]");
 		      else sprintf(tmp,"int[%d]",m);
 		      
 		      S = SearchQSymb((char *)Key.c_str(), tmp);
+		      //
+		      // Remember the number of values set by the user.
+		      //
+		      n0=S->NVals;
 		      setAutoNIDefaults(S,val);
 		      int i=1;
-		      while((n=clparseVal(S,&i,&d))!=CL_FAIL)
+		      for(int j=0;j<n0;j++)
 			{
-			  if (n==0) return i-1;
-			  else 
+			  if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
 			    {
-			      val.resize(i);
-			      val[i-1] = (int)d;
-			      i++;
+			      if (n==0) {m=S->NVals=i-1;return i-1;}
+			      else 
+				{
+				  val.resize(i);
+				  val[i-1] = (int)d;
+				  i++;
+				}
 			    }
 			}
+		      m=S->NVals=i-1;
 		      return i-1;
-		     );
+	    );
   }
 #endif

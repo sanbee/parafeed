@@ -33,7 +33,7 @@ extern "C" {
   inline void ClearMap(SMap &m) {m.erase(m.begin(),m.end());};
 #endif
   
-#define   CL_USERCLASS   1
+#define   CL_USERCLASS   1     // A bad name for a shell constant! ;-)
 #define   CL_APPLNCLASS  2
 #define   CL_DBGCLASS    3
 #define   CL_KEYWORD     4     // A simple keyword

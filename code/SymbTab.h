@@ -23,7 +23,7 @@ CmdSymbol CmdTab[]={
   {"gob", "To run the application in background",NULL,NULL,dogob},
   {"cd",  "Change working directory",NULL,NULL,docd},
   {"help","This help",NULL,NULL,dohelp},
-  {"?",    "Information on the type of the keyword", NULL,NULL,dotypehelp},
+  {"?",    "Information on all keywords, optionally on a single keyword", NULL,NULL,dotypehelp},
   {"explain","Detailed help, optionally of keywords/task [[Key][:Task]]",NULL,NULL,doexplain},
   {"save",   "Save the values, optionally in a file",NULL,NULL,dosave},
   {"load",   "Load the values, optionally from a file",NULL,NULL,doload},
