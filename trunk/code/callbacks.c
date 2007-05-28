@@ -110,7 +110,6 @@ END{									\
       }
   }
   /*----------------------------------------------------------------------*/
-  
   int exposeKeys(Symbol *t)
   {
     Symbol *S;
@@ -149,12 +148,19 @@ END{									\
 	    if (loc != t->smap.end())
 	      {
 		vector<string> sv=(*loc).second;
-		//	      printMap(t->smap);
+	
 		for(unsigned int j=0;j<sv.size();j++)
 		  {
 		    S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
 		    S->Exposed=1;
 		    exposedSomething=1;
+                    //
+                    // Make the attributes CL_KEYWORD if a keyword is
+                    // hidden due to a setting of a keyword which is
+                    // made into a shell constant (by the .config
+                    // file).
+                    // 
+                    if (t->Class==CL_USERCLASS) S->Attributes=CL_KEYWORD;
 		  }
 	      }
 	  }
@@ -221,23 +227,10 @@ END{									\
     if (!arg) exit(0);
     return 1;
   }
+
   /*----------------------------------------------------------------------*/
-  int dotypehelp(char *arg)
+  void formatTypeHelp(Symbol *S, string& fullFormat)
   {
-    char format[12];
-    namePrintFormat(format,"");
-    string fullFormat;
-    //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
-    fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
-    
-    Symbol *S;
-    fprintf(stderr,"   Key                Type          Factory defaults        Options\n");
-    fprintf(stderr,"---------          ----------       ----------------        -------\n");
-    for (S=cl_SymbTab;S;S=S->Next)
-      if (((S->Class==CL_APPLNCLASS) ||
-	  ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-          (S->Exposed)
-         )
 	{
 	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
 	  exposeKeys(S);
@@ -263,6 +256,44 @@ END{									\
 	    }
 	  fprintf(stderr, "\n");
 	}
+  }
+
+  /*----------------------------------------------------------------------*/
+  int dotypehelp(char *arg)
+  {
+    char format[12];
+    namePrintFormat(format,"");
+    string fullFormat;
+    //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
+    fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
+    
+    Symbol *S;
+
+    if (arg==NULL)
+     {
+       fprintf(stderr,"   Key                Type          Factory defaults        Options\n");
+       fprintf(stderr,"---------          ----------       ----------------        -------\n");
+       for (S=cl_SymbTab;S;S=S->Next)
+         if (((S->Class==CL_APPLNCLASS) ||
+	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
+             (S->Exposed)
+            )
+           formatTypeHelp(S,fullFormat);
+     }
+    else 
+     {
+       if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
+         if (((S->Class==CL_APPLNCLASS) ||
+	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
+             (S->Exposed)
+            )
+           {
+             fprintf(stderr,"   Key                Type          Factory defaults        Options\n");
+             fprintf(stderr,"---------          ----------       ----------------        -------\n");
+
+             formatTypeHelp(S,fullFormat);
+           }
+     }
     return 1;
   }
   /*------------------------------------------------------------------
@@ -599,6 +630,7 @@ END{									\
       If CL_DEFAULTSENV env. var. is set, look for a .def file
       there and if found, do a complimentary load from there too.
     */
+
     t=(char *)getenv(CL_DEFAULTSENV);
     if (t && strlen(t))     {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
     
@@ -612,7 +644,8 @@ END{									\
     if ((fd = fopen(out,"r")) != NULL)  
       {
 	fclose(fd);  
-	if (complement) strcat(out,"!");  /* Perform a complimentery load */
+	//	if (complement) 
+	  strcat(out,"!");  /* Perform a complimentery load */
 	doload(out);
       }
     

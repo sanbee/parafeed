@@ -53,7 +53,7 @@ HANDLE_EXCEPTIONS(
 #ifdef __cplusplus
   int clgetNFValp(const string& Key, vector<float>& val, int& m)
   {
-    int n;
+    int n,n0;
     double d;
     char tmp[8];
     Symbol *S;
@@ -63,19 +63,24 @@ HANDLE_EXCEPTIONS(
 		      else sprintf(tmp,"float[%d]",m);
 		      
 		      S = SearchQSymb((char *)Key.c_str(), tmp);
+		      n0=S->NVals;
 		      setAutoNFDefaults(S,val);
 		      
 		      int i=1;
-		      while((n=clparseVal(S,&i,&d))!=CL_FAIL)
+		      for (int j=0;j<n0;j++)
 			{
-			  if (n==0) return i-1;
-			  else 
+			  if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
 			    {
-			      val.resize(i);
-			      val[i-1] = (float)d;
-			      i++;
+			      if (n==0) {m=S->NVals=i-1;return i-1;}
+			      else 
+				{
+				  val.resize(i);
+				  val[i-1] = (float)d;
+				  i++;
+				}
 			    }
 			}
+		      m=S->NVals=i-1;
 		      return i-1;
 		     );
   }

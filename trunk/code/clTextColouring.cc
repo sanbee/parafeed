@@ -26,7 +26,10 @@ using namespace std;
 
 void clTextColouring(const string& text, const int textType,string& startSeq,string& endSeq)
 {
-  if (strcmp(getenv("TERM"),"xterm")) // The current terminal cannot display colours
+  string term(getenv("TERM"));
+  if ((term != "xterm") && // The current terminal cannot display colours
+      (term != "vt220")
+      )
     {
       startSeq="";
       endSeq="";

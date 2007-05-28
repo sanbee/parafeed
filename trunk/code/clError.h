@@ -46,7 +46,7 @@ public:
 
 //extern "C" {
   //inline int clThrowUp(const char *m, const char *i, int l){throw(clError(m,i,l));}
-#define clThrowUp(m, i, l) ({throw(clError((m),(i),(l)));})
+#define clThrowUp(m, i, l) ({if ((l)==CL_INFORMATIONAL) {clError x; x<<"###Informational: " << m << endl;} else throw(clError((m),(i),(l)));})
 //	   }
 #else
 
@@ -55,7 +55,10 @@ public:
   returns the supplied error value.
 ---------------------------------------------------------------------*/
 #include <stdio.h>
-inline int clThrowUp(const char *m, const char *i, int l){fprintf(stderr,"%s: %s\n",i,m);return l;}
+inline int clThrowUp(const char *m, const char *i, int l)
+{
+  fprintf(stderr,"%s: %s\n",i,m);return l;
+}
 
 
 #endif /* __cplusplus */
