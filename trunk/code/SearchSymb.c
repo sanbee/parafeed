@@ -38,7 +38,9 @@ CmdSymbol *SearchCSymb(char *Name, CmdSymbol *Tab)
 {
   CmdSymbol *t;
   for (t=Tab;t!=NULL;t=t->Next)
-    if (!strcmp(t->Name,Name)) break;
+    {
+      if (!strcmp(t->Name,Name)) break;
+    }
   return t;
 }
 #ifdef __cplusplus

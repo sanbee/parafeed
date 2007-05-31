@@ -79,15 +79,9 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   if (!Force)
     if (pos->Class == CL_USERCLASS)
       {
-	string msg="Trying to set a constant (named \'" + string(pos->Name) + "\')?  Your attempt was ignored."; 
-	//	clError x;
-	//	x << msg.c_str() << endl;
+	string msg="Attempted modificaiont of a shell-constant (named \'" + string(pos->Name) + "\').  Ignored."; 
 	clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
 	return -2;
-	/*
-	fprintf(stderr,"###Error: Trying to set a constant, hun?  Not allowed.\n");
-	return -2;
-	*/
       }
 
   if ((val==NULL) || (strlen(val) == 0)) 

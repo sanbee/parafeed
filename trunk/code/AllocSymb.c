@@ -37,7 +37,9 @@ Symbol *AllocVSymb(int n)
   S->NVals=0;
   S->DefaultVal.resize(0);
   S->Options.resize(0);
-  S->Attributes=CL_KEYWORD;
+  //  S->Attributes=CL_KEYWORD;
+  S->Attributes=0;
+  SETBIT(S->Attributes,CL_KEYWORD);
   return S;
 }
 
