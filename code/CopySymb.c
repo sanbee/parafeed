@@ -83,6 +83,7 @@ int CopyCSymb(CmdSymbol *t, CmdSymbol *S, int CopyName)
       strcpy(t->Name,S->Name);
     }
   t->func = S->func;
+  t->Attributes = S->Attributes;
   if (S->Doc)
     {
       if (t->Doc==NULL)

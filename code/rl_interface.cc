@@ -30,6 +30,7 @@
 #include <vector>
 #include <support.h>
 #include <clGlobals.h>
+#include <clhashdefines.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -61,17 +62,54 @@ extern "C" {
     return S;
   }
   //------------------------------------------------------------------------
+  CmdSymbol* rl_isCmd(char *s)
+  {
+    string tmp;
+    int len=0;
+    while( (s[len] != '=') && (s[len] != ' ') ) len++;
+    tmp.resize(len);
+    int j=0;
+    for(int i=0;i<len;i++)
+      tmp[j++]=s[i];
+    tmp[j]=(char)NULL;
+    CmdSymbol *S=NULL;
+    if (tmp.size() > 0) S=SearchCSymb((char *)tmp.c_str(),sh_CmdTab);
+    return S;
+  }
+  //------------------------------------------------------------------------
+  // CL command generator function.
+  // 
+  char* rl_cmd_generator(const char *text,int state)
+  {
+    static CmdSymbol *C=NULL;
+    char *tmp=NULL;
+    int m,len=strlen(text);
+    if (state == 0) {C=sh_CmdTab;}
+
+    while(C != NULL)
+      {
+	tmp = C->Name;
+	m=strncmp (C->Name, text, len);
+	C=C->Next;
+	if (m==0) return dupstr(tmp);
+      }
+    return NULL;
+  }
+  //------------------------------------------------------------------------
   // CL Keyword generator function.
   // 
   char* rl_keyword_generator(const char *text,int state)
   {
     static Symbol *S;
+    char *tmp=NULL;
+    int m,len=strlen(text);
     if (state == 0) S = cl_SymbTab;
-    
+    //
+    // First exhaust keyword list...
+    //    
     while((S != NULL))
       {
-	int len=strlen(text),m,exposed,showdbg=1,viewable;
-	char *tmp=NULL;
+	int exposed,showdbg=1,viewable;
 	//
 	// Set/unset any keys watched by this symbol.  Only exposed
 	// keys are then available for completion.
@@ -85,6 +123,48 @@ extern "C" {
         
 	S = S->Next;
 	if (viewable) return dupstr(tmp);
+      }
+    return NULL;
+  }
+  //------------------------------------------------------------------------
+  // CL Keyword and command generator function.
+  // 
+  char* rl_keyword_cmd_generator(const char *text,int state)
+  {
+    static Symbol *S;
+    static CmdSymbol *C;
+    char *tmp=NULL;
+    int m,len=strlen(text);
+    if (state == 0) {S = cl_SymbTab; C=sh_CmdTab;}
+    //
+    // First exhaust keyword list...
+    //    
+    while((S != NULL))
+      {
+	int exposed,showdbg=1,viewable;
+	//
+	// Set/unset any keys watched by this symbol.  Only exposed
+	// keys are then available for completion.
+	//
+	exposeKeys(S);
+	m=strncmp (S->Name, text, len);
+	tmp = S->Name;
+	exposed=S->Exposed;
+	if (S->Class==CL_DBGCLASS) if (CL_DBG_ON) showdbg=1; else showdbg=0;
+	viewable = ((m==0) && (exposed==1) && showdbg && (S->Class!=CL_USERCLASS));
+        
+	S = S->Next;
+	if (viewable) return dupstr(tmp);
+      }
+    //
+    // ...then shell command names.
+    //
+    while(C != NULL)
+      {
+	tmp = C->Name;
+	m=strncmp (C->Name, text, len);
+	C=C->Next;
+	if (m==0) return dupstr(tmp);
       }
     return NULL;
   }
@@ -143,20 +223,30 @@ extern "C" {
     if (start > 0) 
       {
 	Symbol *S=rl_isKeyword(rlLine);
+	CmdSymbol *C=rl_isCmd(rlLine);
 	if ((S != NULL ) && 
 	    (rl_line_buffer[rl_point-1] == ' ') && 
 	    (strchr(rl_line_buffer,'=') == NULL))
 	  rl_line_buffer[rl_point-1] = '=';
 	if (S != NULL)
-	  if (S->Options.size() > 0)
-	    matches = rl_completion_matches(text,rl_options_generator);
-	  else
-	    matches=rl_completion_matches(text,rl_filename_completion_function);
+	  {
+	    if (S->Options.size() > 0)
+	      matches = rl_completion_matches(text,rl_options_generator);
+	    else if (ISSET(S->Attributes,CL_STRINGTYPE))
+	      matches=rl_completion_matches(text,rl_filename_completion_function);
+	  }
+	else if (C != NULL)
+	  {
+	    if (ISSET(C->Attributes,CL_ARG_FILENAME))
+	      matches = rl_completion_matches(text,rl_filename_completion_function);
+	    else if (ISSET(C->Attributes,CL_ARG_KEYWORD))
+	      matches = rl_completion_matches(text,rl_keyword_generator);
+	  }
 	else
-	  matches = rl_completion_matches (text, rl_keyword_generator);
+	  matches = rl_completion_matches (text, rl_keyword_cmd_generator);
       }
     else
-      matches = rl_completion_matches (text, rl_keyword_generator);
+      matches = rl_completion_matches (text, rl_keyword_cmd_generator);
 
     return (matches);
   }

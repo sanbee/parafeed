@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 /*----------------------------------------------------------------------*/
-int PrintVals(FILE *fd,Symbol *S)
+int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
 {
   unsigned int i;
   unsigned int N=S->NVals;
@@ -42,10 +42,10 @@ int PrintVals(FILE *fd,Symbol *S)
 	    }
 	  str=(char *)S->DefaultVal[N-1].c_str();
 	  tokenize(fd,(char *)S->DefaultVal[N-1].c_str(),",",CL_ESC);
-	  fputc('\n',fd);
+	  if (newline) fputc('\n',fd);
 	}
       else
-	fprintf(fd,"\n");
+	if (newline) fprintf(fd,"\n");
       return 1;
     }
 
@@ -53,11 +53,11 @@ int PrintVals(FILE *fd,Symbol *S)
     for (i=0;i<S->NVals-1;i++)
       {tokenize(fd,S->Val[i],",",CL_ESC);fputc(',',fd);}
     tokenize(fd,S->Val[S->NVals-1],",",CL_ESC);
-    fputc('\n',fd);
+    if (newline) fputc('\n',fd);
     return 1;
   }
 
-  fprintf(fd,"\n");
+  if (newline) fprintf(fd,"\n");
   return 1;
 }
 #ifdef __cplusplus

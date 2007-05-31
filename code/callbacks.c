@@ -393,6 +393,47 @@ END{									\
       }
     return 1;
   }
+  /*------------------------------------------------------------------------
+    Saves the current setting of the various keywords as a UNIX shell command
+    string to the given file. If *f==NULL, save in ./<ProgName>.cmd
+    -------------------------------------------------------------------------*/
+  int docmdsave(char *f)
+  {
+    FILE *fd;
+    char str[MAXBUF],ProgName[MAXBUF];
+    stripwhite(f);
+    if(f==NULL || strlen(f) == 0)
+      {
+	strcpy(str,cl_ProgName);
+#ifdef GNUREADLINE
+	str[strlen(cl_ProgName)-1]='\0';
+#endif
+	strcpy(ProgName,str);
+	strcat(str,".cmd");
+      }
+    else strcpy(str,f);
+    
+    if ((fd=fopen(str,"w"))==NULL)
+      {
+	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
+	return 2;
+      }
+    else
+      {
+	Symbol *t;
+	fprintf(fd,"%s help=noprompt ",ProgName);
+	for (t=cl_SymbTab;t;t=t->Next)
+	  if ((t->Class==CL_APPLNCLASS) ||
+	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	    {
+	      fprintf(fd,"%s=",t->Name);
+	      PrintVals(fd,t,0); // Print without NEWLINE
+	      fprintf(fd,"%c",' ');
+	    }
+	fclose(fd);
+      }
+    return 1;
+  }
   /*-----------------------------------------------------------------------
     Loads the setting for the keywords from a file (typically written by
     the save command). If *f==NULL, load from ./<ProgName>.def.  If f ends
