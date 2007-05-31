@@ -37,6 +37,7 @@ HANDLE_EXCEPTIONS(
   else
     S=SearchQSymb(Name,"int");
   if ((N=clparseVal(S,n,&d))>0) *val = (int)d;
+  if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
   return N;
   );
 }
@@ -56,6 +57,7 @@ HANDLE_EXCEPTIONS(
 		    S=SearchQSymb((char *)Name.c_str(),"int");
 		  setAutoIDefaults(S,val);
 		  if ((N=clparseVal(S,&n,&d))>0) val = (int)d;
+		  if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
 		  return N;
 		  );
 }

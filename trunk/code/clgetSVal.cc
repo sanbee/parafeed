@@ -38,7 +38,7 @@ int clgetSVal(char *Name, char *val, int *n)
   else
     S=SearchQSymb(Name,"string");
   N = _ABS(*n);
-
+  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   if (S!=NULL) 
     {
       if (N <= S->NVals) 
@@ -71,6 +71,7 @@ int clgetSValp(const string& Name, string& val, int& n)
   else
     S=SearchQSymb((char *)Name.c_str(),"string");
   N = _ABS(n);
+  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   setAutoSDefaults(S,val);
   if (S!=NULL) 
     {
@@ -78,12 +79,16 @@ int clgetSValp(const string& Name, string& val, int& n)
 	{
           val.resize(0);
 	  buf = S->Val[N-1];
-	  while (*buf == ' ') buf++;
-	  val = val + buf;
-	  //	  strncpy(val,buf,strlen(buf)+1);
-	  if ((c=strstr(buf,"\\\""))) 
-	    while (*c) *c = *(++c);
-	  return strlen(buf);
+	  if (buf)
+	    {
+	      while (*buf == ' ') buf++;
+	      val = val + buf;
+	      //	  strncpy(val,buf,strlen(buf)+1);
+	      if ((c=strstr(buf,"\\\""))) 
+		while (*c) *c = *(++c);
+	      return strlen(buf);
+	    }
+	  else return 0;
 	}
       else 
 	return CL_FAIL;
@@ -103,6 +108,7 @@ int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
   else
     S=SearchQSymb((char *)Name.c_str(),"string");
   N = _ABS(n);
+  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
 
   setAutoSDefaults(S,val);
   if (S!=NULL) 
@@ -112,12 +118,17 @@ int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
 	{
 	  val.resize(0); /* Initialize the output string */
 	  buf = S->Val[N-1];
-	  while (*buf == ' ') buf++;
-	  val = val + buf;
-	  //	  strncpy(val,buf,strlen(buf)+1);
-	  if ((c=strstr(buf,"\\\""))) 
-	    while (*c) *c = *(++c);
-	  return strlen(buf);
+	  if (buf)
+	    {
+	      while (*buf == ' ') buf++;
+	      val = val + buf;
+	      //	  strncpy(val,buf,strlen(buf)+1);
+	      if ((c=strstr(buf,"\\\""))) 
+		while (*c) *c = *(++c);
+	      return strlen(buf);
+	    }
+	  else 
+	    return 0;
 	}
       else 
 	return CL_FAIL;
