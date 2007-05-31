@@ -39,6 +39,7 @@ HANDLE_EXCEPTIONS(
   else
     S=SearchQSymb(Name,"float");
   if ((N=clparseVal(S,n,&d))>0) *val=(float)d;
+  if (S!=NULL) SETBIT(S->Attributes,CL_FLOATTYPE);
   return N;
 )
 }   
@@ -60,6 +61,7 @@ int clgetFValp(const string& Name, float &val, int &n)
     S=SearchQSymb((char *)Name.c_str(),"float");
   setAutoFDefaults(S,val);
   if ((N=clparseVal(S,&n,&d))>0) val=(float)d;
+  if (S!=NULL) SETBIT(S->Attributes,CL_FLOATTYPE);
   return N;
   )
 }
