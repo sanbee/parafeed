@@ -189,13 +189,14 @@ int       doedit(char *);
 int       dohelp(char *);
 int       doexplain(char *);
 int       dosave(char *);
+int       docmdsave(char *);
 int       doload(char *);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(char *);
 int       loadDefaults(int complement=1);
 int       clparseVal(Symbol *, int *, double *);
-int       PrintVals(FILE *,Symbol *);
+int       PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
 int       clIsInteractive();
   /*
 void mkfilename(char *out,char *envvar,char *name,char *type);

@@ -33,14 +33,7 @@ extern "C" {
   inline void ClearMap(SMap &m) {m.erase(m.begin(),m.end());};
 #endif
   
-#define   CL_USERCLASS   1     // A bad name for a shell constant! ;-)
-#define   CL_APPLNCLASS  2
-#define   CL_DBGCLASS    3
-#define   CL_KEYWORD     4     // A simple keyword
-#define   CL_VALUE       5     // A value
-#define   CL_HIDDENKEYWORD 6   // A keyword that is hidden by some other keyword(s)
-#define   CL_HIDINGKEYWORD 7   // A keyword that may hide other keywords
-#define   CL_HIDENSEEKKEYWORD 8// A keyword that can be hidden by other keyword(s) and can itself hide other keyword(s)
+#include <clhashdefines.h>
   
   typedef struct SymbolType {
     char *Name;
@@ -64,6 +57,7 @@ extern "C" {
     char *Doc;
     struct CmdSymbolType *Next, *Previous;
     int (*func)(char *);
+    int Attributes;
   } CmdSymbol;
 #endif
   
