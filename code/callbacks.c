@@ -299,9 +299,34 @@ END{									\
   /*------------------------------------------------------------------
     The argument can be use to give help for a specific command only   
     -------------------------------------------------------------------*/
+
   int dohelp(char *arg)
   {
     CmdSymbol *S;
+    fprintf(stderr,"Colour coding of the keywords:\n");
+    fprintf(stderr,"  Red:  Indicates that the current setting is hiding other keywords.\n");
+    fprintf(stderr,"  Blue: Indicates that the keyword can be hidden by some other keyword(s).\n");
+    fprintf(stderr,"        (usually by the first red coloured keyword above).\n");
+    fprintf(stderr,"--------------------------------------------------------------------\n");
+    fprintf(stderr,"Default values:\n");
+    fprintf(stderr,"  If a keyword is un-set (or set to BLANK), the default value as used\n");
+    fprintf(stderr,"  in the application will be displayed.\n");
+    fprintf(stderr,"--------------------------------------------------------------------\n");
+#ifdef GNUREADLINE
+    fprintf(stderr,"TABBED completion:\n");
+    fprintf(stderr,"  GNU Readline completion mechanism uses all available keywords and \n");
+    fprintf(stderr,"  shell commands.\n");
+    fprintf(stderr,"\n");
+    fprintf(stderr,"  A completed keyword followed by two TABs will display the options\n");
+    fprintf(stderr,"  available for the particular keyword.  Nothing is done for keywords\n");
+    fprintf(stderr,"  for which either no options were defined by the programmer or for \n");
+    fprintf(stderr,"  which finite options do not exist (e.g. if a keyword can take any\n");
+    fprintf(stderr,"  integer value).\n");
+    fprintf(stderr,"\n");
+    fprintf(stderr,"  A completed shell command followed by two TABS will display possible\n");
+    fprintf(stderr,"  options for the particular shell command.\n");
+#endif
+    fprintf(stderr,"--------------------------------------------------------------------\n");
     fprintf(stderr,"Commands in the interactive mode:\n\n");
     fprintf(stderr,"Use <Key>=<Val1,Val2,..> to set value for a keyword\n");
     fprintf(stderr,"Use <Key>=<RETURN> to unset value(s) for a keywords\n\n");

@@ -196,24 +196,6 @@ extern "C" {
   // CL completor.  Completes keywords first. Followed by options completion 
   // (if options are available).  And then switches to filename completion.
   //
-  // The pseudo code for the completion logic is as follows:
-  //
-  // if in the initialization state
-  //   check if the rl_line_buffer matches a CL keyword.
-  //   if ((CL Keyword found) and (the last char. in the rl_line_buffer == ' ')
-  //       and (there is no '=' sign in the rl_line_buffer))
-  //      replace the last char in rl_line_buffer with '=';
-  //
-  //   if (CL Keyword found)
-  //     if the associated Symbol has the list of options available
-  //         attempt options completion
-  //     else
-  //         attempt filename completion
-  //   else
-  //     attempt keyword completion
-  // else
-  //   attempt keyword completion
-  //
   char **cl_completor(const char *text, int start, int end)
   {
     char **matches;
@@ -246,6 +228,8 @@ extern "C" {
 	    else   
 	      rl_attempted_completion_over = 1;
 	  }
+	else if (rlLine[rl_point-1]==' ')
+	  matches = rl_completion_matches (text, rl_filename_completion_function);
 	else
 	  matches = rl_completion_matches (text, rl_keyword_cmd_generator);
       }
