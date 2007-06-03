@@ -122,10 +122,10 @@ END{									\
 	// Irrespective of the current value of the symbol, hide all
 	// keys on which a watch was set by this symbol
 	//
-        if (t->Attributes==CL_HIDDENKEYWORD) 
-          t->Attributes=CL_HIDENSEEKKEYWORD;
+        if (ISSET(t->Attributes,CL_HIDDENKEYWORD))
+          SETBIT(t->Attributes,CL_HIDENSEEKKEYWORD);
         else
-          t->Attributes=CL_HIDINGKEYWORD;
+          SETBIT(t->Attributes,CL_HIDINGKEYWORD);
 	for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
 	  {
 	    vector<string> sv=(*i).second;
@@ -133,7 +133,7 @@ END{									\
 	      {
 		S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab);
 		S->Exposed=0;
-                S->Attributes=CL_HIDDENKEYWORD;
+                SETBIT(S->Attributes,CL_HIDDENKEYWORD);
 	      }
 	  }
 	//
@@ -160,7 +160,7 @@ END{									\
                     // made into a shell constant (by the .config
                     // file).
                     // 
-                    if (t->Class==CL_USERCLASS) S->Attributes=CL_KEYWORD;
+                    if (t->Class==CL_USERCLASS) SETBIT(S->Attributes,CL_KEYWORD);
 		  }
 	      }
 	  }
@@ -191,10 +191,10 @@ END{									\
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
 //              if (t->smap.begin() != t->smap.end())
-              if (t->Attributes!=CL_KEYWORD)
+              if (ISSET(t->Attributes,CL_KEYWORD))
                {
                  string startSeq,endSeq;
-                 clTextColouring(t->Name,(int)t->Attributes, startSeq,endSeq);
+                 clTextColouring(t->Name,(unsigned int)t->Attributes, startSeq,endSeq);
                  fprintf(stderr,"%s",startSeq.c_str());
                  fprintf(stderr,format,t->Name);
                  fprintf(stderr,"%s",endSeq.c_str());

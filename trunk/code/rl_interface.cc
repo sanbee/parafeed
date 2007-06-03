@@ -234,6 +234,8 @@ extern "C" {
 	      matches = rl_completion_matches(text,rl_options_generator);
 	    else if (ISSET(S->Attributes,CL_STRINGTYPE))
 	      matches=rl_completion_matches(text,rl_filename_completion_function);
+	    else   
+	      rl_attempted_completion_over = 1;
 	  }
 	else if (C != NULL)
 	  {
@@ -241,6 +243,8 @@ extern "C" {
 	      matches = rl_completion_matches(text,rl_filename_completion_function);
 	    else if (ISSET(C->Attributes,CL_ARG_KEYWORD))
 	      matches = rl_completion_matches(text,rl_keyword_generator);
+	    else   
+	      rl_attempted_completion_over = 1;
 	  }
 	else
 	  matches = rl_completion_matches (text, rl_keyword_cmd_generator);
