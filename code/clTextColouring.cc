@@ -24,7 +24,7 @@
 #include <string>
 using namespace std;
 
-void clTextColouring(const string& text, const int textType,string& startSeq,string& endSeq)
+void clTextColouring(const string& text, const unsigned int textType,string& startSeq,string& endSeq)
 {
   string term(getenv("TERM"));
   if ((term != "xterm") && // The current terminal cannot display colours
@@ -66,11 +66,11 @@ void clTextColouring(const string& text, const int textType,string& startSeq,str
       //
       startSeq=E+"1;";
       
-      if (textType==CL_HIDDENKEYWORD)
+      if (ISSET(textType,CL_HIDDENKEYWORD))
 	startSeq += FGColourMap["blue"];
-      else if (textType==CL_HIDINGKEYWORD)
+      else if (ISSET(textType,CL_HIDINGKEYWORD))
 	startSeq += FGColourMap["red"];
-      else if (textType==CL_HIDENSEEKKEYWORD)
+      else if (ISSET(textType,CL_HIDENSEEKKEYWORD))
         startSeq += FGColourMap["green"];
       
       startSeq += "m";
