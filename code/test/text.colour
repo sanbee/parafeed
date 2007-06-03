@@ -1,0 +1,54 @@
+I am going to explain the colors of the shell with an example prompt.
+
+~/.bashrc: PS1="\[\033[0;32;40m\u@\h:\w\$ \]"
+
+This displays the complete prompt in green. Like this:
+nico@ebrain:~$
+
+\033 starts the escape sequence, with [ we are beginning the color definition. The following 0 specifies default font width. Other possibilities for this I am going to introduce later. The string will be enclosed in \[ and \] to prevent the text of the escape sequence from showing up in the display of the shell and taking too much space.
+
+Next we are choosing the color of the foreground (in this case 32, which is green). The background color 40 stands for black. To prevent the text after the prompt from being green, we are closing the escape sequence with \033[0m, which is the default color of the shell. For the foreground as well as the background 8 colors are available.
+
+Choices: red, green, yellow, blue, magenta, cyan and white. The color codes for this are 30 (black), 31 (red), 32 (green), 33 (yellow), 34 (blue), 35 ( magenta), 36 (cyan), 37 (white).
+
+Setting the background colors follows the same scheme, but instead of the first digit '3' we are using '4', like 40, 41, 42, 43, 44, 45, 46, 47.
+
+Example:
+
+~/.bashrc: PS1="\[\033[0;37;44m\u@\033[0;32;43m\h:\033[0;33;41m\w$\033[0m\]"
+
+
+This gives us a very colorful prompt:
+nico@ 	ebrain: 	~$
+
+To test these settings we are using export PS1="string", later we may transfer the setting into .bashrc. My current prompt looks like this:
+
+PS1="\[\033[1;34;40m[\033[1;31;40m\u@\h:\w\033[1;34;40m]\033[1;37;40m $\033[0;37;0m\] "
+
+
+[ nico@ebrain:~ ]
+ 
+Text Properties
+As previously mentioned, the '0' after the first escape sequence is the default color setting for the text of the shell prompt. For the text properties the following values make sense: 0, 1, 22, 4, 24, 5, 25, 7, 27 with the following meaning: default, bold, not bold, underlined, not underlined, blinking and not blinking, invers, not invers.
+
+With the help of the following short script we can have a look at the color combinations.
+
+#!/bin/sh
+############################################################
+# Nico Golde <nico(at)ngolde.de> Homepage: http://www.ngolde.de
+# Last change: Mon Feb 16 16:24:41 CET 2004
+############################################################
+
+for attr in 0 1 4 5 7 ; do
+    echo "----------------------------------------------------------------"
+    printf "ESC[%s;Foreground;Background - \n" $attr
+    for fore in 30 31 32 33 34 35 36 37; do
+        for back in 40 41 42 43 44 45 46 47; do
+            printf '\033[%s;%s;%sm %02s;%02s  ' $attr $fore $back $fore $back
+        done
+    printf '\n'
+    done
+    printf '\033[0m'
+done
+
+The script can be downloaded as a tar.gz from: showansicol.tar.gz  
