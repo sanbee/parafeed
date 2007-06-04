@@ -14,7 +14,7 @@ list of all possible values that a parameter can accept is available,
 TABBBED completion will can be used to view and set value of
 parameters in a context sensitive manner.  The interactive shell also
 supports context sensitive hiding/exposing of keywords (referred to as
-{\it parameter unwinding}), similar to the
+_parameter_ _unwinding_), similar to the
 parameter-unfolding implemented in the
 [http://casa.nrao.edu CASA] package.
 This allows producing a number of specializations from
