@@ -107,71 +107,48 @@ effect).
 
 The values of the keywords can be a list of comma-separated values.
 The expected number of values will be reported by the shell-command
-{\tt '?'} along with the type of the values, enclosed in '{\tt [ }'
-and '{\tt ] }' pairs.  A blank set of square brackets (``{\tt []}'')
+{{{'?'}}} along with the type of the values, enclosed in '{{{[ }}}'
+and '{{{]}}}' pairs.  A blank set of square brackets (``{{{[]}}}'')
 will be printed for keywords which can accept any number of values.
 Some keywords may accept values of mixed types (e.g., string, floats,
-integers).  For such keywords, the reported type will be ``{\tt
-UNKNOWN}''.
+integers).  For such keywords, the reported type will be ``{{{UNKNOWN}}}''.
 
 Comma is treated as a separator in a list of values for a keyword.  To
 suppress its interpretation as a separator, it can to be ``escaped''
-using the backslash ('$\backslash$') before the comma.  For example,
-if the value of a keyword {\tt key} has to be set to a string {\tt
-``Funny, value with a comma''}, it can be done using
+using the backslash ('{{{/}}}') before the comma.  For example,
+if the value of a keyword {{{key}}} has to be set to a string {{{``Funny, value with a comma''}}}, it can be done using
 
-\begin{verbatim}
+<verbatim>
                 key=Funny\, value with a comma
-\end{verbatim}
+</verbatim>
 
-The characters '$\backslash$', '{\tt [}', '{\tt ]}', '{\tt =}', which
+The characters '{{{/}}}', '{{{[}}}', '{{{]}}}', '{{{=}}}', which
 are part of the shell-command syntax, must also be escaped similarly
 to be used as part of the values of the keywords.
 
 Numeric values of keywords can be arbitrary mathematical expressions.
 Following functions and constants can be used in these expression:
 
-\begin{itemize}
-\item Functions
+ * Functions: sin,cos,tan,asin,acos,atan,atan2,sinh,cosh,tanh,exp,ln,log,flog10,sqrt,fabs,floor,ceil,rint
 
-sin,cos,tan,asin,acos,atan,atan2,sinh,cosh,tanh,\\
-exp,ln,log,flog10,sqrt,fabs,floor,ceil,rint
+ * Constants:
+   # {{{PI:}}} value of pi
+   # {{{C:}}} speed of light in meters per second.
+   # {{{R2D,D2R:}}} multiplicative constants for conversion from Radians to Deg. and vice versa
+   # {{{H2R,R2H:}}} multiplicative constants for conversion from Hours to Radians and vice versa
+   # {{{SOL2SID,SID2SOL:}}} multiplicative constants for conversion from Solar to Sidreal time and vice versa
 
+Numbers in the expression can be in any of the following representations:
 
-\item Constants
-\begin{enumerate}
+ * Integer format, real (float) format
+ *  1.0E-1 or 1.0e-1 (=0.1)
+ *  1.0D-1 or 1.0d-1 (=0.1)
+ *  1h10m0.1s: the time format - converts the number to seconds before using it.
+ *  {{{1d1'1"}}}: The angular format - converts to arc seconds before using it.
 
-\item {\tt PI:} value of $\pi$
-\item {\tt C:} speed of light in meters per second.
-\item {\tt R2D,D2R:} multiplicative constants for conversion from
-Radians to Deg. and vice versa
-\item {\tt H2R,R2H:} multiplicative constants for conversion from
-Hours to Radians and vice versa
-\item {\tt SOL2SID,SID2SOL:} multiplicative constants for conversion
-from Solar to Sidreal time and vice versa
-\end{enumerate}
-\end{itemize}
+({{{1d1' = 3660.0"}}} and {{{-1d1' = -3660.0"}}})
 
-Numbers in the expression can be in any of the following
-representations:
-
-\begin{itemize}
-\item Integer format, real (float) format
-
-\item 1.0E-1 or 1.0e-1 (=0.1)
-        
-\item 1.0D-1 or 1.0d-1 (=0.1)
-        
-\item 1h10m0.1s: the time format - converts the number to seconds
-before using it.
-\item $1d1\arcmin1\arcsec$: The angular format - converts to arc
-seconds before using it.
-
-($1d1\arcmin = 3660.0\arcsec$ and $-1d1\arcmin = -3660.0\arcsec$)
-\end{itemize}
-
-\subsubsection{De-referencing mechanism}
-\label{DOLLOR_MECH} 
+=== De-referencing mechanism ===
 
 The user interface system allows the application programmers to define
 shell symbols which are treated as constants (i.e. their values cannot
