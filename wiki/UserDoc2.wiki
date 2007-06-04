@@ -118,9 +118,9 @@ suppress its interpretation as a separator, it can to be ``escaped''
 using the backslash ('{{{/}}}') before the comma.  For example,
 if the value of a keyword {{{key}}} has to be set to a string {{{``Funny, value with a comma''}}}, it can be done using
 
-<verbatim>
+{{{
                 key=Funny\, value with a comma
-</verbatim>
+}}}
 
 The characters '{{{/}}}', '{{{[}}}', '{{{]}}}', '{{{=}}}', which
 are part of the shell-command syntax, must also be escaped similarly
