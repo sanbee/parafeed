@@ -4,7 +4,7 @@
 _parafeed_ is a library for an embedded user interface that can be
 easily put on a C/C++ program that depends on a number of parameters.
 The parameters can either be passed to the program as a list of
-{{{ <NAME>=<VALUE>}}} on the command-line or can be set in an interactive
+{{{<NAME>=<VALUE>}}} on the command-line or can be set in an interactive
 session.  This code is derived from the older 
 [http://www.aoc.nrao.edu/~sbhatnag/softwares.html\#CLLIB CL-Lib] library.
 
@@ -24,9 +24,10 @@ environment variables and additional command-line arguments.
 
 == Usage ==
 
-Applications using \parafeed\ can be used as interactive programmers
+Applications using _parafeed_ can be used as interactive programmers
 where the parameters of the program can be set interactive by the user
-or as a non-interactive program where the parameters are given as {{{<NAME>=<VALUE>}}} list on the command-line.
+or as a non-interactive program where the parameters are given as
+{{{<NAME>=<VALUE>}}} list on the command-line.
 
 == Interactive mode ==
 
@@ -35,14 +36,15 @@ list of its parameters the form of keyword names followed by their
 current values.  By default, the default values displayed will be
 those set by the application programmer.  The settings of the various
 keywords can be stored in a file.  If a file with a name same as the
-application executable file name and with an extension ``.def'' is
-found (see \ref{CUSTOMIZATION}), the values of the keywords will be
+application executable file name and with an extension ".def" is
+found (see Section on *CUSTOMIZATION*), the values of the keywords will be
 loaded from that file.  The value of the keywords can also be set on
-the command-line in the {\tt <KeyWord>=[<Val0>[,<Val1>[...]]]}
+the command-line in the {{{<KeyWord>=[<Val0>[,<Val1>[...]]]}}}
 format.  This style of setting the initial value of the keywords will
 over-ride the above mentioned mechanisms for setting the keyword
 values. 
 
+=== User Commands ===
 In the interactive sessions, a simple shell allows setting/un-setting
 of the listed keyword values.  Following commands are available in the
 shell:
@@ -63,28 +65,28 @@ shell:
 }}}
 
 These commands form the standard set of shell commands available in
-all applications using \parafeed\.  Mechanism exists to add
+all applications using _parafeed_.  Mechanism exists to add
 application specific commands, or suppress any of the above standard
 commands, if the application programmer chooses to do so.  However the
-``help'' command is always expected to show all the commands available.
+"help" command is always expected to show all the commands available.
 
 The keywords can be set/reset from this shell by commands of the type
 {{{<KeyWord>=<Val>}}}.  For recognizing the names of the keywords in
 such commands, the shell uses the minimum match algorithm
-\label{UI_CMDS}
 
 Following is a short description of the shell commands:
+
   * {{{inp:}}} Display the current setting of all the keywords.  If a keyword is given as an argument, the setting of only that keyword will be displayed.
   
   * {{{go:}}} End of the interactive session.  The values of the keywords set by the users are used by the application internally and the application resumes normal execution.
   
-  * {{{gob:}}} Similar to {{{go}}} except that it will run the application in the background and print the process ID (PID) number of the background process on the screen (also see section \ref{CUSTOMIZATION}).
+  * {{{gob:}}} Similar to {{{go}}} except that it will run the application in the background and print the process ID (PID) number of the background process on the screen (also see section on *CUSTOMIZATION*).
   
   * {{{cd:}}} Change the current working directory within the interactive shell.
   
   * {{{'?':}}} Print some basic information about the type, the number of values the keywords expects, factory settings for the keywords and list of options, if available.  If a keyword is given as an argument, information about only that keyword will be printed.
   
-  * {{{explain:}}} Print as detailed a help about the application and the keywords as the author of the application has cared to write in the help file.  These help files are located in the directory specified by the environment variable {{{GDOC}}} (see section \ref{CUSTOMIZATION}).
+  * {{{explain:}}} Print as detailed a help about the application and the keywords as the author of the application has cared to write in the help file.  These help files are located in the directory specified by the environment variable {{{GDOC}}} (see section on *CUSTOMIZATION*).
   
   * {{{save:}}} Save the current setting of the keywords in a file.  By default, these values are saved in a file named {{{./<Application Name>.def}}}.  If a file name is supplied as an argument of this command, the values will be saved in the file.
   
@@ -92,7 +94,7 @@ Following is a short description of the shell commands:
   
   * {{{load:}}} Load the values of keywords from a file. By default it loads the settings for the keywords from the file {{{./<Application Name>.def}}}.  If this file is already present when the application is started, it is loaded automatically.  Alternatively, it can load settings from a file provided as an argument to the {{{load}}} command.
   
-  * {{{edit:}}} Edit the keyword values in an editor of choice specified by the environment variable {{{EDITOR}}} (see section \ref{CUSTOMIZATION}).
+  * {{{edit:}}} Edit the keyword values in an editor of choice specified by the environment variable {{{EDITOR}}} (see section on *CUSTOMIZATION*).
   
   * {{{quit:}}} Quits the interactive session without executing the application.
 
@@ -101,22 +103,22 @@ mentioned commands or any of the application specific commands, are
 passed to the underlying Operating System (OS) user shell.  Hence,
 most of the native OS commands shall still be available from this
 shell.  (Users however must be aware that certain OS shell commands
-like ``{{{setenv}}}'' (for {{{csh}}} users) or ``{{{export}}}'' (for
+like "{{{setenv}}}" (for {{{csh}}} users) or "{{{export}}}" (for
 {{{bash/sh}}} users) will seem to work, but will not have the desired
 effect).
 
 The values of the keywords can be a list of comma-separated values.
 The expected number of values will be reported by the shell-command
 {{{'?'}}} along with the type of the values, enclosed in '{{{[ }}}'
-and '{{{]}}}' pairs.  A blank set of square brackets (``{{{[]}}}'')
+and '{{{]}}}' pairs.  A blank set of square brackets ("{{{[]}}}")
 will be printed for keywords which can accept any number of values.
 Some keywords may accept values of mixed types (e.g., string, floats,
-integers).  For such keywords, the reported type will be ``{{{UNKNOWN}}}''.
+integers).  For such keywords, the reported type will be "{{{UNKNOWN}}}".
 
 Comma is treated as a separator in a list of values for a keyword.  To
-suppress its interpretation as a separator, it can to be ``escaped''
+suppress its interpretation as a separator, it can to be "escaped"
 using the backslash ('{{{/}}}') before the comma.  For example,
-if the value of a keyword {{{key}}} has to be set to a string {{{``Funny, value with a comma''}}}, it can be done using
+if the value of a keyword {{{key}}} has to be set to a string {{{"Funny, value with a comma"}}}, it can be done using
 
 {{{
                 key=Funny\, value with a comma
@@ -152,20 +154,20 @@ Numbers in the expression can be in any of the following representations:
 
 The user interface system allows the application programmers to define
 shell symbols which are treated as constants (i.e. their values cannot
-be modified by the user).  These symbols are referred to as the {\tt
-  const symbols}.  Some applications may load a number of frequently
-used values of various keywords as {\tt const symbols}.  However,
-by default, none of the {\tt const symbols} are presented to the user
-and it is the responsibility of application programmer to add extra
-shell-commands for viewing the list of {\tt const symbols}.
+be modified by the user).  These symbols are referred to as the
+{{{const symbols}}}.  Some applications may load a number of
+frequently used values of various keywords as {{{const symbols}}}.
+However, by default, none of the {{{const symbols}}} are presented to
+the user and it is the responsibility of application programmer to add
+extra shell-commands for viewing the list of {{{const symbols}}}.
 
-Values can be transfered from one keyword or a {\tt const symbol} to
-another keyword.  E.g. to transfer the $i^{th}$ value from keyword
-{\tt Key1} to a keyword {\tt Key2}, one could use {\tt Key2 =
-\$Key1[i]}.  {\tt Key2=\$Key1} will transfer all values of {\tt Key1}
-to {\tt Key2}.
+Values can be transfered from one keyword or a {{{const symbol}}} to
+another keyword.  E.g. to transfer the i^{th} value from keyword
+{{{Key1}}} to a keyword {{{Key2}}}, one could use {{{Key2 =
+$Key1[i]}}}.  {{{Key2=$Key1}}} will transfer all values of {{{Key1}}}
+to {{{Key2}}}.
 
-\subsubsection{TABBED completion}
+=== TABBED completion ===
 
 TABBED completion is available, when the library is compiled with GNU
 Readline support.  
@@ -187,8 +189,7 @@ name as an argument, file name completion will be envoked.  For
 commands that can take keywords are argument, keyword completion will
 be envoked.
 
-\subsubsection{Parameter unwinding (context sensitive parameter
-hiding/exposing)}
+=== Parameter unwinding (context sensitive parameter hiding/exposing) ===
 
 For applications with a long list of possible keywords, it is useful
 to expose only a minimum set of required keywords. There might be
@@ -211,39 +212,39 @@ red-coloured keyword above it in the list of displayed keywords).
 Green coloured keywords indicate that this keyword could be hiding
 other keywords and could itself be hidden by some other keyword.
 
-\subsection{Non-interactive mode}
+== Non-interactive mode ==
 
-The application using \parafeed\ can also be started in a
-non-interactive mode by giving {\tt ``help=noprompt''} as a
+The application using _parafeed_ can also be started in a
+non-interactive mode by giving {{{"help=noprompt"}}} as a
 command-line option.  All keywords that need to be set (i.e., default
-values are not acceptable) must be listed as {\tt <NAME>=<VALUE>}
-pairs on the command-line.  E.g. an application named ``myapp'' with a
-parameter named ``key1''' can be started in the non-interactive mode
-with ``Value0,Value1,Value2'' for the value of ``key1'' as:
+values are not acceptable) must be listed as {{{<NAME>=<VALUE>}}}
+pairs on the command-line.  E.g. an application named "myapp" with a
+parameter named "key1"' can be started in the non-interactive mode
+with "Value0,Value1,Value2" for the value of "key1" as:
 
-\begin{verbatim}
+{{{
 myapp help=noprompt key1=Value0,Value1,Value2
-\end{verbatim}
+}}}
 
-See Section~\ref{HELP_KEYWORD} for more on the use of the {\tt help}
+See Section on *HELP KEYWORD* for more on the use of the {{{help}}}
 command-line keyword.
 
-\section{File name convention}
+== File name convention ==
 
 Most off-line applications can perform I/O using UNIX pipes.  If the
-input file name begins with '{\tt <}', the rest of the file name is
+input file name begins with '{{{<}}}', the rest of the file name is
 treated as a command, the output of which becomes the input of the
-application. For example, to supply the output of a program \tmac\ as
-the input of the program \xtract, the {\tt ``{\tt in}''} keyword of
-\xtract\ must be set to `{\tt <tmac}''.  After the shell-command {\tt
-go} is issued for \xtract, the interface of \tmac\ will be started and
-the keywords of \tmac\ can then be set in the normal fashion.  When
-the shell-command {\tt go} is issued again, \tmac\ will begin
-execution, and the output of \tmac\ becomes the input of \xtract.
-Till this time, execution of \xtract\ would remain blocked, waiting
-for input from \tmac.
+application. For example, to supply the output of a program {{{tmac}}}
+as the input of the program {{{xtract}}}, the "{{{in}}}" keyword of
+_xtract_ must be set to {{{"<tmac"}}}.  After the shell-command
+{{{go}}} is issued for {{{xtract}}}, the interface of {{{tmac}}} will
+be started and the keywords of {{{tmac}}} can then be set in the
+normal fashion.  When the shell-command {{{go}}} is issued again,
+{{{tmac}}} will begin execution, and the output of {{{tmac}}} becomes the
+input of {{{xtract}}}.  Till this time, execution of {{{xtract}}} would remain
+blocked, waiting for input from {{{tmac}}}.
 
-Similarly, if the output file name begins with the '{\tt |}'
+Similarly, if the output file name begins with the '{{{|}}}'
 character, the rest of the file name is treated as a command, the
 input of which becomes the output of the off-line program.
 
@@ -252,152 +253,49 @@ go to the standard output stream (usually your screen) and a blank
 input file name implies that the input would be read from the standard
 input stream (usually your keyboard).
 
-\section{Customization}
-\label{CUSTOMIZATION}
+== Customization ==
 
 The user interface can be customized using the following environment
 variables. 
 
-\begin{itemize}
+  * {{{GDOC:}}} {{{GDOC}}} must point to the standard directory where documents explaining the various off-line data analysis programs are kept. The {{{explain}}} command will first look for the explanation file in the local directory and then in the directory specified by this variable.  The name of the explanation file is constructed by appending the suffix {{{".doc"}}} to the application name.
 
-\item        {\tt GDOC}
-  
-  {\tt GDOC} must point to the standard directory where documents
-  explaining the various off-line data analysis programs are kept.
-  The {\tt explain} command will first look for the explanation file
-  in the local directory and then in the directory specified by this
-  variable.  The name of the explanation file is constructed by
-  appending the suffix {\tt ``.doc''} to the application name.
+  * {{{GERR, GOUT:}}} {{{GERR}}} and {{{GOUT}}} variables are used when the application is run using the {{{gob}}} command (see section on *USER COMMANDS*).  The standard output of the application will be redirected to the file specified by {{{GOUT}}} while the standard error stream will be redirected to the file specified by {{{GERR}}}.  By default, these variables are set to {{{/dev/null}}}.
 
-\item        {\tt GERR, GOUT}
-  
-  {\tt GERR} and {\tt GOUT} variables are used when the application is
-  run using the {\tt gob} command (see section \ref{UI_CMDS}).  The
-  standard output of the application will be redirected to the file
-  specified by {\tt GOUT} while the standard error stream will be
-  redirected to the file specified by {\tt GERR}.  By default, these
-  variables are set to {\tt /dev/null}.
+  * {{{GCONF}}}: Some applications may load frequently used setting for some keywords.  These values are loaded as constants of the interactive shell and can be stored in a configuration file.  Their values can be transfered to the application keywords by referring to their value by '$' mechanism (see section on *De-referencing Mechanism*).  The path of the directory containing these configuration files is specified by the environment variable {{{GCONF}}}.  The configuration filename is constructed by appending the suffix "{{{.config}}}" to the application name.  If {{{GCONF}}} is not defined, the application looks in the directory specified by {{{GDOC}}}.  If this variable is also not defined, or the configuration file is not found, the application will look for the configuration file in the current directory.
 
-\item   {\tt GCONF}
-  
-  Some applications may load frequently used setting for some
-  keywords.  These values are loaded as constants of the interactive
-  shell and can be stored in a configuration file.  Their values can
-  be transfered to the application keywords by referring to their
-  value by '\$' mechanism (see section \ref{DOLLOR_MECH}).  The path
-  of the directory containing these configuration files is specified
-  by the environment variable {\tt GCONF}.  The configuration filename
-  is constructed by appending the suffix ``{\tt .config}'' to the
-  application name.  If {\tt GCONF} is not defined, the application
-  looks in the directory specified by {\tt GDOC}.  If this variable is
-  also not defined, or the configuration file is not found, the
-  application will look for the configuration file in the current
-  directory.
+  * {{{EDITOR}}}:{{{EDITOR}}} environment variable is used to specify the name of the text editor to be used in the {{{edit}}} command (see section on *User Commands*).  The default editor is {{{emacs}}}.
 
-\item   {\tt EDITOR}
+  * {{{GDEFAULTS}}}: The default values of keywords can be saved in "defaults file".  {{{GDEFAULTS}}} variable specifies the directory where these files are stored.  Such a file can be automatically loaded by the applications upon startup.  The defaults file name is constructed by appending the suffix "{{{.def}}}" to the application name.
   
-  {\tt EDITOR} environment variable is used to specify the name of the
-  text editor to be used in the {\tt edit} command (see section
-  \ref{UI_CMDS}).  The default editor is {\tt emacs}.
+  By default, the application will look for the defaults file in the current directory.  If a keyword appears in the "{{{.def}}}" as well as in the "{{{.config}}}" file, the keyword will be treated as a shell constant.  This can be used to effectively produce specialized versions of an application program by writing an appropriated "{{{.config}}}", where keywords can have fixed values, not alterable by the user (e.g., a version of {{{xtract}}} which will read input from the shared memory of the GMRT data acquisition system).
 
-\item   {\tt GDEFAULTS}
-  
-  The default values of keywords can be saved in ``defaults file''.
-  {\tt GDEFAULTS} variable specifies the directory where these files
-  are stored.  Such a file can be automatically loaded by the
-  applications upon startup.  The defaults file name is constructed by
-  appending the suffix ``{\tt.def}'' to the application name.
-  
-  By default, the application will look for the defaults file in the
-  current directory.  If a keyword appears in the ``{\tt.def}'' as
-  well as in the ``{\tt .config}'' file, the keyword will be treated
-  as a shell constant.  This can be used to effectively produce
-  specialized versions of an application program by writing an
-  appropriated ``{\tt .config}'', where keywords can have fixed
-  values, not alterable by the user (e.g., a version of {\tt
-    xtract} which will read input from the shared memory of the GMRT
-  data acquisition system).
-
-\end{itemize}
 
 The following two variables are effective only for versions of the
 user interface libraries which use the GNU Readline and the History
 libraries.
 
-\begin{itemize}
-\item   {\tt GHIST}
-  
-  {\tt GHIST} specifies the file in which the history of the commands
-  issued in the interactive session is saved.  This file will be
-  common to all applications.  The default history file is {\tt
-    \$HOME/.g\_hist}.
-  
-  This is also the file from which all applications will load the
-  command history.
+ * {{{GHIST}}}:{{{GHIST}}} specifies the file in which the history of the commands issued in the interactive session is saved.  This file will be common to all applications.  The default history file is {{{$HOME/.g_hist}}}.  This is also the file from which all applications will load the command history.
 
-\item   {\tt MAXGHIST}
-  
-  {\tt MAXGHIST} should be set to the maximum number of command
-  history entries which the user wishes to save.  By default this is
-  set to 100.
-\end{itemize}
+ * {{{MAXGHIST}}}: {{{MAXGHIST}}} should be set to the maximum number of command history entries which the user wishes to save.  By default this is set to 100.
 
 
-\subsection{The {\tt help} keyword}
-\label{HELP_KEYWORD}
-All applications are sensitive to the keyword {\tt help} (not to be
-confused with the shell command {\tt help} described in section
-\ref{UI_CMDS}).  It is never displayed in the list of keywords.  To
+== The {{{help}}} keyword ==
+
+All applications are sensitive to the keyword {{{help}}} (not to be
+confused with the shell command {{{help}}} described in section on *User Commands*).  It is never displayed in the list of keywords.  To
 use it, it must be specified as a command-line argument.  Following is
 the list of values that can be set for this keyword on the
 command-line and their effect:
 
-\begin{itemize}
+ * {{{help=noprompt}}}: The application runs in the non-interactive mode.  This is useful
+  when the application is run from a shell script. When run in this mode, value of all the keywords which needs to be set must be supplied on the command-line (the order of the command-line options is not important).  The keywords must be fully spelled in the command-line options (i.e., no minimum-match will be applicable).
 
-\item {\tt help=noprompt}
-  
-  The application runs in the non-interactive mode.  This is useful
-  when the application is run from a shell script.
-  
-  When run in this mode, value of all the keywords which needs to be
-  set must be supplied on the command-line (the order of the
-  command-line options is not important).  The keywords must be fully
-  spelled in the command-line options (i.e., no minimum-match will be
-  applicable).
+ * {{{help=explain}}}: This executes the {{{explain}}} command of the interactive shell (see section on *User Commands*) without starting the interactive shell. If a keyword is supplied within brackets ({{{'('}}} and {{{')'}}}) immediately after the {{{explain}}} string (e.g. {{{help=explain(out)}}}, help will be provided for the specified keyword alone.  If an application name is also included within the brackets, separated from the keyword by a colon ('{{{:}}}') (e.g. {{{help=explain(out:xtract)}}}, help for the named keyword of the named application will be provided.  If the keyword is skipped (but not the colon), entire help of the named application will be provided.
 
-\item {\tt help=explain}
-  
-  This executes the {\tt explain} command of the interactive shell
-  (see section \ref{UI_CMDS}) without starting the interactive shell.
-  
-  If a keyword is supplied within brackets ({\tt '('} and {\tt ')'})
-  immediately after the {\tt explain} string (e.g. {\tt
-    help=explain(out)}, help will be provided for the specified
-  keyword alone.  If an application name is also included within the
-  brackets, separated from the keyword by a colon ('{\tt :}') (e.g.
-  {\tt help=explain(out:xtract)}, help for the named keyword of the
-  named application will be provided.  If the keyword is skipped (but
-  not the colon), entire help of the named application will be
-  provided.
+ * {{{help=doc}}}: This results into an empty documentation file written on the standard output, in the required format, with a list of keywords to which the application is sensitive.  This is for use by authors of the applications and to encourage them to not only write the documentation, but also in a uniform format.
 
-\item {\tt help=doc}
-  
-  This results into an empty documentation file written on the
-  standard output, in the required format, with a list of keywords to
-  which the application is sensitive.  This is for use by authors of
-  the applications and to encourage them to not only write the
-  documentation, but also in a uniform format.
-
-\item {\tt help=dbg}
-  
-  Application programmers can define hidden keywords which are
-  normally not displayed for the user, but will be used by the
-  application internally.  These keywords can be accessed as normal
-  keywords by setting {\tt help} keyword to the value ``{\tt dbg}''.
-
-\end{itemize}
-
-
+ * {{{help=dbg}}}: Application programmers can define hidden keywords which are normally not displayed for the user, but will be used by the application internally.  These keywords can be accessed as normal keywords by setting {{{help}}} keyword to the value "{{{dbg}}}".
 
 
 
