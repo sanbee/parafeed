@@ -1,3 +1,4 @@
+#labels Featured
 = parafeed: A simple embedded user interface =
 
 === Abstract: ===
@@ -337,5 +338,4 @@ command-line and their effect:
    Application programmers can define hidden keywords which are normally not displayed for the user, 
    but will be used by the application internally.  These keywords can be accessed as normal keywords 
    by setting {{{help}}} keyword to the value "{{{dbg}}}".
-
 
