@@ -76,27 +76,53 @@ such commands, the shell uses the minimum match algorithm
 
 Following is a short description of the shell commands:
 
-  * {{{inp:}}} Display the current setting of all the keywords.  If a keyword is given as an argument, the setting of only that keyword will be displayed.
+  * {{{inp:}}} 
+    Display the current setting of all the keywords.  If a keyword is given as an argument, the 
+    setting of only that keyword will be displayed.
   
-  * {{{go:}}} End of the interactive session.  The values of the keywords set by the users are used by the application internally and the application resumes normal execution.
+  * {{{go:}}} 
+    End of the interactive session.  The values of the keywords set by the users are used by the 
+    application internally and the application resumes normal execution.
   
-  * {{{gob:}}} Similar to {{{go}}} except that it will run the application in the background and print the process ID (PID) number of the background process on the screen (also see section on *CUSTOMIZATION*).
+  * {{{gob:}}} 
+    Similar to {{{go}}} except that it will run the application in the background and print the 
+    process ID (PID) number of the background process on the screen (also see section on *CUSTOMIZATION*).
   
-  * {{{cd:}}} Change the current working directory within the interactive shell.
+  * {{{cd:}}} 
+    Change the current working directory within the interactive shell.
   
-  * {{{'?':}}} Print some basic information about the type, the number of values the keywords expects, factory settings for the keywords and list of options, if available.  If a keyword is given as an argument, information about only that keyword will be printed.
+  * {{{'?':}}} 
+    Print some basic information about the type, the number of values the keywords expects, 
+    factory settings for the keywords and list of options, if available.  If a keyword is given as an argument, 
+    information about only that keyword will be printed.
   
-  * {{{explain:}}} Print as detailed a help about the application and the keywords as the author of the application has cared to write in the help file.  These help files are located in the directory specified by the environment variable {{{GDOC}}} (see section on *CUSTOMIZATION*).
+  * {{{explain:}}} 
+    Print as detailed a help about the application and the keywords as the author of the 
+    application has cared to write in the help file.  These help files are located in the directory specified by 
+    the environment variable {{{GDOC}}} (see section on *CUSTOMIZATION*).
   
-  * {{{save:}}} Save the current setting of the keywords in a file.  By default, these values are saved in a file named {{{./<Application Name>.def}}}.  If a file name is supplied as an argument of this command, the values will be saved in the file.
+  * {{{save:}}} 
+    Save the current setting of the keywords in a file.  By default, these values are saved in a 
+    file named {{{./<Application Name>.def}}}.  If a file name is supplied as an argument of this command, 
+    the values will be saved in the file.
   
-  * {{{savecmd:}}} Save the current setting of the keywords in a file in the form of a UNIX command.  By default, these values are saved in a file named {{{./<Application Name>.cmd}}}.  If a file name is supplied as an argument of this command, the values will be saved in the file.
+  * {{{savecmd:}}} 
+    Save the current setting of the keywords in a file in the form of a UNIX command.  By 
+    default, these values are saved in a file named {{{./<Application Name>.cmd}}}.  If a file name is 
+    supplied as an argument of this command, the values will be saved in the file.
   
-  * {{{load:}}} Load the values of keywords from a file. By default it loads the settings for the keywords from the file {{{./<Application Name>.def}}}.  If this file is already present when the application is started, it is loaded automatically.  Alternatively, it can load settings from a file provided as an argument to the {{{load}}} command.
+  * {{{load:}}}
+    Load the values of keywords from a file. By default it loads the settings for the keywords 
+    from the file {{{./<Application Name>.def}}}.  If this file is already present when the application is 
+    started, it is loaded automatically.  Alternatively, it can load settings from a file provided as an argument 
+    to the {{{load}}} command.
   
-  * {{{edit:}}} Edit the keyword values in an editor of choice specified by the environment variable {{{EDITOR}}} (see section on *CUSTOMIZATION*).
+  * {{{edit:}}} 
+    Edit the keyword values in an editor of choice specified by the environment variable 
+    {{{EDITOR}}} (see section on *CUSTOMIZATION*).
   
-  * {{{quit:}}} Quits the interactive session without executing the application.
+  * {{{quit:}}} 
+    Quits the interactive session without executing the application.
 
 All inputs to the interactive shell, which are not any of the above
 mentioned commands or any of the application specific commands, are
@@ -163,8 +189,7 @@ extra shell-commands for viewing the list of {{{const symbols}}}.
 
 Values can be transfered from one keyword or a {{{const symbol}}} to
 another keyword.  E.g. to transfer the i^{th} value from keyword
-{{{Key1}}} to a keyword {{{Key2}}}, one could use {{{Key2 =
-$Key1[i]}}}.  {{{Key2=$Key1}}} will transfer all values of {{{Key1}}}
+{{{Key1}}} to a keyword {{{Key2}}}, one could use {{{Key2=$Key1[i]}}}.  {{{Key2=$Key1}}} will transfer all values of {{{Key1}}}
 to {{{Key2}}}.
 
 === TABBED completion ===
@@ -280,7 +305,7 @@ libraries.
  * {{{MAXGHIST}}}: {{{MAXGHIST}}} should be set to the maximum number of command history entries which the user wishes to save.  By default this is set to 100.
 
 
-== The {{{help}}} keyword ==
+== The 'help' keyword ==
 
 All applications are sensitive to the keyword {{{help}}} (not to be
 confused with the shell command {{{help}}} described in section on *User Commands*).  It is never displayed in the list of keywords.  To
@@ -288,17 +313,29 @@ use it, it must be specified as a command-line argument.  Following is
 the list of values that can be set for this keyword on the
 command-line and their effect:
 
- * {{{help=noprompt}}}: The application runs in the non-interactive mode.  This is useful
-  when the application is run from a shell script. When run in this mode, value of all the keywords which needs to be set must be supplied on the command-line (the order of the command-line options is not important).  The keywords must be fully spelled in the command-line options (i.e., no minimum-match will be applicable).
+ * {{{help=noprompt}}}: 
+   The application runs in the non-interactive mode.  This is useful when the application is run from a shell 
+   script. When run in this mode, value of all the keywords which needs to be set must be supplied on the 
+   command-line (the order of the command-line options is not important).  The keywords must be fully 
+   spelled in the command-line options (i.e., no minimum-match will be applicable).
 
- * {{{help=explain}}}: This executes the {{{explain}}} command of the interactive shell (see section on *User Commands*) without starting the interactive shell. If a keyword is supplied within brackets ({{{'('}}} and {{{')'}}}) immediately after the {{{explain}}} string (e.g. {{{help=explain(out)}}}, help will be provided for the specified keyword alone.  If an application name is also included within the brackets, separated from the keyword by a colon ('{{{:}}}') (e.g. {{{help=explain(out:xtract)}}}, help for the named keyword of the named application will be provided.  If the keyword is skipped (but not the colon), entire help of the named application will be provided.
+ * {{{help=explain}}}: 
+   This executes the {{{explain}}} command of the interactive shell (see section on *User Commands*)  
+   without starting the interactive shell. If a keyword is supplied within brackets ({{{'('}}} and {{{')'}}}) 
+   immediately after the {{{explain}}} string (e.g. {{{help=explain(out)}}}, help will be provided for the 
+   specified keyword alone.  If an application name is also included within the brackets, separated from 
+   the keyword by a colon ('{{{:}}}') (e.g. {{{help=explain(out:xtract)}}}, help for the named keyword of the 
+   named application will be provided.  If the keyword is skipped (but not the colon), entire help of the 
+   named application will be provided.
 
- * {{{help=doc}}}: This results into an empty documentation file written on the standard output, in the required format, with a list of keywords to which the application is sensitive.  This is for use by authors of the applications and to encourage them to not only write the documentation, but also in a uniform format.
+ * {{{help=doc}}}: 
+   This results into an empty documentation file written on the standard output, in the required format, with 
+   a list of keywords to which the application is sensitive.  This is for use by authors of the applications and 
+   to encourage them to not only write the documentation, but also in a uniform format.
 
- * {{{help=dbg}}}: Application programmers can define hidden keywords which are normally not displayed for the user, but will be used by the application internally.  These keywords can be accessed as normal keywords by setting {{{help}}} keyword to the value "{{{dbg}}}".
-
-
-
-
+ * {{{help=dbg}}}: 
+   Application programmers can define hidden keywords which are normally not displayed for the user, 
+   but will be used by the application internally.  These keywords can be accessed as normal keywords 
+   by setting {{{help}}} keyword to the value "{{{dbg}}}".
 
 
