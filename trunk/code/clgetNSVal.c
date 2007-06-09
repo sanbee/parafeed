@@ -65,6 +65,7 @@ int clgetNSValp(const string& Name, vector<string>& Val, int& m)
   else sprintf(tmp,"string[%d]",m);
 
   S = SearchQSymb((char *)Name.c_str(), tmp);
+  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   if (S==NULL) return CL_FAIL;
   else 
     {

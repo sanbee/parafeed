@@ -32,6 +32,7 @@
 #define   CL_FLOATTYPE     32
 #define   CL_INTEGERTYPE   64
 #define   CL_STRINGTYPE    128
+#define   CL_CMDLINETYPE   256
 
 #define   CL_ARG_NONE 0
 #define   CL_ARG_FILENAME 2

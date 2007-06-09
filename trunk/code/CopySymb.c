@@ -54,8 +54,11 @@ int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
       else t->Val = (char **)calloc(1,sizeof(char **)*S->NVals);
       for (i=0;i<S->NVals;i++)
 	{
-	  t->Val[i] = (char *)getmem(strlen(S->Val[i])+1,"CopySymb");
-	  strcpy(t->Val[i],S->Val[i]);
+	  if (S->Val[i] != NULL)
+	    {
+	      t->Val[i] = (char *)getmem(strlen(S->Val[i])+1,"CopySymb");
+	      strcpy(t->Val[i],S->Val[i]);
+	    }
 	}
     }
   //
