@@ -190,7 +190,7 @@ int ParseCmdLine(int argc, char *argv[])
 	  n=j=0;
 
 	  n = ntok(buf,",",CL_ESC);
-	  if (n) S->Val = (char **)
+	  if (n && (strlen(buf) > 0)) S->Val = (char **)
 		   getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
 	  n=0;
 	  tok=(char *)clstrtok(buf,",",CL_ESC);
