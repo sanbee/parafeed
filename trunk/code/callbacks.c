@@ -25,6 +25,7 @@
 #include <shell.h>
 #include <shell.tab.h>
 #include <string>
+#include <errno.h>
 //#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
@@ -425,8 +426,20 @@ END{									\
   int docmdsave(char *f)
   {
     FILE *fd;
-    char str[MAXBUF],ProgName[MAXBUF];
+    char str[MAXBUF],ProgName[MAXBUF]="";
     stripwhite(f);
+
+    strcpy(str,cl_ProgName);
+#ifdef GNUREADLINE
+    str[strlen(cl_ProgName)-1]='\0';
+#endif
+    strcpy(ProgName,str);
+
+    char rpath[PATH_MAX];
+    
+    if (realpath(ProgName,rpath)==NULL)
+      fprintf(stderr,"###Error: %s\n",strerror(errno));
+
     if(f==NULL || strlen(f) == 0)
       {
 	strcpy(str,cl_ProgName);
@@ -446,7 +459,8 @@ END{									\
     else
       {
 	Symbol *t;
-	fprintf(fd,"%s help=noprompt ",ProgName);
+	//	fprintf(fd,"%s help=noprompt ",ProgName);
+	fprintf(fd,"%s help=noprompt ",rpath);
 	for (t=cl_SymbTab;t;t=t->Next)
 	  if ((t->Class==CL_APPLNCLASS) ||
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
