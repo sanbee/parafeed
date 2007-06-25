@@ -305,9 +305,11 @@ END{									\
   {
     CmdSymbol *S;
     fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:  Indicates that the current setting is hiding other keywords.\n");
-    fprintf(stderr,"  Blue: Indicates that the keyword can be hidden by some other keyword(s).\n");
-    fprintf(stderr,"        (usually by the first red coloured keyword above).\n");
+    fprintf(stderr,"  Red:   Indicates that the current setting is hiding other keywords.\n");
+    fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
+    fprintf(stderr,"         (usually by the first red coloured keyword above).\n");
+    fprintf(stderr,"  Green: Indicatesthat the keyword can be both hidden by some other keyword(s)\n");
+    fprintf(stderr,"         and can itself be also hidden by other keyword(s).\n");
     fprintf(stderr,"--------------------------------------------------------------------\n");
     fprintf(stderr,"Default values:\n");
     fprintf(stderr,"  If a keyword is un-set (or set to BLANK), the default value as used\n");
@@ -315,6 +317,7 @@ END{									\
     fprintf(stderr,"--------------------------------------------------------------------\n");
 #ifdef GNUREADLINE
     fprintf(stderr,"TABBED completion:\n");
+    fprintf(stderr,"  Min-match algorithm is used for matching a user input with keywords.\n\n");
     fprintf(stderr,"  GNU Readline completion mechanism uses all available keywords and \n");
     fprintf(stderr,"  shell commands.\n");
     fprintf(stderr,"\n");
