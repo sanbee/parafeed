@@ -36,7 +36,8 @@ AWK           = awk
 # Others...
 #
 READLINEHOME  = /usr/local
-PUB           = $(GLIB)
+PUBLIBS       = $(GLIB)
+PINCLUDE      = $(GINCLUDE)
 CALCHOME      = ./calc
 
 READLINEINCL  = $(READLINEHOME)/include
@@ -63,7 +64,8 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clstrtStream.o clloadConfig.o callbacks.o support.o               \
 	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
-	 clSigHandler.o clIsInteractive.o
+	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
+	 clSetOptions.o clTextColouring.o
 
 FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
@@ -76,7 +78,8 @@ FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 all: libs $(CALCHOME)/libcalc.a libcalc.a 
 
 install: libs
-	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUB)
+	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUBLIBS)
+	cp *.h $(PINCLUDE)
 
 libs: libshccl.a libsh.a $(CALCHOME)/libcalc.a
 #
@@ -163,6 +166,15 @@ SetCmdTab.o:SetCmdTab.c clshelldefs.h cl.h
 
 minmatch.o:minmatch.c clshelldefs.h cl.h
 	$(C++) -c $(INCL) minmatch.c
+
+rl_interface.o: rl_interface.cc cllib.h
+	$(C++) -c $(INCL) rl_interface.cc
+
+clSetOptions.o: clSetOptions.cc clshelldefs.h
+	$(C++) -c $(INCL) clSetOptions.cc
+
+clTextColouring.o: clTextColouring.cc clshelldefs.h
+	$(C++) -c $(INCL) clTextColouring.cc
 #
 # The CL library package related targets.  libshccl.a depends on 
 # the shell library libsh.a
@@ -198,7 +210,7 @@ clgetIVal.o:clgetIVal.c clshelldefs.h cl.h cllib.h
 cldbggetIVal.o:cldbggetIVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) cldbggetIVal.c
 
-clgetSVal.o:clgetSVal.c clshelldefs.h cl.h cllib.h
+clgetSVal.o:clgetSVal.cc clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetSVal.cc
 
 cldbggetSVal.o:cldbggetSVal.c clshelldefs.h cl.h cllib.h
