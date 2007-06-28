@@ -339,3 +339,40 @@ command-line and their effect:
    but will be used by the application internally.  These keywords can be accessed as normal keywords 
    by setting {{{help}}} keyword to the value "{{{dbg}}}".
 
+== Example ==
+Here is a typical screen-shot of an application using _parafeed_ for user interface, when started in the interactive mode:
+{{{
+sbhatnag@langur> clean
+ms            = ../TestData/data_ic2233.VLA.FullPol.2.cal.ms
+imsize        = 1024*2,1024*2
+cellsize      = 7,7
+model         = test_ic2233.20.3.pcal
+restored      =
+residual      =
+mask          =
+complist      =
+ftmachine     = pbwproject
+facets        = 1
+wplanes       = 1
+applyoffsets  = 0
+pointingtable =
+cfcache       = predict.cfcache
+painc         = 360
+algorithm     = cs
+stokes        = IV
+weighting     = natural
+field         = 0
+spw           = 0
+time          =
+baseline      =
+mode          = continuum
+datanchan     = 20
+datastart     = 6
+datastep      = 1
+gain          = 0.1
+niter         = 1000
+threshold     = 0
+interactive   = 0
+clean>
+}}}
+
