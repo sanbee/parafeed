@@ -156,12 +156,19 @@ END{									\
 		    S->Exposed=1;
 		    exposedSomething=1;
                     //
-                    // Make the attributes CL_KEYWORD if a keyword is
-                    // hidden due to a setting of a keyword which is
-                    // made into a shell constant (by the .config
-                    // file).
+                    // Remove the CL_KEYWORD attribute if a keyword is
+                    // hidden due to a setting of another keyword which 
+                    // is made into a shell constant (by the .config
+                    // file).  Such a keyword should not be colour coded
+                    // (since the other keyword which will hide/expose
+                    // this keyword is not exposed itself...hence user
+                    // has really no control on the exposure of these
+                    // keywords).
                     // 
-                    if (t->Class==CL_USERCLASS) SETBIT(S->Attributes,CL_KEYWORD);
+                    if (t->Class==CL_USERCLASS) 
+                      {
+                        RESETBIT(S->Attributes,CL_KEYWORD);
+                      }
 		  }
 	      }
 	  }
