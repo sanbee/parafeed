@@ -24,7 +24,7 @@
 #define   CL_APPLNCLASS  2
 #define   CL_DBGCLASS    3
 
-#define   CL_KEYWORD     0     // A simple keyword
+#define   CL_KEYWORD     1     // A simple keyword
 #define   CL_VALUE       2     // A value
 #define   CL_HIDDENKEYWORD 4   // A keyword that is hidden by some other keyword(s)
 #define   CL_HIDINGKEYWORD 8   // A keyword that may hide other keywords
@@ -34,7 +34,7 @@
 #define   CL_STRINGTYPE    128
 #define   CL_CMDLINETYPE   256
 
-#define   CL_ARG_NONE 0
+#define   CL_ARG_NONE 1
 #define   CL_ARG_FILENAME 2
 #define   CL_ARG_KEYWORD  4
 
