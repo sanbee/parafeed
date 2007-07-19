@@ -79,7 +79,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   if (!Force)
     if (pos->Class == CL_USERCLASS)
       {
-	string msg="Attempted modificaiont of a shell-constant (named \'" + string(pos->Name) + "\').  Ignored."; 
+	string msg="Attempted modification of a shell-constant (named \'" + string(pos->Name) + "\').  Ignored."; 
 	clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
 	return -2;
       }
