@@ -312,15 +312,16 @@ END{									\
   {
     CmdSymbol *S;
     fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:   Indicates that the current setting is hiding other keywords.\n");
+    fprintf(stderr,"  Red:   Indicates that the current setting of the keyword is hiding other");
+    fprintf(stderr,"         keywords.\n");
     fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
     fprintf(stderr,"         (usually by the first red coloured keyword above).\n");
-    fprintf(stderr,"  Green: Indicatesthat the keyword can be both hidden by some other keyword(s)\n");
-    fprintf(stderr,"         and can itself be also hidden by other keyword(s).\n");
+    fprintf(stderr,"  Green: Indicates that the keyword can be hidden by some other keyword(s)\n");
+    fprintf(stderr,"         and can itself be also hidding other keyword(s).\n");
     fprintf(stderr,"--------------------------------------------------------------------\n");
     fprintf(stderr,"Default values:\n");
-    fprintf(stderr,"  If a keyword is un-set (or set to BLANK), the default value as used\n");
-    fprintf(stderr,"  in the application will be displayed.\n");
+    fprintf(stderr,"  If a keyword is un-set (or set to BLANK), the displayed value is the");
+    fprintf(stderr,"  value that would be used.\n");
     fprintf(stderr,"--------------------------------------------------------------------\n");
 #ifdef GNUREADLINE
     fprintf(stderr,"TABBED completion:\n");
