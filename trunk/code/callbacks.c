@@ -448,8 +448,9 @@ END{									\
 
     char rpath[PATH_MAX];
     
-    if (realpath(ProgName,rpath)==NULL)
-      fprintf(stderr,"###Error: %s\n",strerror(errno));
+/*     if (realpath(ProgName,rpath)==NULL) */
+/*       fprintf(stderr,"###Error: %s\n",strerror(errno)); */
+    strcpy(rpath,ProgName);
 
     if(f==NULL || strlen(f) == 0)
       {
