@@ -57,13 +57,12 @@ int tokenize(FILE *fd, char *str, char *sep,char esc)
 {
   while(*str) 
     {
-
-      //      if (!strncmp(str,"/*",2))
+      //if (!strncmp(str,"/*",2))
       //	  {
-      //	    while(*str && strncmp(str,"*/",2)) fputc(*str++,fd);
-      //	    fputc(*str++,fd);
-      //	  }
-
+//	    while(*str && strncmp(str,"*/",2)) fputc(*str++,fd);
+//	    fputc(*str++,fd);
+	  //}
+      //
       if(*str=='"' || *str==',' || *str == '[' || *str == ']' ||
 	 *str == '$' || *str==esc) fputc(esc,fd);
       fputc(*str++,fd);
