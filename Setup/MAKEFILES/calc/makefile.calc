@@ -1,0 +1,35 @@
+CC =  gcc -g
+C++ = g++ -g
+CPP = cpp
+F77 = f77 $(COMMONOPTS)
+CFLAGS = -I.
+#----------------------------------------------------------------
+#
+# The 'ranlib' program to be run, if it exists
+#
+RANLIB=/bin/ranlib
+#
+LEX =lex
+YACC=bison -y -p calc_
+
+libcalc.a: calc.o calcinit.o
+	ar r libcalc.a calc.o calcinit.o
+	if [ -f $(RANLIB) ]; then $(RANLIB) libcalc.a; fi
+	
+y.tab.c: calc.y lex.yy.c yyerror.c calclib.h
+	$(YACC) calc.y
+
+calc.o: y.tab.c calc.h
+	$(CC) $(CFLAGS) -c y.tab.c -o calc.o
+
+lex.yy.c: lex.l
+	$(LEX) lex.l
+
+y.tab.h: calc.y
+	$(YACC) -d calc.y
+
+calcinit.o:calcinit.c symboltable.h y.tab.h
+	$(CC) $(CFLAGS) -c calcinit.c
+
+clean: 
+	\rm -rf *.o *~ tst *.a
