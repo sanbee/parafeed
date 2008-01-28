@@ -1,5 +1,5 @@
 #-*-makefile-*-
-include $(GSRCROOT)/Setup/Setup.$(GOSDIR)
+include makefile.inc
 #include $(GSRCROOT)/Setup/Setup.$(GOSDIR).personal
 #
 # The GNU readline library is not required unless the -DHAVE_STRING_H
@@ -17,31 +17,32 @@ include $(GSRCROOT)/Setup/Setup.$(GOSDIR)
 #
 # Compiler flags
 #
-ARCH          = $(GOSDIR)
-OPTFLAGS      = -g
-DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
-CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS)
-PREFIX        = sh_
-#
-# Compilers
-#
+#ARCH          = linux_gnu
+#OPTFLAGS      = -g
+#DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
+#COMMONOPTS    = -Wall -I/usr/local/include
+#PREFIX        = sh_
+##
+## Compilers
+##
 #C++           = g++ $(CFLAGS)
-#C++           = /usr/local/compilers/9/gcc_3.2.3/bin/g++ $(CFLAGS)
-#CC            = /usr/local/compilers/9/gcc_3.2.3/bin/gcc $(CFLAGS)
-#F77           = /usr/local/compilers/9/gcc_3.2.3/bin/g77  
-LEX           = flex -Ce -P$(PREFIX)
-YACC          = bison -y -p $(PREFIX)
-AWK           = awk
+##C++           = /usr/local/compilers/9/gcc_3.2.3/bin/g++ $(CFLAGS)
+##CC            = /usr/local/compilers/9/gcc_3.2.3/bin/gcc $(CFLAGS)
+##F77           = /usr/local/compilers/9/gcc_3.2.3/bin/g77  
+#LEX           = flex -Ce -P$(PREFIX)
+#YACC          = bison -y -p $(PREFIX)
+#AWK           = awk
+#READLINEHOME  = /usr/local
 #
 # Others...
 #
-READLINEHOME  = /usr/local
-PUBLIBS       = $(GLIB)
-PINCLUDE      = $(GINCLUDE)
+#PUBLIBS       = $(GLIB)
+#PINCLUDE      = $(GINCLUDE)
+CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS)
 CALCHOME      = ./calc
 
 READLINEINCL  = $(READLINEHOME)/include
-INCL          = -I. -I$(READLINEINCL)
+INCL          = -I$(READLINEINCL) -I./
 
 GENLIBS       = -L$(READLINEHOME)/lib -lm -lfl \
 	        -lreadline -lhistory -ltermcap -lm
@@ -79,7 +80,7 @@ all: libs $(CALCHOME)/libcalc.a libcalc.a
 
 install: libs
 	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUBLIBS)
-	cp *.h $(PINCLUDE)
+	cp *.h $(PUBINCL)
 
 libs: libshccl.a libsh.a $(CALCHOME)/libcalc.a
 #
@@ -333,7 +334,7 @@ libshfcl.a: $(FCLOBJS)
 #	if [ -f $(RANLIB) ]; then $(RANLIB) libshfcl.a; fi
 
 $(CALCHOME)/libcalc.a libcalc.a: 
-	cd $(CALCHOME); $(MAKE) -f makefile.calc.generic libcalc.a
+	cd $(CALCHOME); $(MAKE) -f makefile.calc libcalc.a
 
 gcalc: gcalc.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) -Icalc gcalc.c -o gcalc libshccl.a \
@@ -361,4 +362,4 @@ ftst: ftst.f libshfcl.a libsh.a $(CALCHOME)/libcalc.a
 
 clean: 
 	\rm -rf *.o *~ tst ftst tst2 *.a
-	cd $(CALCHOME); $(MAKE) -f makefile.calc.generic clean
+	cd $(CALCHOME); $(MAKE) -f makefile.calc clean
