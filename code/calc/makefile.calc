@@ -1,22 +1,21 @@
-CC =  gcc -g
-C++ = g++ -g
-CPP = cpp
-F77 = f77 $(COMMONOPTS)
-CFLAGS = -I.
+#-*-makefile-*-
+include ../makefile.inc
 #----------------------------------------------------------------
 #
 # The 'ranlib' program to be run, if it exists
 #
 RANLIB=/bin/ranlib
 #
-LEX =lex
-YACC=bison -y -p calc_
+LEX = flex
+PREFIX = calc_
+#YACC=bison -y -p calc_
+CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS)
 
 libcalc.a: calc.o calcinit.o
 	ar r libcalc.a calc.o calcinit.o
 	if [ -f $(RANLIB) ]; then $(RANLIB) libcalc.a; fi
-	
-y.tab.c: calc.y lex.yy.c yyerror.c calclib.h
+
+y.tab.c: calc.y lex.yy.c yyerror.c
 	$(YACC) calc.y
 
 calc.o: y.tab.c calc.h
