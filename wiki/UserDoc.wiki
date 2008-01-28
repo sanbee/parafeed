@@ -4,7 +4,7 @@
 === Abstract: ===
 _parafeed_ is a library for an embedded user interface that can be
 easily put on a C/C++ program that depends on a number of parameters.
-The parameters can either be passed to the program as a list of
+The parameters can be passed to the program either as a list of
 {{{<NAME>=<VALUE>}}} on the command-line or can be set in an interactive
 session.  This code is derived from the older 
 [http://www.aoc.nrao.edu/~sbhatnag/softwares.html\#CLLIB CL-Lib] library.
@@ -375,4 +375,3 @@ threshold     = 0
 interactive   = 0
 clean>
 }}}
-
