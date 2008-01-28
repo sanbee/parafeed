@@ -1,0 +1,220 @@
+#
+# The GNU readline library is not required unless the -DHAVE_STRING_H
+# and -DGNUREADLINE options are switched on.  If they are switched on,
+# the path to the home of GNU readline library will need setting.
+#
+# Set -DFORTRAN as a compiler switch for building libshfcl.a - the
+# FORTRAN interface of the CommandLine lib.
+# Read the document for the differences and limitations of the 
+# FORTRAN interface.
+#
+# -O4 optimization does not seem to work at Khodad!  Not that it's
+# required here, but the bug should be tracked down
+#
+CC = gcc -O3 -Wall -DHAVE_STRING_H -DGNUREADLINE
+F77 = f77  
+PREFIX=sh_
+LEX = flex -Ce -P$(PREFIX)
+YACC = bison -y -p $(PREFIX)
+READLINEHOME = /astro/local
+CALCHOME=./calc
+INCL = -I. -I$(READLINEHOME)/include
+LIBS = -L$(READLINEHOME)/lib -lm -ll -lfl -lreadline -lhistory -ltermcap -lm
+RANLIB = /astro/local/bin/ranlib 
+
+SHOBJS = CopySymb.o AddCmd.o AddNode.o AddVar.o AllocSymb.o \
+	DeleteCmd.o DeleteVar.o DeleteNode.o DeleteTab.o FreeSymb.o \
+	SearchNode.o SearchSymb.o lex.yy.o shell.tab.o \
+	TransferTab.o PrintVals.o SetVar.o SetPrompt.o SetSymbTab.o \
+	SetCmdTab.o yyerror.o  minmatch.o
+
+CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o AddQKey.o \
+	clgetFVal.o clgetIVal.o clgetSVal.o clgetFullVal.o \
+	clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o \
+	cldbggetFVal.o cldbggetIVal.o cldbggetSVal.o \
+	cldbggetNFVal.o cldbggetNIVal.o cldbggetNSVal.o \
+	clStartInteractive.o clRestartShell.o clfInteractive.o \
+        clstring.o clgetOptsList.o clclearOptsList.o \
+	clgetCommandLine.o clgetOpt.o clstrtStream.o clloadConfig.o \
+	callbacks.o support.o clgetInputFile.o clgetOutputFile.o \
+	clgetNOpts.o clCleanUp.o clgetConfigFile.o
+
+FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o \
+	clgetFVal.o clgetIVal.o clgetSVal.o \
+	clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o \
+	clStartInteractive.o clRestartShell.o clfInteractive.o \
+        clstring.o cl.o
+
+#
+# The default target
+#
+install: libs
+	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUB)/lib/$(OSDIR)
+
+libs: libshccl.a libsh.a $(CALCHOME)/libcalc.a
+#
+# Shell related targets.
+#
+y.tab.c:shell.y
+	$(YACC) -d shell.y	
+y.tab.h:shell.y y.tab.c
+	$(YACC) -d shell.y	
+shell.tab.c:y.tab.c
+	cp y.tab.c shell.tab.c
+shell.tab.h:shell.tab.c
+	cp y.tab.h shell.tab.h
+
+lex.yy.c: shell.l shell.tab.h
+	$(LEX) shell.l
+	sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+
+shell.tab.o: shell.tab.c
+	$(CC) -c $(INCL) shell.tab.c
+lex.yy.o: lex.yy.c
+	$(CC) -c $(INCL) lex.yy.c
+SetVar.o: SetVar.c shell.h
+	$(CC) -c $(INCL) SetVar.c
+SearchSymb.o: SearchSymb.c shell.h
+	$(CC) -c $(INCL) SearchSymb.c
+SearchNode.o: SearchNode.c shell.h
+	$(CC) -c $(INCL) SearchNode.c
+PrintVals.o: PrintVals.c shell.h
+	$(CC) -c $(INCL) PrintVals.c
+yyerror.o:shell.h yyerror.c
+	$(CC) -c $(INCL) yyerror.c
+FreeSymb.o: shell.h FreeSymb.c clshelldefs.h
+	$(CC) -c $(INCL) FreeSymb.c
+CopySymb.o: shell.h CopySymb.c clshelldefs.h
+	$(CC) -c $(INCL) CopySymb.c
+DeleteNode.o: shell.h DeleteNode.c clshelldefs.h
+	$(CC) -c $(INCL) DeleteNode.c
+DeleteVar.o: shell.h DeleteVar.c clshelldefs.h
+	$(CC) -c $(INCL) DeleteVar.c
+DeleteCmd.o: shell.h DeleteCmd.c clshelldefs.h
+	$(CC) -c $(INCL) DeleteCmd.c
+DeleteTab.o: shell.h DeleteTab.c clshelldefs.h
+	$(CC) -c $(INCL) DeleteTab.c
+AddNode.o: shell.h AddNode.c clshelldefs.h
+	$(CC) -c $(INCL) AddNode.c
+AddCmd.o: shell.h AddCmd.c clshelldefs.h
+	$(CC) -c $(INCL) AddCmd.c
+AddVar.o: shell.h AddVar.c clshelldefs.h
+	$(CC) -c $(INCL) AddVar.c
+AllocSymb.o: shell.h AllocSymb.c clshelldefs.h
+	$(CC) -c $(INCL) AllocSymb.c
+TransferTab.o:TransferTab.c clshelldefs.h cl.h
+	$(CC) -c $(INCL) TransferTab.c
+SetPrompt.o:SetPrompt.c clshelldefs.h cl.h
+	$(CC) -c $(INCL) SetPrompt.c
+SetSymbTab.o:SetSymbTab.c clshelldefs.h cl.h
+	$(CC) -c $(INCL) SetSymbTab.c
+SetCmdTab.o:SetCmdTab.c clshelldefs.h cl.h
+	$(CC) -c $(INCL) SetCmdTab.c
+minmatch.o:minmatch.c clshelldefs.h cl.h
+	$(CC) -c $(INCL) minmatch.c
+#
+# The CL library package related targets.  libshccl.a depends on 
+# the shell library libsh.a
+#
+AddQKey.o: cl.h AddQKey.c clshelldefs.h
+	$(CC) -c $(INCL) AddQKey.c
+InstallSymb.o: cl.h InstallSymb.c SymbTab.h
+	$(CC) -c $(INCL) InstallSymb.c
+callbacks.o: cl.h callbacks.c shell.tab.h
+	$(CC) -c $(INCL) callbacks.c
+ParseCmdLine.o:ParseCmdLine.c clshelldefs.h cl.h clconvert.h \
+	clinteract.h shell.h clstring.h shell.tab.h
+	$(CC) -c $(INCL) ParseCmdLine.c
+clparseVal.o: clparseVal.c clshelldefs.h cl.h cllib.h	
+	$(CC) -c $(INCL) clparseVal.c
+clgetFVal.o:clgetFVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetFVal.c
+cldbggetFVal.o:cldbggetFVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetFVal.c
+clgetIVal.o:clgetIVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetIVal.c
+cldbggetIVal.o:cldbggetIVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetIVal.c
+clgetSVal.o:clgetSVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetSVal.c
+cldbggetSVal.o:cldbggetSVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetSVal.c
+clgetNSVal.o:clgetNSVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetNSVal.c
+cldbggetNSVal.o:cldbggetNSVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetNSVal.c
+clgetNFVal.o:clgetNFVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetNFVal.c
+cldbggetNFVal.o:cldbggetNFVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetNFVal.c
+clgetNIVal.o:clgetNIVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetNIVal.c
+cldbggetNIVal.o:cldbggetNIVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetNIVal.c
+clgetNVals.o:clgetNVals.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetNVals.c
+cldbggetNVals.o:cldbggetNVals.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) cldbggetNVals.c
+clgetNOpts.o:clgetNOpts.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetNOpts.c
+clgetFullVal.o:clgetFullVal.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetFullVal.c
+clStartInteractive.o:clStartInteractive.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clStartInteractive.c
+clRestartShell.o:clRestartShell.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clRestartShell.c
+clgetOpt.o:clgetOpt.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetOpt.c
+clgetOptsList.o:clgetOptsList.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetOptsList.c
+clclearOptsList.o:clclearOptsList.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clclearOptsList.c
+clgetCommandLine.o:clgetCommandLine.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetCommandLine.c 
+clgetInputFile.o:clgetInputFile.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetInputFile.c 
+clgetOutputFile.o:clgetOutputFile.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetOutputFile.c 
+clstrtStream.o:clstrtStream.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clstrtStream.c 
+clloadConfig.o:clloadConfig.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clloadConfig.c
+clgetConfigFile.o:clgetConfigFile.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clgetConfigFile.c
+clCleanUp.o:clCleanUp.c clshelldefs.h cl.h cllib.h
+	$(CC) -c $(INCL) clCleanUp.c
+support.o:support.c 
+	$(CC) -c $(INCL) support.c
+clstring.o:clstring.c 
+	$(CC) -c $(INCL) clstring.c
+
+clfInteractive.o:clfInteractive.c
+	$(CC) -c $(INCL) clfInteractive.c
+cl.o: cl.f cl.inc
+	$(F77) -c $(INCL) cl.f
+libshccl.a: $(CLOBJS)
+	ar r libshccl.a $(CLOBJS)
+	if [ -f $(RANLIB) ]; then $(RANLIB) libshccl.a; fi
+
+libsh.a: $(SHOBJS)
+	ar r libsh.a $(SHOBJS)
+	if [ -f $(RANLIB) ]; then $(RANLIB) libsh.a; fi
+
+libshfcl.a: $(FCLOBJS)
+	ar r libshfcl.a $(FCLOBJS)
+	if [ -f $(RANLIB) ]; then $(RANLIB) libshfcl.a; fi
+
+$(CALCHOME)/libcalc.a libcalc.a: 
+	cd $(CALCHOME); gmake -f makefile.calc libcalc.a
+
+tst: tst.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
+	$(CC) $(INCL) tst.c -o tst libshccl.a \
+	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+
+ftst: ftst.f libshfcl.a libsh.a $(CALCHOME)/libcalc.a
+	$(F77) $(INCL) ftst.f -o ftst libshccl.a libshfcl.a\
+	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+
+clean: 
+	\rm -rf *.o *~ tst ftst *.a
+	cd $(CALCHOME); make -f makefile.calc clean
