@@ -12,7 +12,7 @@ session.  This code is derived from the older
 When compiled with GNU Readline support, context sensitive TABBED
 completion is automatically available in interactive sessions.  When a
 list of all possible values that a parameter can accept is available,
-TABBBED completion will can be used to view and set value of
+TABBBED completion can be used to view and set value of
 parameters in a context sensitive manner.  The interactive shell also
 supports context sensitive hiding/exposing of keywords (referred to as
 _parameter_ _unwinding_), similar to the
@@ -25,19 +25,18 @@ environment variables and additional command-line arguments.
 
 == Usage ==
 
-Applications using _parafeed_ can be used as interactive programmers
-where the parameters of the program can be set interactive by the user
-or as a non-interactive program where the parameters are given as
-{{{<NAME>=<VALUE>}}} list on the command-line.
+Applications using _parafeed_ can be used as interactive programs
+where the parameters of the program can be set interactively by the user.
+Alternatively, the application can be used as a non-interactive program where the parameters are given as {{{<NAME>=<VALUE>}}} list on the command-line.
 
 == Interactive mode ==
 
 This is the default mode.  Upon startup, applications will present a
-list of its parameters the form of keyword names followed by their
-current values.  By default, the default values displayed will be
+list of its parameters in the form of keyword names followed by their
+current values.  The default values displayed will be
 those set by the application programmer.  The settings of the various
-keywords can be stored in a file.  If a file with a name same as the
-application executable file name and with an extension ".def" is
+keywords can be stored in a file.  If a file with the same name as the
+application executable file name with an extension ".def" is
 found (see Section on *CUSTOMIZATION*), the values of the keywords will be
 loaded from that file.  The value of the keywords can also be set on
 the command-line in the {{{<KeyWord>=[<Val0>[,<Val1>[...]]]}}}
@@ -68,12 +67,11 @@ shell:
 These commands form the standard set of shell commands available in
 all applications using _parafeed_.  Mechanism exists to add
 application specific commands, or suppress any of the above standard
-commands, if the application programmer chooses to do so.  However the
+commands, if the application programmer chooses to do so.  The
 "help" command is always expected to show all the commands available.
 
-The keywords can be set/reset from this shell by commands of the type
-{{{<KeyWord>=<Val>}}}.  For recognizing the names of the keywords in
-such commands, the shell uses the minimum match algorithm
+The keywords can be set/reset from this shell by commands of type
+{{{<KeyWord>=<Val>}}}.  The shell uses the minimum match algorithm for the keywords.
 
 Following is a short description of the shell commands:
 
@@ -82,8 +80,8 @@ Following is a short description of the shell commands:
     setting of only that keyword will be displayed.
   
   * {{{go:}}} 
-    End of the interactive session.  The values of the keywords set by the users are used by the 
-    application internally and the application resumes normal execution.
+    End of the interactive session.  The current value of the keywords are used  
+    and the application resumes normal execution.
   
   * {{{gob:}}} 
     Similar to {{{go}}} except that it will run the application in the background and print the 
@@ -140,7 +138,7 @@ The expected number of values will be reported by the shell-command
 and '{{{]}}}' pairs.  A blank set of square brackets ("{{{[]}}}")
 will be printed for keywords which can accept any number of values.
 Some keywords may accept values of mixed types (e.g., string, floats,
-integers).  For such keywords, the reported type will be "{{{UNKNOWN}}}".
+integers).  For such keywords, the reported type will be "{{{Mixed}}}".
 
 Comma is treated as a separator in a list of values for a keyword.  To
 suppress its interpretation as a separator, it can to be "escaped"
