@@ -15,7 +15,7 @@ list of all possible values that a parameter can accept is available,
 TABBBED completion can be used to view and set value of
 parameters in a context sensitive manner.  
 
-The end users typically needs simple changes to the user interface but need to make these changes often depending upon the immediate need (e.g. name of the parameters, when to make which parameter visible in the interface, the default value of the parameters, etc.).  For the end user to depend for such needs on the programmers can easily lead to non-optimal use of the time of end users as well as the programmers. _parafeed_ implements a number of mechanism to greatly reduce this dependence of the end-user on the programmers for simple user interface issues.
+End users typically need simple changes to the user interface but need to make these changes often depending upon the immediate need (e.g. name of the parameters, when to make which parameter visible in the interface, the default value of the parameters, etc.).  For the end user to depend for such needs on the programmers can easily lead to non-optimal use of the time of end users as well as the programmers. _parafeed_ implements a number of mechanism to greatly reduce this dependence of the end-user on the programmers for simple user interface issues.
 
 
 The interactive shell supports context sensitive hiding/exposing of keywords (referred to as _parameter_ _unwinding_), similar to the
