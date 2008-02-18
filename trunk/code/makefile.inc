@@ -19,6 +19,7 @@ ARCH          = linux_gnu
 OPTFLAGS      = -g
 DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
 COMMONOPTS    = -Wall -I/usr/local/include -I./
+PREFIX        = _sh
 #
 # Compilers
 #
