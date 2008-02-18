@@ -21,7 +21,7 @@ include makefile.inc
 #OPTFLAGS      = -g
 #DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
 #COMMONOPTS    = -Wall -I/usr/local/include
-#PREFIX        = sh_
+PREFIX        = sh_
 ##
 ## Compilers
 ##
