@@ -16,7 +16,7 @@
 # Compiler flags
 #
 ARCH          = linux_amd64
-OPTFLAGS      = -g
+OPTFLAGS      = -g -m64
 DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
 COMMONOPTS    = -Wall -I/usr/local/include -I./
 PREFIX        = _sh
@@ -24,6 +24,7 @@ PREFIX        = _sh
 # Compilers
 #
 C++           = g++ $(CFLAGS)
+CC            = gcc $(CFLAGS)
 #F77           = /usr/local/compilers/9/gcc_3.2.3/bin/g77  
 LEX           = flex -Ce -P$(PREFIX)
 YACC          = bison -y -p $(PREFIX)
