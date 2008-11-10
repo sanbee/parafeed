@@ -15,8 +15,9 @@
 #
 # Compiler flags
 #
-ARCH          = linux_amd64
-OPTFLAGS      = -g -m64
+ARCH          = Linux
+#OPTFLAGS      = -g -m64
+OPTFLAGS      = -g
 DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
 COMMONOPTS    = -Wall -I/usr/local/include -I./
 PREFIX        = _sh
@@ -34,5 +35,7 @@ READLINEHOME  = /usr/local
 # Locations where libaries and include files should be copied for
 # public use
 #
-PUBLIBS       = ../$(ARCH)/lib
-PUBINCL       = ../$(ARCH)/include
+PUBHOME       = ~/SCI/linux_gnu
+PUBQUALIFIER  =
+PUBLIBS       = $(PUBHOME)/lib/$(PUBQUALIFIER)
+PUBINCL       = $(PUBHOME)/include
