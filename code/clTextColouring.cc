@@ -72,7 +72,13 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
 	startSeq += FGColourMap["red"];
       else if (ISSET(textType,CL_HIDENSEEKKEYWORD))
         startSeq += FGColourMap["green"];
-      
+      else
+	// While I like it "black", its safer to make it "default" if
+	// others are also going to use this (have seen people with
+	// black background and lighter foreground colours!)
+	//
+	startSeq += FGColourMap["default"];
+	//	startSeq += FGColourMap["black"];
       startSeq += "m";
       endSeq = E + "0m";
     }
