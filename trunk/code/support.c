@@ -27,6 +27,7 @@
 #include <fcntl.h>
 #include <cl.h>
 #include <clGlobals.h>
+#include <sstream>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -188,8 +189,8 @@ extern "C" {
       }
     return 1;
   }
-#include <clGlobals.h>
-#include <sstream>
+  //#include <clGlobals.h>
+  // #include <sstream>
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
     in which the user value is returned to the application layer via
@@ -205,7 +206,7 @@ extern "C" {
       {
 	S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults");
 	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults");
-	sprintf(S->Val[0],"%d%c",val,NULL);
+	sprintf(S->Val[0],"%d%c",val,(int)NULL);
       }
     S->NVals = 1;
   }
@@ -304,7 +305,7 @@ extern "C" {
 	    ostringstream os;
 	    os << val[i];
 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNIDefaults");
-	    sprintf(S->Val[i],"%d%c",val[i],NULL);
+	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL);
 	  }
       }
     
