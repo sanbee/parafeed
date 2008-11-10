@@ -31,7 +31,7 @@ int clgetSVal(char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
-  char *buf,*c;
+  char *buf,*c=NULL;
   
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);
