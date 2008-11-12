@@ -64,7 +64,7 @@ int clgetSValp(const string& Name, string& val, int& n)
 {
   Symbol *S;
   unsigned int N;
-  char *buf,*c;
+  char *buf,*c=NULL;
   
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
