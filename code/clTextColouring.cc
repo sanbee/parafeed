@@ -19,35 +19,13 @@
 /* $Id$ */
 
 #include <cl.h>
+#include <clError.h>
 #include <clshelldefs.h>
 #include <map>
 #include <string>
 #include <fstream>
 using namespace std;
-int split(vector<string>& v, const string& str, char c)
-{
-  v.clear();
-  string::const_iterator s = str.begin();
-  while (true) 
-    {
-      string::const_iterator begin = s;
-
-      while (*s != c && s != str.end()) ++s;
-
-      v.push_back(string(begin, s));
-
-      if (s == str.end()) 
-	break;
-      
-      if (++s == str.end()) 
-	{
-	  v.push_back("");
-	  break;
-	}
-      return v.size();
-    }
-  return v.size();
-}
+extern int clBreakStr(const string& str, string& Name, string& val);
 
 void clTextColouring(const string& text, const unsigned int textType,string& startSeq,string& endSeq)
 {
@@ -92,24 +70,34 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
   //
   // Read the colour definitions from the user file.
   //
-  if (userColourMapFile!=NULL)
+  try
     {
-      fstream fd;
-      string line;
-      vector<string> toks;
-      fd.open(userColourMapFile);
-      while (!fd.eof())
+      if (userColourMapFile!=NULL)
 	{
-	  getline(fd,line);
-	  int n=split(toks,line,' ');
+	  fstream fd;
+	  string line;
+	  string name,val;
+	  fd.open(userColourMapFile);
+	  while (!fd.eof())
+	    {
+	      string mesg;
+	      getline(fd,line);
+	      clBreakStr(line,name,val);
+	      if (FGColourMap.find(val)==FGColourMap.end())
+		{
+		  mesg = "User supplied colour " + val + " for " + name + " not supported.";
+		  clThrowUp(mesg.c_str(),"###Informational ",CL_INFORMATIONAL);
+		}
+	      if (name == "defaultfg") FG_Default=val;
+	      else if (name == "hiddenseekfg") FG_HidenSeekKeyWord=val;
+	      else if (name == "hiddenfg") FG_HiddenKeyWord=val;
+	      else if (name == "hidingfg") FG_HidingKeyWord=val;
+	    }
 	}
-    //
-    // While I like it "black" by default, its safer to make it that
-    // via user control.  By default it should be "default" (I have
-    // seen people using terminal windows with black background and
-    // lighter foreground colours!)
-    //
-      FG_Default="black";
+    }
+  catch (clError& x)
+    {
+      x << x << endl;
     }
   //
   // Use the colour as determined by the user defined file or by
