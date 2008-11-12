@@ -22,7 +22,32 @@
 #include <clshelldefs.h>
 #include <map>
 #include <string>
+#include <fstream>
 using namespace std;
+int split(vector<string>& v, const string& str, char c)
+{
+  v.clear();
+  string::const_iterator s = str.begin();
+  while (true) 
+    {
+      string::const_iterator begin = s;
+
+      while (*s != c && s != str.end()) ++s;
+
+      v.push_back(string(begin, s));
+
+      if (s == str.end()) 
+	break;
+      
+      if (++s == str.end()) 
+	{
+	  v.push_back("");
+	  break;
+	}
+      return v.size();
+    }
+  return v.size();
+}
 
 void clTextColouring(const string& text, const unsigned int textType,string& startSeq,string& endSeq)
 {
@@ -56,36 +81,51 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
   BGColourMap["cyan"]    = "46";
   BGColourMap["white"]   = "47";
 
-  string E="[";
+  string Esc="[";
   char *userColourMapFile=(char *)getenv(CL_COLOURMAP);
+  //
+  // Factory setting for colours
+  //
+  string FG_HiddenKeyWord="blue", FG_HidingKeyWord="red", FG_HidenSeekKeyWord="green",
+    FG_Default="default";
 
-  if (userColourMapFile==NULL)
+  //
+  // Read the colour definitions from the user file.
+  //
+  if (userColourMapFile!=NULL)
     {
-      //
-      // Factory setting for colours
-      //
-      startSeq=E+"1;";
+      fstream fd;
+      string line;
+      vector<string> toks;
+      fd.open(userColourMapFile);
+      while (!fd.eof())
+	{
+	  getline(fd,line);
+	  int n=split(toks,line,' ');
+	}
+      FG_Default="black";
+    }
+  //
+  // Use the colour as determined by the user defined file or by
+  // factory settings above.
+  //
+  {
+    startSeq=Esc+"1;";
       
-      if (ISSET(textType,CL_HIDDENKEYWORD))
-	startSeq += FGColourMap["blue"];
-      else if (ISSET(textType,CL_HIDINGKEYWORD))
-	startSeq += FGColourMap["red"];
-      else if (ISSET(textType,CL_HIDENSEEKKEYWORD))
-        startSeq += FGColourMap["green"];
-      else
-	// While I like it "black", its safer to make it "default" if
-	// others are also going to use this (have seen people with
-	// black background and lighter foreground colours!)
-	//
-	startSeq += FGColourMap["default"];
-	//	startSeq += FGColourMap["black"];
-      startSeq += "m";
-      endSeq = E + "0m";
-    }
-  else
-    {
-      //
-      // Read the colour definitions from the user file.
-      //
-    }
+    if (ISSET(textType,CL_HIDDENKEYWORD))          
+      startSeq += FGColourMap[FG_HiddenKeyWord];
+    else if (ISSET(textType,CL_HIDINGKEYWORD))     
+      startSeq += FGColourMap[FG_HidingKeyWord];
+    else if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
+      startSeq += FGColourMap[FG_HidenSeekKeyWord];
+    //
+    // While I like it "black", its safer to make it "default" if
+    // others are also going to use this (have seen people with
+    // black background and lighter foreground colours!)
+    //
+    else                                           startSeq += FGColourMap["default"];
+    //                                                     startSeq += FGColourMap["black"];
+    startSeq += "m";
+    endSeq = Esc + "0m";
+  }
 }
