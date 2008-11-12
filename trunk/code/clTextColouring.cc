@@ -123,7 +123,7 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
     // others are also going to use this (have seen people with
     // black background and lighter foreground colours!)
     //
-    else                                           startSeq += FGColourMap["default"];
+    else                                           startSeq += FGColourMap[FG_Default];
     //                                                     startSeq += FGColourMap["black"];
     startSeq += "m";
     endSeq = Esc + "0m";
