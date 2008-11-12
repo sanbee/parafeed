@@ -62,7 +62,7 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 cldbggetNFVal.o cldbggetNIVal.o cldbggetNSVal.o cldbggetFullVal.o\
 	 clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o \
 	 clgetOptsList.o clclearOptsList.o clgetCommandLine.o clgetOpt.o   \
-	 clstrtStream.o clloadConfig.o callbacks.o support.o               \
+	 clstrtStream.o clloadConfig.o callbacks.o support.o clBreakStr.o  \
 	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
 	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
@@ -294,6 +294,9 @@ clRetry.o:clRetry.c clshelldefs.h cl.h cllib.h
 
 support.o:support.c 
 	$(C++) -c $(INCL) support.c
+
+clBreakStr.o:clBreakStr.cc
+	$(C++) -c $(INCL) clBreakStr.cc
 
 clstring.o:clstring.c 
 	$(C++) -c $(INCL) clstring.c
