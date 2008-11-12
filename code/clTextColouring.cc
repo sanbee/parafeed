@@ -103,6 +103,12 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
 	  getline(fd,line);
 	  int n=split(toks,line,' ');
 	}
+    //
+    // While I like it "black" by default, its safer to make it that
+    // via user control.  By default it should be "default" (I have
+    // seen people using terminal windows with black background and
+    // lighter foreground colours!)
+    //
       FG_Default="black";
     }
   //
@@ -118,13 +124,9 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
       startSeq += FGColourMap[FG_HidingKeyWord];
     else if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
       startSeq += FGColourMap[FG_HidenSeekKeyWord];
-    //
-    // While I like it "black", its safer to make it "default" if
-    // others are also going to use this (have seen people with
-    // black background and lighter foreground colours!)
-    //
-    else                                           startSeq += FGColourMap[FG_Default];
-    //                                                     startSeq += FGColourMap["black"];
+    else
+      startSeq += FGColourMap[FG_Default];
+
     startSeq += "m";
     endSeq = Esc + "0m";
   }
