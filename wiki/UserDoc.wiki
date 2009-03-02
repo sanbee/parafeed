@@ -379,5 +379,45 @@ gain          = 0.1
 niter         = 1000
 threshold     = 0
 interactive   = 0
-clean>
+clean>?
+   Key                Type          Factory defaults        Options
+---------          ----------       ----------------        -------
+  ms                    string                        
+  imsize                int[2]              0,0        
+  cellsize              float[2]            0,0        
+  model                 string[]            
+  restored              string[]            
+  residual              string[]            
+  mask                  string[]            
+  complist              string                        
+  ftmachine             string              ft         [ft wproject pbwproject pbmosaic]
+  facets                int                 1         
+  wplanes               int                 1         
+  applyoffsets          int                 0         
+  dopbcorr              int                 1         
+  pointingtable         string                        
+  cfcache               string                        
+  painc                 float               360       
+  algorithm             string              cs         [cs clark hogbom mfclark]
+  stokes                string              I          [I IV IQUV]
+  weighting             string              uniform    [uniform natural briggs]
+  field                 Mixed[]                       
+  spw                   Mixed[]                       
+  time                  Mixed[]                       
+  baseline              Mixed[]                       
+  uvrange               Mixed[]                       
+  mode                  string              continuum  [continuum spectral pseudo]
+  datanchan             int[]               1         
+  datastart             int[]               0         
+  datastep              int[]               1         
+  operation             string              clean      [clean predict psf dirty residual]
+  gain                  float               0.1       
+  niter                 int                 0         
+  threshold             float               0         
+  interactive           int                 0         
+clean>algorithm<TAB><TAB>
+clean>algorithm=<TAB><TAB>
+clark    cs       hogbom   mfclark 
+clean>algorithm=cl<TAB>
+clean>algorithm=clark
 }}}
