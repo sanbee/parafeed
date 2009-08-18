@@ -16,45 +16,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: clparseVal.c,v 2.0 1998/11/11 07:13:02 sanjay Exp sanjay $ */
+/* $Id: clCleanUp.c,v 2.0 1998/11/11 07:12:46 sanjay Exp $ */
+
+#include <string.h>
+#include <stdio.h>
 #include <shell.h>
 #include <cllib.h>
-#include <cl.h>
-//#include <string.h>
-#include <string>
-#include <vector>
+#include <stdbool.h>
+#include <algorithm>
+#include <cctype>
+
+//#include <clbool.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*------------------------------------------------------------------------
-   Convert the n th value of symbol S into a double
-------------------------------------------------------------------------*/
-
-int clparseVal(Symbol *S, int *Which, double *d)
+/*----------------------------------------------------------------------*/
+bool clIsTrue(const string& val)
 {
-  unsigned int N = _ABS(*Which),n;
+#include <clbool.h>
+  string lval(val);
+  std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
 
-HANDLE_EXCEPTIONS(
-  if (S != NULL)
-    {
-      if (N > S->NVals) return 0;
-      if (ISSET(S->Attributes,CL_BOOLTYPE))
-	{
-	  string val(S->Val[N-1]);
-	  if (clIsTrue(val)) *d=1;
-	  if (clIsFalse(val)) *d=0;
-	}
-      else if ((n=calc(S->Val[N-1],d)))
-	{
-	  char msg[128];
-	  sprintf(msg,"In conversion of %s[%d]=%s",S->Name,N-1,S->Val[N-1]);
-	  clThrowUp(msg,"###Error",CL_FAIL);
-	}
-      return 1;
-    }
-  else return CL_FAIL;
-)
+  for(unsigned int i=0; i<clBoolTrue.size(); i++)
+    if (lval==clBoolTrue[(int)i]) return true;
+  return false;
 }
+
+bool clIsFalse(const string& val)
+{
+#include <clbool.h>
+  string lval(val);
+  std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
+
+  for(unsigned int i=0; i<clBoolFalse.size(); i++)
+    if (lval==clBoolFalse[(int)i]) return true;
+  return false;
+}
+
 #ifdef __cplusplus
 	   }
 #endif

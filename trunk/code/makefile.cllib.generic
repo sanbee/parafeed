@@ -53,7 +53,7 @@ SHOBJS = CopySymb.o AddCmd.o AddNode.o AddVar.o AllocSymb.o AddQKey.o      \
 	 DeleteCmd.o DeleteVar.o DeleteNode.o DeleteTab.o FreeSymb.o       \
 	 SearchNode.o SearchSymb.o lex.yy.o shell.tab.o TransferTab.o      \
 	 PrintVals.o SetVar.o SetPrompt.o SetSymbTab.o SetCmdTab.o         \
-	 yyerror.o  minmatch.o
+	 yyerror.o  minmatch.o isBool.o
 
 CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clgetSVal.o clgetFullVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o \
@@ -66,7 +66,7 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
 	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
 	 clSetOptions.o clTextColouring.o clgetBVal.o cldbggetBVal.o clgetNBVal.o \
-         cldbggetNBVal.o clBreakStr.o
+         cldbggetNBVal.o clBreakStr.o 
 
 FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
@@ -167,6 +167,9 @@ SetCmdTab.o:SetCmdTab.c clshelldefs.h cl.h
 
 minmatch.o:minmatch.c clshelldefs.h cl.h
 	$(C++) -c $(INCL) minmatch.c
+
+isBool.o:isBool.c clshelldefs.h cl.h cllib.h clbool.h
+	$(C++) -c $(INCL) isBool.c
 
 rl_interface.o: rl_interface.cc cllib.h
 	$(C++) -c $(INCL) rl_interface.cc
