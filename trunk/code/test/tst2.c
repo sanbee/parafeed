@@ -18,7 +18,7 @@ void UI()
   char **argv;
   int argc,i,j,N;
   float f,fa[3];
-  char str[128];
+  char str[128]="";
   bool b=false;
   
   argv = (char **)malloc(2*sizeof(char **));
