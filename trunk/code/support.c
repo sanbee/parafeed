@@ -326,6 +326,36 @@ extern "C" {
     
     S->NVals = n;
   }
+  /*----------------------------------------------------------------------*/
+  void setAutoNBDefaults(Symbol *S, const vector<bool>& val)
+  {
+    int n=val.size();
+    if (cl_RegistrationMode == 1)
+      {
+	S->DefaultVal.resize(n);
+	for(int i=0;i<n;i++)
+	  {
+	    ostringstream os;
+	    os << (val[i]==0?false:true);
+	    S->DefaultVal[i] = os.str().c_str();
+	  }
+      }
+    
+    if (S->Val == NULL)
+      {
+	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults");
+	
+	for(int i=0;i<n;i++)
+	  {
+	    ostringstream os;
+	    os << val[i];
+	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNIDefaults");
+	    sprintf(S->Val[i],"%d%c",(val[i]==0?false:true),(int)NULL);
+	  }
+      }
+    
+    S->NVals = n;
+  }
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
     in which the user value is returned to the application layer via

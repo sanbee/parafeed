@@ -154,6 +154,8 @@ int       clgetNSVal(char *Name, char **Val, int *N);
 int       dbgclgetNSVal(char *Name, char **Val, int *N);
 int       clgetBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetBVal(char  *Name, bool   *Val, int *N);
+int       clgetNBVal(char  *Name, bool   *Val, int *N);
+int       dbgclgetNBVal(char  *Name, bool   *Val, int *N);
 
 #ifdef __cplusplus
 int       clTgetOptp(const string& Name, string& Type);
@@ -236,6 +238,11 @@ int       clgetIValp(const string& Name, int& Val, int& N);
 int       dbgclgetIValp(const string& Name, int& Val, int& N);
 int       clgetNIValp(const string& Key,  vector<int>& Val, int& m);
 int       dbgclgetNIValp(const string& Key,  int& Val, int& m);
+
+int       clgetBValp(const string& Name, bool& val, int& N);
+int       dbgclgetBValp(const string& Name, bool& val, int& N);
+int       clgetNBValp(const string& Name, bool& val, int& N);
+int       dbgclgetNBValp(const string& Name, bool& val, int& N);
 
 int       clgetFValp(const string& Name, float& Val, int& N);
 int       dbgclgetFValp(const string& Name, float& Val, int& N);
