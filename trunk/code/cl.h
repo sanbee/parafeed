@@ -40,6 +40,7 @@
 /* #include <clinteract.h> */
 #include <setjmp.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include <math.h>
 #include <stdlib.h>
 #ifdef __cplusplus
@@ -70,6 +71,7 @@ extern "C" {
 #define CL_INFORMATIONAL -30
 #define CL_SEVERE    -20
 #define CL_FATAL     -10
+#define CL_WARNING   -5
   /* 
      Define readline stuff as readline.h is
      NOT ANSI C 
@@ -150,6 +152,8 @@ int       clgetNFVal(char *Name, float *Val, int *N);
 int       dbgclgetNFVal(char *Name, float *Val, int *N);
 int       clgetNSVal(char *Name, char **Val, int *N);
 int       dbgclgetNSVal(char *Name, char **Val, int *N);
+int       clgetBVal(char  *Name, bool   *Val, int *N);
+int       dbgclgetBVal(char  *Name, bool   *Val, int *N);
 
 #ifdef __cplusplus
 int       clTgetOptp(const string& Name, string& Type);
@@ -209,6 +213,7 @@ int  sh_parse();
 int  UnsetVar(Symbol *,int);
 int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch=0);
 void SetVal(char *, Symbol *, int);
+void VerifyVal(const char *, const Symbol *);
 int  CopyVSymb(Symbol *, Symbol *,int);
 int  FreeVSymb(Symbol *);
 int  FreeCSymb(CmdSymbol *);

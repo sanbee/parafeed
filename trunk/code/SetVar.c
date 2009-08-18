@@ -124,11 +124,37 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   return 1;
 }
 /*----------------------------------------------------------------------*/
+  void VerifyVal(const char *v, const Symbol *S)
+  {
+    int n = S->Options.size();
+    if (n > 0)
+      {
+	int Matched=0;
+	for(int i=0; i<n; i++)
+	  if (S->Options[i] == v)
+	    {Matched=1;break;}
+	if (!Matched)
+	  {
+	    string msg;
+	    msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
+	    msg += S->Name; msg += "\"";
+	    clError errObj;
+	    errObj << msg.c_str() << endl;
+	    msg = "###Informational: Valid options are ";
+	    for(int i=0; i<n; i++)
+	      {msg += "\"" + S->Options[i];msg += "\" ";}
+	    errObj << msg.c_str() << endl;
+	  }
+      }
+  }
+/*----------------------------------------------------------------------*/
 void SetVal(char *v, Symbol *S, int i)
 {
   int len;
 
   stripwhite(v);
+  VerifyVal(v,S);
+
   if ((unsigned int)i >= S->NVals)
     {
       S->Val = (char **)realloc(S->Val,sizeof(char **)*(i+1));
