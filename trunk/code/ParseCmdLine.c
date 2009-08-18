@@ -325,7 +325,10 @@ int startShell()
       if (!cl_SymbLoaded) 
 	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
 	{
-	  if (!cl_defaultsLoaded) {loadDefaults(0); cl_defaultsLoaded=1;} /* Load the defaults */
+	  if (!cl_defaultsLoaded)  /* Load the defaults */
+	    {
+	      loadDefaults(0); cl_defaultsLoaded=1;
+	    }
 	  doinp(NULL);    /* Display the keywords */
 
 #ifdef GNUREADLINE
