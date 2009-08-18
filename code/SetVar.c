@@ -22,6 +22,9 @@
 #include <shell.h>
 #include <stdlib.h>
 #include <cl.h>
+#include <sstream>
+#include <algorithm>
+#include <cctype>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -124,22 +127,49 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   return 1;
 }
 /*----------------------------------------------------------------------*/
-  void VerifyVal(const char *v, const Symbol *S)
+  void VerifyVal(char *v, Symbol *S,string& newval)
   {
     int n = S->Options.size();
-    if (n > 0)
+    int Matched=1;
+    ostringstream os;
+    newval=v;
+    if (ISSET(S->Attributes,CL_BOOLTYPE))
       {
-	int Matched=0;
+	Matched=0;
+	int n,b=0;
+	n=sscanf(v,"%d",&b);
+	if (n>0)
+	  {
+	    b=(b==0?0:1);Matched=1;
+	    os << b;
+	  }
+	else
+	  {
+	    Matched=(clIsTrue(newval) || clIsFalse(newval));
+	    /* if (clIsTrue(newval)) {Matched=1;} */
+	    /* else if (clIsFalse(newval)) {Matched=1;} */
+	    /* else Matched=0; */
+	    os << newval;
+	  }
+	//	os << b;
+	newval=os.str();
+      }
+    else if (n > 0)
+      {
+	Matched=0;
 	for(int i=0; i<n; i++)
 	  if (S->Options[i] == v)
 	    {Matched=1;break;}
-	if (!Matched)
+      }
+    if (!Matched)
+      {
+	string msg;
+	msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
+	msg += S->Name; msg += "\"";
+	clError errObj;
+	errObj << msg.c_str() << endl;
+	if (n>0)
 	  {
-	    string msg;
-	    msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
-	    msg += S->Name; msg += "\"";
-	    clError errObj;
-	    errObj << msg.c_str() << endl;
 	    msg = "###Informational: Valid options are ";
 	    for(int i=0; i<n; i++)
 	      {msg += "\"" + S->Options[i];msg += "\" ";}
@@ -151,9 +181,9 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 void SetVal(char *v, Symbol *S, int i)
 {
   int len;
-
+  string vv;
   stripwhite(v);
-  VerifyVal(v,S);
+  VerifyVal(v,S,vv);
 
   if ((unsigned int)i >= S->NVals)
     {
@@ -162,13 +192,13 @@ void SetVal(char *v, Symbol *S, int i)
       do S->Val[len++]=NULL; while (len < i);
     }
 
-  len=strlen(v);
+  len=strlen(vv.c_str());
 
   S->Val[i] = (char *)realloc(S->Val[i],len+1);
 
-  if (strlen(v))
+  if (strlen(vv.c_str()))
     {
-      strncpy(S->Val[i],v,len+1);
+      strncpy(S->Val[i],vv.c_str(),len+1);
       S->Val[i][len] = '\0';
       if ((unsigned int)i>=S->NVals) S->NVals++;
       S->Used=0;
