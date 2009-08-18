@@ -65,12 +65,13 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
 	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
-	 clSetOptions.o clTextColouring.o clgetBVal.o clBreakStr.o
+	 clSetOptions.o clTextColouring.o clgetBVal.o cldbggetBVal.o clgetNBVal.o \
+         cldbggetNBVal.o clBreakStr.o
 
 FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
 	  clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o\
-	  cl.o clgetBVal.o
+	  cl.o clgetBVal.o clgetNBVal.o
 #-----------------------------------------------------------------------------
 #
 # The default target
@@ -210,6 +211,9 @@ cldbggetFVal.o:cldbggetFVal.c clshelldefs.h cl.h cllib.h
 clgetBVal.o:clgetBVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetBVal.c
 
+cldbggetBVal.o:cldbggetBVal.c clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetBVal.c
+
 clgetIVal.o:clgetIVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetIVal.c
 
@@ -239,6 +243,12 @@ clgetNIVal.o:clgetNIVal.c clshelldefs.h cl.h cllib.h
 
 cldbggetNIVal.o:cldbggetNIVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) cldbggetNIVal.c
+
+clgetNBVal.o:clgetNBVal.c clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNBVal.c
+
+cldbggetNBVal.o:cldbggetNBVal.c clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNBVal.c
 
 clgetNVals.o:clgetNVals.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetNVals.c
