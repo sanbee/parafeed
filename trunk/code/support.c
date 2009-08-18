@@ -210,6 +210,21 @@ extern "C" {
       }
     S->NVals = 1;
   }
+  void setAutoBDefaults(Symbol *S, const bool& val)
+  {
+    ostringstream os;
+    bool tval = (val == 0?false:true);
+    os << tval;
+    if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+    
+    if (S->Val == NULL)
+      {
+	S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults");
+	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults");
+	sprintf(S->Val[0],"%d%c",tval,(int)NULL);
+      }
+    S->NVals = 1;
+  }
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
     in which the user value is returned to the application layer via
