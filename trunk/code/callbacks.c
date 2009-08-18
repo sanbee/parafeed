@@ -1,4 +1,4 @@
-/*
+/* -*- C++ -*-
  * Copyright (c) 2000-2006, 2007 S.Bhatnagar
  *
  * This program is free software; you can redistribute it and/or modify
@@ -243,18 +243,22 @@ END{									\
 	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
 	  exposeKeys(S);
 	  fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
-	  int n=S->DefaultVal.size(),nchar=0;
+	  int n=S->DefaultVal.size(),nchar=0, offset=10;;
 	  if ((n=S->DefaultVal.size())>0)
 	    {
 	      fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
-              nchar += strlen(S->DefaultVal[0].c_str());
+	      nchar += strlen(S->DefaultVal[0].c_str());
 	      for(int i=1;i<n;i++)
-                 {
-	           fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
-                   nchar += strlen(S->DefaultVal[i].c_str());
-                 }
+		{
+		  fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
+		  nchar += strlen(S->DefaultVal[i].c_str());
+		}
+	      //	      for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
 	    }
-          for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
+	  else
+	    offset+=16;
+	  for(int i=0;i<offset-nchar;i++) fprintf(stderr," ");
+	    
 	  if ((n=S->Options.size())>0)
 	    {
 	      fprintf(stderr, " [%-s",S->Options[0].c_str());
