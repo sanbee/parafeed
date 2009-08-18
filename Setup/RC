@@ -35,6 +35,7 @@ export GROOT
 export GDOC
 export GBIN
 export GLIB
+export GINCLUDE
 export GOSDIR
 export PATH
 export GCONF
