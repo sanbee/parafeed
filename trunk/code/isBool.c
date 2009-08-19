@@ -31,8 +31,23 @@
 extern "C" {
 #endif
 /*----------------------------------------------------------------------*/
+  bool clBoolCmp(const string& val, const bool& cmpVal)
+  {
+#include <clbool.h>
+    string lval(val);
+    std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
+    vector<string> list;
+    if (cmpVal) list=clBoolTrue;
+    else list=clBoolFalse;
+    for(unsigned int i=0; i<list.size(); i++)
+      if (lval==list[(int)i]) return true;
+    return false;
+  }
+/*----------------------------------------------------------------------*/
 bool clIsTrue(const string& val)
 {
+  return clBoolCmp(val, true);
+  /*
 #include <clbool.h>
   string lval(val);
   std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
@@ -40,10 +55,13 @@ bool clIsTrue(const string& val)
   for(unsigned int i=0; i<clBoolTrue.size(); i++)
     if (lval==clBoolTrue[(int)i]) return true;
   return false;
+  */
 }
 
 bool clIsFalse(const string& val)
 {
+  return clBoolCmp(val, false);
+  /*
 #include <clbool.h>
   string lval(val);
   std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
@@ -51,6 +69,7 @@ bool clIsFalse(const string& val)
   for(unsigned int i=0; i<clBoolFalse.size(); i++)
     if (lval==clBoolFalse[(int)i]) return true;
   return false;
+  */
 }
 
 #ifdef __cplusplus
