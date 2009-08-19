@@ -211,8 +211,8 @@ clgetFVal.o:clgetFVal.c clshelldefs.h cl.h cllib.h
 cldbggetFVal.o:cldbggetFVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) cldbggetFVal.c
 
-clgetBVal.o:clgetBVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetBVal.c
+clgetBVal.o:clgetBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetBVal.cc
 
 cldbggetBVal.o:cldbggetBVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) cldbggetBVal.c
