@@ -1,3 +1,4 @@
+/* -*- C -*- */
 /*
  * Copyright (c) 2000-2006, 2007 S.Bhatnagar
  *
@@ -16,7 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* -*- C -*- */
 /* $Id: shell.l,v 2.3 1999/06/18 09:57:28 sanjay Exp $ */
 %{
 #ifdef __cplusplus
@@ -42,8 +42,12 @@
 */
 extern char *sh_Prompt;
 char *sh_line=0;
+    void (*CL_INPUT)(char *, int *, int)=NULL;
+    void inp_readline(char *,int *,int);
+
 #undef YY_INPUT
 #define YY_INPUT(buf,result,max_size) inp_readline(buf,&result,max_size)
+    //#define YY_INPUT(buf,result,max_size) (*CL_INPUT)(buf,&result,max_size)
 void inp_readline(char *buf, int *result, int max_size)
 { 
   int  n; 
