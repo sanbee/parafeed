@@ -122,13 +122,13 @@ o  The various calls are:
         integer.   The parameter "n" is 1-based  (first value is 1 and
         NOT 0). Returns 1 on success and -1 on failure.
 -----------------------------------------------------------------------
--    int clGetFVal(char *Key, float *val , int *n)
+-    int clgetFVal(char *Key, float *val , int *n)
         
    	Returns the nth value associated with the  key Key as a float.
         The parameter "n"  is 1-based (first value   is 1 and NOT  0).
         Returns 1 on success and -1 on failure.
 -----------------------------------------------------------------------	
--    int clGetSVal(char *Key, char *val , int *n) 
+-    int clgetSVal(char *Key, char *val , int *n) 
         
         Returns  the nth  value   assoicated with  the  key  Key  as a
         character  string.  The parameter "n"  is 1-based (first value

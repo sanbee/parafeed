@@ -48,7 +48,7 @@ DESCRIPTION
 
         It understand number in the following formats:
 
-             Integer foramt, real (float) format
+             Integer format, real (float) format
 
              1.0E-1 or 1.0e-1    (=0.1)
         
@@ -57,7 +57,7 @@ DESCRIPTION
              1h10m0.1s           (the HA format - converts the number 
                                   to no. of hours)
         
-             1d1"1'              (the angular format - convertst to 
+             1d1"1'              (the angular format - converts to 
                                   no. of degrees)
 
 	(1d1" = 1.0166666667 deg. and -1d1" = -1.01666666667 deg.)
@@ -71,7 +71,7 @@ DESCRIPTION
         set, the parser gives an error message and returns -1.
 
         Use of calcfunc allows the user to extend the effective
-        symbol table to any length.  Since the internal (intrensic)
+        symbol table to any length.  Since the internal (intrinsic)
         symbol table is fairly small, calc does a liner search for
         lookup in the symbol table.  However, if the symbol table
         grows too large, linear search may not be the way to go.
@@ -98,7 +98,9 @@ PENDING WORK
         sscanf when used to JUST do the job that sscanf could have
         done.  The loss of speed is partly due to the fact the calc is
         doing more work (parsing the string) than sscanf, but is in
-        turn giving more power to the user.
+        turn giving more power to the user.  Since this is primarily
+        for user interaction, run time speed is irrelevant (the slowest
+        element in user interaction is almost always the user).
         
         Following are the top functions in which 10000 calls to calc
         spent most of the time.
@@ -119,5 +121,5 @@ PENDING WORK
         yylook,yyparse and yylex are the calls of the parser and I
         think very little can be done about them.  However, I do not
         understand the calls made to getenv!  If one understands where
-        and why are these calls to getenv made and eleminate them,
+        and why are these calls to getenv made and eliminate them,
         calc can be made ~20% faster.
