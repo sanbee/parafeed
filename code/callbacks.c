@@ -111,11 +111,40 @@ END{									\
       }
   }
   /*----------------------------------------------------------------------*/
+  bool checkVal(Symbol* t, vector<string>& mapVal)
+  {
+    bool found=false;
+    SMap::iterator loc;
+    if (ISSET(t->Attributes,CL_BOOLTYPE))
+      {
+	//
+	// This a BOOLTYPE keyword.  Check for logical true/false.
+	// String comparision is not enough (e.g. string "0" and "no"
+	// are both logical false).
+	//
+	for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
+	  {
+	    bool logicalKey = clIsTrue((*loc).first.c_str());
+	    if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+	  }
+      }
+    else
+      {
+	//
+	// For all other types, check by string comparision only.
+	//
+	loc = t->smap.find(string(t->Val[0]));
+	found = (loc != t->smap.end()); 
+      }
+    if (found) mapVal=(*loc).second;
+    return found;
+  }
+  /*----------------------------------------------------------------------*/
   int exposeKeys(Symbol *t)
   {
     Symbol *S;
     int exposedSomething=0;
-    //    char *name = t->Name;
+    /*    char *name = t->Name;*/
     
     if ((t->smap.size() > 0))
       {
@@ -145,10 +174,13 @@ END{									\
 	//
 	if (t->NVals > 0)
 	  {
-	    SMap::iterator loc = (t->smap.find(string(t->Val[0])));
-	    if (loc != t->smap.end())
+	    // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
+	    // if (loc != t->smap.end())
+	    vector<string> mapVal;
+	    if (checkVal(t,mapVal))
 	      {
-		vector<string> sv=(*loc).second;
+		//		vector<string> sv=(*loc).second;
+		vector<string> sv=mapVal;
 	
 		for(unsigned int j=0;j<sv.size();j++)
 		  {
