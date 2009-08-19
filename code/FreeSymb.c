@@ -40,9 +40,9 @@ int FreeVSymb(Symbol *S)
 	  free((S->Val));
 	}
       S->smap.erase(S->smap.begin(),S->smap.end());
-      free(S);
       S->DefaultVal.resize(0);
       S->Options.resize(0);
+      free(S);
       return 1;
     }
   return 0;
