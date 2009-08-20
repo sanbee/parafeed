@@ -11,11 +11,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern Symbol    *cl_SymbTab,*cl_TabTail;
-extern CmdSymbol *cl_CmdTab;
-extern char      *cl_ProgName;
+//extern Symbol    *cl_SymbTab,*cl_TabTail;
+//extern CmdSymbol *cl_CmdTab;
+//extern char      *cl_ProgName;
 extern unsigned short CL_DBG_ON;
 
+extern "C" void (*CL_INPUT)(char *, int *, int);
+extern void inp_readline(char *, int *, int);
+//CL_INPUT=&inp_readline;
 #define MAXBUF     256
 /*------------------------------------------------------------------------
  Saves the current setting of the various keywords to the given file
@@ -115,6 +118,11 @@ int main(int argc, char **argv)
 	i=1;
 	while(dbgclgetIVal("ilist",&IList[i-1],&i)>0) i++;
 	for (int j=0;j<i-1;j++) fprintf(stderr,"%d ",IList[j]);
+
+	VString Options;
+	Options.resize(3);
+	Options[0]="one";Options[1]="two"; Options[2]="three";
+	clSetOptions("out",Options);
       }
       EndCL();
 

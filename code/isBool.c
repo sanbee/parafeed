@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2006, 2007 S.Bhatnagar
+ * Copyright (c) 2000-2008, 2009 S.Bhatnagar
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,33 +44,9 @@ extern "C" {
     return false;
   }
 /*----------------------------------------------------------------------*/
-bool clIsTrue(const string& val)
-{
-  return clBoolCmp(val, true);
-  /*
-#include <clbool.h>
-  string lval(val);
-  std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
-
-  for(unsigned int i=0; i<clBoolTrue.size(); i++)
-    if (lval==clBoolTrue[(int)i]) return true;
-  return false;
-  */
-}
-
-bool clIsFalse(const string& val)
-{
-  return clBoolCmp(val, false);
-  /*
-#include <clbool.h>
-  string lval(val);
-  std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
-
-  for(unsigned int i=0; i<clBoolFalse.size(); i++)
-    if (lval==clBoolFalse[(int)i]) return true;
-  return false;
-  */
-}
+bool clIsTrue(const string& val) {return clBoolCmp(val, true);}
+bool clIsFalse(const string& val){return clBoolCmp(val, false);}
+/*----------------------------------------------------------------------*/
 
 #ifdef __cplusplus
 	   }
