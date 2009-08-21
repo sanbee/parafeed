@@ -16,7 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: clCleanUp.c,v 2.0 1998/11/11 07:12:46 sanjay Exp $ */
+/* $Id$ */
 
 #include <string.h>
 #include <stdio.h>
@@ -47,7 +47,6 @@ extern "C" {
 bool clIsTrue(const string& val) {return clBoolCmp(val, true);}
 bool clIsFalse(const string& val){return clBoolCmp(val, false);}
 /*----------------------------------------------------------------------*/
-
 #ifdef __cplusplus
 	   }
 #endif

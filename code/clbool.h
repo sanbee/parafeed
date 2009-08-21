@@ -34,17 +34,8 @@ clBoolTrue.push_back("AWANU");   clBoolFalse.push_back("KAADHU");   // Telugu
 clBoolTrue.push_back("YES");     clBoolFalse.push_back("NO");       // English
 clBoolTrue.push_back("HUM");     clBoolFalse.push_back("UMM");      // Thoughtful
 clBoolTrue.push_back("SI");      // Same as in English              // Spanish
-clBoolTrue.push_back("POSITIVE");clBoolFalse.push_back("NEGATIVE"); // Militar'ees
+clBoolTrue.push_back("POSITIVE");clBoolFalse.push_back("NEGATIVE"); // Military'ees
+clBoolTrue.push_back("+IV");     clBoolFalse.push_back("-IV");      // Physicist'ees
 clBoolTrue.push_back("JA");      clBoolFalse.push_back("NEE");      // Dutch
-
-
-
-
-
-
-
-
-
-
 
 // #endif
