@@ -186,7 +186,7 @@ extern "C" {
     //
     // First go over the list to truth values...
     //
-    while (bwitch<nT-1)
+    while (bwitch<nT)
       {
 	bwitch++;
 	if (strncmp((char *)(clBoolTrue[bwitch-1].c_str()), val.c_str(), val.size())==0)
@@ -196,10 +196,10 @@ extern "C" {
     // No matches were found from the truth values.  Search in the
     // list of false values.
     //
-    while ((bwitch >= nT-1) && (bwitch < nT+nF-1))
+    while ((bwitch >= nT-1) && (bwitch < nT+nF))
       {
     	bwitch++;
-    	int tt=bwitch-nT;
+    	int tt=bwitch-nT-1;
     	if (strncmp((char *)(clBoolFalse[tt].c_str()), val.c_str(), val.size())==0)
     	  return dupstr((char*)(clBoolFalse[tt].c_str()));
       }
