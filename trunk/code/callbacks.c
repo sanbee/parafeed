@@ -275,7 +275,7 @@ END{									\
 	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
 	  exposeKeys(S);
 	  fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
-	  int n=S->DefaultVal.size(),nchar=0, offset=10;;
+	  int n=S->DefaultVal.size(),nchar=0, offset=16;;
 	  if ((n=S->DefaultVal.size())>0)
 	    {
 	      fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
@@ -288,9 +288,11 @@ END{									\
 	      //	      for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
 	    }
 	  else
-	    offset+=16;
+	    offset+=10;
 	  for(int i=0;i<offset-nchar;i++) fprintf(stderr," ");
 	    
+	  if (ISSET(S->Attributes,CL_BOOLTYPE))
+	    fprintf(stderr, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
 	  if ((n=S->Options.size())>0)
 	    {
 	      fprintf(stderr, " [%-s",S->Options[0].c_str());
@@ -310,13 +312,14 @@ END{									\
     string fullFormat;
     //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
-    
+    string s0="   Key                Type          Factory defaults        Options\n";
+    string s1="---------          ----------       ----------------        -------\n";
     Symbol *S;
 
     if (arg==NULL)
      {
-       fprintf(stderr,"   Key                Type          Factory defaults        Options\n");
-       fprintf(stderr,"---------          ----------       ----------------        -------\n");
+       fprintf(stderr,s0.c_str());
+       fprintf(stderr,s1.c_str());
        for (S=cl_SymbTab;S;S=S->Next)
          if (((S->Class==CL_APPLNCLASS) ||
 	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
@@ -332,8 +335,8 @@ END{									\
              (S->Exposed)
             )
            {
-             fprintf(stderr,"   Key                Type          Factory defaults        Options\n");
-             fprintf(stderr,"---------          ----------       ----------------        -------\n");
+             fprintf(stderr,s0.c_str());
+             fprintf(stderr,s1.c_str());
 
              formatTypeHelp(S,fullFormat);
            }

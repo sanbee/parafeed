@@ -28,6 +28,7 @@
 #include <shell.h>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <support.h>
 #include <clGlobals.h>
 #include <clhashdefines.h>
@@ -171,24 +172,60 @@ extern "C" {
   //------------------------------------------------------------------------
   // Generate a context sensitive list of options.
   //
+  char *rl_bool_options_generator(const char *text, int state)
+  {
+#include <clbool.h>
+    static int bwitch=0;
+
+    int nT=clBoolTrue.size(), nF=clBoolFalse.size();
+    string val=text;
+    std::transform(val.begin(), val.end(), val.begin(), (int(*)(int)) std::toupper);
+
+    if (state==0) bwitch=0;
+    if (bwitch == nT+nF) return NULL;
+    //
+    // First go over the list to truth values...
+    //
+    while (bwitch<nT-1)
+      {
+	bwitch++;
+	if (strncmp((char *)(clBoolTrue[bwitch-1].c_str()), val.c_str(), val.size())==0)
+	  return dupstr((char*)(clBoolTrue[bwitch-1].c_str()));
+      }
+    //
+    // No matches were found from the truth values.  Search in the
+    // list of false values.
+    //
+    while ((bwitch >= nT-1) && (bwitch < nT+nF-1))
+      {
+    	bwitch++;
+    	int tt=bwitch-nT;
+    	if (strncmp((char *)(clBoolFalse[tt].c_str()), val.c_str(), val.size())==0)
+    	  return dupstr((char*)(clBoolFalse[tt].c_str()));
+      }
+    return NULL;
+  }
+  //------------------------------------------------------------------------
+  // Generate a context sensitive list of options.
+  //
   char *rl_options_generator(const char *text, int state)
   {
     static VString options;
-    static int which;
+    static int witch;
     static int isKeyWord=0;
     if (state==0) 
       {
 	Symbol *S=rl_isKeyword((char *)rl_line_buffer);
 	if (S != NULL) {options = S->Options; isKeyWord=1;};
-	which=0;
+	witch=0;
       }
     int n=options.size(),len=strlen(text);
-    while(which < n)
+    while(witch < n)
       {
-	which++;
+	witch++;
 	int m;
-	if ((m=strncmp((char *)(options[which-1].c_str()), text, len))==0)
-	  return dupstr((char *)(options[which-1].c_str()));
+	if ((m=strncmp((char *)(options[witch-1].c_str()), text, len))==0)
+	  return dupstr((char *)(options[witch-1].c_str()));
       }
     return NULL;
   }
@@ -212,7 +249,9 @@ extern "C" {
 	  rl_line_buffer[rl_point-1] = '=';
 	if (S != NULL)
 	  {
-	    if (S->Options.size() > 0)
+	    if (ISSET(S->Attributes,CL_BOOLTYPE)) 
+		matches=rl_completion_matches(text,rl_bool_options_generator);
+	    else if (S->Options.size() > 0)
 	      matches = rl_completion_matches(text,rl_options_generator);
 	    else if (ISSET(S->Attributes,CL_STRINGTYPE))
 	      matches=rl_completion_matches(text,rl_filename_completion_function);
