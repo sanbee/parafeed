@@ -171,7 +171,7 @@ minmatch.o:minmatch.c clshelldefs.h cl.h
 isBool.o:isBool.c clshelldefs.h cl.h cllib.h clbool.h
 	$(C++) -c $(INCL) isBool.c
 
-rl_interface.o: rl_interface.cc cllib.h
+rl_interface.o: rl_interface.cc cllib.h clbool.h
 	$(C++) -c $(INCL) rl_interface.cc
 
 clSetOptions.o: clSetOptions.cc clshelldefs.h
