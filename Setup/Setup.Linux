@@ -45,7 +45,7 @@ DEFINES=-DGNU_REGEX -DGNUREADLINE -DHAVE_STRING_H \
 INCL = -I. -I/usr/include/g++ -I$(OFFINC) -I/aips++/local/lib/cfitsio 
 LDOPTS= -dynamic
 COMMONOPTS= -Wall $(OPTFLAGS) $(INCL)\
-	-I/usr/local/include \
+	-I/usr/local/include -I/usr/include \
 	-L$(GLIB) \
 	-L/usr/openwin/lib \
         -L/aips++/local/lib/cfitsio/lib \
