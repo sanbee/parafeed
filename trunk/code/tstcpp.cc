@@ -22,7 +22,9 @@ void UI()
   vector<float> fv(10);
   string str;
   bool b=false;
-  
+  //
+  // Change cl-shell prompt
+  //  
   argv = (char **)malloc(2*sizeof(char **));
   argv[0]=(char *)malloc(20);
   strcpy(argv[0],"test2");
@@ -42,11 +44,11 @@ void UI()
     clSetOptions("string",options);
   }
   EndCL();
-  cerr << "Bool = " << b << endl;
-  cerr << "Float = " << f << endl;
-  cerr << "Int = " << j << endl;
-  cerr << "String = " << str << endl;
-  cerr << "Float Array = ";
+  cerr << "  Bool        = " << b << endl;
+  cerr << "  Float       = " << f << endl;
+  cerr << "  Int         = " << j << endl;
+  cerr << "  String      = " << str << endl;
+  cerr << "  Float Array = ";
   for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
     cerr << *i << " ";cerr << endl;
 }
