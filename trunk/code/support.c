@@ -314,17 +314,17 @@ extern "C" {
     if (S->Val == NULL)
       {
 	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults");
-	
+	n = S->DefaultVal.size();
 	for(int i=0;i<n;i++)
 	  {
 	    ostringstream os;
-	    os << val[i];
-	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNIDefaults");
+	    os << S->DefaultVal[i];
+	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),
+					"setAutoNIDefaults");
 	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL);
 	  }
+	S->NVals = n;
       }
-    
-    S->NVals = n;
   }
   /*----------------------------------------------------------------------*/
   void setAutoNBDefaults(Symbol *S, const vector<bool>& val)
@@ -344,17 +344,17 @@ extern "C" {
     if (S->Val == NULL)
       {
 	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults");
-	
+	n = S->DefaultVal.size();
 	for(int i=0;i<n;i++)
 	  {
 	    ostringstream os;
-	    os << val[i];
-	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNIDefaults");
+	    os << S->DefaultVal[i];
+	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),
+					"setAutoNBDefaults");
 	    sprintf(S->Val[i],"%d%c",(val[i]==0?false:true),(int)NULL);
 	  }
+	S->NVals = n;
       }
-    
-    S->NVals = n;
   }
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
@@ -378,18 +378,19 @@ extern "C" {
     if (S->Val == NULL)
       {
 	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNFDefaults");
-	
+	n = S->DefaultVal.size();
 	for(int i=0;i<n;i++)
 	  {
 	    ostringstream os;
-	    os << val[i];
-	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoNFDefaults");
+	    os << S->DefaultVal[i];
+	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),
+					"setAutoNFDefaults");
 	    //	    sprintf(S->Val[i],"%f%c",val[i],NULL);
 	    strcpy(S->Val[i],os.str().c_str());
 	  }
+	S->NVals = n;
       }
     
-    S->NVals = n;
   }
 #ifdef __cplusplus
 }
