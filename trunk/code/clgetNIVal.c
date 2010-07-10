@@ -70,8 +70,8 @@ HANDLE_EXCEPTIONS(
 		      //
 		      // Remember the number of values set by the user.
 		      //
-		      n0=S->NVals;
 		      setAutoNIDefaults(S,val);
+		      n0=S->NVals;
 		      int i=1;
 		      for(int j=0;j<n0;j++)
 			{

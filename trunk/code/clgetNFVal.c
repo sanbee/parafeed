@@ -63,9 +63,8 @@ HANDLE_EXCEPTIONS(
 		      else sprintf(tmp,"float[%d]",m);
 		      
 		      S = SearchQSymb((char *)Key.c_str(), tmp);
-		      n0=S->NVals;
 		      setAutoNFDefaults(S,val);
-		      
+		      n0=S->NVals;
 		      int i=1;
 		      for (int j=0;j<n0;j++)
 			{
@@ -82,6 +81,6 @@ HANDLE_EXCEPTIONS(
 			}
 		      m=S->NVals=i-1;
 		      return i-1;
-		     );
+		      );
   }
 #endif
