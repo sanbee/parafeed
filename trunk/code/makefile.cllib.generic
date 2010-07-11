@@ -366,6 +366,10 @@ tst2: tst2.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) tst2.c -o tst2 libshccl.a \
 	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
 
+tstcpp: tstcpp.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
+	$(C++) $(INCL) tstcpp.cc -o tstcpp libshccl.a \
+	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+
 tst3: tst3.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) tst3.c -o tst3 libshccl.a \
 	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
