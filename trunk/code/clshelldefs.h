@@ -31,6 +31,8 @@ extern "C" {
 #define getmem(a,b)  calloc(1,(a))
 #ifdef __cplusplus
   inline void ClearMap(SMap &m) {m.erase(m.begin(),m.end());};
+  inline void ClearKeys(vector<string>& keys) {keys.resize(0);};
+  inline void InitMap(SMap &m, vector<string>& keys) {ClearMap(m);ClearKeys(keys);};
 #endif
   
 #include <clhashdefines.h>
