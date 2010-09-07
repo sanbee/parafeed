@@ -187,6 +187,10 @@ END{									\
 		    S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
 		    S->Exposed=1;
 		    exposedSomething=1;
+		    //
+		    // Recursively expose the keys.
+		    //
+		    exposeKeys(S);
                     //
                     // Remove the CL_KEYWORD attribute if a keyword is
                     // hidden due to a setting of another keyword which 
