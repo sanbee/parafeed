@@ -51,7 +51,7 @@ HANDLE_EXCEPTIONS(
 	   }
 #endif
 #ifdef __cplusplus
-int dbgclgetIValp(const string& Name, bool& val, int& n)
+int dbgclgetBValp(const string& Name, bool& val, int& n)
 {
   Symbol *S;
   double d;
