@@ -38,7 +38,7 @@ HANDLE_EXCEPTIONS(
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);  
   else
-    S=SearchQSymb(Name,"int");
+    S=SearchQSymb(Name,"bool");
 
   if (S != NULL) S->Class=CL_DBGCLASS;
 
@@ -60,10 +60,11 @@ HANDLE_EXCEPTIONS(
 		  if (n < 0)
 		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
 		  else
-		    S=SearchQSymb((char *)Name.c_str(),"int");
+		    S=SearchQSymb((char *)Name.c_str(),"bool");
 		  if (S != NULL) S->Class=CL_DBGCLASS;
-		  setAutoIDefaults(S,val);
+		  setAutoBDefaults(S,val);
 		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
+		  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
 		  return N;
 		  );
 }
