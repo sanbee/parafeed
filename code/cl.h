@@ -206,6 +206,9 @@ int       doprintdoc(char *);
 int       loadDefaults(int complement=1);
 int       clparseVal(Symbol *, int *, double *);
 int       PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
+int       PrintKey(FILE *f, Symbol *S);
+void      printMap(SMap& smap);
+int       namePrintFormat(char *format, char *append);
 int       clIsInteractive();
   /*
 void mkfilename(char *out,char *envvar,char *name,char *type);
