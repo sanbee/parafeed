@@ -123,6 +123,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       SetVal(v,pos,i);
       if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
     }
+  doinp(key);
   free(k);
   return 1;
 }
