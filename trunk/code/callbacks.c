@@ -85,32 +85,6 @@ END{									\
   /*----------------------------------------------------------------------*/
   int dogo(char *arg) {return EOF;}
   /*----------------------------------------------------------------------*/
-  int namePrintFormat(char *format, char *append)
-  {
-    Symbol *t;
-    int maxNameLength=10;
-    for (t=cl_SymbTab;t;t=t->Next)
-      if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
-    
-    sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
-    return maxNameLength;
-  }
-  /*----------------------------------------------------------------------*/
-  void printMap(SMap& smap)
-  {
-    if ((smap.size() > 0))
-      {
-	for(SMap::iterator i=smap.begin(); i != smap.end(); i++)
-	  {
-	    cout << "### " << (*i).first << ": ";
-	    vector<string> sv=(*i).second;
-	    for(unsigned int j=0;j<sv.size();j++)
-	      cout << sv[j] << " ";
-	    cout << endl;
-	  }
-      }
-  }
-  /*----------------------------------------------------------------------*/
   bool checkVal(Symbol* t, vector<string>& mapVal)
   {
     bool found=false;
@@ -235,28 +209,19 @@ END{									\
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
 //              if (t->smap.begin() != t->smap.end())
-              if (ISSET(t->Attributes,CL_KEYWORD))
-               {
-                 string startSeq,endSeq;
-                 clTextColouring(t->Name,(unsigned int)t->Attributes, startSeq,endSeq);
-                 fprintf(stderr,"%s",startSeq.c_str());
-                 fprintf(stderr,format,t->Name);
-                 fprintf(stderr,"%s",endSeq.c_str());
-               }
-              else
-	        fprintf(stderr,format,t->Name);
+	      PrintKey(stderr, t);
 	      PrintVals(stderr,t);
 	    }
 	}
     else
       {
 	t=SearchVSymb((char*)arg,cl_SymbTab);
-	if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
-	    ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-	  {
-	    fprintf(stderr,format,t->Name);
-	    PrintVals(stderr,t);
-	  }
+	// if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
+	//     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	//   {
+	//     fprintf(stderr,format,t->Name);
+	//     PrintVals(stderr,t);
+	//   }
 	vector<string> mapVal;
 	checkVal(t,mapVal);
 	for (unsigned int j=0; j < mapVal.size(); j++)
@@ -266,7 +231,7 @@ END{									\
 	    if ((S->Exposed) && (S->Class == CL_APPLNCLASS) ||
 		((S->Class == CL_DBGCLASS) && (CL_DBG_ON)))
 	      {
-		fprintf(stderr,format,S->Name);
+		PrintKey(stderr, S);
 		PrintVals(stderr,S);
 	      }
 	  }
