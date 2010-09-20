@@ -19,9 +19,16 @@
 /* $Id: PrintVals.c,v 2.0 1998/11/11 07:12:41 sanjay Exp $ */
 #include <stdio.h>
 #include <shell.h>
+#include <string>
+#include <cl.h>
 
 #ifdef __cplusplus
+using namespace std;
 extern "C" {
+  extern Symbol    *cl_SymbTab,*cl_TabTail;
+  extern CmdSymbol *cl_CmdTab;
+  extern char      *cl_ProgName;
+  extern unsigned short CL_DBG_ON;
 #endif
 /*----------------------------------------------------------------------*/
 int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
@@ -58,6 +65,49 @@ int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
   }
 
   if (newline) fprintf(fd,"\n");
+  return 1;
+}
+  /*----------------------------------------------------------------------*/
+  int namePrintFormat(char *format, char *append)
+  {
+    Symbol *t;
+    int maxNameLength=10;
+    for (t=cl_SymbTab;t;t=t->Next)
+      if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
+    
+    sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
+    return maxNameLength;
+  }
+  /*----------------------------------------------------------------------*/
+  void printMap(SMap& smap)
+  {
+    if ((smap.size() > 0))
+      {
+	for(SMap::iterator i=smap.begin(); i != smap.end(); i++)
+	  {
+	    cout << "### " << (*i).first << ": ";
+	    vector<string> sv=(*i).second;
+	    for(unsigned int j=0;j<sv.size();j++)
+	      cout << sv[j] << " ";
+	    cout << endl;
+	  }
+      }
+  }
+/*----------------------------------------------------------------------*/
+int PrintKey(FILE *fd,Symbol *S)
+{
+  char format[12];
+  namePrintFormat(format," = ");
+  if (ISSET(S->Attributes,CL_KEYWORD))
+    {
+      string startSeq,endSeq;
+      clTextColouring(S->Name,(unsigned int)S->Attributes, startSeq,endSeq);
+      fprintf(fd,"%s",startSeq.c_str());
+      fprintf(fd,format,S->Name);
+      fprintf(fd,"%s",endSeq.c_str());
+    }
+  else
+    fprintf(fd,format,S->Name);
   return 1;
 }
 #ifdef __cplusplus
