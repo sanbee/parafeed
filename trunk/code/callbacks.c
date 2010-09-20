@@ -257,6 +257,19 @@ END{									\
 	    fprintf(stderr,format,t->Name);
 	    PrintVals(stderr,t);
 	  }
+	vector<string> mapVal;
+	checkVal(t,mapVal);
+	for (unsigned int j=0; j < mapVal.size(); j++)
+	  {
+	    Symbol *S;
+	    S=SearchVSymb((char *)mapVal[j].c_str(),cl_SymbTab);
+	    if ((S->Exposed) && (S->Class == CL_APPLNCLASS) ||
+		((S->Class == CL_DBGCLASS) && (CL_DBG_ON)))
+	      {
+		fprintf(stderr,format,S->Name);
+		PrintVals(stderr,S);
+	      }
+	  }
       }
     return 1;
   }
