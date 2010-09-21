@@ -189,10 +189,6 @@ END{									\
   int doinp(char *arg)
   {
     Symbol *t;
-    
-    char format[12];
-    namePrintFormat(format," = ");
-    
     //
     // First expose the keywords for this session
     //
