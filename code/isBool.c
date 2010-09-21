@@ -37,6 +37,9 @@ extern "C" {
     string lval(val);
     std::transform(lval.begin(), lval.end(), lval.begin(), (int(*)(int)) std::toupper);
     vector<string> list;
+    //
+    // clBoolTrue and clBoolFalse are vector<string> construed in clbool.h
+    //
     if (cmpVal) list=clBoolTrue;
     else list=clBoolFalse;
     for(unsigned int i=0; i<list.size(); i++)
