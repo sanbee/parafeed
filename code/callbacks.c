@@ -41,7 +41,7 @@ extern "C" {
   extern CmdSymbol *cl_CmdTab;
   extern char      *cl_ProgName;
   extern unsigned short CL_DBG_ON;
-  
+  short int cl_do_doinp=1;
 #define MAXBUF     256
   /*------------------------------------------------------------------------
     A macro which is actually an nawk program!  If one arg is given to
@@ -513,6 +513,8 @@ END{									\
     FILE *fd;
     char str[MAXBUF];
     int i=0,Complement=0;
+
+    cl_do_doinp=0;
     
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
@@ -557,7 +559,7 @@ END{									\
 			if ((pos->NVals == 0))
 			  pos = (Symbol *)NULL;
 		      }
-		    if (!pos) SetVar(Name,Val,cl_SymbTab,0,1);
+		    if (!pos) SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
 		    if (Name != NULL) {free(Name);Name=NULL;}
 		    if (Val != NULL) {free(Val);Name=NULL;}
 		  }
@@ -565,6 +567,7 @@ END{									\
 	  }
 	fclose(fd);
       }
+    cl_do_doinp=0;
     return 1;
   }
   /*------------------------------------------------------------------------
