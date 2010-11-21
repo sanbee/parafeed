@@ -22,6 +22,7 @@
 #include <shell.h>
 #include <stdlib.h>
 #include <cl.h>
+#include <cllib.h>
 #include <sstream>
 #include <algorithm>
 #include <cctype>
@@ -62,7 +63,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 /*---------------------------------------------------------------------------*/
 /* Loads the keyword key and its value in the list pointed to by p           */
 /*---------------------------------------------------------------------------*/
-  int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatch)
+  int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatch, short int dodoinp)
 {
   unsigned int i,j;
   int coma=0;
@@ -123,7 +124,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       SetVal(v,pos,i);
       if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
     }
-  doinp(key);
+  if (dodoinp) doinp(key);
   free(k);
   return 1;
 }
