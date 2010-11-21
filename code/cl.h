@@ -219,7 +219,7 @@ void load_hist(char *EnvVar, char *Default);
 int  InstallSymb();
 int  sh_parse();
 int  UnsetVar(Symbol *,int);
-int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch=0);
+int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch=0, short int doinp=1);
 void SetVal(char *, Symbol *, int);
 void VerifyVal(char *, Symbol *,string &);
 int  CopyVSymb(Symbol *, Symbol *,int);
