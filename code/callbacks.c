@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string>
+#include <fstream>
 #include <cl.h>
 #include <shell.h>
 #include <shell.tab.h>
@@ -510,45 +511,61 @@ END{									\
     ------------------------------------------------------------------------*/
   int doload(char *f)
   {
-    FILE *fd;
-    char str[MAXBUF];
+    // FILE *fd;
+    // char str[MAXBUF];
     int i=0,Complement=0;
+
+    ifstream ifs;
+    string strcpp;
 
     cl_do_doinp=0;
     
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
       {
-	strcpy(str,cl_ProgName);
+	strcpp = cl_ProgName; 
+	//	strcpy(str,cl_ProgName);
 #ifdef GNUREADLINE
-	str[strlen(cl_ProgName)-1]='\0';
+	//	str[strlen(cl_ProgName)-1]='\0';
+	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
 #endif
-	strcat(str,".def");
+	//	strcat(str,".def");
+	strcpp.append(".def");
       }
-    else strcpy(str,f);
+    else 
+      //      strcpy(str,f);
+      strcpp = f;
     
-    if (str[strlen(str)-1] == '!') 
-      {Complement = 1; str[strlen(str)-1] = (char)NULL;}
-    
-    if ((fd = fopen(str,"r"))==NULL)
+    //    if (str[strlen(str)-1] == '!') 
+    if (strcpp[strcpp.size()-1] == '!') 
+      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
+
+    ifs.open(strcpp.c_str());
+    //    if ((fd = fopen(str,"r"))==NULL)
+    if (!ifs.good())
       {
-	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
-	return 2;
+	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
+	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
+    	return 2;
       }
     else
       {
 	char *Name=NULL, *Val=NULL;
 	Symbol *pos;
 	
-	while(!feof(fd))
+	//	while(!feof(fd))
+	while(!ifs.eof())
 	  {
-	    for (i=0;i<MAXBUF;i++)str[i]='\0';
-	    if (fgets(str,MAXBUF,fd)!=NULL)
+	    string strcpp;
+	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
+	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
+	    if (getline(ifs,strcpp))
 	      {
-		stripwhite(str);str[strlen(str)-1]='\0';
-		if (strlen(str) > 0)
+		char *str_p=(char *)strcpp.c_str();
+		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
+		if (strlen(str_p) > 0)
 		  {
-		    BreakStr(str,&Name,&Val);
+		    BreakStr(str_p,&Name,&Val);
 		    pos = NULL;
 		    if (Complement)
 		      {
@@ -565,7 +582,7 @@ END{									\
 		  }
 	      }
 	  }
-	fclose(fd);
+	//	fclose(fd);
       }
     cl_do_doinp=0;
     return 1;
