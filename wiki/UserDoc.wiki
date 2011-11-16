@@ -45,7 +45,7 @@ current values.  The default values displayed will be
 those set by the application programmer.  The settings of the various
 keywords can be stored in a file.  If a file with the same name as the
 application executable file name with an extension ".def" is
-found (see Section on [Customization]), the values of the keywords will be
+found (see Section on *Customization*), the values of the keywords will be
 loaded from that file.  The value of the keywords can also be set on
 the command-line in the {{{<KeyWord>=[<Val0>[,<Val1>[...]]]}}}
 format.  This style of setting the initial value of the keywords will
