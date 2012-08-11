@@ -33,7 +33,12 @@ void UI()
   BeginCL(argc,argv);
   clInteractive(1);
   {
-    i=1;clgetBValp("bool",b,i);
+    SMap watchPoints; vector<string> exposedKeys;
+    ClearMap(watchPoints);
+    exposedKeys.resize(0);
+    exposedKeys[0]="int";
+    watchPoints["1"]=exposedKeys;
+    i=1;clgetBValp("bool",b,i,watchPoints);
     i=1;clgetIValp("int",j,i);
     i=1;clgetFValp("float",f,i);
     i=1;clgetSValp("string",str,i);
