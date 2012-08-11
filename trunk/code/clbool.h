@@ -41,6 +41,6 @@ clBoolTrue.push_back("JA");      clBoolFalse.push_back("NEE");      // Dutch
 clBoolTrue.push_back("YA");      clBoolFalse.push_back("NA");       // (American) Slan
 clBoolTrue.push_back("OUI");     clBoolFalse.push_back("NON");      // For Mauritian Croele (not French! :))
 clBoolTrue.push_back(":-)");     clBoolFalse.push_back(":-(");      // SMS'ees
-clBoolTrue.push_back("y");       clBoolFalse.push_back("n");        // Lazy
+clBoolTrue.push_back("Y");       clBoolFalse.push_back("N");        // Lazy English ;-)
 
 // #endif
