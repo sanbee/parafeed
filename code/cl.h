@@ -123,9 +123,9 @@ extern int add_history(char *);
     CL package's internal stuff
   */
 Symbol   *IntallSymb(char *, char *, Symbol *);
-Symbol   *SearchQSymb(char *Name, char *Type);
-Symbol   *SearchVSymb(char *Name, Symbol *Tab);
-Symbol   *AddQKey(char *Name, char *Type, 
+Symbol   *SearchQSymb(const char *Name, char *Type);
+Symbol   *SearchVSymb(const char *Name, Symbol *Tab);
+Symbol   *AddQKey(const char *Name, char *Type, 
 		  Symbol **Head, Symbol **Tail);
 int       ParseCmdLine(int, char **);
   /*
@@ -144,8 +144,8 @@ int       clgetIVal(char  *Name, int   *Val, int *N);
 int       dbgclgetIVal(char  *Name, int   *Val, int *N);
 int       clgetFVal(char  *Name, float *Val, int *N);
 int       dbgclgetFVal(char  *Name, float *Val, int *N);
-int       clgetSVal(char  *Name, char  *Val, int *N);
-int       dbgclgetSVal(char  *Name, char  *Val, int *N);
+int       clgetSVal(const char  *Name, char  *Val, int *N);
+int       dbgclgetSVal(const char  *Name, char  *Val, int *N);
 int       clgetNIVal(char *Key,  int   *Val, int *m);
 int       dbgclgetNIVal(char *Key,  int   *Val, int *m);
 int       clgetNFVal(char *Name, float *Val, int *N);
@@ -186,7 +186,7 @@ void      stripwhite (char *);
 int       redirect(char *, char *);
 void      yyerror(char *);
 int       clgetConfigFile(char *, char *);
-int       AddCmd(char *Name, char *Doc, int (*func)(char *), 
+int       AddCmd(const char *Name, char *Doc, int (*func)(char *), 
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
 int       dogo(char *);

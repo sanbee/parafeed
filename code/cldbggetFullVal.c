@@ -31,7 +31,7 @@ int dbgclgetFullValp(const string& Name, string& val)
   int n,i,len=0;
   char tmp[FILENAME_MAX];
   Symbol *S;
-  S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+  S=SearchQSymb((char*)Name.c_str(),(char *)"Mixed[]");
   if (S == NULL)
     S = SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   

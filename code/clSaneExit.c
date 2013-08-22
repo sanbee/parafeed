@@ -26,7 +26,7 @@ extern "C" {
 /*----------------------------------------------------------------------*/
 void clSaneExit(int Mode)
 {
-  doquit("save");
+  doquit((char *)"save");
   if (Mode<0) exit(Mode);
 }
 #ifdef __cplusplus

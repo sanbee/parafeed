@@ -28,7 +28,7 @@ extern "C" {
    Delete a node from the list who's head and tail are pointed to by
    Head and Tail pointers.
 ------------------------------------------------------------------------*/
-int DeleteVar(char *Name, Symbol** Head, Symbol** Tail)
+int DeleteVar(const char *Name, Symbol** Head, Symbol** Tail)
 {
   Symbol* S;
   

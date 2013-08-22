@@ -32,7 +32,7 @@ extern "C" {
 char *clgetOutputFile()
 {
   Symbol *S;
-  if ((S=SearchQSymb("out","string"))!=NULL)
+  if ((S=SearchQSymb((char *)"out",(char *)"string"))!=NULL)
     { if (S->NVals > 0) return S->Val[0]; else return NULL;}
   else return NULL;
 }

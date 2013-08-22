@@ -25,16 +25,16 @@
 extern "C" {
 #endif
 
-Symbol *SearchVSymbFullMatch(char *Name, Symbol *Tab)
+Symbol *SearchVSymbFullMatch(const char *Name, Symbol *Tab)
 {
   Symbol *t;
   for (t=Tab;t!=NULL;t=t->Next)
     if (!strcmp(t->Name,Name)) break;
   return t;
 }
-Symbol *SearchVSymb(char *Name, Symbol *Tab){return minmatch(Name,Tab);}
+Symbol *SearchVSymb(const char *Name, Symbol *Tab){return minmatch(Name,Tab);}
 /*----------------------------------------------------------------------*/
-CmdSymbol *SearchCSymb(char *Name, CmdSymbol *Tab)
+CmdSymbol *SearchCSymb(const char *Name, CmdSymbol *Tab)
 {
   CmdSymbol *t;
   for (t=Tab;t!=NULL;t=t->Next)

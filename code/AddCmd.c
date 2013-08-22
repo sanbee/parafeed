@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-int AddCmd(char *Name, char *Doc, int (*func)(char *), 
+int AddCmd(const char *Name, char *Doc, int (*func)(char *), 
 	   CmdSymbol **Head, CmdSymbol **Tail)
 {
   CmdSymbol *S = AllocCSymb(1);

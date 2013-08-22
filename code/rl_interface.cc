@@ -119,7 +119,7 @@ extern "C" {
 	m=strncmp (S->Name, text, len);
 	tmp = S->Name;
 	exposed=S->Exposed;
-	if (S->Class==CL_DBGCLASS) if (CL_DBG_ON) showdbg=1; else showdbg=0;
+	if (S->Class==CL_DBGCLASS) {if (CL_DBG_ON) showdbg=1; else showdbg=0;}
 	viewable = ((m==0) && (exposed==1) && showdbg && (S->Class!=CL_USERCLASS));
         
 	S = S->Next;
@@ -151,7 +151,7 @@ extern "C" {
 	m=strncmp (S->Name, text, len);
 	tmp = S->Name;
 	exposed=S->Exposed;
-	if (S->Class==CL_DBGCLASS) if (CL_DBG_ON) showdbg=1; else showdbg=0;
+	if (S->Class==CL_DBGCLASS) {if (CL_DBG_ON) showdbg=1; else showdbg=0;}
 	viewable = ((m==0) && (exposed==1) && showdbg && (S->Class!=CL_USERCLASS));
         
 	S = S->Next;
@@ -322,7 +322,7 @@ extern "C" {
     char hfile[FILENAME_MAX];
     if ((HistFile = (char *)getenv(EnvVar)) == NULL)
       HistFile = Default;
-    mkfilename(hfile,"HOME",HistFile,"\0");
+    mkfilename(hfile,(char *)"HOME",(char *)HistFile,(char *)"\0");
     write_history(hfile);
   }
   /************************************************************************/
@@ -350,7 +350,7 @@ extern "C" {
 	if ((HistFile = (char *)getenv(EnvVar)) == NULL)
 	  HistFile = Default;
 	
-	mkfilename(hfile,"HOME",HistFile,"\0");
+	mkfilename((char *)hfile,(char *)"HOME",(char *)HistFile,(char *)"\0");
 	read_history(hfile);
 	Loaded = !Loaded;
       }

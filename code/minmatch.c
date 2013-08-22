@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 /*----------------------------------------------------------------------*/
-Symbol *minmatch(char *str, Symbol *List)
+Symbol *minmatch(const char *str, Symbol *List)
 {
   int i,m=0;
   Symbol *s,*l[NN];

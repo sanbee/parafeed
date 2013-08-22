@@ -26,7 +26,7 @@ extern "C" {
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
-int dbgclgetSVal(char *Name, char *val, int *n)
+int dbgclgetSVal(const char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
@@ -35,7 +35,7 @@ int dbgclgetSVal(char *Name, char *val, int *n)
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);
   else
-    S=SearchQSymb(Name,"string");
+    S=SearchQSymb(Name,(char *)"string");
   N = _ABS(*n);
 
   if (S!=NULL) 

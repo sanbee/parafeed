@@ -98,12 +98,17 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void stripwhite (char *string)
   {
-    register int i = 0;
+    int i = 0;
     
     if (string!=NULL)
       {
 	while (string[i] == ' ' || string[i]=='\t') i++;
-	if (i) strcpy (string, string + i);
+	if (i)
+	  {
+	    std::string tmp=(string+i);
+	    strcpy(string,tmp.c_str());
+	  }
+	//	if (i) strcpy (string, string + i);
 	i = strlen (string) - 1;
 	while (i > 0 && (string[i]==' '||string[i]=='\t')) i--;
 	string[++i] = '\0';
@@ -258,7 +263,7 @@ extern "C" {
       {
 	int comma;
 	char *valstr; valstr=(char *)val.c_str();
-	if ((comma = ntok(valstr,",",CL_ESC))==-1) 
+	if ((comma = ntok(valstr,(char*)",",CL_ESC))==-1) 
 	  {
 	    ostringstream os;
 	    os << "Error in counting commas in the string " << val << endl;
@@ -270,10 +275,10 @@ extern "C" {
 	    S->DefaultVal.resize(comma);
 	    valstr=(char *)val.c_str();
 	    char *t;
-	    if ((t=clstrtok(valstr,",", CL_ESC)) != NULL)
+	    if ((t=clstrtok(valstr,(char*)",", CL_ESC)) != NULL)
 	      {
 		S->DefaultVal[0]=t;
-		for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,",", CL_ESC);
+		for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,(char*)",", CL_ESC);
 	      }
 	  }
       }
@@ -286,7 +291,7 @@ extern "C" {
 	if (S->Val == NULL)
 	  {
 	    S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults");
-	    S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoSDefaults");
+	    S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),(char*)"setAutoSDefaults");
 	    sprintf(S->Val[0],"%s",os.str().c_str());
 	  }
 	S->NVals = 1;
@@ -313,7 +318,7 @@ extern "C" {
     
     if (S->Val == NULL)
       {
-	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults");
+	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults");
 	n = S->DefaultVal.size();
 	for(int i=0;i<n;i++)
 	  {

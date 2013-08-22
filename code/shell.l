@@ -147,6 +147,7 @@ DOT     \.
 RNUM    (({DIGIT})|({DIGIT}{DOT})|({DIGIT}{DOT}{DIGIT})|({DOT}{DIGIT}))
 NUM     (({RNUM})|({DIGIT}))
 %s  VARARG CMDARG ARG VARNAME
+%option noyywrap
 %%
 \$                                   {/*Catch the dereferencing char.*/
                                        BEGIN(VARNAME);

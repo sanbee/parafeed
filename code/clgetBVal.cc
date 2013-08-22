@@ -38,7 +38,7 @@ int clgetBVal(char *Name, bool *val, int *n)
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);  
   else
-    S=SearchQSymb(Name,"bool");
+    S=SearchQSymb(Name,(char *)"bool");
   setAutoBDefaults(S,tval);
   if ((N=clparseVal(S,n,&d))>0) *val = (bool)(d==0?false:true);
   if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
@@ -59,7 +59,7 @@ int clgetBValp(const string& Name, bool& val, int& n)
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
   else
-    S=SearchQSymb((char *)Name.c_str(),"bool");
+    S=SearchQSymb((char *)Name.c_str(),(char *)"bool");
   setAutoBDefaults(S,tval);
   if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
   if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
@@ -77,7 +77,7 @@ int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else
-    S=SearchQSymb((char *)Name.c_str(),"bool");
+    S=SearchQSymb((char *)Name.c_str(),(char *)"bool");
   N = _ABS(n);
   setAutoBDefaults(S,val);
   if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);

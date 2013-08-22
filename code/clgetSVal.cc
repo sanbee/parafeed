@@ -27,7 +27,7 @@ extern "C" {
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
-int clgetSVal(char *Name, char *val, int *n)
+int clgetSVal(const char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
@@ -36,7 +36,7 @@ int clgetSVal(char *Name, char *val, int *n)
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);
   else
-    S=SearchQSymb(Name,"string");
+    S=SearchQSymb(Name,(char *)"string");
   N = _ABS(*n);
   if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   if (S!=NULL) 
@@ -69,7 +69,7 @@ int clgetSValp(const string& Name, string& val, int& n)
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else
-    S=SearchQSymb((char *)Name.c_str(),"string");
+    S=SearchQSymb((char *)Name.c_str(),(char *)"string");
   N = _ABS(n);
   if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   setAutoSDefaults(S,val);
@@ -106,7 +106,7 @@ int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else
-    S=SearchQSymb((char *)Name.c_str(),"string");
+    S=SearchQSymb((char *)Name.c_str(),(char *)"string");
   N = _ABS(n);
   if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
 
