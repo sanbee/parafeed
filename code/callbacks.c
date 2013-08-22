@@ -27,6 +27,7 @@
 #include <shell.tab.h>
 #include <string>
 #include <errno.h>
+#include <limits.h>
 //#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
