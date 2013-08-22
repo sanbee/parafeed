@@ -568,7 +568,6 @@ END{									\
 		if (strlen(str_p) > 0)
 		  {
 		    BreakStr(str_p,&Name,&Val);
-		    cerr << Name << " " << Val << endl;
 		    pos = NULL;
 		    if (Complement)
 		      {
