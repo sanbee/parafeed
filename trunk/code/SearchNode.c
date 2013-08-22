@@ -24,7 +24,7 @@
 extern "C" {
 #endif
 /*----------------------------------------------------------------------*/
-Symbol *SearchNode(char *Name, Symbol* Head)
+Symbol *SearchNode(const char *Name, Symbol* Head)
 {
   Symbol *S;
   for (S=Head;S;S=S->Next)

@@ -43,10 +43,10 @@ void          SetSymbTab(Symbol *s);
 void          SetCmdTab(CmdSymbol *s);
 void          SetPrompt(char *p);
 
-Symbol       *SearchVSymb(char *,Symbol *);
-Symbol       *SearchVSymbFullMatch(char *,Symbol *);
-Symbol       *SearchNode(char *,Symbol *);
-CmdSymbol    *SearchCSymb(char *,CmdSymbol *);
+Symbol       *SearchVSymb(const char *,Symbol *);
+Symbol       *SearchVSymbFullMatch(const char *,Symbol *);
+Symbol       *SearchNode(const char *,Symbol *);
+CmdSymbol    *SearchCSymb(const char *,CmdSymbol *);
 Symbol       *AllocSymb(int);
 Symbol       *AllocVSymb(int);
 CmdSymbol    *AllocCSymb(int);
@@ -60,11 +60,11 @@ int           DeleteCTab(CmdSymbol **Head, CmdSymbol **Tail);
 int           AddVNode(Symbol *, Symbol **, Symbol **);
 int           AddCNode(CmdSymbol *, CmdSymbol **, CmdSymbol **);
 
-Symbol        *AddVar(char *Name, Symbol **Head, Symbol **Tail);
-int           AddCmd(char *Name, char *Doc, int (*func)(char *), 
+Symbol        *AddVar(const char *Name, Symbol **Head, Symbol **Tail);
+int           AddCmd(const char *Name, char *Doc, int (*func)(char *), 
 		     CmdSymbol **Head, CmdSymbol **Tail);
 
-int           DeleteVar(char *Name, Symbol **, Symbol **);
+int           DeleteVar(const char *Name, Symbol **, Symbol **);
 int           DeleteCmd(char *Name, CmdSymbol **, CmdSymbol **);
 int           DeleteVNode(Symbol *, Symbol **, Symbol **);
 int           DeleteCNode(CmdSymbol *, CmdSymbol **, CmdSymbol **);
@@ -73,7 +73,7 @@ int           SetVar(char *name, char *val, Symbol *tab,short int force, short i
 void          SetVal(char *, Symbol *, int);
 int           CopyVSymb(Symbol *, Symbol *, int);
 int           CopyCSymb(CmdSymbol *, CmdSymbol *, int);
-Symbol        *minmatch(char *, Symbol *);
+Symbol        *minmatch(const char *, Symbol *);
 void          yyerror(char *x);
 void          LexReSet();
 void          stripwhite (char *);

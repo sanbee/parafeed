@@ -226,8 +226,8 @@ END{									\
 	  {
 	    Symbol *S;
 	    S=SearchVSymb((char *)mapVal[j].c_str(),cl_SymbTab);
-	    if ((S->Exposed) && (S->Class == CL_APPLNCLASS) ||
-		((S->Class == CL_DBGCLASS) && (CL_DBG_ON)))
+	    if (((S->Exposed) && (S->Class == CL_APPLNCLASS)) ||
+		(((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
 	      {
 		PrintKey(stderr, S);
 		PrintVals(stderr,S);
@@ -241,7 +241,8 @@ END{									\
   {
 #ifdef GNUREADLINE
     /* Put the history in the history file*/
-    save_hist("GHIST",CL_HIST_DEFAULT);
+    char *var=(char *)"GHIST";
+    save_hist(var,(char *)CL_HIST_DEFAULT);
 #endif
     
     if (!arg) exit(0);
@@ -288,7 +289,7 @@ END{									\
   int dotypehelp(char *arg)
   {
     char format[12];
-    namePrintFormat(format,"");
+    namePrintFormat(format,(char*)"");
     string fullFormat;
     //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
@@ -374,8 +375,8 @@ END{									\
   int doexplain(char *arg)
   {
     char *path=(char *)getenv(CL_DOCPATH);
-    char *sde_script="|sed -e \"s/%[ANP]//\"|more";
-    char *script = KEYHELP_AWK,*key=0,*task=0;
+    char *sde_script=(char *)"|sed -e \"s/%[ANP]//\"|more";
+    char *script = (char *)KEYHELP_AWK,*key=0,*task=0;
     char *str=0;
     
     str=(char *)calloc(1,strlen(script)+FILENAME_MAX);
@@ -417,7 +418,7 @@ END{									\
     FILE *fd;
     char str[MAXBUF];
     char format[12];
-    namePrintFormat(format," = ");
+    namePrintFormat(format,(char *)" = ");
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
       {
@@ -514,7 +515,7 @@ END{									\
   {
     // FILE *fd;
     // char str[MAXBUF];
-    int i=0,Complement=0;
+    int Complement=0;
 
     ifstream ifs;
     string strcpp;
@@ -567,6 +568,7 @@ END{									\
 		if (strlen(str_p) > 0)
 		  {
 		    BreakStr(str_p,&Name,&Val);
+		    cerr << Name << " " << Val << endl;
 		    pos = NULL;
 		    if (Complement)
 		      {

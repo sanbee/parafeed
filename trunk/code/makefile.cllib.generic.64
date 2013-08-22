@@ -25,8 +25,8 @@ PREFIX        = sh_
 #
 # Compilers
 #
-C++           = CC $(CFLAGS)
-CC            = cc $(CFLAGS)
+C++           = g++ $(CFLAGS)
+CC            = gcc $(CFLAGS)
 F77           = f77  
 LEX           = flex -Ce -P$(PREFIX)
 YACC          = bison -y -p $(PREFIX)

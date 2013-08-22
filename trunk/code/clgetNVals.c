@@ -27,7 +27,7 @@ extern "C" {
 ------------------------------------------------------------------------*/
 int clgetNVals(char *Name)
 {
-  Symbol *S = SearchQSymb(Name, "Mixed[]");
+  Symbol *S = SearchQSymb(Name, (char *)"Mixed[]");
   if (S!=NULL) 
     {
 /*      S=AddQKey(Name,"UNKNOWN[]",

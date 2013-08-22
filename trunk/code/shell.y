@@ -44,7 +44,7 @@ char *sh_sys_cmd=NULL;
 
  void FreeStr(char **dest) {if (*dest != NULL) free(*dest); *dest=NULL;}
 
- int CopyStr(char **dest, char *source) 
+ int CopyStr(char **dest, const char *source) 
    {
      if (!(*source) || 
 	 (strlen(source) == 0)) return 1;
@@ -54,7 +54,7 @@ char *sh_sys_cmd=NULL;
      else *dest = (char *)realloc(*dest,strlen(*dest)+strlen(source)+1);
      if (*dest == NULL)
        {
-	 yyerror("No memory left!");
+	 yyerror((char *)"No memory left!");
 	 return EOF;
        }
      else strcat(*dest,source);
@@ -174,13 +174,13 @@ comd:    asign                   {$$=1;}
 				 }
 
         | UNDEF '=' expr         { 
-                                   yyerror("undefined symbol");
+                                   yyerror((char *)"undefined symbol");
 				   /*FreeVSymb($1);free($3);*/
                                    $$=1;
 				 }
 
         | COMMAND '='            { 
-                                   yyerror("Illegal command syntax");
+                                   yyerror((char *)"Illegal command syntax");
                                    $$=1;
                                  }
         ;

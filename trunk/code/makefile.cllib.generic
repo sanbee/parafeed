@@ -100,7 +100,8 @@ shell.tab.h:shell.tab.c
 
 lex.yy.c: shell.l shell.tab.h
 	$(LEX) shell.l
-	sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+	#sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+	sed "s/#define yywrap $(PREFIX)wrap/#define yywrap libyywrap /"< lex.$(PREFIX).c > lex.yy.c
 
 shell.tab.o: shell.tab.c
 	$(C++) -c $(INCL) shell.tab.c

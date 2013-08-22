@@ -158,7 +158,7 @@ int ParseCmdLine(int argc, char *argv[])
       if (*buf == '=')
 	{
 	  char str[128];
-	  sprintf( "%s> Unknown token \"%s\" found.\n",cl_ProgName,buf);
+	  sprintf(str, "%s> Unknown token \"%s\" found.\n",cl_ProgName,buf);
 	  clThrowUp(str,"###Fatal ",CL_FATAL);
 	  exit(-1);
 	}
@@ -188,12 +188,12 @@ int ParseCmdLine(int argc, char *argv[])
 	  while (*buf == ' ') buf++;
 	  S->NVals = 0;    /* Copy multiple values in the Val list */
 	  n=j=0;
-
-	  n = ntok(buf,",",CL_ESC);
+	  char comma=',';
+	  n = ntok(buf,&comma,CL_ESC);
 	  if (n && (strlen(buf) > 0)) S->Val = (char **)
 		   getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
 	  n=0;
-	  tok=(char *)clstrtok(buf,",",CL_ESC);
+	  tok=(char *)clstrtok(buf,&comma,CL_ESC);
 	  while (tok)
 	    {
 	      m = strlen(tok);
@@ -211,7 +211,7 @@ int ParseCmdLine(int argc, char *argv[])
 		      n++;
 		    }
 		}
-	      tok=(char *)clstrtok(NULL,",",CL_ESC);
+	      tok=(char *)clstrtok(NULL,&comma,CL_ESC);
 	    }
 	  AddVNode(S,&cl_SymbTab,&cl_TabTail);
 	}
@@ -333,8 +333,9 @@ int startShell()
 
 #ifdef GNUREADLINE
 /* Load the history from the history file*/
-	  limit_hist("MAXGHIST",CL_HIST_LIMIT);
-	  load_hist("GHIST",CL_HIST_DEFAULT);
+          char *var={ (char *)"MAXGHIST"};
+	  limit_hist(var,CL_HIST_LIMIT);
+	  load_hist((char *)"GHIST",(char *)CL_HIST_DEFAULT);
 #endif
 	}
 #if defined(FORTRAN)
@@ -440,7 +441,8 @@ int EndCL()
 
 #ifdef GNUREADLINE
 /* Put the history in the history file */
-       save_hist("GHIST",CL_HIST_DEFAULT);
+       char *var = (char*)"GHIST";
+       save_hist(var,(char *)CL_HIST_DEFAULT);
 #endif
   return 1;
 }
@@ -448,7 +450,7 @@ int EndCL()
   Return the symbol with name Name and add it to the list of qurried
   symbol list
 ------------------------------------------------------------------------*/
-Symbol *SearchQSymb(char *Name, char *Type)
+Symbol *SearchQSymb(const char *Name, char *Type)
 {
   /*
     By the time this is called, cl_SymbTab has been populated

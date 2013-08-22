@@ -41,7 +41,7 @@ extern "C" {
 
    If the name symbol does not exist, it will create one 
 ------------------------------------------------------------------------*/
-Symbol *AddQKey(char *Name, char *Type, 
+Symbol *AddQKey(const char *Name, char *Type, 
 		Symbol **Head, Symbol **Tail)
 {
   //  Symbol *s = SearchVSymb(Name,*Head);

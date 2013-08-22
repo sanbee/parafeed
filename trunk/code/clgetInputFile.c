@@ -32,7 +32,7 @@ extern "C" {
 char *clgetInputFile()
 {
   Symbol *S;
-  if ((S=SearchQSymb("in","string"))!=NULL)
+  if ((S=SearchQSymb((char *)"in",(char *)"string"))!=NULL)
     if (S->NVals > 0) return S->Val[0];
     else return NULL;
   else return NULL;

@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-Symbol *AddVar(char *Name, Symbol **Head, Symbol **Tail)
+Symbol *AddVar(const char *Name, Symbol **Head, Symbol **Tail)
 {
   Symbol *S = (Symbol *)AllocVSymb(1);
   if (S==NULL) return NULL;

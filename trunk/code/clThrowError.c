@@ -26,8 +26,8 @@ using namespace std;
 /*----------------------------------------------------------------------*/
 void clDefaultErrorHandler()
 {
-  char *Throes = "###Fatal: Uncaught exception of type ",
-    *LastWords = "###Fatal: Exiting the application.";
+  char *Throes = (char *)"###Fatal: Uncaught exception of type ",
+    *LastWords = (char *)"###Fatal: Exiting the application.";
 
   try
     {

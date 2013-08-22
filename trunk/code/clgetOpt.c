@@ -26,7 +26,7 @@ extern "C" {
 ------------------------------------------------------------------------*/
 int clgetOpt(char *Name)
 {
-  return clTgetOpt(Name,"Mixed[]");
+  return clTgetOpt(Name,(char *)"Mixed[]");
 }
 #ifdef __cplusplus
 	   }

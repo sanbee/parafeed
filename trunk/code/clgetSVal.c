@@ -27,7 +27,7 @@ extern "C" {
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
-int clgetSVal(char *Name, char *val, int *n)
+int clgetSVal(const char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
