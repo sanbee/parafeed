@@ -28,6 +28,7 @@
 vector<string> clBoolTrue, clBoolFalse;
 clBoolTrue.push_back("1");       clBoolFalse.push_back("0");        // Computer'ees
 clBoolTrue.push_back("TRUE");    clBoolFalse.push_back("FALSE");    // Logic'ees
+clBoolTrue.push_back("T");       clBoolFalse.push_back("F");        // Lazy Logic'ess ;-)
 clBoolTrue.push_back("HAAN");    clBoolFalse.push_back("NAHEE");    // Hindi
 clBoolTrue.push_back("JEEHAAN"); clBoolFalse.push_back("JEENAHEE"); // Hindi/Punjabe
 clBoolTrue.push_back("AWANU");   clBoolFalse.push_back("KAADHU");   // Telugu
