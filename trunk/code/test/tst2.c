@@ -16,9 +16,10 @@ int main(int argc, char **argv)
 void UI()
 {
   char **argv;
-  int argc,i,j,N;
+  int argc,i,j=0,N;
   float f,fa[3];
   char str[128]="";
+  string strp;
   bool b=false;
   
   argv = (char **)malloc(2*sizeof(char **));
@@ -32,7 +33,7 @@ void UI()
     i=1;clgetBVal("bool",&b,&i);
     i=1;clgetIVal("int",&j,&i);
     i=1;clgetFVal("float",&f,&i);
-    i=1;clgetSVal("string",str,&i);
+    i=1;clgetSValp("string",strp,i);
     N=3;N=clgetNFVal("farray",fa,&N);
     VString options;
     options.resize(3);
@@ -42,7 +43,8 @@ void UI()
   EndCL();
   fprintf(stderr,"Bool = %d \n",b);
   fprintf(stderr,"Float = %f   Int = %d \n",f,j);
-  fprintf(stderr,"String = %s \n",str);
+  //  fprintf(stderr,"String = %s \n",str);
+  cerr << "String = " << strp << endl;
   fprintf(stderr,"Float Array = ");
   for (i=0;i<N;i++) fprintf(stderr,"%f ",fa[i]);
   fprintf(stderr,"\n");
