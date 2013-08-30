@@ -313,12 +313,33 @@ libraries.
 
 === Customization: Parameter Unrolling ===
 
-Allowed colours:
+The keywords are categorized into the following different categories: 
+
+ "default", "hiddenseek", "hidden", "hiding"
+
+All keywords that do not expose any hidden keywords are of "default"
+category.  Keywords that hide other keywords are of "hiding" category
+while those which can be hidden are of "hidden" category.  Keywords
+which can be hidden and can also further expose other keywords are of
+"hiddenseek" category.
+
+The default color of the various keywords category can be set via a
+file pointed to by the {{{GCOLOURMAP}}} environment variable.  The
+allowed colours names are:
+
  "default", "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white".
 
-Recognized keyword categories: 
+The background and foreground colors of the keywords can be set
+via <KEYWORD CATEGORY>=<COLORNAME> entries in the {{{GCOLOURMAP}}}
+file where {{{KEYWORD CATEGORY}}} is constructed by appending "bg"
+(for background colour) or "fg" (for foreground colour) to the keyword
+category listed above.  E.g.
 
- "defaultfg", "hiddenseekfg", "hiddenfg", "hidingfg"
+defaultfg=black
+
+will set the foreground colour of all keywords of type "default" to
+black.
+
 
 
 == The 'help' keyword ==
