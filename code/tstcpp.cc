@@ -35,8 +35,8 @@ void UI()
   {
     SMap watchPoints; vector<string> exposedKeys;
     ClearMap(watchPoints);
-    exposedKeys.resize(0);
-    exposedKeys[0]="int";
+    //    exposedKeys.resize(0);
+    exposedKeys.push_back("int");
     watchPoints["1"]=exposedKeys;
     i=1;clgetBValp("bool",b,i,watchPoints);
     i=1;clgetIValp("int",j,i);
