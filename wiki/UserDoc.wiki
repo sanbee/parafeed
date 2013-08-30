@@ -311,6 +311,15 @@ libraries.
 
  * {{{MAXGHIST}}}: {{{MAXGHIST}}} should be set to the maximum number of command history entries which the user wishes to save.  By default this is set to 100.
 
+=== Customization: Parameter Unrolling ===
+
+Allowed colours:
+ "default", "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white".
+
+Recognized keyword categories: 
+
+ "defaultfg", "hiddenseekfg", "hiddenfg", "hidingfg"
+
 
 == The 'help' keyword ==
 
