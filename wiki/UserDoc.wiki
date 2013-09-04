@@ -327,7 +327,7 @@ The default color of the various keywords category can be set via a
 file pointed to by the {{{GCOLOURMAP}}} environment variable.  The
 allowed colours names are:
 
- "default", "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white".
+    "black", "red", "green", "yellow", "blue", "magenta", "cyan", "white".
 
 The background and foreground colors of the keywords can be set
 via <KEYWORD CATEGORY>=<COLORNAME> entries in the {{{GCOLOURMAP}}}
