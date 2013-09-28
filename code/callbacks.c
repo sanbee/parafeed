@@ -332,7 +332,7 @@ END{									\
   {
     CmdSymbol *S;
     fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:   Indicates that the current setting of the keyword is hiding other");
+    fprintf(stderr,"  Red:   Indicates that the current setting of the keyword is hiding other\n");
     fprintf(stderr,"         keywords.\n");
     fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
     fprintf(stderr,"         (usually by the first red coloured keyword above).\n");
