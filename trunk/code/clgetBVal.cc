@@ -80,12 +80,15 @@ int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
     S=SearchQSymb((char *)Name.c_str(),(char *)"bool");
   N = _ABS(n);
   setAutoBDefaults(S,val);
-  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
+
   if (S!=NULL) 
     {
       SETBIT(S->Attributes,CL_BOOLTYPE);
       S->smap = smap;
     }
+
+  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
+
   return N;
 }
 #endif

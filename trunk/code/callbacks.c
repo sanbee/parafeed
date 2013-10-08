@@ -28,6 +28,7 @@
 #include <string>
 #include <errno.h>
 #include <limits.h>
+#include <boolError.h>
 //#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
@@ -100,8 +101,16 @@ END{									\
 	//
 	for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
 	  {
-	    bool logicalKey = clIsTrue((*loc).first.c_str());
-	    if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+	    try
+	      {
+		bool logicalKey = clIsTrue((*loc).first.c_str());
+		//	    cerr << "checkVal " << " " << clBoolCmp(t->Val[0],logicalKey) << " " << t->Val[0] << " " << logicalKey << endl;
+		if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+	      }
+	    catch (boolError &x)
+	      {
+		cerr << x.what() << endl;
+	      }
 	  }
       }
     else
@@ -206,7 +215,7 @@ END{									\
               ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
-//              if (t->smap.begin() != t->smap.end())
+	      //              if (t->smap.begin() != t->smap.end())
 	      PrintKey(stderr, t);
 	      PrintVals(stderr,t);
 	    }

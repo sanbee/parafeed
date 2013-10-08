@@ -109,8 +109,8 @@ shell.tab.o: shell.tab.c
 lex.yy.o: lex.yy.c
 	$(CC) -c $(INCL) lex.yy.c
 
-SetVar.o: SetVar.c shell.h
-	$(C++) -c $(INCL) SetVar.c
+SetVar.o: SetVar.cc shell.h
+	$(C++) -c $(INCL) SetVar.cc
 
 SearchSymb.o: SearchSymb.c shell.h
 	$(C++) -c $(INCL) SearchSymb.c
@@ -169,8 +169,8 @@ SetCmdTab.o:SetCmdTab.c clshelldefs.h cl.h
 minmatch.o:minmatch.c clshelldefs.h cl.h
 	$(C++) -c $(INCL) minmatch.c
 
-isBool.o:isBool.c clshelldefs.h cl.h cllib.h clbool.h
-	$(C++) -c $(INCL) isBool.c
+isBool.o:isBool.cc clshelldefs.h cl.h cllib.h clbool.h
+	$(C++) -c $(INCL) isBool.cc
 
 rl_interface.o: rl_interface.cc cllib.h clbool.h
 	$(C++) -c $(INCL) rl_interface.cc

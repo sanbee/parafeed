@@ -37,7 +37,7 @@ clBoolTrue.push_back("POSITIVE");clBoolFalse.push_back("NEGATIVE"); // Military'
 clBoolTrue.push_back("+IV");     clBoolFalse.push_back("-IV");      // Physicist'ees
 clBoolTrue.push_back("YES");     clBoolFalse.push_back("NO");       // English
 clBoolTrue.push_back("AYE");     clBoolFalse.push_back("NAY");      // Old English (now American?)
-clBoolTrue.push_back("SI");      // Same as in English              // Spanish
+clBoolTrue.push_back("SI");      clBoolFalse.push_back("NO");       // Spanish
 clBoolTrue.push_back("JA");      clBoolFalse.push_back("NEE");      // Dutch
 clBoolTrue.push_back("YA");      clBoolFalse.push_back("NA");       // (American) Slan
 clBoolTrue.push_back("OUI");     clBoolFalse.push_back("NON");      // For Mauritian Croele (not French! :))
