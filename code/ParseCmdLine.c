@@ -37,6 +37,7 @@ extern "C" {
 #endif
 #include <rl_interface.h>
 
+#include <strstream>
 #define POSITIVE(str,a)   {if ((a) < 0)                                \
                              {fprintf(stderr,"%s: Index is negative\n" \
 					,(str));exit(-1);}}
@@ -157,9 +158,15 @@ int ParseCmdLine(int argc, char *argv[])
 
       if (*buf == '=')
 	{
-	  char str[128];
-	  sprintf(str, "%s> Unknown token \"%s\" found.\n",cl_ProgName,buf);
-	  clThrowUp(str,"###Fatal ",CL_FATAL);
+	  /* char str[128]; */
+	  /* sprintf(str, "%s> Unknown token \"%s\" found.\n",cl_ProgName,buf); */
+	  /* clThrowUp(str,"###Fatal ",CL_FATAL); */
+
+	  strstream os;
+	  os << cl_ProgName << " Unknwon token \"" << buf << "\"found." << endl;
+	  clThrowUp(os.str(), "###Error", CL_FATAL);
+
+
 	  exit(-1);
 	}
 
@@ -322,8 +329,8 @@ int startShell()
   if (!cl_InteractiveShell && cl_FORTRAN==0) return 0;
   if ((cl_InteractiveShell || cl_FORTRAN==1) && cl_Pass==0)
     {
-      if (!cl_SymbLoaded) 
-	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
+      if (!cl_SymbLoaded)
+      	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
 	{
 	  if (!cl_defaultsLoaded)  /* Load the defaults */
 	    {
@@ -395,9 +402,9 @@ int EndCL()
 	  clLoadSymb();
 	  //
 	  // Now load the defaults from .def file.  This is not done
-	  // in BeginCL() (since that made the order in which the
+	  // in BeginCL() since that made the order in which the
 	  // keywords are displayed tied to the order in which the
-	  // keywords are stored in the .def file).  By the time
+	  // keywords are stored in the .def file.  By the time
 	  // control reaches here, the order of the keywords in the
 	  // table (cl_SymbTab) is already defined by the clget* calls
 	  // of the application.

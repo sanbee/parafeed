@@ -83,6 +83,7 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
 	      string mesg;
 	      getline(fd,line);
 	      clBreakStr(line,name,val);
+
 	      if (FGColourMap.find(val)==FGColourMap.end())
 		{
 		  mesg = "User supplied colour " + val + " for " + name + " not supported.";

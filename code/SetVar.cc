@@ -81,7 +81,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     pos=SearchVSymb(key,Tab);
   //  if ((pos=SearchVSymb(key,Tab))==0) return -2;
   if(pos==0) return -2;
-  cerr << "#### " << pos->Val[0] << endl;
+
   if (!Force)
     if (pos->Class == CL_USERCLASS)
       {
@@ -156,12 +156,17 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	    Matched=0;
 	    try
 	      {
-		if (clIsTrue(newval)==1) {Matched=1;}
-		else if (clIsFalse(newval)==1) {Matched=1;}
+		int val=clIsTrue(newval);
+		if (val==1) {Matched=1;}
+		else 
+		  {
+		    val = clIsFalse(newval);
+		    if (val==1) {Matched=1;}
+		  }
 	      }
-	    catch (boolError& x)
+	    catch (clError& x)
 	      {
-		throw(x);
+		//		x << x.what() << endl;
 	      }
 
 	    os << newval;

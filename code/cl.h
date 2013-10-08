@@ -35,6 +35,7 @@
 #define CL_COLOURMAP      "GCOLOURMAP"
 #define CL_HIST_LIMIT     100
 #define CL_FAIL           -1
+#define CL_UNKNOWNBOOL    -2
 
 #include <clshelldefs.h>
 /* #include <clinteract.h> */
@@ -176,9 +177,9 @@ int       clgetOptsList(char ***);
 int       clclearOptsList(char ***,int);
 int       clloadConfig(char *);
 void      clCleanUp();
-bool      clBoolCmp(const string&, const bool& cmpVal);
-bool      clIsTrue(const string&);
-bool      clIsFalse(const string&);
+int       clBoolCmp(const string&, const bool& cmpVal);
+int       clIsTrue(const string&);
+int       clIsFalse(const string&);
 void      clReset();
 void      clRetry();
 FILE      *clstrtstream_(char *, char *, char *);
@@ -205,6 +206,7 @@ int       doademo(char *);
 int       doprintdoc(char *);
 int       loadDefaults(int complement=1);
 int       clparseVal(Symbol *, int *, double *);
+void      reportParseError(const Symbol& S, const int& N);
 int       PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
 int       PrintKey(FILE *f, Symbol *S);
 void      printMap(SMap& smap);

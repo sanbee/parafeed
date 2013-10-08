@@ -7,17 +7,10 @@
 /*
    Test program to test the embedded shell via the commandline library
 */
-void UI();
 
-int main(int argc, char **argv)
+void UI(int argc, char **argv)
 {
-  UI();
-}
-
-void UI()
-{
-  char **argv;
-  int argc,i,j=0,N;
+  int i,j=0,N;
   float f=0;
   vector<float> fv(10);
   string str;
@@ -25,30 +18,42 @@ void UI()
   //
   // Change cl-shell prompt
   //  
-  argv = (char **)malloc(2*sizeof(char **));
-  argv[0]=(char *)malloc(20);
-  strcpy(argv[0],"test2");
-  argc=0;
+  char **argv_l; int argc_l;
+  argv_l = (char **)malloc(2*sizeof(char **));
+  argv_l[0]=(char *)malloc(20);
+  strcpy(argv_l[0],"test2");
+  argc_l=0;
 
+  clRetry();
   BeginCL(argc,argv);
-  clInteractive(1);
-  {
-    SMap watchPoints; vector<string> exposedKeys;
-    ClearMap(watchPoints);
-    //    exposedKeys.resize(0);
-    exposedKeys.push_back("int");
-    watchPoints["1"]=exposedKeys;
-    i=1;clgetBValp("bool",b,i,watchPoints);
-    i=1;clgetIValp("int",j,i);
-    i=1;clgetFValp("float",f,i);
-    i=1;clgetSValp("string",str,i);
-    N=3;N=clgetNFValp("farray",fv,N);
-    VString options;
-    options.resize(3);
-    options[0]="one"; options[1]="two"; options[2]="three";
-    clSetOptions("string",options);
-  }
-  EndCL();
+  clInteractive(0);
+  try
+    {
+      {
+	SMap watchPoints; vector<string> exposedKeys;
+	InitMap(watchPoints,exposedKeys);
+	//	ClearMap(watchPoints);
+	//    exposedKeys.resize(0);
+	exposedKeys.push_back("int");
+
+	watchPoints["1"]=exposedKeys;
+	i=1;clgetBValp("bool",b,i,watchPoints);
+	i=1;clgetIValp("int",j,i);
+	i=1;clgetFValp("float",f,i);
+	i=1;clgetSValp("string",str,i);
+	N=3;N=clgetNFValp("farray",fv,N);
+	VString options;
+	options.resize(3);
+	options[0]="one"; options[1]="two"; options[2]="three";
+	clSetOptions("string",options);
+      }
+      EndCL();
+    }
+  catch (clError x)
+    {
+      x << x << endl;
+      clRetry();
+    }
   cerr << "  Bool        = " << b << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
@@ -57,3 +62,9 @@ void UI()
   for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
     cerr << *i << " ";cerr << endl;
 }
+
+int main(int argc, char **argv)
+{
+  UI(argc, argv);
+}
+
