@@ -169,8 +169,8 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
 	      }
 	    catch (boolError& x)
 	      {
-		//x << x.what() << endl;
-		//		throw;
+		x << x << endl;
+		//throw;
 	      }
 
 	    os << newval;
@@ -215,7 +215,7 @@ void SetVal(char *v, Symbol *S, int i)
     }
   catch (clError& x)
     {
-      cerr << x.what()  << " " << S->Val[i] << endl;
+      x << x.what()  << " " << S->Val[i] << endl;
       throw(x);
     }
 

@@ -69,15 +69,19 @@ extern "C" {
 /*----------------------------------------------------------------------*/
 int clIsTrue(const string& val) 
 {
+  HANDLE_EXCEPTIONS(
   int retVal=clBoolCmp(val, true);
   if (retVal == CL_UNKNOWNBOOL) throw(boolError("Unrecognized value for Bool", "###Error", CL_INFORMATIONAL));
   return retVal;
+		    )
 }
 int clIsFalse(const string& val)
 {
+  HANDLE_EXCEPTIONS(
   int retVal=clBoolCmp(val, false);
   if (retVal == CL_UNKNOWNBOOL) throw(boolError("Unrecognized value for Bool", "###Error", CL_INFORMATIONAL));
   return retVal;
+		    )
 }
 /*----------------------------------------------------------------------*/
 #ifdef __cplusplus
