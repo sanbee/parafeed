@@ -92,36 +92,36 @@ END{									\
   {
     bool found=false;
     SMap::iterator loc;
-    if (ISSET(t->Attributes,CL_BOOLTYPE))
+    try
       {
-	//
-	// This a BOOLTYPE keyword.  Check for logical true/false.
-	// String comparision is not enough (e.g. string "0" and "no"
-	// are both logical false).
-	//
-	for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
+	if (ISSET(t->Attributes,CL_BOOLTYPE))
 	  {
-	    try
+	    //
+	    // This a BOOLTYPE keyword.  Check for logical true/false.
+	    // String comparision is not enough (e.g. string "0" and "no"
+	    // are both logical false).
+	    //
+	    for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
 	      {
 		bool logicalKey = clIsTrue((*loc).first.c_str());
 		//	    cerr << "checkVal " << " " << clBoolCmp(t->Val[0],logicalKey) << " " << t->Val[0] << " " << logicalKey << endl;
 		if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
 	      }
-	    catch (boolError &x)
-	      {
-		cerr << x.what() << endl;
-	      }
 	  }
+	else
+	  {
+	    //
+	    // For all other types, check by string comparision only.
+	    //
+	    loc = t->smap.find(string(t->Val[0]));
+	    found = (loc != t->smap.end()); 
+	  }
+	if (found) mapVal=(*loc).second;
       }
-    else
+    catch (clError &x)
       {
-	//
-	// For all other types, check by string comparision only.
-	//
-	loc = t->smap.find(string(t->Val[0]));
-	found = (loc != t->smap.end()); 
+	x << x.what() << endl;
       }
-    if (found) mapVal=(*loc).second;
     return found;
   }
   /*----------------------------------------------------------------------*/
