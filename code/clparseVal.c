@@ -41,7 +41,7 @@ void reportParseError(const Symbol& S, const int& N)
 int clparseVal(Symbol *S, int *Which, double *d)
 {
   unsigned int N = _ABS(*Which),n;
-  //HANDLE_EXCEPTIONS(
+HANDLE_EXCEPTIONS(
   if (S != NULL)
     {
       if (N > S->NVals) return 0;
@@ -60,7 +60,7 @@ int clparseVal(Symbol *S, int *Which, double *d)
       return 1;
     }
   else return CL_FAIL;
-  //)
+)
 }
 #ifdef __cplusplus
 	   }
