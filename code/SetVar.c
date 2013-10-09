@@ -81,7 +81,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     pos=SearchVSymb(key,Tab);
   //  if ((pos=SearchVSymb(key,Tab))==0) return -2;
   if(pos==0) return -2;
-  cerr << "#### " << pos->Val[0] << endl;
+
   if (!Force)
     if (pos->Class == CL_USERCLASS)
       {

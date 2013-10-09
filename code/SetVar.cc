@@ -64,13 +64,14 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 /*---------------------------------------------------------------------------*/
 /* Loads the keyword key and its value in the list pointed to by p           */
 /*---------------------------------------------------------------------------*/
-  int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatch, short int dodoinp)
+int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatch, short int dodoinp)
 {
   unsigned int i,j;
   int coma=0;
   Symbol *pos;
   char *k=NULL,*v=NULL;
 
+  HANDLE_EXCEPTIONS(
   /*---------------------------------------------------------------
     Search for the key in the table pointed to by Tab If not found,
     return -2 If the value is NULL, unset the found key and return
@@ -132,6 +133,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   if (dodoinp) doinp(key);
   free(k);
   return 1;
+		   )
 }
 /*----------------------------------------------------------------------*/
   void VerifyVal(char *v, Symbol *S,string& newval)
@@ -140,6 +142,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     int Matched=1;
     ostringstream os;
     newval=v;
+
     if (ISSET(S->Attributes,CL_BOOLTYPE))
       {
 	Matched=0;
@@ -164,9 +167,10 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 		    if (val==1) {Matched=1;}
 		  }
 	      }
-	    catch (clError& x)
+	    catch (boolError& x)
 	      {
-		//		x << x.what() << endl;
+		//x << x.what() << endl;
+		//		throw;
 	      }
 
 	    os << newval;
@@ -203,6 +207,8 @@ void SetVal(char *v, Symbol *S, int i)
   int len;
   string vv;
   stripwhite(v);
+
+  //VerifyVal(v,S,vv);
   try
     {
       VerifyVal(v,S,vv);
