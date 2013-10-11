@@ -4,11 +4,12 @@
 #include <clinteract.h>
 #include <stdio.h>
 #include <vector>
+#include <exception>
 /*
    Test program to test the embedded shell via the commandline library
 */
 
-void UI(int argc, char **argv)
+void UI(bool restart, int argc, char **argv)
 {
   int i,j=0,N;
   float f=0;
@@ -24,9 +25,13 @@ void UI(int argc, char **argv)
   strcpy(argv_l[0],"test2");
   argc_l=0;
 
-  clRetry();
-  BeginCL(argc,argv);
-  clInteractive(0);
+  if (!restart)
+    {
+      BeginCL(argc,argv);
+      clInteractive(0);
+    }
+  else
+    clRetry();
   try
     {
       {
@@ -63,8 +68,24 @@ void UI(int argc, char **argv)
     cerr << *i << " ";cerr << endl;
 }
 
+//
+//-------------------------------------------------------------------------
+//
+#define RestartUI(Label)  {if(clIsInteractive()) {goto Label;}}
+
 int main(int argc, char **argv)
 {
-  UI(argc, argv);
+  bool restart=false;
+ RENTER:
+  try
+    {
+      UI(restart, argc, argv);
+    }
+  catch(clError& x)
+    {
+      x << x << endl;
+      restart=true;
+    }
+  if (restart) RestartUI(RENTER);
 }
 

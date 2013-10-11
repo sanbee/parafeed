@@ -35,6 +35,14 @@ class clError: public ErrorObj
 public:
   clError() {};
   clError(const char *m, const char *i, int l=0): ErrorObj(m,i,l) {};
+  clError(const clError& that) 
+  {
+    //    cerr << "clError(clError)" << endl;
+    //    ErrorObj(that.Msg.c_str(), that.Id.c_str(), that.Level);
+    this->Msg = that.Msg;
+    this->Id = that.Id;
+    this->Level = that.Level;
+  }
 };
 
 /*---------------------------------------------------------------------
