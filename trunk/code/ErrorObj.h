@@ -27,8 +27,9 @@ using namespace std;
 class ErrorObj{
  public:
   enum {Informational=100,Recoverable,Severe,Fatal};
-  ErrorObj() {Id.resize(0);Msg.resize(0);Src.resize(0);Message.resize(0);};
+  ErrorObj():Id(), Msg(), Src(), Message() {Id.resize(0);Msg.resize(0);Src.resize(0);Message.resize(0);};
   ErrorObj(const char *m,const char *i,int l=0);
+  ErrorObj(const ErrorObj& that);
   ~ErrorObj() {};
   
   void SetSource(const char *m=0);
@@ -40,7 +41,7 @@ class ErrorObj{
   ostream &operator<<(ErrorObj &E)   {return cerr << E;}
   friend ostream &operator<<(ostream& o,const ErrorObj&);
 
- private:
+protected:
   string Id,Msg,Src,Message;
   int Level;
 };
