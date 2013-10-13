@@ -673,7 +673,7 @@ END{									\
     return EOF;
   }
   /*----------------------------------------------------------------------*/
-  int doprintdoc(char *val)
+  int doprintdoc(const char *val)
   {
     Symbol *S;
     if (cl_ProgName[strlen(cl_ProgName)-1]=='>')

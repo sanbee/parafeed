@@ -387,15 +387,18 @@ int startShell()
 ------------------------------------------------------------------------*/
 int EndCL()
 {
-  char val[128]={'\0'};
+  //  char val[128]={'\0'};
+  string strVal;
   int i=1;
 
   cl_RegistrationMode=0;
-  i = clgetSVal("help",val,&i);
+  //  i = clgetSVal("help",val,&i);
+  i = clgetSValp("help",strVal,i);
   DeleteVar("help",&cl_SymbTab,&cl_TabTail);
 
   //  if (!cl_NoPrompt) loadDefaults(0);
-  if (!strcmp(val,"doc")) 
+  //  if (!strcmp(val,"doc")) 
+  if (strVal=="doc")
     {
       if (!cl_SymbLoaded) 
 	{
@@ -412,7 +415,7 @@ int EndCL()
 	  if (!cl_defaultsLoaded) {loadDefaults(1);cl_defaultsLoaded=1;}
 	}
       //      DeleteVar("help",&cl_SymbTab,&cl_TabTail);
-      doprintdoc(val);
+      doprintdoc(strVal.c_str());
     }
   /* If explaination is asked for, look for an argument of explain
     (within brackets).  The argument should of the syntax used by
@@ -421,14 +424,15 @@ int EndCL()
     default, no arg would give help about the parent application.
     With an arg, it can give help about other applications as well as
     keywords of other applications.  */
-  else if (!strncmp(val,"explain",7))
+  //  else if (!strncmp(val,"explain",7))
+  else if (strVal=="explain")
     {
       char *arg=NULL;
-      if ((arg=strtok(&val[7],"("))) 
+      char *val_t=strdup(strVal.c_str());
+      if ((arg=strtok(&val_t[7],"("))) 
 	if (arg[strlen(arg)-1]==')') arg[strlen(arg)-1] = '\0';
-
       doexplain(arg);
-
+      free(val_t);
       exit(0);
     }
 
