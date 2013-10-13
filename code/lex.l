@@ -1,7 +1,7 @@
 %{
 /* -*- C -*- */
 /*
- * Copyright (c) 2000-2012, 2013 S.Bhatnagar
+ * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
