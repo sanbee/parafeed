@@ -203,7 +203,7 @@ int       docmdsave(char *);
 int       doload(char *);
 int       dotypehelp(char *);
 int       doademo(char *);
-int       doprintdoc(char *);
+int       doprintdoc(const char *);
 int       loadDefaults(int complement=1);
 int       clparseVal(Symbol *, int *, double *);
 void      reportParseError(const Symbol& S, const int& N);
