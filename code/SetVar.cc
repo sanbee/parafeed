@@ -71,7 +71,6 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
   Symbol *pos;
   char *k=NULL,*v=NULL;
 
-  //  HANDLE_EXCEPTIONS(
   /*---------------------------------------------------------------
     Search for the key in the table pointed to by Tab If not found,
     return -2 If the value is NULL, unset the found key and return
@@ -117,8 +116,6 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
 
   v = (char *)clstrtok(k,",",CL_ESC);
 
-  //  cerr << "before = " << pos->NVals << " " << coma << endl;
-
   // for (i=coma;i<pos->NVals;i++) free(pos->Val[i]);
   // pos->Val=(char **)calloc(1,sizeof(char **)*(coma));
   pos->NVals=coma;
@@ -128,12 +125,10 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
       SetVal(v,pos,i);
       if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
     }
-  //  cerr << "after = " << pos->NVals << " " << i << endl;
 
   if (dodoinp) doinp(key);
   free(k);
   return 1;
-  //		   )
 }
 /*----------------------------------------------------------------------*/
   void VerifyVal(char *v, Symbol *S,string& newval)
@@ -168,15 +163,12 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
 		  }
 	      }
 	    catch (boolError& x)
-	      //catch (...)
 	      {
-		//x << x << endl;
 		throw;
 	      }
 
 	    os << newval;
 	  }
-	//	os << b;
 	newval=os.str();
       }
     else if (n > 0)
@@ -216,7 +208,6 @@ void SetVal(char *v, Symbol *S, int i)
     }
   catch (clError& x)
     {
-      //x << x.what()  << endl;//" " << S->Val[i] << endl;
       throw;
     }
 
