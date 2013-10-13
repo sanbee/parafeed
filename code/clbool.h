@@ -21,7 +21,7 @@
 // #define CLBOOL_H
 //
 // All entries must be in all-uppercase.
-// Number of True and False entries can be different.
+// Number of True and False entries must be the same.
 //
 #include <string>
 #include <vector>
