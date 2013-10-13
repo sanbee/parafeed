@@ -326,25 +326,30 @@ void clLoadSymb()
 int startShell()
 {
   int i;
+  bool doInp=false;
   if (!cl_InteractiveShell && cl_FORTRAN==0) return 0;
   if ((cl_InteractiveShell || cl_FORTRAN==1) && cl_Pass==0)
     {
       if (!cl_SymbLoaded)
-      	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
 	{
-	  if (!cl_defaultsLoaded)  /* Load the defaults */
-	    {
-	      loadDefaults(0); cl_defaultsLoaded=1;
-	    }
-	  doinp(NULL);    /* Display the keywords */
-
-#ifdef GNUREADLINE
-/* Load the history from the history file*/
-          char *var={ (char *)"MAXGHIST"};
-	  limit_hist(var,CL_HIST_LIMIT);
-	  load_hist((char *)"GHIST",(char *)CL_HIST_DEFAULT);
-#endif
+      	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
+	  doInp=true;
 	}
+      {
+	if (!cl_defaultsLoaded)  /* Load the defaults */
+	  {
+	    loadDefaults(0); cl_defaultsLoaded=1;
+	  }
+	if (doInp)
+	  doinp(NULL);    /* Display the keywords */
+	  
+#ifdef GNUREADLINE
+	/* Load the history from the history file*/
+	char *var={ (char *)"MAXGHIST"};
+	limit_hist(var,CL_HIST_LIMIT);
+	load_hist((char *)"GHIST",(char *)CL_HIST_DEFAULT);
+#endif
+      }
 #if defined(FORTRAN)
 /**********************
    This is a work around for a bug that appears when using the lib. from 
