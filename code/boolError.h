@@ -35,6 +35,8 @@ class boolError: public clError
 public:
   boolError(): clError() {};
   boolError(const char *m, const char *i, int l=0): clError(m,i,l) {};
+  boolError(const boolError& that) 
+  {this->Msg = that.Msg; this->Id = that.Id; this->Level = that.Level;}
 };
 #endif /* __cplusplus */
 
