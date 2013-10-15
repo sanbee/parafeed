@@ -30,6 +30,7 @@ CmdSymbol CmdTab[]={
   {(char *)"savecmd",(char *)"Save the settings as UNIX shell command string",NULL,NULL,docmdsave,CL_ARG_FILENAME},
   {(char *)"load",   (char *)"Load the values, optionally from a file",NULL,NULL,doload,CL_ARG_FILENAME},
   {(char *)"edit",   (char *)"Use an editor to (un)set the values",NULL,NULL,doedit,CL_ARG_FILENAME},
+  {(char *)"warranty",   (char *)"Show warranty information",NULL,NULL,dowarranty,CL_ARG_NONE},
   {(char *)"quit",   (char *)"Quit the application",NULL,NULL,doquit,CL_ARG_NONE},
   { NULL,     NULL,NULL,NULL,NULL,0}
 };
