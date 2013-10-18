@@ -69,7 +69,7 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
   unsigned int i,j;
   int coma=0;
   Symbol *pos;
-  char *k=NULL,*v=NULL;
+  char *k=NULL,*v=NULL, *sep=",";
 
   /*---------------------------------------------------------------
     Search for the key in the table pointed to by Tab If not found,
@@ -106,7 +106,7 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
      tokens from the new buffer and put it in Tab.
   */
 
-  if ((coma = ntok(val,",",CL_ESC))==-1) return 1;
+  if ((coma = ntok(val,sep,CL_ESC))==-1) return 1;
 
   i=0;j=0;
   while(val[j] == ' ')j++;
@@ -114,7 +114,7 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
   k = (char *)getmem(strlen(&val[j])+1,"cl:loadParams");
   strncpy(k,&val[j],(i=strlen(&val[j])));k[i]='\0';
 
-  v = (char *)clstrtok(k,",",CL_ESC);
+  v = (char *)clstrtok(k,sep,CL_ESC);
 
   // for (i=coma;i<pos->NVals;i++) free(pos->Val[i]);
   // pos->Val=(char **)calloc(1,sizeof(char **)*(coma));
@@ -123,7 +123,7 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
   for (i=0;i<(unsigned int)coma;i++)
     {
       SetVal(v,pos,i);
-      if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
+      if ((v = (char *)clstrtok(NULL,sep,CL_ESC))==NULL) break;
     }
 
   if (dodoinp) doinp(key);
@@ -211,6 +211,10 @@ void SetVal(char *v, Symbol *S, int i)
       throw;
     }
 
+  if (S->Val == NULL)
+    S->Val= (char **)calloc((S->NVals+1),sizeof(char *));
+
+
   if ((unsigned int)i >= S->NVals)
     {
       S->Val = (char **)realloc(S->Val,sizeof(char **)*(i+1));
@@ -220,7 +224,10 @@ void SetVal(char *v, Symbol *S, int i)
 
   len=strlen(vv.c_str());
 
-  S->Val[i] = (char *)realloc(S->Val[i],len+1);
+  if (S->Val[i] == NULL)
+    S->Val[i]= (char *)malloc(len+1);
+  else
+    S->Val[i] = (char *)realloc(S->Val[i],len+1);
 
   if (strlen(vv.c_str()))
     {
