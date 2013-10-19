@@ -14,7 +14,7 @@ void UI(bool restart, int argc, char **argv)
   int i,j=0,N;
   float f=0;
   vector<float> fv(10);
-  vector<string> strarr;
+  VString strarr;
   string str;
   bool b=false;
   //
@@ -36,7 +36,7 @@ void UI(bool restart, int argc, char **argv)
   try
     {
       {
-	SMap watchPoints; vector<string> exposedKeys;
+	SMap watchPoints; VString exposedKeys;
 	InitMap(watchPoints,exposedKeys);
 	//	ClearMap(watchPoints);
 	//    exposedKeys.resize(0);
@@ -64,7 +64,7 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Bool        = " << b << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
-  cerr << "  StrArr      = "; for(int ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
+  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
   cerr << "  String      = " << str << endl;
   cerr << "  Float Array = ";
   for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
