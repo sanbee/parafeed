@@ -14,6 +14,7 @@ void UI(bool restart, int argc, char **argv)
   int i,j=0,N;
   float f=0;
   vector<float> fv(10);
+  vector<string> strarr;
   string str;
   bool b=false;
   //
@@ -46,6 +47,7 @@ void UI(bool restart, int argc, char **argv)
 	i=1;clgetIValp("int",j,i);
 	i=1;clgetFValp("float",f,i);
 	i=1;clgetSValp("string",str,i);
+	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNFValp("farray",fv,N);
 	VString options;
 	options.resize(3);
@@ -62,6 +64,7 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Bool        = " << b << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
+  cerr << "  StrArr      = "; for(int ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
   cerr << "  String      = " << str << endl;
   cerr << "  Float Array = ";
   for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
