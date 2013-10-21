@@ -69,7 +69,8 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
   unsigned int i,j;
   int coma=0;
   Symbol *pos;
-  char *k=NULL,*v=NULL, *sep=",";
+  char *k=NULL,*v=NULL;
+  char  *sep=",";
 
   /*---------------------------------------------------------------
     Search for the key in the table pointed to by Tab If not found,
@@ -118,6 +119,8 @@ int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatc
 
   // for (i=coma;i<pos->NVals;i++) free(pos->Val[i]);
   // pos->Val=(char **)calloc(1,sizeof(char **)*(coma));
+  pos->Val = (char **)realloc(pos->Val,sizeof(char **)*coma);
+  for (i=pos->NVals;i<(uint) coma; i++) pos->Val[i]=NULL;
   pos->NVals=coma;
 
   for (i=0;i<(unsigned int)coma;i++)
@@ -212,7 +215,7 @@ void SetVal(char *v, Symbol *S, int i)
     }
 
   if (S->Val == NULL)
-    S->Val= (char **)calloc((S->NVals+1),sizeof(char *));
+    S->Val= (char **)calloc((S->NVals),sizeof(char *));
 
 
   if ((unsigned int)i >= S->NVals)
@@ -224,9 +227,9 @@ void SetVal(char *v, Symbol *S, int i)
 
   len=strlen(vv.c_str());
 
-  if (S->Val[i] == NULL)
-    S->Val[i]= (char *)malloc(len+1);
-  else
+  // if (S->Val[i] == NULL)
+  //   S->Val[i]= (char *)malloc(len+1);
+  // else
     S->Val[i] = (char *)realloc(S->Val[i],len+1);
 
   if (strlen(vv.c_str()))
