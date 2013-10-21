@@ -29,7 +29,7 @@ extern "C" {
   This will recognize strings enclosed in double quotes ('"') and
   characters 'escaped' using char. esc.
 ------------------------------------------------------------------------*/
-int ntok(char *str, char *sep,char esc)
+int ntok(char *str, const char *sep,char esc)
 {
   int i,N=strlen(str),count=0;
   int STRING=0;
@@ -53,7 +53,7 @@ int ntok(char *str, char *sep,char esc)
   pointed to by fd.  Special characters ',','"' and esc are escaped 
   using the char. esc.
 ------------------------------------------------------------------------*/
-int tokenize(FILE *fd, char *str, char *sep,char esc)
+int tokenize(FILE *fd, char *str, const char *sep,char esc)
 {
   while(*str) 
     {
@@ -74,7 +74,7 @@ int tokenize(FILE *fd, char *str, char *sep,char esc)
   'escaped' characters.  The return tokens will not have the escape
   character esc when it is used to 'escape' the following character.
 ------------------------------------------------------------------------*/
-char *clstrtok(char *str, char *sep,char esc)
+char *clstrtok(char *str, const char *sep,char esc)
 {
  static int i,len,prev;
  int STRING=0;
