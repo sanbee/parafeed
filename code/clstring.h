@@ -24,9 +24,9 @@
 extern "C" {
 #endif
 
-char*         clstrtok(char *, char *,char);
-int           ntok(char *, char *,char);
-int           tokenize(FILE *,char *, char *,char);
+char*         clstrtok(char *, const char *,char);
+int           ntok(char *, const char *,char);
+int           tokenize(FILE *,char *, const char *,char);
 
 #ifdef	__cplusplus
 }
