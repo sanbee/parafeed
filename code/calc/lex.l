@@ -93,6 +93,7 @@ void split3(char *deg, int n, char *tok, float *d)
 }
 
 %}
+%option noyywrap
 DIGIT   [0-9]+
 HEXD    0x[0-9a-fA-F]++
 S       [\+\-]?
