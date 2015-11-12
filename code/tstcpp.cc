@@ -16,7 +16,7 @@ void UI(bool restart, int argc, char **argv)
   vector<float> fv(10);
   VString strarr;
   string str;
-  bool b=false;
+  bool b=false, b1=false;
   //
   // Change cl-shell prompt
   //  
@@ -40,10 +40,15 @@ void UI(bool restart, int argc, char **argv)
 	InitMap(watchPoints,exposedKeys);
 	//	ClearMap(watchPoints);
 	//    exposedKeys.resize(0);
-	exposedKeys.push_back("int");
-
+	exposedKeys.push_back("bool1");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetBValp("bool",b,i,watchPoints);
+
+	ClearMap(watchPoints); exposedKeys.resize(0);
+	exposedKeys.push_back("int");
+	watchPoints["1"]=exposedKeys;
+	i=1;clgetBValp("bool1",b1,i,watchPoints);
+
 	i=1;clgetIValp("int",j,i);
 	i=1;clgetFValp("float",f,i);
 	i=1;clgetSValp("string",str,i);
