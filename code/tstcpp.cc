@@ -38,13 +38,14 @@ void UI(bool restart, int argc, char **argv)
       {
 	SMap watchPoints; VString exposedKeys;
 	InitMap(watchPoints,exposedKeys);
-	//	ClearMap(watchPoints);
-	//    exposedKeys.resize(0);
+
 	exposedKeys.push_back("bool1");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetBValp("bool",b,i,watchPoints);
 
-	ClearMap(watchPoints); exposedKeys.resize(0);
+	// Create a HIDENDSEEK type keyword (one which is hidden and
+	// also hides another keyword).
+	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("int");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetBValp("bool1",b1,i,watchPoints);
@@ -67,6 +68,7 @@ void UI(bool restart, int argc, char **argv)
       clRetry();
     }
   cerr << "  Bool        = " << b << endl;
+  cerr << "  Bool1       = " << b1 << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
   cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;

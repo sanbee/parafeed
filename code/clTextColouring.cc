@@ -107,36 +107,27 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
   {
     startSeq=Esc+"1;";
       
-    bool isTypeDefault = !(ISSET(textType,CL_HIDDENKEYWORD) ||
-			  ISSET(textType,CL_HIDINGKEYWORD) ||ISSET(textType,CL_HIDENSEEKKEYWORD));
-    if (isTypeDefault)
+    if (ISSET(textType,CL_HIDDENKEYWORD))          
       {
-	startSeq += FGColourMap[FG_Default];
-      }
-    else
-      {
-	if (ISSET(textType,CL_HIDDENKEYWORD))          
+	if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
 	  {
-	    if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
-	      {
-		startSeq += FGColourMap[FG_HidenSeekKeyWord];
-		//cerr << "HIDDENSEEK " << FG_HidenSeekKeyWord << endl;
-	      }
-	    else
-	      {
-		startSeq += FGColourMap[FG_HiddenKeyWord];
-		//cerr << "HIDDEN " << FG_HiddenKeyWord << endl;
-	      }
+	    startSeq += FGColourMap[FG_HidenSeekKeyWord];
+	    //cerr << "HIDDENSEEK " << FG_HidenSeekKeyWord << endl;
 	  }
-	if (ISSET(textType,CL_HIDINGKEYWORD))     
+	else
 	  {
-	    startSeq += FGColourMap[FG_HidingKeyWord];
-	    //cerr << "HIDING " << FG_HidingKeyWord << endl;
+	    startSeq += FGColourMap[FG_HiddenKeyWord];
+	    //cerr << "HIDDEN " << FG_HiddenKeyWord << endl;
 	  }
       }
+    else if (ISSET(textType,CL_HIDINGKEYWORD))     
+      {
+	startSeq += FGColourMap[FG_HidingKeyWord];
+	//cerr << "HIDING " << FG_HidingKeyWord << endl;
+      }
+    else startSeq += FGColourMap[FG_Default];
 
     startSeq += "m";
     endSeq = Esc + "0m";
-    //cerr << "Colouring sequence: " << startSeq << "testtext" << endSeq << endl;
   }
 }
