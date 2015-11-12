@@ -300,7 +300,7 @@ variables.
   * `GDEFAULTS`: The default values of keywords can be saved in "defaults file".  `GDEFAULTS` variable specifies the directory where these files are stored.  Such a file can be automatically loaded by the applications upon startup.  The defaults file name is constructed by appending the suffix "`.def`" to the application name.
 
 
-> By default, the application will look for the defaults file in the current directory.  If a keyword appears in the "`.def`" as well as in the "`.config`" file, the keyword will be treated as a shell constant.  This can be used to effectively produce specialized versions of an application program by writing an appropriated "`.config`", where keywords can have fixed values, not alterable by the user (e.g., a version of `xtract` which will read input from the shared memory of the GMRT data acquisition system).
+ By default, the application will look for the defaults file in the current directory.  If a keyword appears in the "`.def`" as well as in the "`.config`" file, the keyword will be treated as a shell constant.  This can be used to effectively produce specialized versions of an application program by writing an appropriated "`.config`", where keywords can have fixed values, not alterable by the user (e.g., a version of `xtract` which will read input from the shared memory of the GMRT data acquisition system).
 
 
 The following two variables are effective only for versions of the
