@@ -5,8 +5,8 @@
 # code.  This is used by makefiles in various directories to
 # load the standard settings from $GSRCROOT/Setup/Setup.$GOSDIR
 #
-GROOT=$PWD/..
-GSRCROOT=$GROOT
+GROOT=../
+GSRCROOT=$PWD
 #
 # Set the name of the OS in GOSDIR
 #
@@ -21,8 +21,10 @@ fi
 #
 # The path for lib, bin, doc, conf directories
 #
-GLIB=~/lib/$GOSDIR
-GINCLUDE=~/include
+#GLIB=~/lib/$GOSDIR
+GLIB=$GROOT/$GOSDIR/lib
+#GINCLUDE=~/include
+GINCLUDE=$GROOT/$GOSDIR/include
 GBIN=$GROOT/bin/$GOSDIR
 GDOC=$GSRCROOT/doc/appdoc
 GCONF=$GSRCROOT/config

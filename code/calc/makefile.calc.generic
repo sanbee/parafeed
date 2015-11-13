@@ -1,5 +1,5 @@
 #-*-makefile-*-
-include $(GSRCROOT)/Setup/Setup.$(GOSDIR)
+include $(GSRCROOT)/../Setup/Setup.$(GOSDIR)
 #----------------------------------------------------------------
 #
 # The 'ranlib' program to be run, if it exists

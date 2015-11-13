@@ -1,5 +1,5 @@
 #-*-makefile-*-
-include $(GSRCROOT)/Setup/Setup.$(GOSDIR)
+include $(GSRCROOT)/../Setup/Setup.$(GOSDIR)
 #include $(GSRCROOT)/Setup/Setup.$(GOSDIR).personal
 #
 # The GNU readline library is not required unless the -DHAVE_STRING_H
@@ -79,6 +79,8 @@ FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 all: libs $(CALCHOME)/libcalc.a libcalc.a 
 
 install: libs
+	mkdir -p $(PUBLIBS) 
+	mkdir -p $(PINCLUDE)
 	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUBLIBS)
 	cp *.h $(PINCLUDE)
 
@@ -100,7 +102,7 @@ shell.tab.h:shell.tab.c
 
 lex.yy.c: shell.l shell.tab.h
 	$(LEX) shell.l
-	#sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+#sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
 	sed "s/#define yywrap $(PREFIX)wrap/#define yywrap libyywrap /"< lex.$(PREFIX).c > lex.yy.c
 
 shell.tab.o: shell.tab.c

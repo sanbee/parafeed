@@ -1,0 +1,27 @@
+1. In <ROOT>/Setup/RC, set the following variables:
+
+    GROOT points ot the root directory in which lib, bin and doc 
+          directories will be placed. 
+    GSRTROOT points to the root directory containing the source 
+             code.  This is used by makefiles in various directories to
+             load the standard settings from $GSRCROOT/Setup/Setup.$GOSDIR
+
+
+2. From <ROOT>/code 
+
+     source ../Setup/RC
+
+   This sets up OS-specific shell variables used in makefiles
+
+3. From <ROOT>/code
+
+     make -f makefile.cllib.generic tstcpp
+
+4. Run tstcpp to see if it works.
+
+5. From <ROOT>/code
+
+    makefile -f makefile.cllib.generic install
+
+   This installs include files and libs in $GROOT/$GOSDIR/{include,lib}
+ 
