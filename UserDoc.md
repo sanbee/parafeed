@@ -8,8 +8,8 @@ The parameters can be passed to the program either as a list of
 session.  This code is derived from the older
 [CL-Lib](http://www.aoc.nrao.edu/~sbhatnag/softwares.html\#CLLIB) library.
 
-When compiled with GNU Readline support, context sensitive TABBED
-completion is automatically available in interactive sessions.  When a
+When compiled with GNU Readline support, context sensitive [TABBED
+completion](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#tabbed-completion) is automatically available in interactive sessions.  When a
 list of all possible values that a parameter can accept is available,
 TABBBED completion can be used to view and set value of
 parameters in a context sensitive manner.
