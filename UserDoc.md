@@ -257,11 +257,7 @@ with "Value0,Value1,Value2" for the value of "key1" as:
 myapp help=noprompt key1=Value0,Value1,Value2
 ```
 
-<<<<<<< HEAD
-See Section on the [Help Keyword](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#help-keyword) for more on the use of the `help`
-=======
 See Section on the [Help Keyword](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#the-help-keyword) for more on the use of the `help`
->>>>>>> 7ff8aa6f0a1cf45135e601ccf83b16c784ff3916
 command-line keyword.
 
 ## File name convention ##
