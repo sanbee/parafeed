@@ -11,7 +11,7 @@ session.  This code is derived from the older
 When compiled with GNU Readline support, context sensitive [TABBED
 completion](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#tabbed-completion) is automatically available in interactive sessions.  When a
 list of all possible values that a parameter can accept is available,
-TABBBED completion can be used to view and set value of
+[TABBBED completion](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#tabbed-completion) can be used to view and set value of
 parameters in a context sensitive manner.
 
 End users typically need simple changes to the user interface but need to make these changes often depending upon the immediate need (e.g. name of the parameters, when to make which parameter visible in the interface, the default value of the parameters, etc.).  For the end user to depend for such needs on the programmers can easily lead to non-optimal use of the time of end users as well as the programmers. _parafeed_ implements a number of mechanism to greatly reduce this dependence of the end-user on the programmers for simple user interface issues.
@@ -44,7 +44,7 @@ current values.  The default values displayed will be
 those set by the application programmer.  The settings of the various
 keywords can be stored in a file.  If a file with the same name as the
 application executable file name with an extension ".def" is
-found (see Section on **Customization**), the values of the keywords will be
+found (see Section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization), the values of the keywords will be
 loaded from that file.  The value of the keywords can also be set on
 the command-line in the `<KeyWord>=[<Val0>[,<Val1>[...]]]`
 format.  This style of setting the initial value of the keywords will
@@ -92,7 +92,7 @@ Following is a short description of the shell commands:
 
   * `gob:`
 > > Similar to `go` except that it will run the application in the background and print the
-> > process ID (PID) number of the background process on the screen (also see section on **CUSTOMIZATION**).
+> > process ID (PID) number of the background process on the screen (also see section on [CUSTOMIZATION](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `cd:`
 > > Change the current working directory within the interactive shell.
