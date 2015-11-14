@@ -44,7 +44,7 @@ current values.  The default values displayed will be
 those set by the application programmer.  The settings of the various
 keywords can be stored in a file.  If a file with the same name as the
 application executable file name with an extension ".def" is
-found (see Section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization), the values of the keywords will be
+found (see Section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)), the values of the keywords will be
 loaded from that file.  The value of the keywords can also be set on
 the command-line in the `<KeyWord>=[<Val0>[,<Val1>[...]]]`
 format.  This style of setting the initial value of the keywords will
@@ -105,7 +105,7 @@ Following is a short description of the shell commands:
   * `explain:`
 > > Print as detailed a help about the application and the keywords as the author of the
 > > application has cared to write in the help file.  These help files are located in the directory specified by
-> > the environment variable `GDOC` (see section on **CUSTOMIZATION**).
+> > the environment variable `GDOC` (see section on [CUSTOMIZATION](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `save:`
 > > Save the current setting of the keywords in a file.  By default, these values are saved in a
@@ -125,7 +125,7 @@ Following is a short description of the shell commands:
 
   * `edit:`
 > > Edit the keyword values in an editor of choice specified by the environment variable
-> > `EDITOR` (see section on **CUSTOMIZATION**).
+> > `EDITOR` (see section on [CUSTOMIZATION](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `quit:`
 > > Quits the interactive session without executing the application.
