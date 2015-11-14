@@ -17,7 +17,7 @@ parameters in a context sensitive manner.
 End users typically need simple changes to the user interface but need to make these changes often depending upon the immediate need (e.g. name of the parameters, when to make which parameter visible in the interface, the default value of the parameters, etc.).  For the end user to depend for such needs on the programmers can easily lead to non-optimal use of the time of end users as well as the programmers. _parafeed_ implements a number of mechanism to greatly reduce this dependence of the end-user on the programmers for simple user interface issues.
 
 
-The interactive shell supports context sensitive hiding/exposing of keywords (referred to as _parameter_ _unwinding_), similar to the
+The interactive shell supports context sensitive hiding/exposing of keywords (referred to as [_parameter_ _unwinding_](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#parameter-unwinding-context-sensitive-parameter-hidingexposing)), similar to the
 parameter-unfolding implemented in the
 [CASA](http://casa.nrao.edu) package.
 This allows producing a number of specializations from
@@ -92,7 +92,7 @@ Following is a short description of the shell commands:
 
   * `gob:`
 > > Similar to `go` except that it will run the application in the background and print the
-> > process ID (PID) number of the background process on the screen (also see section on [CUSTOMIZATION](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
+> > process ID (PID) number of the background process on the screen (also see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `cd:`
 > > Change the current working directory within the interactive shell.
@@ -105,7 +105,7 @@ Following is a short description of the shell commands:
   * `explain:`
 > > Print as detailed a help about the application and the keywords as the author of the
 > > application has cared to write in the help file.  These help files are located in the directory specified by
-> > the environment variable `GDOC` (see section on [CUSTOMIZATION](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
+> > the environment variable `GDOC` (see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `save:`
 > > Save the current setting of the keywords in a file.  By default, these values are saved in a
@@ -125,7 +125,7 @@ Following is a short description of the shell commands:
 
   * `edit:`
 > > Edit the keyword values in an editor of choice specified by the environment variable
-> > `EDITOR` (see section on [CUSTOMIZATION](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
+> > `EDITOR` (see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `quit:`
 > > Quits the interactive session without executing the application.
@@ -257,7 +257,7 @@ with "Value0,Value1,Value2" for the value of "key1" as:
 myapp help=noprompt key1=Value0,Value1,Value2
 ```
 
-See Section on **HELP KEYWORD** for more on the use of the `help`
+See Section on the [Help Keyword](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#help-keyword) for more on the use of the `help`
 command-line keyword.
 
 ## File name convention ##
@@ -291,11 +291,11 @@ variables.
 
   * `GDOC:` `GDOC` must point to the standard directory where documents explaining the various off-line data analysis programs are kept. The `explain` command will first look for the explanation file in the local directory and then in the directory specified by this variable.  The name of the explanation file is constructed by appending the suffix `".doc"` to the application name.
 
-  * `GERR, GOUT:` `GERR` and `GOUT` variables are used when the application is run using the `gob` command (see section on **USER COMMANDS**).  The standard output of the application will be redirected to the file specified by `GOUT` while the standard error stream will be redirected to the file specified by `GERR`.  By default, these variables are set to `/dev/null`.
+  * `GERR, GOUT:` `GERR` and `GOUT` variables are used when the application is run using the `gob` command (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands)).  The standard output of the application will be redirected to the file specified by `GOUT` while the standard error stream will be redirected to the file specified by `GERR`.  By default, these variables are set to `/dev/null`.
 
-  * `GCONF`: Some applications may load frequently used setting for some keywords.  These values are loaded as constants of the interactive shell and can be stored in a configuration file.  Their values can be transfered to the application keywords by referring to their value by '$' mechanism (see section on **De-referencing Mechanism**).  The path of the directory containing these configuration files is specified by the environment variable `GCONF`.  The configuration filename is constructed by appending the suffix "`.config`" to the application name.  If `GCONF` is not defined, the application looks in the directory specified by `GDOC`.  If this variable is also not defined, or the configuration file is not found, the application will look for the configuration file in the current directory.
+  * `GCONF`: Some applications may load frequently used setting for some keywords.  These values are loaded as constants of the interactive shell and can be stored in a configuration file.  Their values can be transfered to the application keywords by referring to their value by '$' mechanism (see section on [De-referencing Mechanism](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#de-referencing-mechanism)).  The path of the directory containing these configuration files is specified by the environment variable `GCONF`.  The configuration filename is constructed by appending the suffix "`.config`" to the application name.  If `GCONF` is not defined, the application looks in the directory specified by `GDOC`.  If this variable is also not defined, or the configuration file is not found, the application will look for the configuration file in the current directory.
 
-  * `EDITOR`:`EDITOR` environment variable is used to specify the name of the text editor to be used in the `edit` command (see section on **User Commands**).  The default editor is `emacs`.
+  * `EDITOR`:`EDITOR` environment variable is used to specify the name of the text editor to be used in the `edit` command (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands)).  The default editor is `emacs`.
 
   * `GDEFAULTS`: The default values of keywords can be saved in "defaults file".  `GDEFAULTS` variable specifies the directory where these files are stored.  Such a file can be automatically loaded by the applications upon startup.  The defaults file name is constructed by appending the suffix "`.def`" to the application name.
 
@@ -345,7 +345,7 @@ black.
 ## The 'help' keyword ##
 
 All applications are sensitive to the keyword `help` (not to be
-confused with the shell command `help` described in section on **User Commands**).  It is never displayed in the list of keywords.  To
+confused with the shell command `help` described in section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands)).  It is never displayed in the list of keywords.  To
 use it, it must be specified as a command-line argument.  Following is
 the list of values that can be set for this keyword on the
 command-line and their effect:
@@ -357,7 +357,7 @@ command-line and their effect:
 > > spelled in the command-line options (i.e., no minimum-match will be applicable).
 
   * `help=explain`:
-> > This executes the `explain` command of the interactive shell (see section on **User Commands**)
+> > This executes the `explain` command of the interactive shell (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands))
 > > without starting the interactive shell. If a keyword is supplied within brackets (`'('` and `')'`)
 > > immediately after the `explain` string (e.g. `help=explain(out)`, help will be provided for the
 > > specified keyword alone.  If an application name is also included within the brackets, separated from
