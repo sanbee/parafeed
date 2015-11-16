@@ -129,6 +129,8 @@ Symbol   *SearchVSymb(const char *Name, Symbol *Tab);
 Symbol   *AddQKey(const char *Name, char *Type, 
 		  Symbol **Head, Symbol **Tail);
 int       ParseCmdLine(int, char **);
+  int startShell();
+  void clLoadSymb();
   /*
     Programmer's interface to CL package
   */

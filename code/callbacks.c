@@ -686,6 +686,7 @@ END{									\
     
     for (S=cl_SymbTab;S;S=S->Next)
       {
+	if (string(S->Name)=="") break;
 	string val;
 	clgetFullValp(string(S->Name),val);
 	
