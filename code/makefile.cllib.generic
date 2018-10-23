@@ -43,7 +43,7 @@ CALCHOME      = ./calc
 READLINEINCL  = $(READLINEHOME)/include
 INCL          = -I. -I$(READLINEINCL)
 
-GENLIBS       = -L$(READLINEHOME)/lib -lm \
+GENLIBS       = -L$(READLINEHOME)/lib -lm -lfl \
 	        -lreadline -lhistory -ltermcap -lm
 LIBS          = $(GENLIBS) $(OFFLIBS)
 
