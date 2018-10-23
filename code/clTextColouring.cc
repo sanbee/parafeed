@@ -30,8 +30,8 @@ extern int clBreakStr(const string& str, string& Name, string& val);
 void clTextColouring(const string& text, const unsigned int textType,string& startSeq,string& endSeq)
 {
   string term(getenv("TERM"));
-  if ((term != "xterm") && // The current terminal cannot display colours
-      (term != "vt220")
+  if ((term.find("xterm") != std::string::npos) && // The current terminal cannot display colours
+      (term.find("vt200") != std::string::npos)
       )
     {
       startSeq="";
@@ -108,24 +108,13 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
     startSeq=Esc+"1;";
       
     if (ISSET(textType,CL_HIDDENKEYWORD))          
-      {
-	if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
-	  {
-	    startSeq += FGColourMap[FG_HidenSeekKeyWord];
-	    //cerr << "HIDDENSEEK " << FG_HidenSeekKeyWord << endl;
-	  }
-	else
-	  {
-	    startSeq += FGColourMap[FG_HiddenKeyWord];
-	    //cerr << "HIDDEN " << FG_HiddenKeyWord << endl;
-	  }
-      }
+      startSeq += FGColourMap[FG_HiddenKeyWord];
     else if (ISSET(textType,CL_HIDINGKEYWORD))     
-      {
-	startSeq += FGColourMap[FG_HidingKeyWord];
-	//cerr << "HIDING " << FG_HidingKeyWord << endl;
-      }
-    else startSeq += FGColourMap[FG_Default];
+      startSeq += FGColourMap[FG_HidingKeyWord];
+    else if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
+      startSeq += FGColourMap[FG_HidenSeekKeyWord];
+    else
+      startSeq += FGColourMap[FG_Default];
 
     startSeq += "m";
     endSeq = Esc + "0m";
