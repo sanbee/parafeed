@@ -1,5 +1,5 @@
 #-*-makefile-*-
-include makefile.inc
+include $(GSRCROOT)/../Setup/Setup.$(GOSDIR)
 #include $(GSRCROOT)/Setup/Setup.$(GOSDIR).personal
 #
 # The GNU readline library is not required unless the -DHAVE_STRING_H
@@ -17,34 +17,33 @@ include makefile.inc
 #
 # Compiler flags
 #
-#ARCH          = linux_gnu
-#OPTFLAGS      = -g
-#DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
-#COMMONOPTS    = -Wall -I/usr/local/include
+ARCH          = $(GOSDIR)
+OPTFLAGS      = -g
+DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
+CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS)
 PREFIX        = sh_
-##
-## Compilers
-##
+#
+# Compilers
+#
 #C++           = g++ $(CFLAGS)
-##C++           = /usr/local/compilers/9/gcc_3.2.3/bin/g++ $(CFLAGS)
-##CC            = /usr/local/compilers/9/gcc_3.2.3/bin/gcc $(CFLAGS)
-##F77           = /usr/local/compilers/9/gcc_3.2.3/bin/g77  
-#LEX           = flex -Ce -P$(PREFIX)
-#YACC          = bison -y -p $(PREFIX)
-#AWK           = awk
-#READLINEHOME  = /usr/local
+#C++           = /usr/local/compilers/9/gcc_3.2.3/bin/g++ $(CFLAGS)
+#CC            = /usr/local/compilers/9/gcc_3.2.3/bin/gcc $(CFLAGS)
+#F77           = /usr/local/compilers/9/gcc_3.2.3/bin/g77  
+LEX           = flex -Ce -P$(PREFIX)
+YACC          = bison -y -p $(PREFIX)
+AWK           = awk
 #
 # Others...
 #
-#PUBLIBS       = $(GLIB)
-#PINCLUDE      = $(GINCLUDE)
-CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS)
+READLINEHOME  = /usr/local
+PUBLIBS       = $(GLIB)
+PINCLUDE      = $(GINCLUDE)
 CALCHOME      = ./calc
 
 READLINEINCL  = $(READLINEHOME)/include
-INCL          = -I$(READLINEINCL) -I./
+INCL          = -I. -I$(READLINEINCL)
 
-GENLIBS       = -L$(READLINEHOME)/lib -lm -lfl \
+GENLIBS       = -L$(READLINEHOME)/lib -lm  \
 	        -lreadline -lhistory -ltermcap -lm
 LIBS          = $(GENLIBS) $(OFFLIBS)
 
@@ -54,7 +53,7 @@ SHOBJS = CopySymb.o AddCmd.o AddNode.o AddVar.o AllocSymb.o AddQKey.o      \
 	 DeleteCmd.o DeleteVar.o DeleteNode.o DeleteTab.o FreeSymb.o       \
 	 SearchNode.o SearchSymb.o lex.yy.o shell.tab.o TransferTab.o      \
 	 PrintVals.o SetVar.o SetPrompt.o SetSymbTab.o SetCmdTab.o         \
-	 yyerror.o  minmatch.o
+	 yyerror.o  minmatch.o isBool.o
 
 CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clgetSVal.o clgetFullVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o \
@@ -62,16 +61,17 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 cldbggetNFVal.o cldbggetNIVal.o cldbggetNSVal.o cldbggetFullVal.o\
 	 clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o \
 	 clgetOptsList.o clclearOptsList.o clgetCommandLine.o clgetOpt.o   \
-	 clstrtStream.o clloadConfig.o callbacks.o support.o clBreakStr.o  \
+	 clstrtStream.o clloadConfig.o callbacks.o support.o               \
 	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
 	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
-	 clSetOptions.o clTextColouring.o
+	 clSetOptions.o clTextColouring.o clgetBVal.o cldbggetBVal.o clgetNBVal.o \
+         cldbggetNBVal.o clBreakStr.o 
 
 FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
 	  clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o\
-	  cl.o
+	  cl.o clgetBVal.o clgetNBVal.o
 #-----------------------------------------------------------------------------
 #
 # The default target
@@ -79,8 +79,10 @@ FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 all: libs $(CALCHOME)/libcalc.a libcalc.a 
 
 install: libs
+	mkdir -p $(PUBLIBS) 
+	mkdir -p $(PINCLUDE)
 	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUBLIBS)
-	cp *.h $(PUBINCL)
+	cp *.h $(PINCLUDE)
 
 libs: libshccl.a libsh.a $(CALCHOME)/libcalc.a
 #
@@ -100,7 +102,8 @@ shell.tab.h:shell.tab.c
 
 lex.yy.c: shell.l shell.tab.h
 	$(LEX) shell.l
-	sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+#sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+	sed "s/#define yywrap $(PREFIX)wrap/#define yywrap libyywrap /"< lex.$(PREFIX).c > lex.yy.c
 
 shell.tab.o: shell.tab.c
 	$(C++) -c $(INCL) shell.tab.c
@@ -108,8 +111,8 @@ shell.tab.o: shell.tab.c
 lex.yy.o: lex.yy.c
 	$(CC) -c $(INCL) lex.yy.c
 
-SetVar.o: SetVar.c shell.h
-	$(C++) -c $(INCL) SetVar.c
+SetVar.o: SetVar.cc shell.h
+	$(C++) -c $(INCL) SetVar.cc
 
 SearchSymb.o: SearchSymb.c shell.h
 	$(C++) -c $(INCL) SearchSymb.c
@@ -168,12 +171,18 @@ SetCmdTab.o:SetCmdTab.c clshelldefs.h cl.h
 minmatch.o:minmatch.c clshelldefs.h cl.h
 	$(C++) -c $(INCL) minmatch.c
 
-rl_interface.o: rl_interface.cc cllib.h
+isBool.o:isBool.cc clshelldefs.h cl.h cllib.h clbool.h
+	$(C++) -c $(INCL) isBool.cc
+
+rl_interface.o: rl_interface.cc cllib.h clbool.h
 	$(C++) -c $(INCL) rl_interface.cc
 
 clSetOptions.o: clSetOptions.cc clshelldefs.h
 	$(C++) -c $(INCL) clSetOptions.cc
 
+clBreakStr.o: clBreakStr.cc clshelldefs.h
+	$(C++) -c $(INCL) clBreakStr.cc
+#
 clTextColouring.o: clTextColouring.cc clshelldefs.h
 	$(C++) -c $(INCL) clTextColouring.cc
 #
@@ -205,6 +214,12 @@ clgetFVal.o:clgetFVal.c clshelldefs.h cl.h cllib.h
 cldbggetFVal.o:cldbggetFVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) cldbggetFVal.c
 
+clgetBVal.o:clgetBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetBVal.cc
+
+cldbggetBVal.o:cldbggetBVal.c clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetBVal.c
+
 clgetIVal.o:clgetIVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetIVal.c
 
@@ -234,6 +249,12 @@ clgetNIVal.o:clgetNIVal.c clshelldefs.h cl.h cllib.h
 
 cldbggetNIVal.o:cldbggetNIVal.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) cldbggetNIVal.c
+
+clgetNBVal.o:clgetNBVal.c clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNBVal.c
+
+cldbggetNBVal.o:cldbggetNBVal.c clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNBVal.c
 
 clgetNVals.o:clgetNVals.c clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetNVals.c
@@ -295,9 +316,6 @@ clRetry.o:clRetry.c clshelldefs.h cl.h cllib.h
 support.o:support.c 
 	$(C++) -c $(INCL) support.c
 
-clBreakStr.o:clBreakStr.cc
-	$(C++) -c $(INCL) clBreakStr.cc
-
 clstring.o:clstring.c 
 	$(C++) -c $(INCL) clstring.c
 
@@ -337,7 +355,7 @@ libshfcl.a: $(FCLOBJS)
 #	if [ -f $(RANLIB) ]; then $(RANLIB) libshfcl.a; fi
 
 $(CALCHOME)/libcalc.a libcalc.a: 
-	cd $(CALCHOME); $(MAKE) -f makefile.calc libcalc.a
+	cd $(CALCHOME); $(MAKE) -f makefile.calc.generic libcalc.a
 
 gcalc: gcalc.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) -Icalc gcalc.c -o gcalc libshccl.a \
@@ -345,23 +363,23 @@ gcalc: gcalc.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 
 tst: tst.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) tst.c -o tst libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
 
-tst2: tst2.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tst2.c -o tst2 libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+tst2: tst2.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
+	$(C++) $(INCL) tst2.cc -o tst2 libshccl.a \
+	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
 
 tstcpp: tstcpp.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) tstcpp.cc -o tstcpp libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
 
-tst3: tst3.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tst3.c -o tst3 libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+tst3: tst3.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
+	$(C++) $(INCL) tst3.cc -o tst3 libshccl.a \
+	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
 
 tstshell:tstshell.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
 	$(C++) $(INCL) tstshell.c -o tstshell libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
 
 ftst: ftst.f libshfcl.a libsh.a $(CALCHOME)/libcalc.a
 	$(F77) $(INCL) ftst.f -o ftst libshccl.a libshfcl.a\
@@ -369,4 +387,6 @@ ftst: ftst.f libshfcl.a libsh.a $(CALCHOME)/libcalc.a
 
 clean: 
 	\rm -rf *.o *~ tst ftst tst2 *.a
-	cd $(CALCHOME); $(MAKE) -f makefile.calc clean
+	\rm -rf y.tab.c y.tab.h lex.yy.c shell.tab.c shell.tab.h lex.sh_.c callbacks_awk.c
+	\rm -rf calc/y.tab.c calc/y.tab.h calc/lex.yy.c
+	cd $(CALCHOME); $(MAKE) -f makefile.calc.generic clean

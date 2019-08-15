@@ -20,11 +20,11 @@ void UI(bool restart, int argc, char **argv)
   //
   // Change cl-shell prompt
   //  
-  char **argv_l; int argc_l;
-  argv_l = (char **)malloc(2*sizeof(char **));
-  argv_l[0]=(char *)malloc(20);
-  strcpy(argv_l[0],"test2");
-  argc_l=0;
+  // char **argv_l; int argc_l;
+  // argv_l = (char **)malloc(2*sizeof(char **));
+  // argv_l[0]=(char *)malloc(20);
+  // strcpy(argv_l[0],"test2");
+  // argc_l=0;
 
   if (!restart)
     {
