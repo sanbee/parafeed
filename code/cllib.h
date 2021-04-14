@@ -38,14 +38,14 @@ extern "C" {
 
 extern int calc(char *, double *);
 extern Symbol    *cl_tmpTab, *cl_tmpTabTail;
-extern "C++" CmdSymbol *cl_CmdTab, *cl_CmdTail;
+extern CmdSymbol *cl_CmdTab, *cl_CmdTail;
 extern unsigned short cl_CmdLineFirst, cl_InteractiveShell;
 extern unsigned short cl_DOCLEANUP, cl_SymbLoaded;
 extern unsigned short cl_Pass, cl_FORTRAN, cl_NoOfOpts, cl_NoPrompt;
 extern jmp_buf *cl_env;
 
-extern "C++" Symbol *cl_SymbTab, *cl_TabHead, *cl_TabTail;
-extern "C++" char *cl_ProgName, *cl_CommandLine;
+extern Symbol *cl_SymbTab, *cl_TabHead, *cl_TabTail;
+extern char *cl_ProgName, *cl_CommandLine;
 
 #ifdef __cplusplus
 	   }

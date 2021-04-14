@@ -217,7 +217,7 @@ END{									\
 	    {
 	      //              if (t->smap.begin() != t->smap.end())
 	      PrintKey(stderr, t);
-	      PrintVals(stderr,t);
+	      PrintVals(stderr,t,1);
 	    }
 	}
     else
@@ -239,7 +239,7 @@ END{									\
 		(((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
 	      {
 		PrintKey(stderr, S);
-		PrintVals(stderr,S);
+		PrintVals(stderr,S,1);
 	      }
 	  }
       }
@@ -453,7 +453,7 @@ END{									\
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	    {
 	      fprintf(fd,format,t->Name);
-	      PrintVals(fd,t);
+	      PrintVals(fd,t,1);
 	    }
 	fclose(fd);
       }

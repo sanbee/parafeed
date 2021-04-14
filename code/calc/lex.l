@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <calc.h>
+#include  <y.tab.h>
 
 #define LINELEN 128
 /* 

@@ -23,13 +23,13 @@
 #include <stdlib.h>
 #include <cl.h>
 #include <cllib.h>
+#include <boolError.h>
+#ifdef __cplusplus
 #include <sstream>
 #include <algorithm>
 #include <cctype>
-#include <boolError.h>
-#ifdef __cplusplus
 extern "C" {
-#endif
+
 /* #define getmem(a,b)   malloc((a))*/
 /*---------------------------------------------------------------------------*/
 /* Unset the value(s) of the variable indicated by the given symbol          */
@@ -227,6 +227,6 @@ void SetVal(char *v, Symbol *S, int i)
       S->Used=0;
     }
 }
-#ifdef __cplusplus
+
 }
 #endif

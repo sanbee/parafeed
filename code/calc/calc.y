@@ -19,15 +19,13 @@
  */
 %{
 /* $Id: calc.y,v 1.8 2000/02/22 15:08:15 sanjay Exp $ */
-#include <calc.h>
 #include <math.h>
 #include <calc.h>
 #include <stdlib.h>
-double Result=0.0;
 
  int calc_error(char *); /* dummy decleration */
-Calc_Symbol s2;
-double (*UserFunc)(char *) = 0;
+ double Result=0.0;
+ Calc_Symbol s2;
 %}
 %union {
   double val;

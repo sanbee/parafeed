@@ -39,9 +39,11 @@ int FreeVSymb(Symbol *S)
 	    free((S->Val)[i]);
 	  free((S->Val));
 	}
+#ifdef __cplusplus
       S->smap.erase(S->smap.begin(),S->smap.end());
       S->DefaultVal.resize(0);
       S->Options.resize(0);
+#endif
       free(S);
       return 1;
     }

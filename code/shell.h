@@ -68,7 +68,7 @@ int           DeleteVar(const char *Name, Symbol **, Symbol **);
 int           DeleteCmd(char *Name, CmdSymbol **, CmdSymbol **);
 int           DeleteVNode(Symbol *, Symbol **, Symbol **);
 int           DeleteCNode(CmdSymbol *, CmdSymbol **, CmdSymbol **);
-  //int           PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
+int           PrintVals(FILE *f,Symbol *S,unsigned int newline);
 int           SetVar(char *name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
 void          SetVal(char *, Symbol *, int);
 int           CopyVSymb(Symbol *, Symbol *, int);

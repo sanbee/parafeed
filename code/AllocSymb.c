@@ -35,8 +35,10 @@ Symbol *AllocVSymb(int n)
   S->Used = 0;
   S->Class = CL_APPLNCLASS;
   S->NVals=0;
+#ifdef __cplusplus
   S->DefaultVal.resize(0);
   S->Options.resize(0);
+#endif
   //  S->Attributes=CL_KEYWORD;
   S->Attributes=0;
   SETBIT(S->Attributes,CL_KEYWORD);

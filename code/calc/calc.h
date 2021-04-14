@@ -21,8 +21,8 @@
 #define CALC_H
 #include <math.h>
 
-#define yyin cl_in
-#define yyout cl_out
+//#define yyin cl_in
+//#define yyout cl_out
 
 typedef struct {
   char *Name;
@@ -32,8 +32,13 @@ typedef struct {
   double (*func2)(double,double);
   double (*ufunc)(char *);
 } Calc_Symbol;
+extern double Result;
+extern Calc_Symbol s2;
+double (*UserFunc)(char *);
 int yylex();
 int yyparse();
+int yyerror(char *s);
+int ywarn(char *s, char *t);
 /* int yyerror(char *); */
 int calc(char *, double *);
 
