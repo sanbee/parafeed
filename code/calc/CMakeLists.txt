@@ -1,3 +1,6 @@
+#
+# define parser and scanner targets
+#
 bison_target(CalcParser
   calc.y
   ${CMAKE_CURRENT_BINARY_DIR}/y.tab.c
@@ -7,15 +10,19 @@ flex_target(CalcScanner
   ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c)
 add_flex_bison_dependency(CalcScanner CalcParser)
 
+# define the calc library and its sources
 add_library(parafeed_calc
   calcinit.c
   ${BISON_CalcParser_OUTPUTS}
   ${FLEX_CalcScanner_OUTPUTS})
+# link to flex library
 target_link_libraries(parafeed_calc
   PRIVATE ${FLEX_LIBRARIES})
+# include directories for the build
 target_include_directories(parafeed_calc PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
+# set some properties to get the desired library name and version
 set_target_properties(parafeed_calc PROPERTIES
   VERSION 0.0.1
   SOVERSION 0

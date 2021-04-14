@@ -54,7 +54,7 @@ find_package(PkgConfig)
 pkg_search_module(readline
   IMPORTED_TARGET readline)
 
-
+# code sub-directory
 add_subdirectory(code)
 
 # install all parafeed exports

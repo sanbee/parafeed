@@ -1,3 +1,6 @@
+#
+# define parser and scanner targets
+#
 bison_target(ShellParser
   shell.y
   ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c
@@ -9,7 +12,12 @@ flex_target(ShellScanner
   COMPILE_FLAGS "-Ce -Psh_")
 add_flex_bison_dependency(ShellScanner ShellParser)
 
-add_library(parafeed_sh
+#
+# sh library
+#
+
+# we need to tell CMake that the sources are actually C++
+set(sh_sources
   CopySymb.c
   AddCmd.c
   AddNode.c
@@ -31,18 +39,28 @@ add_library(parafeed_sh
   SetCmdTab.c
 	yyerror.c
   minmatch.c
-  isBool.cc
+  isBool.cc)
+foreach(source IN LISTS shccl_sources)
+  set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
+endforeach()
 
+# define the sh library and its sources
+add_library(parafeed_sh
+  ${sh_sources}
   ${BISON_ShellParser_OUTPUTS}
   ${FLEX_ShellScanner_OUTPUTS})
+# link to readline and flex (libfl)
 target_link_libraries(parafeed_sh
   PUBLIC PkgConfig::readline
   PRIVATE ${FLEX_LIBRARIES})
+# compile definitions (like -DFOO)
 target_compile_definitions(parafeed_sh PUBLIC HAVE_STRING_H GNUREADLINE)
+# define include directories, at build time and for clients
 target_include_directories(parafeed_sh PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
+# set some properties to get the desired library name and version
 set_target_properties(parafeed_sh PROPERTIES
   VERSION 0.0.1
   SOVERSION 0
@@ -55,6 +73,11 @@ install(TARGETS parafeed_sh
 # target alias in parafeed namespace
 add_library(parafeed::sh ALIAS parafeed_sh)
 
+#
+# shccl library
+#
+
+# we need to tell CMake that the sources are actually C++
 set(shccl_sources
   ParseCmdLine.c
   clparseVal.c
@@ -110,16 +133,21 @@ foreach(source IN LISTS shccl_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
 
+# define the shccl library and its sources
 add_library(parafeed_shccl
   ${shccl_sources}
   shell.tab.h)
+# link to readline
 target_link_libraries(parafeed_shccl
   PUBLIC PkgConfig::readline)
+# compile definitions (like -DFOO)
 target_compile_definitions(parafeed_shccl PUBLIC HAVE_STRING_H GNUREADLINE)
+# include directories, both at build and for clients
 target_include_directories(parafeed_shccl PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
+# set some properties to get the desired library name and version
 set_target_properties(parafeed_shccl PROPERTIES
   VERSION 0.0.1
   SOVERSION 0
@@ -132,8 +160,10 @@ install(TARGETS parafeed_shccl
 # target alias in parafeed namespace
 add_library(parafeed::shccl ALIAS parafeed_shccl)
 
+# add calc sub-directory
 add_subdirectory(calc)
 
+# define the parafeed_libraries export
 install(EXPORT parafeed_libraries
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/parafeed
   NAMESPACE parafeed::
