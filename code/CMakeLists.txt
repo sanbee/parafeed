@@ -51,7 +51,7 @@ add_library(parafeed_sh
   ${FLEX_ShellScanner_OUTPUTS})
 # link to readline and flex (libfl)
 target_link_libraries(parafeed_sh
-  PUBLIC PkgConfig::readline
+  PUBLIC parafeed_shccl PkgConfig::readline
   PRIVATE ${FLEX_LIBRARIES})
 # compile definitions (like -DFOO)
 target_compile_definitions(parafeed_sh PUBLIC HAVE_STRING_H GNUREADLINE)
@@ -139,7 +139,7 @@ add_library(parafeed_shccl
   shell.tab.h)
 # link to readline
 target_link_libraries(parafeed_shccl
-  PUBLIC PkgConfig::readline)
+  PUBLIC parafeed_sh parafeed_calc PkgConfig::readline)
 # compile definitions (like -DFOO)
 target_compile_definitions(parafeed_shccl PUBLIC HAVE_STRING_H GNUREADLINE)
 # include directories, both at build and for clients

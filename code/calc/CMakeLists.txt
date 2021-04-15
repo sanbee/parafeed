@@ -17,6 +17,7 @@ add_library(parafeed_calc
   ${FLEX_CalcScanner_OUTPUTS})
 # link to flex library
 target_link_libraries(parafeed_calc
+  PUBLIC parafeed_sh
   PRIVATE ${FLEX_LIBRARIES})
 # include directories for the build
 target_include_directories(parafeed_calc PUBLIC
