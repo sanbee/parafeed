@@ -40,7 +40,7 @@ set(sh_sources
   yyerror.c
   minmatch.c
   isBool.cc)
-foreach(source IN LISTS shccl_sources)
+foreach(source IN LISTS sh_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
 
