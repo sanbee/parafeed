@@ -45,7 +45,7 @@ foreach(source IN LISTS sh_sources)
 endforeach()
 
 # define the sh library and its sources
-add_library(parafeed_sh
+add_library(parafeed_sh STATIC
   ${sh_sources}
   ${BISON_ShellParser_OUTPUTS}
   ${FLEX_ShellScanner_OUTPUTS})
@@ -65,7 +65,7 @@ set_target_properties(parafeed_sh PROPERTIES
   VERSION 0.0.1
   SOVERSION 0
   EXPORT_NAME sh
-  LIBRARY_OUTPUT_NAME sh)
+  OUTPUT_NAME sh)
 # install target
 install(TARGETS parafeed_sh
   EXPORT parafeed_libraries
@@ -134,7 +134,7 @@ foreach(source IN LISTS shccl_sources)
 endforeach()
 
 # define the shccl library and its sources
-add_library(parafeed_shccl
+add_library(parafeed_shccl STATIC
   ${shccl_sources}
   shell.tab.h)
 # link to readline
@@ -152,7 +152,7 @@ set_target_properties(parafeed_shccl PROPERTIES
   VERSION 0.0.1
   SOVERSION 0
   EXPORT_NAME shccl
-  LIBRARY_OUTPUT_NAME shccl)
+  OUTPUT_NAME shccl)
 # install target
 install(TARGETS parafeed_shccl
   EXPORT parafeed_libraries

@@ -11,7 +11,7 @@ flex_target(CalcScanner
 add_flex_bison_dependency(CalcScanner CalcParser)
 
 # define the calc library and its sources
-add_library(parafeed_calc
+add_library(parafeed_calc STATIC
   calcinit.c
   ${BISON_CalcParser_OUTPUTS}
   ${FLEX_CalcScanner_OUTPUTS})
@@ -28,7 +28,7 @@ set_target_properties(parafeed_calc PROPERTIES
   VERSION 0.0.1
   SOVERSION 0
   EXPORT_NAME calc
-  LIBRARY_OUTPUT_NAME calc)
+  OUTPUT_NAME calc)
 # install target
 install(TARGETS parafeed_calc
   EXPORT parafeed_libraries
