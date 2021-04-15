@@ -46,12 +46,12 @@ set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # build dependencies
-find_package(BISON)
-find_package(FLEX)
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
 
 # link dependencies
-find_package(PkgConfig)
-pkg_search_module(readline
+find_package(PkgConfig REQUIRED)
+pkg_search_module(readline REQUIRED
   IMPORTED_TARGET readline)
 
 # code sub-directory
