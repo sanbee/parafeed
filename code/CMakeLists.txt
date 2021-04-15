@@ -24,7 +24,7 @@ set(sh_sources
   AddVar.c
   AllocSymb.c
   AddQKey.c
-	DeleteCmd.c
+  DeleteCmd.c
   DeleteVar.c
   DeleteNode.c
   DeleteTab.c
@@ -32,12 +32,12 @@ set(sh_sources
   SearchNode.c
   SearchSymb.c
   TransferTab.c
-	PrintVals.c
+  PrintVals.c
   SetVar.c
   SetPrompt.c
   SetSymbTab.c
   SetCmdTab.c
-	yyerror.c
+  yyerror.c
   minmatch.c
   isBool.cc)
 foreach(source IN LISTS shccl_sources)
@@ -84,45 +84,45 @@ set(shccl_sources
   InstallSymb.c
   clgetFVal.c
   clgetIVal.c
-	clgetSVal.c
+  clgetSVal.c
   clgetFullVal.c
   clgetNFVal.c
   clgetNIVal.c
   clgetNSVal.c
-	clgetNVals.c
+  clgetNVals.c
   cldbggetFVal.c
   cldbggetIVal.c
   cldbggetSVal.c
-	cldbggetNFVal.c
+  cldbggetNFVal.c
   cldbggetNIVal.c
   cldbggetNSVal.c
   cldbggetFullVal.c
-	clStartInteractive.c
+  clStartInteractive.c
   clRestartShell.c
   clfInteractive.c
   clstring.c
-	clgetOptsList.c
+  clgetOptsList.c
   clclearOptsList.c
   clgetCommandLine.c
   clgetOpt.c
-	clstrtStream.c
+  clstrtStream.c
   clloadConfig.c
   callbacks.c
   support.c
-	clgetInputFile.c
+  clgetInputFile.c
   clgetOutputFile.c
   clgetNOpts.c
   clCleanUp.c
-	clReset.c
+  clReset.c
   clgetConfigFile.c
   clSaneExit.c
   clThrowError.c
   clRetry.c
-	clSigHandler.c
+  clSigHandler.c
   clIsInteractive.c
   ErrorObj.cc
   rl_interface.cc
-	clSetOptions.cc
+  clSetOptions.cc
   clTextColouring.cc
   clgetBVal.c
   cldbggetBVal.c
