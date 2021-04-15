@@ -190,6 +190,5 @@ add_executable(tstcpp tstcpp.cc)
 target_link_libraries(tstcpp parafeed_parafeed)
 
 # install all parafeed exports
-# configure_file(parafeedConfig.cmake.in parafeedConfig.cmake @ONLY)
-# install(FILES ${CMAKE_CURRENT_BINARY_DIR}/parafeedConfig.cmake
-#   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/parafeed)
+install(FILES parafeedConfig.cmake
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/parafeed)
