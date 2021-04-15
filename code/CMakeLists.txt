@@ -169,6 +169,9 @@ install(EXPORT parafeed_libraries
   NAMESPACE parafeed::
   FILE parafeed_libraries.cmake)
 
+add_executable(tstcpp tstcpp.cc)
+target_link_libraries(tstcpp parafeed_calc parafeed_shccl parafeed_sh)
+
 # install all parafeed exports
 # configure_file(parafeedConfig.cmake.in parafeedConfig.cmake @ONLY)
 # install(FILES ${CMAKE_CURRENT_BINARY_DIR}/parafeedConfig.cmake
