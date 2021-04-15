@@ -163,6 +163,23 @@ add_library(parafeed::shccl ALIAS parafeed_shccl)
 # add calc sub-directory
 add_subdirectory(calc)
 
+#
+# create a single, composite library
+#
+add_library(parafeed_parafeed INTERFACE)
+target_link_libraries(parafeed_parafeed
+  INTERFACE parafeed_calc parafeed_shccl parafeed_sh)
+set_target_properties(parafeed_parafeed PROPERTIES
+  VERSION 0.0.1
+  SOVERSION 0
+  EXPORT_NAME parafeed)
+# install target
+install(TARGETS parafeed_parafeed
+  EXPORT parafeed_libraries
+  DESTINATION ${CMAKE_INSTALL_LIBDIR})
+# target alias in parafeed namespace
+add_library(parafeed::parafeed ALIAS parafeed_parafeed)
+
 # define the parafeed_libraries export
 install(EXPORT parafeed_libraries
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/parafeed
@@ -170,7 +187,7 @@ install(EXPORT parafeed_libraries
   FILE parafeed_libraries.cmake)
 
 add_executable(tstcpp tstcpp.cc)
-target_link_libraries(tstcpp parafeed_calc parafeed_shccl parafeed_sh)
+target_link_libraries(tstcpp parafeed_parafeed)
 
 # install all parafeed exports
 # configure_file(parafeedConfig.cmake.in parafeedConfig.cmake @ONLY)
