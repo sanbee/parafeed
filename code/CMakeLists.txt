@@ -124,7 +124,7 @@ set(shccl_sources
   rl_interface.cc
   clSetOptions.cc
   clTextColouring.cc
-  clgetBVal.c
+  clgetBVal.cc
   cldbggetBVal.c
   clgetNBVal.c
   cldbggetNBVal.c
