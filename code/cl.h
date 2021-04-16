@@ -179,9 +179,11 @@ int       clgetOptsList(char ***);
 int       clclearOptsList(char ***,int);
 int       clloadConfig(char *);
 void      clCleanUp();
+#ifdef __cplusplus
 int       clBoolCmp(const string&, const bool& cmpVal);
 int       clIsTrue(const string&);
 int       clIsFalse(const string&);
+#endif
 void      clReset();
 void      clRetry();
 FILE      *clstrtstream_(char *, char *, char *);
@@ -195,7 +197,9 @@ int       BreakStr(char *, char **, char **);
 int       dogo(char *);
 int       dogob(char *);
 int       docd(char *);
+#ifdef __cplusplus
 int       doinp(char *arg=NULL);
+#endif
 int       doquit(char *);
 int       doedit(char *);
 int       dohelp(char *);
@@ -206,14 +210,22 @@ int       doload(char *);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(const char *);
+#ifdef __cplusplus
 int       docopyright(char *arg=NULL);
+#endif
 int       dowarranty(char *);
+#ifdef __cplusplus
 int       loadDefaults(int complement=1);
+#endif
 int       clparseVal(Symbol *, int *, double *);
+#ifdef __cplusplus
 void      reportParseError(const Symbol& S, const int& N);
 int       PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
+#endif
 int       PrintKey(FILE *f, Symbol *S);
+#ifdef __cplusplus
 void      printMap(SMap& smap);
+#endif
 int       namePrintFormat(char *format, char *append);
 int       clIsInteractive();
   /*
@@ -225,9 +237,11 @@ void load_hist(char *EnvVar, char *Default);
 int  InstallSymb();
 int  sh_parse();
 int  UnsetVar(Symbol *,int);
-int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch=0, short int doinp=1);
+int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
 void SetVal(char *, Symbol *, int);
+#ifdef __cplusplus
 void VerifyVal(char *, Symbol *,string &);
+#endif
 int  CopyVSymb(Symbol *, Symbol *,int);
 int  FreeVSymb(Symbol *);
 int  FreeCSymb(CmdSymbol *);

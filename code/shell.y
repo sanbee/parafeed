@@ -94,10 +94,10 @@ list:     '\n'                   { PROMPT(sh_Prompt);return 1;}
         | FINIS                  { exit(0);}
         ;
 /*--------------------------------------------------------------------------*/
-asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0);$$=$1;}
+asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;}
 
-        |  VAR '=' expr           { 
-                                    if ($3) SetVar($1->Name,$3,sh_SymbTab,0);
+        |  VAR '=' expr           {
+                                    if ($3) SetVar($1->Name,$3,sh_SymbTab,0,0,1);
 	                            $$=$1;
 	                          }
 
@@ -185,7 +185,7 @@ comd:    asign                   {$$=1;}
                                  }
         ;
 /*--------------------------------------------------------------------------*/
-stmt:     '$' VAR                {PrintVals(stderr,$2);$$=1;}
+stmt:     '$' VAR                {PrintVals(stderr,$2,1);$$=1;}
 
         | expr                   {if ($1) fprintf(stderr,"%s\n",$1);$$=1; }
 

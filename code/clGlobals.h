@@ -17,8 +17,8 @@
  *
  */
 /* $Id */
-extern "C++" unsigned short cl_RegistrationMode;
-extern "C++" unsigned short CL_DBG_ON;
-extern "C++" Symbol    *cl_SymbTab,*cl_TabTail;
-extern "C++" CmdSymbol *cl_CmdTab;
-extern "C++" char      *cl_ProgName;
+extern unsigned short cl_RegistrationMode;
+extern unsigned short CL_DBG_ON;
+extern Symbol    *cl_SymbTab,*cl_TabTail;
+extern CmdSymbol *cl_CmdTab;
+extern char      *cl_ProgName;

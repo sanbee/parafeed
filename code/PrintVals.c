@@ -19,17 +19,17 @@
 /* $Id: PrintVals.c,v 2.0 1998/11/11 07:12:41 sanjay Exp $ */
 #include <stdio.h>
 #include <shell.h>
-#include <string>
 #include <cl.h>
 
 #ifdef __cplusplus
+#include <string>
 using namespace std;
 extern "C" {
   extern Symbol    *cl_SymbTab,*cl_TabTail;
   extern CmdSymbol *cl_CmdTab;
   extern char      *cl_ProgName;
   extern unsigned short CL_DBG_ON;
-#endif
+
 /*----------------------------------------------------------------------*/
 int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
 {
@@ -110,6 +110,5 @@ int PrintKey(FILE *fd,Symbol *S)
     fprintf(fd,format,S->Name);
   return 1;
 }
-#ifdef __cplusplus
-	   }
+}
 #endif

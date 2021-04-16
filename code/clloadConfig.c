@@ -52,7 +52,7 @@ int clloadConfig(char *File)
 	      S->Class=CL_USERCLASS;
 	    }
 	  if (S->NVals==0)
-	      SetVar(Name,Val,cl_SymbTab,1);
+	      SetVar(Name,Val,cl_SymbTab,1,0,1);
 	  if (Name != NULL) free(Name);
 	  if (Val != NULL) free(Val);
 	  for(i=0;i<MAXBUF;i++) str[i]='\0';
