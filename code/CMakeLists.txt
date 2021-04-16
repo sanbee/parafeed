@@ -170,8 +170,6 @@ add_library(parafeed_parafeed INTERFACE)
 target_link_libraries(parafeed_parafeed
   INTERFACE parafeed_calc parafeed_shccl parafeed_sh)
 set_target_properties(parafeed_parafeed PROPERTIES
-  VERSION 0.0.1
-  SOVERSION 0
   EXPORT_NAME parafeed)
 # install target
 install(TARGETS parafeed_parafeed
