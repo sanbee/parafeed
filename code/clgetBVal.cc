@@ -70,10 +70,8 @@ int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
 {
   Symbol *S;
   unsigned int N;
-  char *buf,*c;
   double d;
-  bool tval;
-  tval=(val==0?false:true);
+
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else

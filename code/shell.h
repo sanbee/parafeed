@@ -43,10 +43,10 @@ void          SetSymbTab(Symbol *s);
 void          SetCmdTab(CmdSymbol *s);
 void          SetPrompt(char *p);
 
-Symbol       *SearchVSymb(const char *,Symbol *);
-Symbol       *SearchVSymbFullMatch(const char *,Symbol *);
+  Symbol       *SearchVSymb(const char * ,Symbol *);
+  Symbol       *SearchVSymbFullMatch(const std::string& ,Symbol *);
 Symbol       *SearchNode(const char *,Symbol *);
-CmdSymbol    *SearchCSymb(const char *,CmdSymbol *);
+  CmdSymbol    *SearchCSymb(const std::string&,CmdSymbol *);
 Symbol       *AllocSymb(int);
 Symbol       *AllocVSymb(int);
 CmdSymbol    *AllocCSymb(int);

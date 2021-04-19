@@ -29,6 +29,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <boolError.h>
+#include <sstream>
 //#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
@@ -297,8 +298,9 @@ END{									\
   /*----------------------------------------------------------------------*/
   int dotypehelp(char *arg)
   {
-    char format[12];
-    namePrintFormat(format,(char*)"");
+    //char format[12];
+    std::string format;
+    namePrintFormat(format,"");
     string fullFormat;
     //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
@@ -384,16 +386,19 @@ END{									\
   int doexplain(char *arg)
   {
     char *path=(char *)getenv(CL_DOCPATH);
-    char *sde_script=(char *)"|sed -e \"s/%[ANP]//\"|more";
+    char *sed_script=(char *)"|sed -e \"s/%[ANP]//\"|more";
     char *script = (char *)KEYHELP_AWK,*key=0,*task=0;
-    char *str=0;
+    //    char *str=0;
+    std::string ss;
     
-    str=(char *)calloc(1,strlen(script)+FILENAME_MAX);
+    //    str=(char *)calloc(1,strlen(script)+FILENAME_MAX);
     
     if (path)
-      sprintf(str,"%s %s/",script,path);
+      ss += script + std::string(" ") + path + std::string("/");
+    //sprintf(str,"%s %s/",script,path);
     else
-      sprintf(str,"%s ",script);
+      ss +=  std::string(" ") + script;
+    //sprintf(str,"%s ",script);
     
     if (arg)
       {
@@ -402,20 +407,26 @@ END{									\
 	  task = strtok(NULL,":");
       }
     if (task)
-      strcat(str,task);
+      ss += task;
+      //strcat(str,task);
     else
 #ifdef GNUREADLINE
-      strncat(str,cl_ProgName,strlen(cl_ProgName)-1);
+      ss += std::string(cl_ProgName).substr(0,strlen(cl_ProgName)-1);
+    //strncat(str,cl_ProgName,strlen(cl_ProgName)-1);
 #else
-    strncat(str,cl_ProgName,strlen(cl_ProgName));
+      ss += cl_ProgName;
+    //strncat(str,cl_ProgName,strlen(cl_ProgName));
 #endif
     
-    strcat(str,".doc ");
-    if (key) strncat(str,key,strlen(key));
-    strcat(str,sde_script);
-    
-    system(str);
-    if (str) free(str);
+      ss += std::string(".doc ");
+      //strcat(str,".doc ");
+      if (key) ss += key;
+      //if (key) strncat(str,key,strlen(key));
+      ss += sed_script;
+      //strcat(str,sed_script);
+
+      system(ss.c_str());
+      //if (str) free(str);
     return 1;
   }
   /*------------------------------------------------------------------------
@@ -426,8 +437,9 @@ END{									\
   {
     FILE *fd;
     char str[MAXBUF];
-    char format[12];
-    namePrintFormat(format,(char *)" = ");
+    //char format[12];
+    std::string format;
+    namePrintFormat(format," = ");
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
       {
@@ -452,7 +464,7 @@ END{									\
 	  if ((t->Class==CL_APPLNCLASS) ||
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	    {
-	      fprintf(fd,format,t->Name);
+	      fprintf(fd,format.c_str(),t->Name);
 	      PrintVals(fd,t,1);
 	    }
 	fclose(fd);
@@ -604,19 +616,29 @@ END{									\
   int doedit(char *arg)
   {
     char *tmpname=tempnam("/tmp","cl_");
-    char *editor=(char *)getenv(CL_EDITORENV);
-    char str[MAXBUF];
+    // Build and issue a system command to edit a file with current
+    // keyword=value pairs
+    {
+      char *editor=(char *)getenv(CL_EDITORENV);
+      std::ostringstream str;
     
-    if (dosave(tmpname)>1) return 1;
+      if (dosave(tmpname)>1) return 1;
     
-    if (editor != NULL)
-      sprintf(str,"%s %s\n",editor,tmpname);
-    else
-      sprintf(str,"emacs -nw %s\n",tmpname);
-    system(str);
-    doload(tmpname);
-    strcpy(str,"/bin/rm -rf ");strcat(str,tmpname);strcat(str,"*");
-    system(str);
+      if (editor != NULL)
+	str << editor << " " << tmpname;
+      else
+	str << "emacs -nw " << tmpname;
+      
+      system(str.str().c_str());
+      doload(tmpname);
+    }
+
+    // Build and issue a system command to remove the temp file
+    {
+      std::ostringstream str;
+      str << "/bin/rm -rf " << tmpname << "*";
+      system(str.str().c_str());
+    }
     return 1;
   }
   /*----------------------------------------------------------------------*/
@@ -803,13 +825,13 @@ END{									\
 //-----------------------------------------------------------------
 // Show copyright info.
 //
-int docopyright(char *Msg)
+  int docopyright(const std::string& Msg)
 {
   cerr << "   SCI 2.0" << endl
        << "      Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar (DOT) sanjay (AT) gmail (DOT) com)"
        << endl
        << "   This is free software with ABSOLUTELY NO WARRANTY." << endl;
-  if (Msg) cerr << Msg << endl << endl;
+  if (Msg!="") cerr << Msg << endl << endl;
   return 1;
 }
 //

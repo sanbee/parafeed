@@ -28,7 +28,6 @@ extern "C" {
 /*----------------------------------------------------------------------*/
 int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
 {
-  unsigned int i;
   if (CopyMode & COPYNAME)
     {
       t->Name = (char *)getmem(strlen(S->Name)+1,"InstallSymb");
@@ -49,17 +48,18 @@ int CopyVSymb(Symbol *t, Symbol *S,int CopyMode)
     {
       t->NVals = S->NVals;
       t->Used = S->Used;
-      if (t->Val!=NULL) 
-	t->Val = (char **)realloc(t->Val,sizeof(char **)*S->NVals);
-      else t->Val = (char **)calloc(1,sizeof(char **)*S->NVals);
-      for (i=0;i<S->NVals;i++)
-	{
-	  if (S->Val[i] != NULL)
-	    {
-	      t->Val[i] = (char *)getmem(strlen(S->Val[i])+1,"CopySymb");
-	      strcpy(t->Val[i],S->Val[i]);
-	    }
-	}
+      t->Val = S->Val;
+      /* if (t->Val!=NULL)  */
+      /* 	t->Val = (char **)realloc(t->Val,sizeof(char **)*S->NVals); */
+      /* else t->Val = (char **)calloc(1,sizeof(char **)*S->NVals); */
+      /* for (i=0;i<S->NVals;i++) */
+      /* 	{ */
+      /* 	  if (S->Val[i] != NULL) */
+      /* 	    { */
+      /* 	      t->Val[i] = (char *)getmem(strlen(S->Val[i])+1,"CopySymb"); */
+      /* 	      strcpy(t->Val[i],S->Val[i]); */
+      /* 	    } */
+      /* 	} */
     }
   //
   // The following are pure C++ objects. Features due to these are not available

@@ -2,7 +2,7 @@
  * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+nv * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
@@ -19,7 +19,7 @@
 /* $Id: clgetNFVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
 #include <support.h>
-
+#include <sstream>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -30,19 +30,24 @@ int clgetNFVal(char *Name, float *val, int *m)
 {
   int i=1,n;
   double d;
-  char tmp[8];
   Symbol *S;
 
 HANDLE_EXCEPTIONS(
-  if (*m <= 0) sprintf(tmp,"float[]");
-  else sprintf(tmp,"float[%d]",*m);
-  S = SearchQSymb(Name, tmp);
-  i=1;
+		  std::ostringstream os;
+		  if (*m <= 0)
+		    os << "float[]";
+		  //sprintf(tmp,"bool[]");
+		  else
+		    os << "float[" << *m << "]";
+		  //sprintf(tmp,"bool[%d]",*m);
 
-  while(i <= *m)
-    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
-    else if (n==0) break;
-    else {val[i-1] = (float)d;i++;}
+		  S = SearchQSymb(Name, os.str());
+		  i=1;
+
+		  while(i <= *m)
+		    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
+		    else if (n==0) break;
+		    else {val[i-1] = (float)d;i++;}
 )
   return i-1;
 }
@@ -55,14 +60,18 @@ HANDLE_EXCEPTIONS(
   {
     int n,n0;
     double d;
-    char tmp[8];
     Symbol *S;
     
     HANDLE_EXCEPTIONS(
-		      if (m <= 0) sprintf(tmp,"float[]");
-		      else sprintf(tmp,"float[%d]",m);
+		      std::ostringstream os;
+		      if (m <= 0)
+			os << "float[]";
+		      //sprintf(tmp,"bool[]");
+		      else
+			os << "float[" << m << "]";
+		      //sprintf(tmp,"bool[%d]",*m);
 		      
-		      S = SearchQSymb((char *)Key.c_str(), tmp);
+		      S = SearchQSymb((char *)Key.c_str(), os.str());
 		      setAutoNFDefaults(S,val);
 		      n0=S->NVals;
 		      int i=1;

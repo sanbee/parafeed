@@ -20,26 +20,26 @@
 #include <stdio.h>
 #include <shell.h>
 #include <cllib.h>
-
+#include <string>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-Symbol *SearchVSymbFullMatch(const char *Name, Symbol *Tab)
+  Symbol *SearchVSymbFullMatch(const std::string& Name, Symbol *Tab)
 {
   Symbol *t;
   for (t=Tab;t!=NULL;t=t->Next)
-    if (!strcmp(t->Name,Name)) break;
+    if (!strcmp(t->Name,Name.c_str())) break;
   return t;
 }
 Symbol *SearchVSymb(const char *Name, Symbol *Tab){return minmatch(Name,Tab);}
 /*----------------------------------------------------------------------*/
-CmdSymbol *SearchCSymb(const char *Name, CmdSymbol *Tab)
+  CmdSymbol *SearchCSymb(const std::string& Name, CmdSymbol *Tab)
 {
   CmdSymbol *t;
   for (t=Tab;t!=NULL;t=t->Next)
     {
-      if (!strcmp(t->Name,Name)) break;
+      if (!strcmp(t->Name,Name.c_str())) break;
     }
   return t;
 }

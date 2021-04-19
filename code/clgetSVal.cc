@@ -31,19 +31,19 @@ int clgetSVal(const char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
-  char *buf,*c=NULL;
+  char *buf, *c=NULL;
   
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);
   else
-    S=SearchQSymb(Name,(char *)"string");
+    S=SearchQSymb(Name,"string");
   N = _ABS(*n);
   if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   if (S!=NULL) 
     {
       if (N <= S->NVals) 
 	{
-	  buf = S->Val[N-1];
+	  buf = (char *)S->Val[N-1].c_str();
 	  while (*buf == ' ') buf++;
 	  strncpy(val,buf,strlen(buf)+1);
 	  if ((c=strstr(buf,"\\\""))) 
@@ -78,7 +78,7 @@ int clgetSValp(const string& Name, string& val, int& n)
       if (N <= S->NVals) 
 	{
           val.resize(0);
-	  buf = S->Val[N-1];
+	  buf = (char *)S->Val[N-1].c_str();
 	  if (buf)
 	    {
 	      while (*buf == ' ') buf++;
@@ -117,7 +117,7 @@ int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
       if (N <= S->NVals) 
 	{
 	  val.resize(0); /* Initialize the output string */
-	  buf = S->Val[N-1];
+	  buf = (char *)S->Val[N-1].c_str();
 	  if (buf)
 	    {
 	      while (*buf == ' ') buf++;

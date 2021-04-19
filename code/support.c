@@ -28,6 +28,134 @@
 #include <cl.h>
 #include <clGlobals.h>
 #include <sstream>
+/*---------------------------------------------------------------------------*/
+/* Template function to set a single value as default for the Symbol S */
+/*---------------------------------------------------------------------------*/
+template <class T>
+void setAutoDefaults(Symbol *S, const T& val)
+{
+  std::vector<T> tmp;
+  tmp.push_back(val);
+  setAutoDefaults(S, tmp);
+  return;
+    /* ostringstream os; */
+    /* os << val; */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(1,""); */
+    /* 	S->DefaultVal[0] = os.str(); */
+    /*   } */
+    
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	stringstream ss; */
+    /* 	ss << val; */
+    /* 	S->Val.resize(1,""); */
+    /* 	S->Val[0]=ss.str(); */
+    /*   } */
+    /* /\* if (S->Val == NULL) *\/ */
+    /* /\*   { *\/ */
+    /* /\* 	S->Val = (char **) getmem(sizeof(char *),"setAutoFDefaults"); *\/ */
+    /* /\* 	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoFDefaults"); *\/ */
+    /* /\* 	// It appears that C++ ostringstream default formatting is better than that of "%f"  *\/ */
+    /* /\* 	// in sprintf (print 0.1 as "0.1" vs. "0.1000000"). *\/ */
+    /* /\* 	//	sprintf(S->Val[0],"%f%c",val,NULL); *\/ */
+    /* /\* 	strcpy(S->Val[0],os.str().c_str()); *\/ */
+    /* /\*   } *\/ */
+    /* S->NVals = 1; */
+
+  stringstream os;
+  os << val;
+  if (cl_RegistrationMode == 1)
+    {
+      S->DefaultVal.resize(1);
+      S->DefaultVal[0] = os.str();
+    }
+
+  if (S->Val.size() == 0)
+    {
+      /* stringstream ss; */
+      /* ss << val; */
+      S->Val.resize(1);
+      S->Val[0]=os.str();
+    }
+
+  S->NVals = 1;//S->Val.size();
+}
+/*---------------------------------------------------------------------------*/
+/* Template function to set a vector of values as default for the Symbol S */
+/*---------------------------------------------------------------------------*/
+template <class T>
+void setAutoDefaults(Symbol *S, const vector<T>& val)
+{
+    /* int n=val.size(); */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(n,""); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << val[i]; */
+    /* 	    S->DefaultVal[i] = os.str(); */
+    /* 	  } */
+    /*   } */
+    
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	S->Val.resize(n,""); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    stringstream os; */
+    /* 	    os << S->DefaultVal[i]; */
+    /* 	    S->Val[i]=os.str(); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
+
+
+    /* if (S->Val == NULL) */
+    /*   { */
+    /* 	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults"); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << S->DefaultVal[i]; */
+    /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
+    /* 					"setAutoNIDefaults"); */
+    /* 	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
+
+  int n=val.size();
+  if (cl_RegistrationMode == 1)
+    {
+      S->DefaultVal.resize(n,"");
+      for(int i=0;i<n;i++)
+	{
+	  ostringstream os;
+	  //os << (val[i]==0?false:true);
+	  os << val[i];
+	  S->DefaultVal[i] = os.str();
+	}
+    }
+    
+  if (S->Val.size() == 0)
+    {
+      S->Val.resize(n,"");
+      n = S->DefaultVal.size();
+      for(int i=0;i<n;i++)
+	{
+	  stringstream os;
+	  //os << S->DefaultVal[i];
+	  os << val[i];
+	  S->Val[i]=os.str();
+	}
+      S->NVals = n;
+    }
+}
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -194,8 +322,6 @@ extern "C" {
       }
     return 1;
   }
-  //#include <clGlobals.h>
-  // #include <sstream>
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
     in which the user value is returned to the application layer via
@@ -203,32 +329,54 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void setAutoIDefaults(Symbol *S, const int& val)
   {
-    ostringstream os;
-    os << val;
-    if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+    setAutoDefaults(S,val);
+    /* ostringstream os; */
+    /* os << val; */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(1,""); */
+    /* 	S->DefaultVal[0] = os.str(); */
+    /*   } */
     
-    if (S->Val == NULL)
-      {
-	S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults");
-	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults");
-	sprintf(S->Val[0],"%d%c",val,(int)NULL);
-      }
-    S->NVals = 1;
+    /* //    if (S->Val == NULL) */
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	stringstream ss; */
+    /* 	ss << val; */
+    /* 	S->Val.resize(1,""); */
+    /* 	S->Val[0]=ss.str(); */
+    /* 	/\* S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults"); *\/ */
+    /* 	/\* S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults"); *\/ */
+    /* 	/\* sprintf(S->Val[0],"%d%c",val,(int)NULL); *\/ */
+    /*   } */
+    /* S->NVals = 1; */
   }
   void setAutoBDefaults(Symbol *S, const bool& val)
   {
-    ostringstream os;
-    bool tval = (val == 0?false:true);
-    os << tval;
-    if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+    setAutoDefaults(S,val);
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	ostringstream os; */
+    /* 	//bool tval = (val == 0?false:true); */
+    /* 	os << val; */
+    /* 	S->DefaultVal.resize(1,""); */
+    /* 	S->DefaultVal[0] = os.str(); */
+    /*   } */
     
-    if (S->Val == NULL)
-      {
-	S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults");
-	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults");
-	sprintf(S->Val[0],"%d%c",tval,(int)NULL);
-      }
-    S->NVals = 1;
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	stringstream ss; */
+    /* 	ss << val; */
+    /* 	S->Val.resize(1,""); */
+    /* 	S->Val[0]=ss.str(); */
+    /*   } */
+    /* /\* if (S->Val == NULL) *\/ */
+    /* /\*   { *\/ */
+    /* /\* 	S->Val = (char **) getmem(sizeof(char *),"setAutoIDefaults"); *\/ */
+    /* /\* 	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoIDefaults"); *\/ */
+    /* /\* 	sprintf(S->Val[0],"%d%c",tval,(int)NULL); *\/ */
+    /* /\*   } *\/ */
+    /* S->NVals = 1; */
   }
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
@@ -237,20 +385,32 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void setAutoFDefaults(Symbol *S, const float& val)
   {
-    ostringstream os;
-    os << val;
-    if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+    setAutoDefaults(S,val);
+    /* ostringstream os; */
+    /* os << val; */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(1,""); */
+    /* 	S->DefaultVal[0] = os.str(); */
+    /*   } */
     
-    if (S->Val == NULL)
-      {
-	S->Val = (char **) getmem(sizeof(char *),"setAutoFDefaults");
-	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoFDefaults");
-	// It appears that C++ ostringstream default formatting is better than that of "%f" 
-	// in sprintf (print 0.1 as "0.1" vs. "0.1000000").
-	//	sprintf(S->Val[0],"%f%c",val,NULL);
-	strcpy(S->Val[0],os.str().c_str());
-      }
-    S->NVals = 1;
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	stringstream ss; */
+    /* 	ss << val; */
+    /* 	S->Val.resize(1,""); */
+    /* 	S->Val[0]=ss.str(); */
+    /*   } */
+    /* /\* if (S->Val == NULL) *\/ */
+    /* /\*   { *\/ */
+    /* /\* 	S->Val = (char **) getmem(sizeof(char *),"setAutoFDefaults"); *\/ */
+    /* /\* 	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoFDefaults"); *\/ */
+    /* /\* 	// It appears that C++ ostringstream default formatting is better than that of "%f"  *\/ */
+    /* /\* 	// in sprintf (print 0.1 as "0.1" vs. "0.1000000"). *\/ */
+    /* /\* 	//	sprintf(S->Val[0],"%f%c",val,NULL); *\/ */
+    /* /\* 	strcpy(S->Val[0],os.str().c_str()); *\/ */
+    /* /\*   } *\/ */
+    /* S->NVals = 1; */
   }
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
@@ -272,7 +432,7 @@ extern "C" {
 	
 	if (cl_RegistrationMode==1)
 	  {
-	    S->DefaultVal.resize(comma);
+	    S->DefaultVal.resize(comma,"");
 	    valstr=(char *)val.c_str();
 	    char *t;
 	    if ((t=clstrtok(valstr,(char*)",", CL_ESC)) != NULL)
@@ -284,17 +444,29 @@ extern "C" {
       }
     else
       {
-	ostringstream os;
-	os << val;
-	if (cl_RegistrationMode == 1) {S->DefaultVal.resize(1); S->DefaultVal[0] = os.str().c_str();}
+	setAutoDefaults(S,val);
+      /* 	ostringstream os; */
+      /* 	os << val; */
+      /* 	if (cl_RegistrationMode == 1) */
+      /* 	  { */
+      /* 	    S->DefaultVal.resize(1,""); */
+      /* 	    S->DefaultVal[0] = os.str(); */
+      /* 	  } */
 	
-	if (S->Val == NULL)
-	  {
-	    S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults");
-	    S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),(char*)"setAutoSDefaults");
-	    sprintf(S->Val[0],"%s",os.str().c_str());
-	  }
-	S->NVals = 1;
+      /* 	if (S->Val.size() == 0) */
+      /* 	  { */
+      /* 	    stringstream ss; */
+      /* 	    ss << val; */
+      /* 	    S->Val.resize(1,""); */
+      /* 	    S->Val[0]=ss.str(); */
+      /* 	  } */
+      /* 	/\* if (S->Val == NULL) *\/ */
+      /* 	/\*   { *\/ */
+      /* 	/\*     S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults"); *\/ */
+      /* 	/\*     S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),(char*)"setAutoSDefaults"); *\/ */
+      /* 	/\*     sprintf(S->Val[0],"%s",os.str().c_str()); *\/ */
+      /* 	/\*   } *\/ */
+      /* 	S->NVals = 1; */
       }
   }
   /*----------------------------------------------------------------------
@@ -304,62 +476,95 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void setAutoNIDefaults(Symbol *S, const vector<int>& val)
   {
-    int n=val.size();
-    if (cl_RegistrationMode == 1)
-      {
-	S->DefaultVal.resize(n);
-	for(int i=0;i<n;i++)
-	  {
-	    ostringstream os;
-	    os << val[i];
-	    S->DefaultVal[i] = os.str().c_str();
-	  }
-      }
+    setAutoDefaults(S,val);
+    /* int n=val.size(); */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(n,""); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << val[i]; */
+    /* 	    S->DefaultVal[i] = os.str(); */
+    /* 	  } */
+    /*   } */
     
-    if (S->Val == NULL)
-      {
-	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults");
-	n = S->DefaultVal.size();
-	for(int i=0;i<n;i++)
-	  {
-	    ostringstream os;
-	    os << S->DefaultVal[i];
-	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),
-					"setAutoNIDefaults");
-	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL);
-	  }
-	S->NVals = n;
-      }
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	S->Val.resize(n,""); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    stringstream os; */
+    /* 	    os << S->DefaultVal[i]; */
+    /* 	    S->Val[i]=os.str(); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
+
+
+    /* if (S->Val == NULL) */
+    /*   { */
+    /* 	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults"); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << S->DefaultVal[i]; */
+    /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
+    /* 					"setAutoNIDefaults"); */
+    /* 	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
   }
   /*----------------------------------------------------------------------*/
   void setAutoNBDefaults(Symbol *S, const vector<bool>& val)
   {
-    int n=val.size();
-    if (cl_RegistrationMode == 1)
-      {
-	S->DefaultVal.resize(n);
-	for(int i=0;i<n;i++)
-	  {
-	    ostringstream os;
-	    os << (val[i]==0?false:true);
-	    S->DefaultVal[i] = os.str().c_str();
-	  }
-      }
+    setAutoDefaults(S,val);
+
+
+
+    /* int n=val.size(); */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(n,""); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    //os << (val[i]==0?false:true); */
+    /* 	    os << val[i]; */
+    /* 	    S->DefaultVal[i] = os.str(); */
+    /* 	  } */
+    /*   } */
     
-    if (S->Val == NULL)
-      {
-	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults");
-	n = S->DefaultVal.size();
-	for(int i=0;i<n;i++)
-	  {
-	    ostringstream os;
-	    os << S->DefaultVal[i];
-	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),
-					"setAutoNBDefaults");
-	    sprintf(S->Val[i],"%d%c",(val[i]==0?false:true),(int)NULL);
-	  }
-	S->NVals = n;
-      }
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	S->Val.resize(n,""); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    stringstream os; */
+    /* 	    os << val[i]; */
+    /* 	    S->Val[i]=os.str(); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
+
+    /* if (S->Val == NULL) */
+    /*   { */
+    /* 	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNIDefaults"); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << S->DefaultVal[i]; */
+    /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
+    /* 					"setAutoNBDefaults"); */
+    /* 	    sprintf(S->Val[i],"%d%c",(val[i]==0?false:true),(int)NULL); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
   }
   /*----------------------------------------------------------------------
     Set the defaults value of the given symbol to the value of the 
@@ -368,33 +573,48 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void setAutoNFDefaults(Symbol *S, const vector<float>& val)
   {
-    int n=val.size();
-    if (cl_RegistrationMode == 1)
-      {
-	S->DefaultVal.resize(n);
-	for(int i=0;i<n;i++)
-	  {
-	    ostringstream os;
-	    os << val[i];
-	    S->DefaultVal[i] = os.str().c_str();
-	  }
-      }
+    setAutoDefaults(S,val);
+
+    /* int n=val.size(); */
+    /* if (cl_RegistrationMode == 1) */
+    /*   { */
+    /* 	S->DefaultVal.resize(n,""); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << val[i]; */
+    /* 	    S->DefaultVal[i] = os.str(); */
+    /* 	  } */
+    /*   } */
     
-    if (S->Val == NULL)
-      {
-	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNFDefaults");
-	n = S->DefaultVal.size();
-	for(int i=0;i<n;i++)
-	  {
-	    ostringstream os;
-	    os << S->DefaultVal[i];
-	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),
-					"setAutoNFDefaults");
-	    //	    sprintf(S->Val[i],"%f%c",val[i],NULL);
-	    strcpy(S->Val[i],os.str().c_str());
-	  }
-	S->NVals = n;
-      }
+    /* if (S->Val.size() == 0) */
+    /*   { */
+    /* 	S->Val.resize(n,""); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    stringstream os; */
+    /* 	    os << val[i]; */
+    /* 	    S->Val[i]=os.str(); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
+
+    /* if (S->Val == NULL) */
+    /*   { */
+    /* 	S->Val = (char **) getmem(sizeof(char *)*n,"setAutoNFDefaults"); */
+    /* 	n = S->DefaultVal.size(); */
+    /* 	for(int i=0;i<n;i++) */
+    /* 	  { */
+    /* 	    ostringstream os; */
+    /* 	    os << S->DefaultVal[i]; */
+    /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
+    /* 					"setAutoNFDefaults"); */
+    /* 	    //	    sprintf(S->Val[i],"%f%c",val[i],NULL); */
+    /* 	    strcpy(S->Val[i],os.str().c_str()); */
+    /* 	  } */
+    /* 	S->NVals = n; */
+    /*   } */
     
   }
 #ifdef __cplusplus

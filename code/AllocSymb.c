@@ -27,10 +27,11 @@ extern "C" {
 Symbol *AllocVSymb(int n)
 {
   Symbol *S;
-  S = (Symbol *)getmem(sizeof(Symbol)*n,"AllocVSymb");
+  //  S = (Symbol *)getmem(sizeof(Symbol)*n,"AllocVSymb");
+  S = new Symbol();
   S->Name = NULL;
   S->Type = NULL;
-  S->Val = NULL;
+  S->Val.resize(0);
   S->Exposed=1;
   S->Used = 0;
   S->Class = CL_APPLNCLASS;

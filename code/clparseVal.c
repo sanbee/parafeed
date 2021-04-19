@@ -55,7 +55,7 @@ HANDLE_EXCEPTIONS(
 	  if (retVal == CL_UNKNOWNBOOL ) 
 	    reportParseError(*S, N-1);
 	}
-      else if ((n=calc(S->Val[N-1],d)))
+      else if ((n=calc((char *)S->Val[N-1].c_str(),d)))
 	reportParseError(*S, N-1);
       return 1;
     }

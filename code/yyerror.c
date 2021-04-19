@@ -21,8 +21,9 @@
 extern "C" {
 #endif
 #include <stdio.h>
-void sh_error(char *s)
+void sh_error(const char *s)
 {
+  //cerr << "###Error: " << s << endl;
   fprintf(stderr,"###Error: %s\n",s);
 }
 #ifdef __cplusplus

@@ -18,6 +18,7 @@
  */
 /* $Id: cldbggetNSVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
+#include <sstream>
 
 #ifdef __cplusplus
 extern "C" {
@@ -28,11 +29,14 @@ extern "C" {
 int dbgclgetNSVal(char *Name, char **Val, int *m)
 {
   int i,j,r=0,n=0;
-  char tmp[8], *buf;
+  char *buf;
   Symbol *S;
 
-  sprintf(tmp,"string[%d]",*m);
-  S = SearchQSymb(Name, tmp);
+  std::ostringstream os;
+  os << "string[" << *m << "]";
+  S = SearchQSymb(Name, os.str());
+  /* sprintf(tmp,"string[%d]",*m); */
+  /* S = SearchQSymb(Name, tmp); */
   if (S==NULL) return CL_FAIL;
   else 
     {
@@ -42,7 +46,7 @@ int dbgclgetNSVal(char *Name, char **Val, int *m)
       if (*m <= i){ n = *m; r = n;}
       for (j=1;j<= n;j++)
 	{
-	  buf = S->Val[j-1];
+	  buf = (char *)S->Val[j-1].c_str();
 	  while (*buf == ' ') buf++;
 	  strncpy(Val[j-1],buf,strlen(buf)+1);
 	}

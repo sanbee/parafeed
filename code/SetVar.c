@@ -39,8 +39,12 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 {
   unsigned int j;
   for (j=0;j<S->NVals;j++)
-    {if (S->Val[j]!=NULL) free(S->Val[j]);
-     S->Val[j]=NULL;}
+    {
+      S->Val[j]="";
+      /* if (S->Val[j]!=NULL) free(S->Val[j]); */
+      /* S->Val[j]=NULL; */
+    }
+  S->Val.resize(0);
   S->NVals=0;
 
   if (setFactoryDefaults)
@@ -48,14 +52,17 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       int n=S->DefaultVal.size();
       if (n>0)
 	{
-	  S->Val=(char **)calloc(1,sizeof(char **)*n);
-	  int m;
+	  S->Val.resize(n);
 	  for(int i=0;i<n;i++)
-	    {
-	      S->Val[i]=(char *)getmem(strlen(S->DefaultVal[i].c_str())+1,"cl:UnsetVar");
-	      strncpy(S->Val[i],S->DefaultVal[i].c_str(),(m=strlen(S->DefaultVal[i].c_str())));
-	      S->Val[i][m]='\0';
-	    }
+	    S->Val[i]=S->DefaultVal[i];
+	  /* S->Val=(char **)calloc(1,sizeof(char **)*n); */
+	  /* int m; */
+	  /* for(int i=0;i<n;i++) */
+	  /*   { */
+	  /*     S->Val[i]=(char *)getmem(strlen(S->DefaultVal[i].c_str())+1,"cl:UnsetVar"); */
+	  /*     strncpy(S->Val[i],S->DefaultVal[i].c_str(),(m=strlen(S->DefaultVal[i].c_str()))); */
+	  /*     S->Val[i][m]='\0'; */
+	  /*   } */
 	  S->NVals=n;
 	}
     }
@@ -118,15 +125,25 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 
   //  cerr << "before = " << pos->NVals << " " << coma << endl;
 
-  for (i=coma;i<pos->NVals;i++) free(pos->Val[i]);
-  pos->Val=(char **)calloc(1,sizeof(char **)*(coma));
+  for (i=coma;i<pos->NVals;i++) pos->Val[i]="";
+  pos->Val.resize(coma);
   pos->NVals=coma;
+
+
+  /* for (i=coma;i<pos->NVals;i++) free(pos->Val[i]); */
+  /* pos->Val=(char **)calloc(1,sizeof(char **)*(coma)); */
+  /* pos->NVals=coma; */
 
   for (i=0;i<(unsigned int)coma;i++)
     {
       SetVal(v,pos,i);
       if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
     }
+  /* for (i=0;i<(unsigned int)coma;i++) */
+  /*   { */
+  /*     SetVal(v,pos,i); */
+  /*     if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break; */
+  /*   } */
   //  cerr << "after = " << pos->NVals << " " << i << endl;
 
   if (dodoinp) doinp(key);
@@ -209,23 +226,29 @@ void SetVal(char *v, Symbol *S, int i)
     }
 
   if ((unsigned int)i >= S->NVals)
-    {
-      S->Val = (char **)realloc(S->Val,sizeof(char **)*(i+1));
-      len = S->NVals;
-      do S->Val[len++]=NULL; while (len < i);
-    }
+    S->Val.resize(i+1);
+  S->NVals=S->Val.size();
+  S->Val[i]=vv;
+  S->Used=0;
 
-  len=strlen(vv.c_str());
+  /* if ((unsigned int)i >= S->NVals) */
+  /*   { */
+  /*     S->Val = (char **)realloc(S->Val,sizeof(char **)*(i+1)); */
+  /*     len = S->NVals; */
+  /*     do S->Val[len++]=NULL; while (len < i); */
+  /*   } */
 
-  S->Val[i] = (char *)realloc(S->Val[i],len+1);
+  /* len=strlen(vv.c_str()); */
 
-  if (strlen(vv.c_str()))
-    {
-      strncpy(S->Val[i],vv.c_str(),len+1);
-      S->Val[i][len] = '\0';
-      if ((unsigned int)i>=S->NVals) S->NVals++;
-      S->Used=0;
-    }
+  /* S->Val[i] = (char *)realloc(S->Val[i],len+1); */
+
+  /* if (strlen(vv.c_str())) */
+  /*   { */
+  /*     strncpy(S->Val[i],vv.c_str(),len+1); */
+  /*     S->Val[i][len] = '\0'; */
+  /*     if ((unsigned int)i>=S->NVals) S->NVals++; */
+  /*     S->Used=0; */
+  /*   } */
 }
 
 }

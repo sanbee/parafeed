@@ -19,9 +19,9 @@
  */
 /* $Id: shell.l,v 2.3 1999/06/18 09:57:28 sanjay Exp $ */
 %{
-#ifdef __cplusplus
-  extern "C" {
-#endif
+/* #ifdef __cplusplus */
+/*   extern "C" { */
+/* #endif */
 #include "shell.h"
 #include "shell.tab.h"
 #ifdef GNUREADLINE
@@ -40,18 +40,20 @@
    be another #define here for lex to define input() using GNU Readline
    calls instead of gets().
 */
+//typedef yy_size_t cl_size_t;
+typedef int cl_size_t;
 extern char *sh_Prompt;
 char *sh_line=0;
-    void (*CL_INPUT)(char *, int *, int)=NULL;
-    void inp_readline(char *,int *,int);
+void (*CL_INPUT)(char *, int *, int)=NULL;
+void inp_readline(char *,cl_size_t &,int);
 
 #undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) inp_readline(buf,&result,max_size)
+#define YY_INPUT(buf,result,max_size) result=inp_readline(buf,max_size)
     //#define YY_INPUT(buf,result,max_size) (*CL_INPUT)(buf,&result,max_size)
-void inp_readline(char *buf, int *result, int max_size)
+static int inp_readline(char *buf,  size_t max_size)
 { 
-  int  n; 
-  static int index=0;   
+  int  n,result; 
+  static size_t index=0;   
   rl_instream=stdin; 
   rl_outstream=stderr; 
   if (index==0) 
@@ -65,7 +67,7 @@ void inp_readline(char *buf, int *result, int max_size)
 	      where_history() < history_length-1) 
 	    if (sh_line&&strlen(sh_line)) add_history(sh_line);
 	}
-      else  {*result = YY_NULL; buf[0]='\0';} 
+      else  {result = YY_NULL; buf[0]='\0';} 
     }
   if (sh_line) 
     { 
@@ -74,20 +76,21 @@ void inp_readline(char *buf, int *result, int max_size)
 	{ 
 	  index = 0; 
 	  free(sh_line); sh_line=0;
-	  *result=1; 
+	  result=1; 
 	  buf[0]='\n';
 	} 
       else if (n==0) 
-	{index =0; *result =1;free(sh_line);sh_line=0;buf[0]='\n';} 
+	{index =0; result =1;free(sh_line);sh_line=0;buf[0]='\n';} 
       else 
 	{ 
-	  int i,j=0;
+	  size_t i,j=0;
 	  for (i=index;i<n+index;i++)buf[j++]=sh_line[i]; 
 	  buf[j]='\0';
 	  index += n; 
-	  *result = n; 
+	  result = n; 
 	} 
-    } 
+    }
+  return result;
 }
   /*
 { \
@@ -135,10 +138,10 @@ void LexReSet() { yyrestart( stdin );}
 
 #undef ECHO
 #define ECHO      /*fprintf(stderr,"\"%s\"\n",yytext);*/
-#define ECHOS(s)  /*fprintf(stderr,"\"%s %s\"\n",s,yytext);*/
-#ifdef __cpluscplus
-	     }
-#endif
+#define ECHOS(s)  /* fprintf(stderr,"\"%s %s\"\n",s,yytext); */
+/* #ifdef __cpluscplus */
+/* 	     } */
+/* #endif */
 %}
 VNAMES   (([a-zA-Z][a-zA-Z\-_0-9]*)|.)
 DIGIT   [0-9]+
@@ -209,12 +212,12 @@ NUM     (({RNUM})|({DIGIT}))
 				     }
 <ARG>"="                             {/*Catch assignment syntax*/
                                       /*Eat initial whitespaces*/
-                                      char c;
                                       ECHO;
                                       BEGIN(VARARG); 
-                                      while(((c=input()) == ' ') &&
-					     (c != EOF));
-                                      unput(c);
+                                      /* char c; */
+                                      /* while(((c=input()) == ' ') && */
+				      /* 	     (c != EOF)); */
+                                      /* unput(c); */
                                       return '=';
                                      }
 <ARG>[^=]                            {/*Catch syntax for unsetting a var*/

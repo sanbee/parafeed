@@ -36,15 +36,16 @@ int FreeVSymb(Symbol *S)
       if (S->NVals >0)
 	{
 	  for (i=0;i<S->NVals;i++)
-	    free((S->Val)[i]);
-	  free((S->Val));
+	    S->Val[i]="";//free((S->Val)[i]);
+	  S->Val.resize(0);//free((S->Val));
 	}
 #ifdef __cplusplus
       S->smap.erase(S->smap.begin(),S->smap.end());
       S->DefaultVal.resize(0);
       S->Options.resize(0);
 #endif
-      free(S);
+      //      free(S);
+      delete S;
       return 1;
     }
   return 0;

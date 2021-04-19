@@ -41,7 +41,7 @@ extern "C" {
 
    If the name symbol does not exist, it will create one 
 ------------------------------------------------------------------------*/
-Symbol *AddQKey(const char *Name, char *Type, 
+Symbol *AddQKey(const char *Name, const char *Type, 
 		Symbol **Head, Symbol **Tail)
 {
   //  Symbol *s = SearchVSymb(Name,*Head);
@@ -85,7 +85,7 @@ Symbol *AddQKey(const char *Name, char *Type,
 	      if ((Type[strlen(Type)-1]==']') &&
 		  (s->Type[strlen(s->Type)-1] != ']'))
 		{
-		  char *t=Type;
+		  const char *t=Type;
 		  s->Type = (char *)realloc(s->Type,strlen(s->Type)+3);
 		  while (*t != '[') t++;
 		  strcat(s->Type,t);

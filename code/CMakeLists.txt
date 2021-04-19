@@ -3,13 +3,14 @@
 #
 bison_target(ShellParser
   shell.y
-  ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c
-  COMPILE_FLAGS "-p sh_"
+  ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.cc
+  COMPILE_FLAGS "-p sh_ -o shell.tab.cc"
   DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.h)
+#  set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c PROPERTY LANGUAGE CXX))
 flex_target(ShellScanner
   shell.l
-  ${CMAKE_CURRENT_BINARY_DIR}/shell.c
-  COMPILE_FLAGS "-Ce -Psh_")
+  ${CMAKE_CURRENT_BINARY_DIR}/shell.cc
+  COMPILE_FLAGS "-Ce -Psh_ -o shell.cc")
 add_flex_bison_dependency(ShellScanner ShellParser)
 
 #
@@ -39,7 +40,8 @@ set(sh_sources
   SetCmdTab.c
   yyerror.c
   minmatch.c
-  isBool.cc)
+  isBool.cc
+  yyerror.c)
 foreach(source IN LISTS sh_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
@@ -107,6 +109,7 @@ set(shccl_sources
   clgetOpt.c
   clstrtStream.c
   clloadConfig.c
+#  sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.c > callbacks_awk.c
   callbacks.c
   support.c
   clgetInputFile.c
@@ -128,7 +131,8 @@ set(shccl_sources
   cldbggetBVal.c
   clgetNBVal.c
   cldbggetNBVal.c
-  clBreakStr.cc)
+  clBreakStr.cc
+  GetStdString.cc)
 foreach(source IN LISTS shccl_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()

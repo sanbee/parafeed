@@ -212,11 +212,15 @@ extern "C" {
   {
     static VString options;
     static int witch;
-    static int isKeyWord=0;
+    //    static int isKeyWord=0;
     if (state==0) 
       {
 	Symbol *S=rl_isKeyword((char *)rl_line_buffer);
-	if (S != NULL) {options = S->Options; isKeyWord=1;};
+	if (S != NULL)
+	  {
+	    options = S->Options;
+	    //isKeyWord=1;
+	  };
 	witch=0;
       }
     int n=options.size(),len=strlen(text);

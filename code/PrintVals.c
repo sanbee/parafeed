@@ -23,6 +23,7 @@
 
 #ifdef __cplusplus
 #include <string>
+#include <sstream>
 using namespace std;
 extern "C" {
   extern Symbol    *cl_SymbTab,*cl_TabTail;
@@ -58,8 +59,8 @@ int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
 
   {
     for (i=0;i<S->NVals-1;i++)
-      {tokenize(fd,S->Val[i],",",CL_ESC);fputc(',',fd);}
-    tokenize(fd,S->Val[S->NVals-1],",",CL_ESC);
+      {tokenize(fd,(char *)S->Val[i].c_str(),",",CL_ESC);fputc(',',fd);}
+    tokenize(fd,(char *)S->Val[S->NVals-1].c_str(),",",CL_ESC);
     if (newline) fputc('\n',fd);
     return 1;
   }
@@ -68,14 +69,17 @@ int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
   return 1;
 }
   /*----------------------------------------------------------------------*/
-  int namePrintFormat(char *format, char *append)
+  int namePrintFormat(std::string& format, const std::string& append)
   {
     Symbol *t;
     int maxNameLength=10;
     for (t=cl_SymbTab;t;t=t->Next)
       if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
     
-    sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
+    ostringstream ss;
+    ss << "%-" << maxNameLength << "." << maxNameLength << "s" << append;
+    format=ss.str();
+    //    sprintf(format,"%c%c%d.%ds%s",'\%','-',maxNameLength,maxNameLength,append);
     return maxNameLength;
   }
   /*----------------------------------------------------------------------*/
@@ -96,18 +100,20 @@ int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
 /*----------------------------------------------------------------------*/
 int PrintKey(FILE *fd,Symbol *S)
 {
-  char format[12];
+  /* char format[12]; */
+  /* namePrintFormat(format," = "); */
+  std::string format;
   namePrintFormat(format," = ");
   if (ISSET(S->Attributes,CL_KEYWORD))
     {
       string startSeq,endSeq;
       clTextColouring(S->Name,(unsigned int)S->Attributes, startSeq,endSeq);
       fprintf(fd,"%s",startSeq.c_str());
-      fprintf(fd,format,S->Name);
+      fprintf(fd,format.c_str(),S->Name);
       fprintf(fd,"%s",endSeq.c_str());
     }
   else
-    fprintf(fd,format,S->Name);
+    fprintf(fd,format.c_str(),S->Name);
   return 1;
 }
 }

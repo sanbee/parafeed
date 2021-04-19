@@ -20,6 +20,7 @@
 #include <cllib.h>
 #include <vector>
 #include <support.h>
+#include <sstream>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -33,22 +34,26 @@ int clgetNBVal(char *Key, bool *val, int *m)
 {
   int i=1,n;
   double d;
-  char tmp[8];
   Symbol *S;
 
 HANDLE_EXCEPTIONS(
-  if (*m <= 0) sprintf(tmp,"bool[]");
-  else sprintf(tmp,"bool[%d]",*m);
+		  std::ostringstream os;
+		  if (*m <= 0)
+		    os << "bool[]";
+		  //sprintf(tmp,"bool[]");
+		  else
+		    os << "bool[" << *m << "]";
+		  //sprintf(tmp,"bool[%d]",*m);
 
-  S = SearchQSymb(Key, tmp);
-  i=1;
-  while(i <= *m)
-    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
-    else if (n==0) break;
-    else {val[i-1] = (bool)(d==0?false:true);i++;}
+		  S = SearchQSymb(Key, os.str());
+		  i=1;
+		  while(i <= *m)
+		    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
+		    else if (n==0) break;
+		    else {val[i-1] = (bool)(d==0?false:true);i++;}
 
-  return i-1;
-)
+		  return i-1;
+		  )
 }
 
 #ifdef __cplusplus
@@ -59,35 +64,40 @@ HANDLE_EXCEPTIONS(
   {
     int n,n0;
     double d;
-    char tmp[8];
     Symbol *S;
     
    HANDLE_EXCEPTIONS(
-		      if (m <= 0) sprintf(tmp,"bool[]");
-		      else sprintf(tmp,"bool[%d]",m);
+		     std::ostringstream os;
+		     
+		     if (m <= 0)
+		       os << "bool[]";
+		       //sprintf(tmp,"bool[]");
+		     else
+		       os << "bool[" << m << "]";
+		       //sprintf(tmp,"bool[%d]",m);
 		      
-		      S = SearchQSymb((char *)Key.c_str(), tmp);
-		      //
-		      // Remember the number of values set by the user.
-		      //
-		      setAutoNBDefaults(S,val);
-		      n0=S->NVals;
-		      int i=1;
-		      for(int j=0;j<n0;j++)
-			{
-			  if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
-			    {
-			      if (n==0) {m=S->NVals=i-1;return i-1;}
-			      else 
-				{
-				  val.resize(i);
-				  val[i-1] = (bool)(d==0?false:true);
-				  i++;
-				}
-			    }
-			}
-		      m=S->NVals=i-1;
-		      return i-1;
-	    );
+		     S = SearchQSymb((char *)Key.c_str(), os.str());
+		     //
+		     // Remember the number of values set by the user.
+		     //
+		     setAutoNBDefaults(S,val);
+		     n0=S->NVals;
+		     int i=1;
+		     for(int j=0;j<n0;j++)
+		       {
+			 if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
+			   {
+			     if (n==0) {m=S->NVals=i-1;return i-1;}
+			     else 
+			       {
+				 val.resize(i);
+				 val[i-1] = (bool)(d==0?false:true);
+				 i++;
+			       }
+			   }
+		       }
+		     m=S->NVals=i-1;
+		     return i-1;
+		     );
   }
 #endif

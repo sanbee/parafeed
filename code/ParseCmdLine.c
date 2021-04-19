@@ -197,8 +197,9 @@ int ParseCmdLine(int argc, char *argv[])
 	  n=j=0;
 	  char comma=',';
 	  n = ntok(buf,&comma,CL_ESC);
-	  if (n && (strlen(buf) > 0)) S->Val = (char **)
-		   getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
+	  if (n && (strlen(buf) > 0))
+	    S->Val.resize(n+1);
+	    //S->Val = (char **) getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
 	  n=0;
 	  tok=(char *)clstrtok(buf,&comma,CL_ESC);
 	  while (tok)
@@ -212,9 +213,10 @@ int ParseCmdLine(int argc, char *argv[])
 		    {
 		      S->NVals++;
 		      tok[m+1]='\0';
-		      S->Val[n] = (char *)getmem(m+2,"BeginParam:3");
-		      strncpy(S->Val[n], tok,m+1);
-		      S->Val[n][m+1]='\0';
+		      S->Val[n]=tok;
+		      /* S->Val[n] = (char *)getmem(m+2,"BeginParam:3"); */
+		      /* strncpy(S->Val[n], tok,m+1); */
+		      /* S->Val[n][m+1]='\0'; */
 		      n++;
 		    }
 		}
@@ -228,12 +230,14 @@ int ParseCmdLine(int argc, char *argv[])
     Symbol *S;
     if ((S=SearchNode("help",cl_SymbTab))!=NULL && S->NVals > 0)
       {
-	if (!strcmp(S->Val[0],"noprompt"))
+	//if (!strcmp(S->Val[0],"noprompt"))
+	if (S->Val[0] == "noprompt")
 	  {
 	    cl_RegistrationMode=0;
 	    cl_NoPrompt = 1;
 	  }
-	if (!strcmp(S->Val[0],"dbg"))
+	//if (!strcmp(S->Val[0],"dbg"))
+	if (S->Val[0]=="dbg")
 	  CL_DBG_ON = 1;
       }
   }
@@ -351,14 +355,14 @@ int startShell()
 #endif
       }
 #if defined(FORTRAN)
-/**********************
-   This is a work around for a bug that appears when using the lib. from 
-   FORTRAN.  The name of the program carries an extra, unknown character
-   in FORTRAN.  That disappears if cl_ProgName is accessed for ANYTHING!
-   Hence this harmless, yet useful statement!  I expect that this will
-   crack on various machines - the source of the problem has to found.
-      sprintf(cl_ProgName,"%s",cl_ProgName);
-**********************/
+
+/* This is a work around for a bug that appears when using the lib. from  */
+/* FORTRAN.  The name of the program carries an extra, unknown character */
+/* in FORTRAN.  That disappears if cl_ProgName is accessed for ANYTHING! */
+/* Hence this harmless, yet useful statement!  I expect that this will */
+/* crack on various machines - the source of the problem has to found. */
+/*    sprintf(cl_ProgName,"%s",cl_ProgName); */
+
 #endif
 #if !defined(GNUREADLINE)
       fprintf(stderr,"%s>",cl_ProgName);
@@ -466,7 +470,7 @@ int EndCL()
   Return the symbol with name Name and add it to the list of qurried
   symbol list
 ------------------------------------------------------------------------*/
-Symbol *SearchQSymb(const char *Name, char *Type)
+Symbol *SearchQSymb(const std::string& Name, const std::string& Type)
 {
   /*
     By the time this is called, cl_SymbTab has been populated
@@ -481,7 +485,7 @@ Symbol *SearchQSymb(const char *Name, char *Type)
 
   return AddQKey(Name,Type,Tab,Tail);
 */
-  return AddQKey(Name,Type,&cl_SymbTab,&cl_TabTail);
+  return AddQKey(Name.c_str(),Type.c_str(),&cl_SymbTab,&cl_TabTail);
 }
 /*------------------------------------------------------------------------
    Get the position of Name in the commandline

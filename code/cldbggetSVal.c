@@ -43,7 +43,7 @@ int dbgclgetSVal(const char *Name, char *val, int *n)
       S->Class = CL_DBGCLASS;
       if (N <= S->NVals) 
 	{
-	  buf = S->Val[N-1];
+	  buf = (char *)S->Val[N-1].c_str();
 	  while (*buf == ' ') buf++;
 	  strncpy(val,buf,strlen(buf)+1);
 	  if ((c=strstr(buf,"\\\""))) 

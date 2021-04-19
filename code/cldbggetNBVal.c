@@ -18,6 +18,7 @@
  */
 /* $Id$ */
 #include <cllib.h>
+#include <sstream>
 
 #ifdef __cplusplus
 /* extern "C" { */
@@ -32,21 +33,24 @@ int dbgclgetNBVal(char *Key, bool *val, int *m)
 {
   int i=1,n;
   double d;
-  char tmp[8];
   Symbol *S;
 
 HANDLE_EXCEPTIONS(
-  sprintf(tmp,"bool[%d]",*m);
-  S = SearchQSymb(Key, tmp);
-  i=1;
-  if (S) S->Class = CL_DBGCLASS;
-  while(i <= *m)
-    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
-    else if (n==0) break;
-    else {val[i-1] = (bool)(d==0?false:true);i++;}
-
-  return i-1;
-)
+		  std::ostringstream os;
+		  os << "bool[" << *m << "]";
+		  S = SearchQSymb(Key, os.str());
+		  
+		  /* sprintf(tmp,"bool[%d]",*m); */
+		  /* S = SearchQSymb(Key, tmp); */
+		  i=1;
+		  if (S) S->Class = CL_DBGCLASS;
+		  while(i <= *m)
+		    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
+		    else if (n==0) break;
+		    else {val[i-1] = (bool)(d==0?false:true);i++;}
+		  
+		  return i-1;
+		  )
 }
 /* #ifdef __cplusplus */
 /* 	   } */

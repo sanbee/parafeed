@@ -18,7 +18,7 @@
  */
 /* $Id: clgetNSVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
-
+#include <sstream>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,13 +28,19 @@ extern "C" {
 int clgetNSVal(char *Name, char **Val, int *m)
 {
   int i,j,r=0,n=0;
-  char tmp[8], *buf;
+  char  *buf;
   Symbol *S;
 
-  if (*m <= 0) sprintf(tmp,"string[]");
-  else sprintf(tmp,"string[%d]",*m);
+  std::ostringstream os;
+  if (*m <= 0)
+    os << "string[]";
+  //sprintf(tmp,"bool[]");
+  else
+    os << "string[" << *m << "]";
+  //sprintf(tmp,"bool[%d]",*m);
 
-  S = SearchQSymb(Name, tmp);
+
+  S = SearchQSymb(Name, os.str());
   if (S==NULL) return CL_FAIL;
   else 
     {
@@ -43,7 +49,7 @@ int clgetNSVal(char *Name, char **Val, int *m)
       if (*m <= i){ n = *m; r = n;}
       for (j=1;j<= n;j++)
 	{
-	  buf = S->Val[j-1];
+	  buf = (char *)S->Val[j-1].c_str();
 	  while (*buf == ' ') buf++;
 	  strncpy(Val[j-1],buf,strlen(buf)+1);
 	}
@@ -58,13 +64,18 @@ int clgetNSVal(char *Name, char **Val, int *m)
 int clgetNSValp(const string& Name, vector<string>& Val, int& m)
 {
   int j,r=0,n=0;
-  char tmp[8], *buf;
+  char *buf;
   Symbol *S;
 
-  if (m <= 0) sprintf(tmp,"string[]");
-  else sprintf(tmp,"string[%d]",m);
+  std::ostringstream os;
+  if (m <= 0)
+    os << "string[]";
+  //sprintf(tmp,"bool[]");
+  else
+    os << "string[" << m << "]";
+  //sprintf(tmp,"bool[%d]",*m);
 
-  S = SearchQSymb((char *)Name.c_str(), tmp);
+  S = SearchQSymb((char *)Name.c_str(), os.str());
   if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   if (S==NULL) return CL_FAIL;
   else 
@@ -72,7 +83,7 @@ int clgetNSValp(const string& Name, vector<string>& Val, int& m)
       n = S->NVals;
       for (j=0;j< n;j++)
 	{
-	  buf = S->Val[j];
+	  buf = (char *)S->Val[j].c_str();
 	  while (*buf == ' ') buf++;
 	  Val.resize(j+1);
 	  Val[j]=buf;

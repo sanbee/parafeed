@@ -50,16 +50,16 @@ int clgetOptsList(char ***list)
 	    sprintf(t,"   %-10.10s = %c",s->Name,'\0');
 	    if (s->NVals > 0) 
 	      {
-		if (strlen(s->Val[0]) >= OPTSLEN - strlen(t))
+		if (strlen(s->Val[0].c_str()) >= OPTSLEN - strlen(t))
 		  fprintf(stderr,
 			  "###Informational:  Not enough space for putting parameters in history\n");
 		else
 		  {
-		    strcat(t,s->Val[0]);
+		    strcat(t,s->Val[0].c_str());
 		    for (k=1;k<s->NVals;k++)
 		      {
 			strcat(t,",");
-			strcat(t,s->Val[k]);
+			strcat(t,s->Val[k].c_str());
 		      }
 		  }
 	      }
