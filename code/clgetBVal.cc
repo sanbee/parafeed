@@ -25,7 +25,7 @@
 extern "C" {
 #endif
 /*------------------------------------------------------------------------
-   Return the Nth value of Name as a string
+   Return the Nth value of Name as an integer
 ------------------------------------------------------------------------*/
 int clgetBVal(char *Name, bool *val, int *n)
 {
@@ -34,15 +34,16 @@ int clgetBVal(char *Name, bool *val, int *n)
   double d;
   int N;
   tval=(val==0?false:true);
-
+HANDLE_EXCEPTIONS(
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);  
   else
-    S=SearchQSymb(Name,(char *)"bool");
+    S=SearchQSymb(Name,"bool");
   setAutoBDefaults(S,tval);
   if ((N=clparseVal(S,n,&d))>0) *val = (bool)(d==0?false:true);
   if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
   return N;
+  );
 }
 #ifdef __cplusplus
 	   }
@@ -55,15 +56,16 @@ int clgetBValp(const string& Name, bool& val, int& n)
   int N;
   bool tval;
   tval=(val==0?false:true);
-  
-  if (n < 0)
-    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
-  else
-    S=SearchQSymb((char *)Name.c_str(),(char *)"bool");
-  setAutoBDefaults(S,tval);
-  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
-  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
-  return N;
+HANDLE_EXCEPTIONS(
+		  if (n < 0)
+		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
+		  else
+		    S=SearchQSymb((char *)Name.c_str(),"bool");
+		  setAutoBDefaults(S,tval);
+		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
+		  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
+		  return N;
+		  );
 }
 
 int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
@@ -72,21 +74,23 @@ int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
   unsigned int N;
   double d;
 
-  if (n < 0)
-    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-  else
-    S=SearchQSymb((char *)Name.c_str(),(char *)"bool");
-  N = _ABS(n);
-  setAutoBDefaults(S,val);
+HANDLE_EXCEPTIONS(
+		  if (n < 0)
+		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+		  else
+		    S=SearchQSymb((char *)Name.c_str(),"bool");
+		  N = _ABS(n);
+		  setAutoBDefaults(S,val);
 
-  if (S!=NULL) 
-    {
-      SETBIT(S->Attributes,CL_BOOLTYPE);
-      S->smap = smap;
-    }
+		  if (S!=NULL) 
+		    {
+		      SETBIT(S->Attributes,CL_BOOLTYPE);
+		      S->smap = smap;
+		    }
 
-  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
+		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
 
-  return N;
+		  return N;
+		  );
 }
 #endif
