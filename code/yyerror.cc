@@ -18,14 +18,16 @@
  */
 /* $Id: yyerror.c,v 2.0 1998/11/11 07:13:14 sanjay Exp $ */
 #include <string>
+#include <iostream>
 #ifdef __cplusplus
+using namespace std;
 extern "C" {
 #endif
 #include <stdio.h>
-  void sh_error(const std::string& s)
+void sh_error(const char *s)
 {
-  //cerr << "###Error: " << s << endl;
-  fprintf(stderr,"###Error: %s\n",s.c_str());
+  cerr << "###Error: " << s << endl;
+  //fprintf(stderr,"###Error: %s\n",s.c_str());
 }
 #ifdef __cplusplus
 	   }

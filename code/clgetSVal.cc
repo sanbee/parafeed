@@ -21,9 +21,32 @@
 #include <shell.h>
 #include <string>
 #include <support.h>
+#include <iostream>
+#include <algorithm>
 #ifdef __cplusplus
 extern "C" {
 #endif
+ 
+/*------------------------------------------------------------------------
+   Bunch of functions to remove whitespaces from a given string
+------------------------------------------------------------------------*/
+const std::string WHITESPACE = " \n\r\t\f\v";
+ 
+std::string ltrim(const std::string &s)
+{
+    size_t start = s.find_first_not_of(WHITESPACE);
+    return (start == std::string::npos) ? std::string("") : s.substr(start);
+}
+ 
+std::string rtrim(const std::string &s)
+{
+    size_t end = s.find_last_not_of(WHITESPACE);
+    return (end == std::string::npos) ? std::string("") : s.substr(0, end + 1);
+}
+ 
+std::string trim(const std::string &s) {
+  return rtrim(ltrim(s));
+}
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
@@ -43,12 +66,16 @@ int clgetSVal(const char *Name, char *val, int *n)
     {
       if (N <= S->NVals) 
 	{
-	  buf = (char *)S->Val[N-1].c_str();
-	  while (*buf == ' ') buf++;
-	  strncpy(val,buf,strlen(buf)+1);
-	  if ((c=strstr(buf,"\\\""))) 
-	    while (*c) *c = *(++c);
-	  return strlen(buf);
+	  std::string trimmed=trim(S->Val[N-1]);
+	  int len=trimmed.size();
+	  strncpy(val, trimmed.c_str(), len);
+	  return len;
+	  // buf = (char *)S->Val[N-1].c_str();
+	  // while (*buf == ' ') buf++;
+	  // strncpy(val,buf,strlen(buf)+1);
+	  // if ((c=strstr(buf,"\\\""))) 
+	  //   while (*c) *c = *(++c);
+	  // return strlen(buf);
 	}
       else 
 	return CL_FAIL;
@@ -78,14 +105,17 @@ int clgetSValp(const string &Name, string& val, int& n)
     {
       if (N <= S->NVals) 
 	{
-	  val=""; /* Initialize the output string */
-	  buf = (char *)S->Val[N-1].c_str();
-	  while (*buf == ' ') buf++;
-	  val = val + buf;
-	  //	  strncpy(val,buf,strlen(buf)+1);
-	  if ((c=strstr(buf,"\\\""))) 
-	    while (*c) *c = *(++c);
-	  return strlen(buf);
+	  // val=""; /* Initialize the output string */
+	  // buf = (char *)S->Val[N-1].c_str();
+	  // while (*buf == ' ') buf++;
+	  // val = val + buf;
+	  val = trim(S->Val[N-1]);
+	  // buf = (char *)S->Val[N-1].c_str();
+	  // //	  strncpy(val,buf,strlen(buf)+1);
+	  // if ((c=strstr(buf,"\\\""))) 
+	  //   while (*c) *c = *(++c);
+	  // return strlen(buf);
+	  return val.size();
 	}
       else 
 	return CL_FAIL;

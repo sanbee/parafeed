@@ -518,9 +518,9 @@ END{									\
 	  if ((t->Class==CL_APPLNCLASS) ||
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	    {
-	      fprintf(fd,"%s=",t->Name);
+	      fprintf(fd,"%s=\"",t->Name);
 	      PrintVals(fd,t,0); // Print without NEWLINE
-	      fprintf(fd,"%c",' ');
+	      fprintf(fd,"\"%c",' ');
 	    }
 	fclose(fd);
       }
