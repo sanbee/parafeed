@@ -87,11 +87,13 @@ char *sh_sys_cmd=NULL;
 //int  yylex (YYSTYPE*, YYLTYPE*);
 extern "C" int yyparse ();
 }
-%union {
+%union yy_lval{
   double    Result;
   char      *String;
   Symbol    *symb;
   CmdSymbol *cmd;
+/*   std::string tt; */
+/* yy_lval(): tt() {}; */
 }
 %token <symb>   VAR 
 %token <cmd>    COMMAND
@@ -191,7 +193,7 @@ comd:    asign                   {$$=1;}
 				 }
 
         | UNDEF '=' expr         { 
-                                   yyerror((char *)"undefined symbol");
+                                   yyerror("undefined symbol");
 				   /*FreeVSymb($1);free($3);*/
                                    $$=1;
 				 }

@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <clError.h>
 #include <support.h>
+#include <sstream>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -36,8 +37,6 @@
 extern "C" {
 #endif
 #include <rl_interface.h>
-
-#include <strstream>
 #define POSITIVE(str,a)   {if ((a) < 0)                                \
                              {fprintf(stderr,"%s: Index is negative\n" \
 					,(str));exit(-1);}}
@@ -162,9 +161,9 @@ int ParseCmdLine(int argc, char *argv[])
 	  /* sprintf(str, "%s> Unknown token \"%s\" found.\n",cl_ProgName,buf); */
 	  /* clThrowUp(str,"###Fatal ",CL_FATAL); */
 
-	  strstream os;
+	  stringstream os;
 	  os << cl_ProgName << " Unknwon token \"" << buf << "\"found." << endl;
-	  clThrowUp(os.str(), "###Error", CL_FATAL);
+	  clThrowUp(os.str().c_str(), "###Error", CL_FATAL);
 
 
 	  exit(-1);

@@ -1,6 +1,7 @@
 #
 # define parser and scanner targets
 #
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 bison_target(ShellParser
   shell.y
   ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.cc
