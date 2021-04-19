@@ -19,29 +19,28 @@ add_flex_bison_dependency(ShellScanner ShellParser)
 
 # we need to tell CMake that the sources are actually C++
 set(sh_sources
-  CopySymb.c
-  AddCmd.c
-  AddNode.c
-  AddVar.c
-  AllocSymb.c
-  AddQKey.c
-  DeleteCmd.c
-  DeleteVar.c
-  DeleteNode.c
-  DeleteTab.c
-  FreeSymb.c
-  SearchNode.c
-  SearchSymb.c
-  TransferTab.c
-  PrintVals.c
-  SetVar.c
-  SetPrompt.c
-  SetSymbTab.c
-  SetCmdTab.c
-  yyerror.c
-  minmatch.c
-  isBool.cc
-  yyerror.c)
+  CopySymb.cc
+  AddCmd.cc
+  AddNode.cc
+  AddVar.cc
+  AllocSymb.cc
+  AddQKey.cc
+  DeleteCmd.cc
+  DeleteVar.cc
+  DeleteNode.cc
+  DeleteTab.cc
+  FreeSymb.cc
+  SearchNode.cc
+  SearchSymb.cc
+  TransferTab.cc
+  PrintVals.cc
+  SetVar.cc
+  SetPrompt.cc
+  SetSymbTab.cc
+  SetCmdTab.cc
+  yyerror.cc
+  minmatch.cc
+  isBool.cc)
 foreach(source IN LISTS sh_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
@@ -81,56 +80,56 @@ add_library(parafeed::sh ALIAS parafeed_sh)
 
 # we need to tell CMake that the sources are actually C++
 set(shccl_sources
-  ParseCmdLine.c
-  clparseVal.c
-  InstallSymb.c
-  clgetFVal.c
-  clgetIVal.c
-  clgetSVal.c
-  clgetFullVal.c
-  clgetNFVal.c
-  clgetNIVal.c
-  clgetNSVal.c
-  clgetNVals.c
-  cldbggetFVal.c
-  cldbggetIVal.c
-  cldbggetSVal.c
-  cldbggetNFVal.c
-  cldbggetNIVal.c
-  cldbggetNSVal.c
-  cldbggetFullVal.c
-  clStartInteractive.c
-  clRestartShell.c
-  clfInteractive.c
-  clstring.c
-  clgetOptsList.c
-  clclearOptsList.c
-  clgetCommandLine.c
-  clgetOpt.c
-  clstrtStream.c
-  clloadConfig.c
-#  sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.c > callbacks_awk.c
-  callbacks.c
-  support.c
-  clgetInputFile.c
-  clgetOutputFile.c
-  clgetNOpts.c
-  clCleanUp.c
-  clReset.c
-  clgetConfigFile.c
-  clSaneExit.c
-  clThrowError.c
-  clRetry.c
-  clSigHandler.c
-  clIsInteractive.c
+  ParseCmdLine.cc
+  clparseVal.cc
+  InstallSymb.cc
+  clgetFVal.cc
+  clgetIVal.cc
+  clgetSVal.cc
+  clgetFullVal.cc
+  clgetNFVal.cc
+  clgetNIVal.cc
+  clgetNSVal.cc
+  clgetNVals.cc
+  cldbggetFVal.cc
+  cldbggetIVal.cc
+  cldbggetSVal.cc
+  cldbggetNFVal.cc
+  cldbggetNIVal.cc
+  cldbggetNSVal.cc
+  cldbggetFullVal.cc
+  clStartInteractive.cc
+  clRestartShell.cc
+  clfInteractive.cc
+  clstring.cc
+  clgetOptsList.cc
+  clclearOptsList.cc
+  clgetCommandLine.cc
+  clgetOpt.cc
+  clstrtStream.cc
+  clloadConfig.cc
+#  sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
+  callbacks.cc
+  support.cc
+  clgetInputFile.cc
+  clgetOutputFile.cc
+  clgetNOpts.cc
+  clCleanUp.cc
+  clReset.cc
+  clgetConfigFile.cc
+  clSaneExit.cc
+  clThrowError.cc
+  clRetry.cc
+  clSigHandler.cc
+  clIsInteractive.cc
   ErrorObj.cc
   rl_interface.cc
   clSetOptions.cc
   clTextColouring.cc
   clgetBVal.cc
-  cldbggetBVal.c
-  clgetNBVal.c
-  cldbggetNBVal.c
+  cldbggetBVal.cc
+  clgetNBVal.cc
+  cldbggetNBVal.cc
   clBreakStr.cc
   GetStdString.cc)
 foreach(source IN LISTS shccl_sources)

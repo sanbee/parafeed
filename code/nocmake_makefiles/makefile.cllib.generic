@@ -114,62 +114,62 @@ lex.yy.o: lex.yy.c
 SetVar.o: SetVar.cc shell.h
 	$(C++) -c $(INCL) SetVar.cc
 
-SearchSymb.o: SearchSymb.c shell.h
-	$(C++) -c $(INCL) SearchSymb.c
+SearchSymb.o: SearchSymb.cc shell.h
+	$(C++) -c $(INCL) SearchSymb.cc
 
-SearchNode.o: SearchNode.c shell.h
-	$(C++) -c $(INCL) SearchNode.c
+SearchNode.o: SearchNode.cc shell.h
+	$(C++) -c $(INCL) SearchNode.cc
 
-PrintVals.o: PrintVals.c shell.h
-	$(C++) -c $(INCL) PrintVals.c
+PrintVals.o: PrintVals.cc shell.h
+	$(C++) -c $(INCL) PrintVals.cc
 
-yyerror.o:shell.h yyerror.c
-	$(C++) -c $(INCL) yyerror.c
+yyerror.o:shell.h yyerror.cc
+	$(C++) -c $(INCL) yyerror.cc
 
-FreeSymb.o: shell.h FreeSymb.c clshelldefs.h
-	$(C++) -c $(INCL) FreeSymb.c
+FreeSymb.o: shell.h FreeSymb.cc clshelldefs.h
+	$(C++) -c $(INCL) FreeSymb.cc
 
-CopySymb.o: shell.h CopySymb.c clshelldefs.h
-	$(C++) -c $(INCL) CopySymb.c
+CopySymb.o: shell.h CopySymb.cc clshelldefs.h
+	$(C++) -c $(INCL) CopySymb.cc
 
-DeleteNode.o: shell.h DeleteNode.c clshelldefs.h
-	$(C++) -c $(INCL) DeleteNode.c
+DeleteNode.o: shell.h DeleteNode.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteNode.cc
 
-DeleteVar.o: shell.h DeleteVar.c clshelldefs.h
-	$(C++) -c $(INCL) DeleteVar.c
+DeleteVar.o: shell.h DeleteVar.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteVar.cc
 
-DeleteCmd.o: shell.h DeleteCmd.c clshelldefs.h
-	$(C++) -c $(INCL) DeleteCmd.c
+DeleteCmd.o: shell.h DeleteCmd.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteCmd.cc
 
-DeleteTab.o: shell.h DeleteTab.c clshelldefs.h
-	$(C++) -c $(INCL) DeleteTab.c
+DeleteTab.o: shell.h DeleteTab.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteTab.cc
 
-AddNode.o: shell.h AddNode.c clshelldefs.h
-	$(C++) -c $(INCL) AddNode.c
+AddNode.o: shell.h AddNode.cc clshelldefs.h
+	$(C++) -c $(INCL) AddNode.cc
 
-AddCmd.o: shell.h AddCmd.c clshelldefs.h
-	$(C++) -c $(INCL) AddCmd.c
+AddCmd.o: shell.h AddCmd.cc clshelldefs.h
+	$(C++) -c $(INCL) AddCmd.cc
 
-AddVar.o: shell.h AddVar.c clshelldefs.h
-	$(C++) -c $(INCL) AddVar.c
+AddVar.o: shell.h AddVar.cc clshelldefs.h
+	$(C++) -c $(INCL) AddVar.cc
 
-AllocSymb.o: shell.h AllocSymb.c clshelldefs.h
-	$(C++) -c $(INCL) AllocSymb.c
+AllocSymb.o: shell.h AllocSymb.cc clshelldefs.h
+	$(C++) -c $(INCL) AllocSymb.cc
 
-TransferTab.o:TransferTab.c clshelldefs.h cl.h
-	$(C++) -c $(INCL) TransferTab.c
+TransferTab.o:TransferTab.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) TransferTab.cc
 
-SetPrompt.o:SetPrompt.c clshelldefs.h cl.h
-	$(C++) -c $(INCL) SetPrompt.c
+SetPrompt.o:SetPrompt.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) SetPrompt.cc
 
-SetSymbTab.o:SetSymbTab.c clshelldefs.h cl.h
-	$(C++) -c $(INCL) SetSymbTab.c
+SetSymbTab.o:SetSymbTab.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) SetSymbTab.cc
 
-SetCmdTab.o:SetCmdTab.c clshelldefs.h cl.h
-	$(C++) -c $(INCL) SetCmdTab.c
+SetCmdTab.o:SetCmdTab.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) SetCmdTab.cc
 
-minmatch.o:minmatch.c clshelldefs.h cl.h
-	$(C++) -c $(INCL) minmatch.c
+minmatch.o:minmatch.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) minmatch.cc
 
 isBool.o:isBool.cc clshelldefs.h cl.h cllib.h clbool.h
 	$(C++) -c $(INCL) isBool.cc
@@ -189,147 +189,147 @@ clTextColouring.o: clTextColouring.cc clshelldefs.h
 # The CL library package related targets.  libshccl.a depends on 
 # the shell library libsh.a
 #
-AddQKey.o: cl.h AddQKey.c clshelldefs.h
-	$(C++) -c $(INCL) AddQKey.c
+AddQKey.o: cl.h AddQKey.cc clshelldefs.h
+	$(C++) -c $(INCL) AddQKey.cc
 
-InstallSymb.o: cl.h InstallSymb.c SymbTab.h
-	$(C++) -c $(INCL) InstallSymb.c
+InstallSymb.o: cl.h InstallSymb.cc SymbTab.h
+	$(C++) -c $(INCL) InstallSymb.cc
 
-callbacks_awk.c: callbacks.c cl.h shell.tab.h
+callbacks_awk.cc: callbacks.cc cl.h shell.tab.h
 	sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/$(AWK)/" \
-	callbacks.c > callbacks_awk.c
-callbacks.o: cl.h callbacks_awk.c shell.tab.h
-	$(C++) -c $(INCL) callbacks_awk.c -o callbacks.o
+	callbacks.cc > callbacks_awk.cc
+callbacks.o: cl.h callbacks_awk.cc shell.tab.h
+	$(C++) -c $(INCL) callbacks_awk.cc -o callbacks.o
 
-ParseCmdLine.o:ParseCmdLine.c clshelldefs.h cl.h clconvert.h \
+ParseCmdLine.o:ParseCmdLine.cc clshelldefs.h cl.h clconvert.h \
 	clinteract.h shell.h clstring.h shell.tab.h
-	$(C++) -c $(INCL) ParseCmdLine.c
+	$(C++) -c $(INCL) ParseCmdLine.cc
 
-clparseVal.o: clparseVal.c clshelldefs.h cl.h cllib.h	
-	$(C++) -c $(INCL) clparseVal.c
+clparseVal.o: clparseVal.cc clshelldefs.h cl.h cllib.h	
+	$(C++) -c $(INCL) clparseVal.cc
 
-clgetFVal.o:clgetFVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetFVal.c
+clgetFVal.o:clgetFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetFVal.cc
 
-cldbggetFVal.o:cldbggetFVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetFVal.c
+cldbggetFVal.o:cldbggetFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetFVal.cc
 
 clgetBVal.o:clgetBVal.cc clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetBVal.cc
 
-cldbggetBVal.o:cldbggetBVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetBVal.c
+cldbggetBVal.o:cldbggetBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetBVal.cc
 
-clgetIVal.o:clgetIVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetIVal.c
+clgetIVal.o:clgetIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetIVal.cc
 
-cldbggetIVal.o:cldbggetIVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetIVal.c
+cldbggetIVal.o:cldbggetIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetIVal.cc
 
 clgetSVal.o:clgetSVal.cc clshelldefs.h cl.h cllib.h
 	$(C++) -c $(INCL) clgetSVal.cc
 
-cldbggetSVal.o:cldbggetSVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetSVal.c
+cldbggetSVal.o:cldbggetSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetSVal.cc
 
-clgetNSVal.o:clgetNSVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetNSVal.c
+clgetNSVal.o:clgetNSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNSVal.cc
 
-cldbggetNSVal.o:cldbggetNSVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetNSVal.c
+cldbggetNSVal.o:cldbggetNSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNSVal.cc
 
-clgetNFVal.o:clgetNFVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetNFVal.c
+clgetNFVal.o:clgetNFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNFVal.cc
 
-cldbggetNFVal.o:cldbggetNFVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetNFVal.c
+cldbggetNFVal.o:cldbggetNFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNFVal.cc
 
-clgetNIVal.o:clgetNIVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetNIVal.c
+clgetNIVal.o:clgetNIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNIVal.cc
 
-cldbggetNIVal.o:cldbggetNIVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetNIVal.c
+cldbggetNIVal.o:cldbggetNIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNIVal.cc
 
-clgetNBVal.o:clgetNBVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetNBVal.c
+clgetNBVal.o:clgetNBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNBVal.cc
 
-cldbggetNBVal.o:cldbggetNBVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetNBVal.c
+cldbggetNBVal.o:cldbggetNBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNBVal.cc
 
-clgetNVals.o:clgetNVals.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetNVals.c
+clgetNVals.o:clgetNVals.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNVals.cc
 
-cldbggetNVals.o:cldbggetNVals.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetNVals.c
+cldbggetNVals.o:cldbggetNVals.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNVals.cc
 
-clgetNOpts.o:clgetNOpts.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetNOpts.c
+clgetNOpts.o:clgetNOpts.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNOpts.cc
 
-clgetFullVal.o:clgetFullVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetFullVal.c
+clgetFullVal.o:clgetFullVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetFullVal.cc
 
-cldbggetFullVal.o:cldbggetFullVal.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) cldbggetFullVal.c
+cldbggetFullVal.o:cldbggetFullVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetFullVal.cc
 
-clStartInteractive.o:clStartInteractive.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clStartInteractive.c
+clStartInteractive.o:clStartInteractive.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clStartInteractive.cc
 
-clRestartShell.o:clRestartShell.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clRestartShell.c
+clRestartShell.o:clRestartShell.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clRestartShell.cc
 
-clgetOpt.o:clgetOpt.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetOpt.c
+clgetOpt.o:clgetOpt.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetOpt.cc
 
-clgetOptsList.o:clgetOptsList.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetOptsList.c
+clgetOptsList.o:clgetOptsList.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetOptsList.cc
 
-clclearOptsList.o:clclearOptsList.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clclearOptsList.c
+clclearOptsList.o:clclearOptsList.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clclearOptsList.cc
 
-clgetCommandLine.o:clgetCommandLine.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetCommandLine.c 
+clgetCommandLine.o:clgetCommandLine.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetCommandLine.cc 
 
-clgetInputFile.o:clgetInputFile.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetInputFile.c 
+clgetInputFile.o:clgetInputFile.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetInputFile.cc 
 
-clgetOutputFile.o:clgetOutputFile.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetOutputFile.c 
+clgetOutputFile.o:clgetOutputFile.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetOutputFile.cc 
 
-clstrtStream.o:clstrtStream.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clstrtStream.c 
+clstrtStream.o:clstrtStream.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clstrtStream.cc 
 
-clloadConfig.o:clloadConfig.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clloadConfig.c
+clloadConfig.o:clloadConfig.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clloadConfig.cc
 
-clgetConfigFile.o:clgetConfigFile.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clgetConfigFile.c
+clgetConfigFile.o:clgetConfigFile.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetConfigFile.cc
 
-clCleanUp.o:clCleanUp.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clCleanUp.c
+clCleanUp.o:clCleanUp.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clCleanUp.cc
 
-clReset.o:clReset.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clReset.c
+clReset.o:clReset.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clReset.cc
 
-clRetry.o:clRetry.c clshelldefs.h cl.h cllib.h
-	$(C++) -c $(INCL) clRetry.c
+clRetry.o:clRetry.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clRetry.cc
 
-support.o:support.c 
-	$(C++) -c $(INCL) support.c
+support.o:support.cc 
+	$(C++) -c $(INCL) support.cc
 
-clstring.o:clstring.c 
-	$(C++) -c $(INCL) clstring.c
+clstring.o:clstring.cc 
+	$(C++) -c $(INCL) clstring.cc
 
-clfInteractive.o:clfInteractive.c
-	$(C++) -c $(INCL) clfInteractive.c
+clfInteractive.o:clfInteractive.cc
+	$(C++) -c $(INCL) clfInteractive.cc
 
-clSaneExit.o:clSaneExit.c
-	$(C++) -c $(INCL) clSaneExit.c
+clSaneExit.o:clSaneExit.cc
+	$(C++) -c $(INCL) clSaneExit.cc
 
-clThrowError.o:clThrowError.c
-	$(C++) -c $(INCL) clThrowError.c
+clThrowError.o:clThrowError.cc
+	$(C++) -c $(INCL) clThrowError.cc
 
-clSigHandler.o:clSigHandler.c
-	$(C++) -c $(INCL) clSigHandler.c
+clSigHandler.o:clSigHandler.cc
+	$(C++) -c $(INCL) clSigHandler.cc
 
 clErrorObj.o:clErrorObj.cc
 	$(C++) -c $(INCL) clErrorObj.cc

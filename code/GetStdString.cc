@@ -16,8 +16,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id$ */
+/* $Id: clstrtStream.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
+#include <stdio.h>
 #include <cllib.h>
-#include <cl.h>
+#include <shell.h>
 
-int clIsInteractive() {return !cl_NoPrompt;};
+#ifdef __cplusplus
+extern "C" {
+#endif
+  const char *GetStdString(const Symbol *S, const int i)
+  {
+    return S->Val[i].c_str();
+  }
+
+#ifdef __cplusplus
+}
+#endif

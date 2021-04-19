@@ -38,49 +38,6 @@ void setAutoDefaults(Symbol *S, const T& val)
   tmp.push_back(val);
   setAutoDefaults(S, tmp);
   return;
-    /* ostringstream os; */
-    /* os << val; */
-    /* if (cl_RegistrationMode == 1) */
-    /*   { */
-    /* 	S->DefaultVal.resize(1,""); */
-    /* 	S->DefaultVal[0] = os.str(); */
-    /*   } */
-    
-    /* if (S->Val.size() == 0) */
-    /*   { */
-    /* 	stringstream ss; */
-    /* 	ss << val; */
-    /* 	S->Val.resize(1,""); */
-    /* 	S->Val[0]=ss.str(); */
-    /*   } */
-    /* /\* if (S->Val == NULL) *\/ */
-    /* /\*   { *\/ */
-    /* /\* 	S->Val = (char **) getmem(sizeof(char *),"setAutoFDefaults"); *\/ */
-    /* /\* 	S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),"setAutoFDefaults"); *\/ */
-    /* /\* 	// It appears that C++ ostringstream default formatting is better than that of "%f"  *\/ */
-    /* /\* 	// in sprintf (print 0.1 as "0.1" vs. "0.1000000"). *\/ */
-    /* /\* 	//	sprintf(S->Val[0],"%f%c",val,NULL); *\/ */
-    /* /\* 	strcpy(S->Val[0],os.str().c_str()); *\/ */
-    /* /\*   } *\/ */
-    /* S->NVals = 1; */
-
-  stringstream os;
-  os << val;
-  if (cl_RegistrationMode == 1)
-    {
-      S->DefaultVal.resize(1);
-      S->DefaultVal[0] = os.str();
-    }
-
-  if (S->Val.size() == 0)
-    {
-      /* stringstream ss; */
-      /* ss << val; */
-      S->Val.resize(1);
-      S->Val[0]=os.str();
-    }
-
-  S->NVals = 1;//S->Val.size();
 }
 /*---------------------------------------------------------------------------*/
 /* Template function to set a vector of values as default for the Symbol S */

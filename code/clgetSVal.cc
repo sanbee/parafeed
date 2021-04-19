@@ -59,8 +59,9 @@ int clgetSVal(const char *Name, char *val, int *n)
 #ifdef __cplusplus
 	   }
 #endif
+
 #ifdef __cplusplus
-int clgetSValp(const string& Name, string& val, int& n)
+int clgetSValp(const string &Name, string& val, int& n)
 {
   Symbol *S;
   unsigned int N;
@@ -69,66 +70,22 @@ int clgetSValp(const string& Name, string& val, int& n)
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
   else
-    S=SearchQSymb((char *)Name.c_str(),(char *)"string");
+    S=SearchQSymb((char *)Name.c_str(),"string");
   N = _ABS(n);
-  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
+
   setAutoSDefaults(S,val);
   if (S!=NULL) 
     {
       if (N <= S->NVals) 
 	{
-          val.resize(0);
+	  val=""; /* Initialize the output string */
 	  buf = (char *)S->Val[N-1].c_str();
-	  if (buf)
-	    {
-	      while (*buf == ' ') buf++;
-	      val = val + buf;
-	      //	  strncpy(val,buf,strlen(buf)+1);
-	      if ((c=strstr(buf,"\\\""))) 
-		while (*c) *c = *(++c);
-	      return strlen(buf);
-	    }
-	  else return 0;
-	}
-      else 
-	return CL_FAIL;
-    }
-  else
-    return CL_FAIL;
-}
-
-int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
-{
-  Symbol *S;
-  unsigned int N;
-  char *buf,*c;
-  
-  if (n < 0)
-    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-  else
-    S=SearchQSymb((char *)Name.c_str(),(char *)"string");
-  N = _ABS(n);
-  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
-
-  setAutoSDefaults(S,val);
-  if (S!=NULL) 
-    {
-      S->smap = smap;
-      if (N <= S->NVals) 
-	{
-	  val.resize(0); /* Initialize the output string */
-	  buf = (char *)S->Val[N-1].c_str();
-	  if (buf)
-	    {
-	      while (*buf == ' ') buf++;
-	      val = val + buf;
-	      //	  strncpy(val,buf,strlen(buf)+1);
-	      if ((c=strstr(buf,"\\\""))) 
-		while (*c) *c = *(++c);
-	      return strlen(buf);
-	    }
-	  else 
-	    return 0;
+	  while (*buf == ' ') buf++;
+	  val = val + buf;
+	  //	  strncpy(val,buf,strlen(buf)+1);
+	  if ((c=strstr(buf,"\\\""))) 
+	    while (*c) *c = *(++c);
+	  return strlen(buf);
 	}
       else 
 	return CL_FAIL;
