@@ -8,4 +8,8 @@ _parafeed_ project can be built with the `cmake` tool.  Alternatively, it can al
 
 CMake-based build system requires `cmake` version 3 or later.  To build, execute the `cmake` command in the top-most directory.  This will build the required `makefiles`.  Issuing the `make` command, also in the root directory, should build the _parafeed_ package.
 
-While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. 
+While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. Using the command `cd code; make -f nocmake_makefiles/makefile.cllib.generic` should build the _parafeed_ project.
+
+Successfully building and linking the test program `code/tstcpp` ensures that all libraries required by client codes are ready.  For now, copy all `code/*.{a,h}` and `code/calc/*.{a,h}` files to the required location for linking your application.   
+
+A more detailed document describing the API is under prepration.  Till then, ask for help from the authors.
