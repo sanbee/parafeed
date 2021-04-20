@@ -3,9 +3,9 @@ A library for an embedded user interface designed for ease of use for the progra
 
 For full documentation, go [here](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md)
 
-## Build System(s)
-_parafeed_ project can be built with the the `cmake` tool.  Alternatively, it can also be built using hand-written `makefiles`.
+### Build System(s)
+_parafeed_ project can be built with the `cmake` tool.  Alternatively, it can also be built directly using the hand-written `makefiles`.
 
-CMake-based build system requires `cmake` version 3.x or later.  To build, execute the `cmake` command in the top-most directory.  This will build the required `makefiles`.  Issuing the `make` command, also in the root directory, should build the _parafeed_ package.
+CMake-based build system requires `cmake` version 3 or later.  To build, execute the `cmake` command in the top-most directory.  This will build the required `makefiles`.  Issuing the `make` command, also in the root directory, should build the _parafeed_ package.
 
-While the hand-written `makefiles` have been tested with `make` version 3.x only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. 
+While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. 
