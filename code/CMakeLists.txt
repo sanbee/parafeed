@@ -1,3 +1,4 @@
+# -*- cmake -*-
 #
 # define parser and scanner targets
 #
@@ -78,6 +79,12 @@ add_library(parafeed::sh ALIAS parafeed_sh)
 #
 # shccl library
 #
+ add_custom_command(
+   OUTPUT myfile.sql
+   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
+   MAIN_DEPENDENCY callbacks.cc
+   COMMENT "Preprocessing callbacks.cc"
+   VERBATIM)
 
 # we need to tell CMake that the sources are actually C++
 set(shccl_sources
@@ -109,8 +116,7 @@ set(shccl_sources
   clgetOpt.cc
   clstrtStream.cc
   clloadConfig.cc
-#  sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
-  callbacks.cc
+  callbacks_awk.cc
   support.cc
   clgetInputFile.cc
   clgetOutputFile.cc
