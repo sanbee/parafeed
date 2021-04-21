@@ -36,10 +36,8 @@ extern double Result;
 extern Calc_Symbol s2;
 double (*UserFunc)(char *);
 int yylex();
-int yyparse();
-int yyerror(char *s);
+int calc_error(char *s);
 int ywarn(char *s, char *t);
-/* int yyerror(char *); */
 int calc(char *, double *);
 
 Calc_Symbol *calcget(char *);
@@ -48,3 +46,6 @@ double todms(double);
 double b2j(double, double);
 double j2b(double, double);
 #endif
+#define LINELEN 128
+extern char Calc_line[LINELEN];
+extern int Calc_index;

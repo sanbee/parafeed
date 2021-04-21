@@ -23,7 +23,6 @@
 #include <calc.h>
 #include <stdlib.h>
 
- int calc_error(char *); /* dummy decleration */
  double Result=0.0;
  Calc_Symbol s2;
 %}
@@ -81,8 +80,3 @@ void calcufunc(double (*func)(char *))
 {
   UserFunc = func;
 }
-#ifdef DEBUG
-#include <ctst.c>
-#endif
-#include <lex.yy.c>
-#include <yyerror.c>
