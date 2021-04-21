@@ -28,6 +28,7 @@
 #include <cl.h>
 #include <clGlobals.h>
 #include <sstream>
+#include <clstring.h>
 /*---------------------------------------------------------------------------*/
 /* Template function to set a single value as default for the Symbol S */
 /*---------------------------------------------------------------------------*/
@@ -378,26 +379,35 @@ extern "C" {
   {
     if (fullVal)
       {
-	int comma;
-	char *valstr; valstr=(char *)val.c_str();
-	if ((comma = ntok(valstr,(char*)",",CL_ESC))==-1) 
-	  {
-	    ostringstream os;
-	    os << "Error in counting commas in the string " << val << endl;
-	    throw(clError(os.str().c_str(), "setAutoSDefaults",0));
-	  }
-	
+	//char *valstr; valstr=(char *)val.c_str();
+	vector<string> tokens;
+	tokens=clstrtokp(val,',',CL_ESC);
+
+	unsigned ntok=tokens.size();
 	if (cl_RegistrationMode==1)
 	  {
-	    S->DefaultVal.resize(comma,"");
-	    valstr=(char *)val.c_str();
-	    char *t;
-	    if ((t=clstrtok(valstr,(char*)",", CL_ESC)) != NULL)
-	      {
-		S->DefaultVal[0]=t;
-		for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,(char*)",", CL_ESC);
-	      }
+	    S->DefaultVal.resize(ntok);
+	    for(unsigned i=0;i<ntok;i++)
+	      S->DefaultVal[i]=tokens[i];
 	  }
+	// if ((comma = ntok(valstr,(char*)",",CL_ESC))==-1) 
+	//   {
+	//     ostringstream os;
+	//     os << "Error in counting commas in the string " << val << endl;
+	//     throw(clError(os.str().c_str(), "setAutoSDefaults",0));
+	//   }
+	
+	// if (cl_RegistrationMode==1)
+	//   {
+	//     S->DefaultVal.resize(comma,"");
+	//     valstr=(char *)val.c_str();
+	//     char *t;
+	//     if ((t=clstrtok(valstr,(char*)",", CL_ESC)) != NULL)
+	//       {
+	// 	S->DefaultVal[0]=t;
+	// 	for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,(char*)",", CL_ESC);
+	//       }
+	//   }
       }
     else
       {

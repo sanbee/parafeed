@@ -37,6 +37,7 @@ class ErrorObj{
   int Severity()                     {return Level;}
   const char *what();
 
+  ostream &operator<<(const std::string& m) {return cerr << m;}
   ostream &operator<<(const char *m) {return cerr << m;}
   ostream &operator<<(ErrorObj &E)   {return cerr << E;}
   friend ostream &operator<<(ostream& o,const ErrorObj&);

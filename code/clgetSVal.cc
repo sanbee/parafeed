@@ -23,30 +23,12 @@
 #include <support.h>
 #include <iostream>
 #include <algorithm>
+#include <clstring.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
  
-/*------------------------------------------------------------------------
-   Bunch of functions to remove whitespaces from a given string
-------------------------------------------------------------------------*/
-const std::string WHITESPACE = " \n\r\t\f\v";
- 
-std::string ltrim(const std::string &s)
-{
-    size_t start = s.find_first_not_of(WHITESPACE);
-    return (start == std::string::npos) ? std::string("") : s.substr(start);
-}
- 
-std::string rtrim(const std::string &s)
-{
-    size_t end = s.find_last_not_of(WHITESPACE);
-    return (end == std::string::npos) ? std::string("") : s.substr(0, end + 1);
-}
- 
-std::string trim(const std::string &s) {
-  return rtrim(ltrim(s));
-}
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
@@ -54,7 +36,6 @@ int clgetSVal(const char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
-  char *buf, *c=NULL;
   
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);
@@ -70,6 +51,7 @@ int clgetSVal(const char *Name, char *val, int *n)
 	  int len=trimmed.size();
 	  strncpy(val, trimmed.c_str(), len);
 	  return len;
+	  //char *buf, *c=NULL;
 	  // buf = (char *)S->Val[N-1].c_str();
 	  // while (*buf == ' ') buf++;
 	  // strncpy(val,buf,strlen(buf)+1);
@@ -92,7 +74,6 @@ int clgetSValp(const string &Name, string& val, int& n)
 {
   Symbol *S;
   unsigned int N;
-  char *buf,*c=NULL;
   
   if (n < 0)
     S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
@@ -110,6 +91,7 @@ int clgetSValp(const string &Name, string& val, int& n)
 	  // while (*buf == ' ') buf++;
 	  // val = val + buf;
 	  val = trim(S->Val[N-1]);
+	  //char *buf,*c=NULL;
 	  // buf = (char *)S->Val[N-1].c_str();
 	  // //	  strncpy(val,buf,strlen(buf)+1);
 	  // if ((c=strstr(buf,"\\\""))) 

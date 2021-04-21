@@ -17,8 +17,10 @@
  *
  */
 /* $Id: clstring.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
+#include <string>
 #include <string.h>
 #include <stdio.h>
+using namespace std;
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -115,6 +117,28 @@ char *clstrtok(char *str, const char *sep,char esc)
  else t[i]='\0';
  return &t[prev];
 } 
+
+/*------------------------------------------------------------------------
+   Bunch of functions to remove whitespaces from a given string
+------------------------------------------------------------------------*/
+const std::string WHITESPACE = " \n\r\t\f\v";
+ 
+std::string ltrim(const std::string &s)
+{
+    size_t start = s.find_first_not_of(WHITESPACE);
+    return (start == std::string::npos) ? std::string("") : s.substr(start);
+}
+ 
+std::string rtrim(const std::string &s)
+{
+    size_t end = s.find_last_not_of(WHITESPACE);
+    return (end == std::string::npos) ? std::string("") : s.substr(0, end + 1);
+}
+ 
+std::string trim(const std::string &s) {
+  return rtrim(ltrim(s));
+}
+
 
 #if defined(TESTBED)
 main(int argc, char **argv)

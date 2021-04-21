@@ -70,7 +70,7 @@ int           DeleteVNode(Symbol *, Symbol **, Symbol **);
 int           DeleteCNode(CmdSymbol *, CmdSymbol **, CmdSymbol **);
 int           PrintVals(FILE *f,Symbol *S,unsigned int newline);
 int           SetVar(char *name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
-void          SetVal(char *, Symbol *, int);
+void          SetVal(const char *, Symbol *, int);
 int           CopyVSymb(Symbol *, Symbol *, int);
 int           CopyCSymb(CmdSymbol *, CmdSymbol *, int);
 Symbol        *minmatch(const char *, Symbol *);

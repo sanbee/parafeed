@@ -238,9 +238,9 @@ int  InstallSymb();
 int  sh_parse();
 int  UnsetVar(Symbol *,int);
 int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
-void SetVal(char *, Symbol *, int);
+  //void SetVal(const char *, Symbol *, int);
 #ifdef __cplusplus
-void VerifyVal(char *, Symbol *,string &);
+void VerifyVal(const char *, Symbol *,string &);
 #endif
 int  CopyVSymb(Symbol *, Symbol *,int);
 int  FreeVSymb(Symbol *);

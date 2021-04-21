@@ -24,9 +24,14 @@
 extern "C" {
 #endif
 
-char*         clstrtok(char *, const char *,char);
-int           ntok(char *, const char *,char);
-int           tokenize(FILE *,char *, const char *,char);
+  char*         clstrtok(char *, const char *,char);
+  int           ntok(char *, const char *,char);
+  int           tokenize(FILE *,char *, const char *,char);
+  vector<string> clstrtokp(const string& input, char seperator,
+			 char escape);
+  std::string ltrim(const std::string &s);
+  std::string rtrim(const std::string &s);
+  std::string trim(const std::string &s);
 
 #ifdef	__cplusplus
 }

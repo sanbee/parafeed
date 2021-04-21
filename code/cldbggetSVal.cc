@@ -30,7 +30,6 @@ int dbgclgetSVal(const char *Name, char *val, int *n)
 {
   Symbol *S;
   unsigned int N;
-  char *buf,*c=NULL;
   
   if (*n < 0)
     S=SearchVSymb(Name,cl_SymbTab);
@@ -43,12 +42,17 @@ int dbgclgetSVal(const char *Name, char *val, int *n)
       S->Class = CL_DBGCLASS;
       if (N <= S->NVals) 
 	{
-	  buf = (char *)S->Val[N-1].c_str();
-	  while (*buf == ' ') buf++;
-	  strncpy(val,buf,strlen(buf)+1);
-	  if ((c=strstr(buf,"\\\""))) 
-	    while (*c) *c = *(++c);
-	  return strlen(buf);
+	  std::string trimmed=trim(S->Val[N-1]);
+	  int len=trimmed.size();
+	  strncpy(val, trimmed.c_str(), len);
+	  return len;
+	  // char *buf,*c=NULL;
+	  // buf = (char *)S->Val[N-1].c_str();
+	  // while (*buf == ' ') buf++;
+	  // strncpy(val,buf,strlen(buf)+1);
+	  // if ((c=strstr(buf,"\\\""))) 
+	  //   while (*c) *c = *(++c);
+	  // return strlen(buf);
 	}
       else return CL_FAIL;
     }

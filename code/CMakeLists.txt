@@ -110,6 +110,7 @@ set(shccl_sources
   clRestartShell.cc
   clfInteractive.cc
   clstring.cc
+  clstrtok.cc
   clgetOptsList.cc
   clclearOptsList.cc
   clgetCommandLine.cc

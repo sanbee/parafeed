@@ -73,11 +73,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 /*---------------------------------------------------------------------------*/
   int SetVar(char *key, char *val, Symbol *Tab,short int Force, short int fullmatch, short int dodoinp)
 {
-  unsigned int i,j;
-  int coma=0;
   Symbol *pos;
-  char *k=NULL,*v=NULL;
-
   /*---------------------------------------------------------------
     Search for the key in the table pointed to by Tab If not found,
     return -2 If the value is NULL, unset the found key and return
@@ -113,32 +109,49 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
      tokens from the new buffer and put it in Tab.
   */
 
-  if ((coma = ntok(val,",",CL_ESC))==-1) return 1;
-
-  i=0;j=0;
-  while(val[j] == ' ')j++;
-
-  k = (char *)getmem(strlen(&val[j])+1,"cl:loadParams");
-  strncpy(k,&val[j],(i=strlen(&val[j])));k[i]='\0';
-
-  v = (char *)clstrtok(k,",",CL_ESC);
-
-  //  cerr << "before = " << pos->NVals << " " << coma << endl;
-
-  for (i=coma;i<pos->NVals;i++) pos->Val[i]="";
-  pos->Val.resize(coma);
-  pos->NVals=coma;
-
-
-  /* for (i=coma;i<pos->NVals;i++) free(pos->Val[i]); */
-  /* pos->Val=(char **)calloc(1,sizeof(char **)*(coma)); */
-  /* pos->NVals=coma; */
-
-  for (i=0;i<(unsigned int)coma;i++)
+  //  try
     {
-      SetVal(v,pos,i);
-      if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
+      vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
+      unsigned ntokens=tokens.size();
+      pos->NVals=ntokens;
+      pos->Val.resize(pos->NVals);
+      for (unsigned i=0;i<ntokens;i++)
+	SetVal(tokens[i].c_str(),pos,i);
     }
+  // catch(clError& cl)
+  //   {
+  //     //      cl << cl << endl;
+  //     throw(cl);
+  //   }
+
+  // int coma=0;
+  // char *k=NULL,*v=NULL;
+  // if ((coma = ntok(val,",",CL_ESC))==-1) return 1;
+
+  // i=0;j=0;
+  // while(val[j] == ' ')j++;
+
+  // k = (char *)getmem(strlen(&val[j])+1,"cl:loadParams");
+  // strncpy(k,&val[j],(i=strlen(&val[j])));k[i]='\0';
+
+  // v = (char *)clstrtok(k,",",CL_ESC);
+
+  // //  cerr << "before = " << pos->NVals << " " << coma << endl;
+
+  // for (i=coma;i<pos->NVals;i++) pos->Val[i]="";
+  // pos->Val.resize(coma);
+  // pos->NVals=coma;
+
+
+  // /* for (i=coma;i<pos->NVals;i++) free(pos->Val[i]); */
+  // /* pos->Val=(char **)calloc(1,sizeof(char **)*(coma)); */
+  // /* pos->NVals=coma; */
+
+  // for (i=0;i<(unsigned int)coma;i++)
+  //   {
+  //     SetVal(v,pos,i);
+  //     if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
+  //   }
   /* for (i=0;i<(unsigned int)coma;i++) */
   /*   { */
   /*     SetVal(v,pos,i); */
@@ -147,11 +160,11 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   //  cerr << "after = " << pos->NVals << " " << i << endl;
 
   if (dodoinp) doinp(key);
-  free(k);
+  //  free(k);
   return 1;
 }
 /*----------------------------------------------------------------------*/
-  void VerifyVal(char *v, Symbol *S,string& newval)
+  void VerifyVal(const char *v, Symbol *S,string& newval)
   {
     int n = S->Options.size();
     int Matched=1;
@@ -210,13 +223,14 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       }
   }
 /*----------------------------------------------------------------------*/
-void SetVal(char *v, Symbol *S, int i)
+void SetVal(const char *v, Symbol *S, int i)
 {
   string vv;
-  stripwhite(v);
+  string trimmed=trim(string(v));
+  //  stripwhite(v);
   try
     {
-      VerifyVal(v,S,vv);
+      VerifyVal(trimmed.c_str(),S,vv);
     }
   catch (clError& x)
     {

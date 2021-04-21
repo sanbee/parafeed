@@ -27,6 +27,7 @@
 #include <clError.h>
 #include <support.h>
 #include <sstream>
+#include <clstring.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -110,7 +111,7 @@ int cl_fargc=0;
 /*-------------------------------------------------------------------------*/
 int ParseCmdLine(int argc, char *argv[])
 {
-  int i,n,m,NOpts;
+  int i,n,NOpts;
   char *tok, *buf;
   Symbol *S;
 
@@ -195,32 +196,41 @@ int ParseCmdLine(int argc, char *argv[])
 	  S->NVals = 0;    /* Copy multiple values in the Val list */
 	  n=j=0;
 	  char comma=',';
-	  n = ntok(buf,&comma,CL_ESC);
-	  if (n && (strlen(buf) > 0))
-	    S->Val.resize(n+1);
-	    //S->Val = (char **) getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
-	  n=0;
-	  tok=(char *)clstrtok(buf,&comma,CL_ESC);
-	  while (tok)
-	    {
-	      m = strlen(tok);
-	      if (m > 0)
-		{
-		  m--;
-		  while (tok[m] == ' ') m--;
-		  if (m >= 0) 
-		    {
-		      S->NVals++;
-		      tok[m+1]='\0';
-		      S->Val[n]=tok;
-		      /* S->Val[n] = (char *)getmem(m+2,"BeginParam:3"); */
-		      /* strncpy(S->Val[n], tok,m+1); */
-		      /* S->Val[n][m+1]='\0'; */
-		      n++;
-		    }
-		}
-	      tok=(char *)clstrtok(NULL,&comma,CL_ESC);
-	    }
+	  string bufstr(buf);
+	  vector<string> tokens=clstrtokp(bufstr, comma, CL_ESC);
+	  S->Val.resize(tokens.size());
+	  S->NVals=tokens.size();
+	  // cerr << bufstr << " " << tokens.size() << endl;
+	  // for(unsigned i=0;i<tokens.size();i++) cerr <<"\"" <<tokens[i]<<"\"";cerr << endl;
+	  
+	  for(unsigned i=0;i<tokens.size();i++) S->Val[i] = tokens[i];
+
+	  // n = ntok(buf,&comma,CL_ESC);
+	  // if (n && (strlen(buf) > 0))
+	  //   S->Val.resize(n+1);
+	  //   //S->Val = (char **) getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
+	  // n=0;
+	  // tok=(char *)clstrtok(buf,&comma,CL_ESC);
+	  // while (tok)
+	  //   {
+	  //     m = strlen(tok);
+	  //     if (m > 0)
+	  // 	{
+	  // 	  m--;
+	  // 	  while (tok[m] == ' ') m--;
+	  // 	  if (m >= 0) 
+	  // 	    {
+	  // 	      S->NVals++;
+	  // 	      tok[m+1]='\0';
+	  // 	      S->Val[n]=tok;
+	  // 	      /* S->Val[n] = (char *)getmem(m+2,"BeginParam:3"); */
+	  // 	      /* strncpy(S->Val[n], tok,m+1); */
+	  // 	      /* S->Val[n][m+1]='\0'; */
+	  // 	      n++;
+	  // 	    }
+	  // 	}
+	  //     tok=(char *)clstrtok(NULL,&comma,CL_ESC);
+	  //   }
 	  AddVNode(S,&cl_SymbTab,&cl_TabTail);
 	}
     }
