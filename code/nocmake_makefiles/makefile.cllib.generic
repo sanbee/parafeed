@@ -60,7 +60,7 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 	 clgetNVals.o cldbggetFVal.o cldbggetIVal.o cldbggetSVal.o         \
 	 cldbggetNFVal.o cldbggetNIVal.o cldbggetNSVal.o cldbggetFullVal.o\
 	 clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o \
-	 clgetOptsList.o clclearOptsList.o clgetCommandLine.o clgetOpt.o   \
+	 clstrtok.o clgetOptsList.o clclearOptsList.o clgetCommandLine.o clgetOpt.o   \
 	 clstrtStream.o clloadConfig.o callbacks.o support.o               \
 	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
 	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
@@ -71,7 +71,7 @@ CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
 FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
 	  clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o\
-	  cl.o clgetBVal.o clgetNBVal.o
+	  clstrtok.o cl.o clgetBVal.o clgetNBVal.o
 #-----------------------------------------------------------------------------
 #
 # The default target
@@ -318,6 +318,9 @@ support.o:support.cc
 
 clstring.o:clstring.cc 
 	$(C++) -c $(INCL) clstring.cc
+
+clstrtok.o: clstrtok.cc 
+	$(C++) -c $(INCL) clstrtok.cc
 
 clfInteractive.o:clfInteractive.cc
 	$(C++) -c $(INCL) clfInteractive.cc
