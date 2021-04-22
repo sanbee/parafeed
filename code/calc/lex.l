@@ -25,7 +25,6 @@
 #include <ctst.c>
 #endif
 #include <y.tab.h>
-
 char Calc_line[LINELEN];
 int Calc_index;
 

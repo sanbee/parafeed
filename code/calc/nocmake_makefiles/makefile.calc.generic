@@ -6,21 +6,24 @@ include $(GSRCROOT)/../Setup/Setup.$(GOSDIR)
 #
 RANLIB=/bin/ranlib
 #
-LEX = flex
+LEX = flex -Pcalc_
 YACC=bison -y -p calc_
 #CC=/usr/local/compilers/7.2/gcc_3.2.3/bin/gcc
 
-libcalc.a: calc.o calcinit.o
-	ar r libcalc.a calc.o calcinit.o
+libcalc.a: calc.o calcinit.o lex.o
+	ar r libcalc.a  calc.o calcinit.o  lex.o
 	if [ -f $(RANLIB) ]; then $(RANLIB) libcalc.a; fi
 
-y.tab.c: calc.y lex.yy.c yyerror.c
+y.tab.c: calc.y lex.calc_.c
 	$(YACC) calc.y
 
 calc.o: y.tab.c calc.h
 	$(CC) $(CFLAGS) -c y.tab.c -o calc.o
 
-lex.yy.c: lex.l y.tab.h
+lex.o: lex.calc_.c
+	$(CC) $(CFLAGS) -c lex.calc_.c -o lex.o
+
+lex.calc_.c: lex.l y.tab.h
 	$(LEX) lex.l
 
 y.tab.h: calc.y
