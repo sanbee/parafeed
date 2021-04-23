@@ -47,6 +47,8 @@ GENLIBS       = -L$(READLINEHOME)/lib -lm \
 	        -lreadline -lhistory -ltermcap -lm
 LIBS          = $(GENLIBS) $(OFFLIBS)
 
+PARAFEEDLIB   = libparafeed.a
+
 RANLIB        = /usr/bin/ranlib 
 
 SHOBJS = CopySymb.o AddCmd.o AddNode.o AddVar.o AllocSymb.o AddQKey.o      \
@@ -76,15 +78,16 @@ FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
 #
 # The default target
 #
-all: libs $(CALCHOME)/libcalc.a libcalc.a 
+#all: libs $(CALCHOME)/libcalc.a libcalc.a
+all: libs
 
 install: libs
 	mkdir -p $(PUBLIBS) 
 	mkdir -p $(PINCLUDE)
-	cp libshccl.a libsh.a $(CALCHOME)/libcalc.a $(PUBLIBS)
+	cp libparafeed.a $(PUBLIBS)
 	cp *.h $(PINCLUDE)
 
-libs: libshccl.a libsh.a $(CALCHOME)/libcalc.a
+libs: libparafeed.a
 #
 # Shell related targets.
 #
@@ -353,6 +356,10 @@ libsh.a: $(SHOBJS)
 	ar r libsh.a $(SHOBJS)
 #	if [ -f $(RANLIB) ]; then $(RANLIB) libsh.a; fi
 
+libparafeed.a: $(CLOBJS) $(SHOBJS) $(CALCHOME)/libcalc.a
+	ar r libparafeed.a $(SHOBJS) $(CALCHOME)/*.o $(CLOBJS)
+	#ar -rcT libparafeed.a libsh.a calc/libcalc.a libshccl.a
+
 libshfcl.a: $(FCLOBJS)
 	ar r libshfcl.a $(FCLOBJS)
 #	if [ -f $(RANLIB) ]; then $(RANLIB) libshfcl.a; fi
@@ -360,33 +367,27 @@ libshfcl.a: $(FCLOBJS)
 $(CALCHOME)/libcalc.a libcalc.a: 
 	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile.calc.generic libcalc.a
 
-gcalc: gcalc.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) -Icalc gcalc.c -o gcalc libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+gcalc: gcalc.c $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) -Icalc gcalc.c -o gcalc $(PARAFEEDLIB) $(LIBS)
 
-tst: tst.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tst.c -o tst libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
+tst: tst.c $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tst.c -o tst $(PARAFEEDLIB) $(LIBS)
 
-tst2: tst2.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tst2.cc -o tst2 libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
+tst2: tst2.cc $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tst2.cc -o tst2 $(PARAFEEDLIB) $(LIBS)
 
-tstcpp: tstcpp.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tstcpp.cc -o tstcpp libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
+#tstcpp: tstcpp.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
+tstcpp: tstcpp.cc $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tstcpp.cc -o tstcpp $(PARAFEEDLIB) $(LIBS)
 
-tst3: tst3.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tst3.cc -o tst3 libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
+tst3: tst3.cc $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tst3.cc -o tst3 $(PARAFEEDLIB) $(LIBS)
 
-tstshell:tstshell.c libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
-	$(C++) $(INCL) tstshell.c -o tstshell libshccl.a \
-	$(CALCHOME)/libcalc.a libsh.a libshccl.a $(LIBS)
+tstshell:tstshell.c $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tstshell.c -o tstshell $(PARAFEEDLIB) $(LIBS)
 
-ftst: ftst.f libshfcl.a libsh.a $(CALCHOME)/libcalc.a
-	$(F77) $(INCL) ftst.f -o ftst libshccl.a libshfcl.a\
-	$(CALCHOME)/libcalc.a libsh.a $(LIBS)
+ftst: ftst.f $(PARAFEEDLIB)
+	$(F77) $(INCL) ftst.f -o ftst libshccl.a $(PARAFEEDLIB) $(LIBS)
 
 clean: 
 	\rm -rf *.o *~ tst ftst tst2 *.a
