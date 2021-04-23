@@ -392,5 +392,5 @@ ftst: ftst.f $(PARAFEEDLIB)
 clean: 
 	\rm -rf *.o *~ tst ftst tst2 *.a
 	\rm -rf y.tab.c y.tab.h lex.yy.c shell.tab.c shell.tab.h lex.sh_.c callbacks_awk.c
-	\rm -rf calc/y.tab.c calc/y.tab.h calc/lex.yy.c
+	\rm -rf lex.yy.c lex.sh_.c calc/y.tab.c calc/y.tab.h calc/lex.yy.c
 	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile.calc.generic clean
