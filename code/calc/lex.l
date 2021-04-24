@@ -21,10 +21,41 @@
 #include <stdio.h>
 #include <string.h>
 #include <calc.h>
-#include  <y.tab.h>
+#ifdef DEBUG
+#include <ctst.c>
+#endif
+#include <y.tab.h>
+char Calc_line[LINELEN];
+int Calc_index;
 
-#define LINELEN 128
-/* 
+/*----------------------------------------------------------------------*/
+    int calc_error(char *s)
+    {
+        /*  ywarn(s, (char *) 0);*/
+        return 1;
+    }
+/*----------------------------------------------------------------------*/
+    int ywarn(char *s, char *t)
+    {
+        int i,N=0;
+        char *str = "###Error:";
+        N += strlen(str)+strlen(s)+1;
+        fprintf(stderr, "%s %s", str,s);
+        if (t)
+        {
+            N += strlen(t)+1;
+            fprintf(stderr, " %s", t);
+        }
+        N += 4;
+        fprintf(stderr," in ");
+        fprintf(stderr, "%s",Calc_line);
+        N = N + Calc_index - yyleng;
+        for (i=0;i<N; i++) fprintf(stderr," ");
+        fprintf(stderr,"^\n");
+        return 1;
+    }
+
+/*
    Redefine macros to take input from internal memory.  Ignore the warnings
    about redefinition of these macros while compiling 
 */
@@ -33,8 +64,7 @@
 #define yyout Calc_out
 #define yytext Calc_text
 */
-char Calc_line[LINELEN];
-static int Calc_index=0;
+int Calc_index=0;
 
 #undef input
 #undef unput
@@ -66,7 +96,7 @@ int calc(char *s, double *v)
   strncpy(Calc_line,s, LINELEN);
   strcat(Calc_line,"\n");
   yy_scan_string(Calc_line);
-  if ((i=yyparse()) != 0)
+  if ((i=calc_parse()) != 0)
     {
       ywarn(" syntax error ", (char *)0);
       return -1;
@@ -127,29 +157,29 @@ DANG    ({DDEG}?({SPACE}?{DMIN})?({SPACE}?{DSEC})?)
 {HEXD}                    {
                             int i;
                             ECHO;
-                            sscanf(yytext+2,"%x",&i);yylval.val = i;
+                            sscanf(yytext+2,"%x",&i);calc_lval.val = i;
                             INCR_INDEX;
                             return NUMBER;
                           }
 {HANG}                    {/* Numer in the hour angle format */
                            float a[3];
                            split3(yytext,yyleng,"hms",a);
-                           yylval.val = (a[0]*60.0+a[1])*60.0+a[2];
-/*                           yylval.val = a[0]+(a[1]+a[2]/60.0)/60.0;*/
+                           calc_lval.val = (a[0]*60.0+a[1])*60.0+a[2];
+/*                           calc_lval.val = a[0]+(a[1]+a[2]/60.0)/60.0;*/
                             INCR_INDEX;
 			   return NUMBER;
 			  }
 {DANG}                    {/* Number in the angular format */
                            float a[3];
                            split3(yytext,yyleng,"d\'\"",a);
-                           yylval.val = (a[0]*60.0+a[1])*60.0+a[2];
-/*                           yylval.val = a[0]+(a[1])+a[2]/60.0)/60.0;*/
+                           calc_lval.val = (a[0]*60.0+a[1])*60.0+a[2];
+/*                           calc_lval.val = a[0]+(a[1])+a[2]/60.0)/60.0;*/
                             INCR_INDEX;
 			   return NUMBER;
 			  }
 {CREAL}                   {
                             ECHO;
-                            sscanf(yytext,"%lf",&yylval.val);
+                            sscanf(yytext,"%lf",&calc_lval.val);
                             INCR_INDEX;
                             return NUMBER;
                           }
@@ -157,7 +187,7 @@ DANG    ({DDEG}?({SPACE}?{DMIN})?({SPACE}?{DSEC})?)
                            float m,e; char c;
 			   ECHO;
 			   sscanf(yytext, "%f%c%f", &m,&c,&e);
-			   yylval.val = m*pow(10.0,e);
+			   calc_lval.val = m*pow(10.0,e);
                             INCR_INDEX;
 			   return NUMBER;
 			  }
@@ -165,7 +195,7 @@ atan2                     { Calc_Symbol *s;   /* A patch for atan2...*/
 			    ECHO;
                             INCR_INDEX;
                             if ((s=calcget(yytext))!=0)
-                              { yylval.symb=s; return s->type;}
+                            { calc_lval.symb=s; return s->type;}
                           }
 [a-zA-Z]+[a-zA-Z0-9]*      {
                             Calc_Symbol *s;
@@ -173,15 +203,15 @@ atan2                     { Calc_Symbol *s;   /* A patch for atan2...*/
                             INCR_INDEX;
                             if ((s=calcget(yytext))!=0) 
                              {
-                               yylval.symb=s;
+                                 calc_lval.symb=s;
                                return s->type;
                              }
-                            else 
+                            else
                               {
 				s2.ufunc = UserFunc;
 				s2.Name = (char *)malloc(strlen(yytext)+1);
 				strcpy(s2.Name,yytext);
-				yylval.symb = &s2;
+				calc_lval.symb = &s2;
 				return UNDEF;
 			      }
                           }

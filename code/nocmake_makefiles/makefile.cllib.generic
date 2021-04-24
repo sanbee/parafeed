@@ -1,0 +1,405 @@
+#-*-makefile-*-
+include $(GSRCROOT)/../Setup/Setup.$(GOSDIR)
+#include $(GSRCROOT)/Setup/Setup.$(GOSDIR).personal
+#
+# The GNU readline library is not required unless the -DHAVE_STRING_H
+# and -DGNUREADLINE options are switched on.  If they are switched on,
+# the path to the home of GNU readline library should be set correctly.
+#
+# Set -DFORTRAN as a compiler switch for building libshfcl.a - the
+# FORTRAN interface of the CommandLine lib.
+# Read the document for the differences and limitations of the 
+# FORTRAN interface.
+#
+# -O? optimization does not seem to work any more!  Not that it's
+# required here, but the bug should be tracked down
+#
+#
+# Compiler flags
+#
+ARCH          = $(GOSDIR)
+OPTFLAGS      = -g
+DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
+CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS)
+PREFIX        = sh_
+#
+# Compilers
+#
+#C++           = g++ $(CFLAGS)
+#C++           = /usr/local/compilers/9/gcc_3.2.3/bin/g++ $(CFLAGS)
+#CC            = /usr/local/compilers/9/gcc_3.2.3/bin/gcc $(CFLAGS)
+#F77           = /usr/local/compilers/9/gcc_3.2.3/bin/g77  
+LEX           = flex -Ce -P$(PREFIX)
+YACC          = bison -y -p $(PREFIX)
+AWK           = awk
+#
+# Others...
+#
+READLINEHOME  = /usr/local
+PUBLIBS       = $(GLIB)
+PINCLUDE      = $(GINCLUDE)
+CALCHOME      = ./calc
+
+READLINEINCL  = $(READLINEHOME)/include
+INCL          = -I. -I$(READLINEINCL)
+
+GENLIBS       = -L$(READLINEHOME)/lib -lm \
+	        -lreadline -lhistory -ltermcap -lm
+LIBS          = $(GENLIBS) $(OFFLIBS)
+
+PARAFEEDLIB   = libparafeed.a
+
+RANLIB        = /usr/bin/ranlib 
+
+SHOBJS = CopySymb.o AddCmd.o AddNode.o AddVar.o AllocSymb.o AddQKey.o      \
+	 DeleteCmd.o DeleteVar.o DeleteNode.o DeleteTab.o FreeSymb.o       \
+	 SearchNode.o SearchSymb.o lex.yy.o shell.tab.o TransferTab.o      \
+	 PrintVals.o SetVar.o SetPrompt.o SetSymbTab.o SetCmdTab.o         \
+	 yyerror.o  minmatch.o isBool.o
+
+CLOBJS = ParseCmdLine.o clparseVal.o InstallSymb.o clgetFVal.o clgetIVal.o \
+	 clgetSVal.o clgetFullVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o \
+	 clgetNVals.o cldbggetFVal.o cldbggetIVal.o cldbggetSVal.o         \
+	 cldbggetNFVal.o cldbggetNIVal.o cldbggetNSVal.o cldbggetFullVal.o\
+	 clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o \
+	 clstrtok.o clgetOptsList.o clclearOptsList.o clgetCommandLine.o clgetOpt.o   \
+	 clstrtStream.o clloadConfig.o callbacks.o support.o               \
+	 clgetInputFile.o clgetOutputFile.o clgetNOpts.o clCleanUp.o       \
+	 clReset.o clgetConfigFile.o clSaneExit.o clThrowError.o clRetry.o \
+	 clSigHandler.o clIsInteractive.o ErrorObj.o rl_interface.o        \
+	 clSetOptions.o clTextColouring.o clgetBVal.o cldbggetBVal.o clgetNBVal.o \
+         cldbggetNBVal.o clBreakStr.o 
+
+FCLOBJS = ParseCmdLine.o InstallSymb.o AddQKey.o clgetFVal.o clgetIVal.o   \
+	  clgetSVal.o clgetNFVal.o clgetNIVal.o clgetNSVal.o clgetNVals.o  \
+	  clStartInteractive.o clRestartShell.o clfInteractive.o clstring.o\
+	  clstrtok.o cl.o clgetBVal.o clgetNBVal.o
+#-----------------------------------------------------------------------------
+#
+# The default target
+#
+#all: libs $(CALCHOME)/libcalc.a libcalc.a
+all: libs
+
+install: libs
+	mkdir -p $(PUBLIBS) 
+	mkdir -p $(PINCLUDE)
+	cp libparafeed.a $(PUBLIBS)
+	cp *.h $(PINCLUDE)
+
+libs: libparafeed.a
+#
+# Shell related targets.
+#
+y.tab.c:shell.y
+	$(YACC) -d shell.y	
+
+y.tab.h:shell.y y.tab.c
+	$(YACC) -d shell.y	
+
+shell.tab.c:y.tab.c
+	cp y.tab.c shell.tab.c
+
+shell.tab.h:shell.tab.c
+	cp y.tab.h shell.tab.h
+
+lex.yy.c: shell.l shell.tab.h
+	$(LEX) shell.l
+	#sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+	sed "s/#define yywrap $(PREFIX)wrap/#define yywrap libyywrap /"< lex.$(PREFIX).c > lex.yy.c
+
+shell.tab.o: shell.tab.c
+	$(C++) -c $(INCL) shell.tab.c
+
+lex.yy.o: lex.yy.c
+	$(C++) -c $(INCL) lex.yy.c
+
+SetVar.o: SetVar.cc shell.h
+	$(C++) -c $(INCL) SetVar.cc
+
+SearchSymb.o: SearchSymb.cc shell.h
+	$(C++) -c $(INCL) SearchSymb.cc
+
+SearchNode.o: SearchNode.cc shell.h
+	$(C++) -c $(INCL) SearchNode.cc
+
+PrintVals.o: PrintVals.cc shell.h
+	$(C++) -c $(INCL) PrintVals.cc
+
+yyerror.o:shell.h yyerror.cc
+	$(C++) -c $(INCL) yyerror.cc
+
+FreeSymb.o: shell.h FreeSymb.cc clshelldefs.h
+	$(C++) -c $(INCL) FreeSymb.cc
+
+CopySymb.o: shell.h CopySymb.cc clshelldefs.h
+	$(C++) -c $(INCL) CopySymb.cc
+
+DeleteNode.o: shell.h DeleteNode.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteNode.cc
+
+DeleteVar.o: shell.h DeleteVar.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteVar.cc
+
+DeleteCmd.o: shell.h DeleteCmd.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteCmd.cc
+
+DeleteTab.o: shell.h DeleteTab.cc clshelldefs.h
+	$(C++) -c $(INCL) DeleteTab.cc
+
+AddNode.o: shell.h AddNode.cc clshelldefs.h
+	$(C++) -c $(INCL) AddNode.cc
+
+AddCmd.o: shell.h AddCmd.cc clshelldefs.h
+	$(C++) -c $(INCL) AddCmd.cc
+
+AddVar.o: shell.h AddVar.cc clshelldefs.h
+	$(C++) -c $(INCL) AddVar.cc
+
+AllocSymb.o: shell.h AllocSymb.cc clshelldefs.h
+	$(C++) -c $(INCL) AllocSymb.cc
+
+TransferTab.o:TransferTab.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) TransferTab.cc
+
+SetPrompt.o:SetPrompt.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) SetPrompt.cc
+
+SetSymbTab.o:SetSymbTab.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) SetSymbTab.cc
+
+SetCmdTab.o:SetCmdTab.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) SetCmdTab.cc
+
+minmatch.o:minmatch.cc clshelldefs.h cl.h
+	$(C++) -c $(INCL) minmatch.cc
+
+isBool.o:isBool.cc clshelldefs.h cl.h cllib.h clbool.h
+	$(C++) -c $(INCL) isBool.cc
+
+rl_interface.o: rl_interface.cc cllib.h clbool.h
+	$(C++) -c $(INCL) rl_interface.cc
+
+clSetOptions.o: clSetOptions.cc clshelldefs.h
+	$(C++) -c $(INCL) clSetOptions.cc
+
+clBreakStr.o: clBreakStr.cc clshelldefs.h
+	$(C++) -c $(INCL) clBreakStr.cc
+#
+clTextColouring.o: clTextColouring.cc clshelldefs.h
+	$(C++) -c $(INCL) clTextColouring.cc
+#
+# The CL library package related targets.  libshccl.a depends on 
+# the shell library libsh.a
+#
+AddQKey.o: cl.h AddQKey.cc clshelldefs.h
+	$(C++) -c $(INCL) AddQKey.cc
+
+InstallSymb.o: cl.h InstallSymb.cc SymbTab.h
+	$(C++) -c $(INCL) InstallSymb.cc
+
+callbacks_awk.cc: callbacks.cc cl.h shell.tab.h
+	sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/$(AWK)/" \
+	callbacks.cc > callbacks_awk.cc
+callbacks.o: cl.h callbacks_awk.cc shell.tab.h
+	$(C++) -c $(INCL) callbacks_awk.cc -o callbacks.o
+
+ParseCmdLine.o:ParseCmdLine.cc clshelldefs.h cl.h clconvert.h \
+	clinteract.h shell.h clstring.h shell.tab.h
+	$(C++) -c $(INCL) ParseCmdLine.cc
+
+clparseVal.o: clparseVal.cc clshelldefs.h cl.h cllib.h	
+	$(C++) -c $(INCL) clparseVal.cc
+
+clgetFVal.o:clgetFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetFVal.cc
+
+cldbggetFVal.o:cldbggetFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetFVal.cc
+
+clgetBVal.o:clgetBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetBVal.cc
+
+cldbggetBVal.o:cldbggetBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetBVal.cc
+
+clgetIVal.o:clgetIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetIVal.cc
+
+cldbggetIVal.o:cldbggetIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetIVal.cc
+
+clgetSVal.o:clgetSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetSVal.cc
+
+cldbggetSVal.o:cldbggetSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetSVal.cc
+
+clgetNSVal.o:clgetNSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNSVal.cc
+
+cldbggetNSVal.o:cldbggetNSVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNSVal.cc
+
+clgetNFVal.o:clgetNFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNFVal.cc
+
+cldbggetNFVal.o:cldbggetNFVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNFVal.cc
+
+clgetNIVal.o:clgetNIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNIVal.cc
+
+cldbggetNIVal.o:cldbggetNIVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNIVal.cc
+
+clgetNBVal.o:clgetNBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNBVal.cc
+
+cldbggetNBVal.o:cldbggetNBVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNBVal.cc
+
+clgetNVals.o:clgetNVals.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNVals.cc
+
+cldbggetNVals.o:cldbggetNVals.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetNVals.cc
+
+clgetNOpts.o:clgetNOpts.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetNOpts.cc
+
+clgetFullVal.o:clgetFullVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetFullVal.cc
+
+cldbggetFullVal.o:cldbggetFullVal.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) cldbggetFullVal.cc
+
+clStartInteractive.o:clStartInteractive.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clStartInteractive.cc
+
+clRestartShell.o:clRestartShell.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clRestartShell.cc
+
+clgetOpt.o:clgetOpt.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetOpt.cc
+
+clgetOptsList.o:clgetOptsList.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetOptsList.cc
+
+clclearOptsList.o:clclearOptsList.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clclearOptsList.cc
+
+clgetCommandLine.o:clgetCommandLine.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetCommandLine.cc 
+
+clgetInputFile.o:clgetInputFile.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetInputFile.cc 
+
+clgetOutputFile.o:clgetOutputFile.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetOutputFile.cc 
+
+clstrtStream.o:clstrtStream.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clstrtStream.cc 
+
+clloadConfig.o:clloadConfig.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clloadConfig.cc
+
+clgetConfigFile.o:clgetConfigFile.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clgetConfigFile.cc
+
+clCleanUp.o:clCleanUp.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clCleanUp.cc
+
+clReset.o:clReset.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clReset.cc
+
+clRetry.o:clRetry.cc clshelldefs.h cl.h cllib.h
+	$(C++) -c $(INCL) clRetry.cc
+
+support.o:support.cc 
+	$(C++) -c $(INCL) support.cc
+
+clstring.o:clstring.cc 
+	$(C++) -c $(INCL) clstring.cc
+
+clstrtok.o: clstrtok.cc 
+	$(C++) -c $(INCL) clstrtok.cc
+
+clfInteractive.o:clfInteractive.cc
+	$(C++) -c $(INCL) clfInteractive.cc
+
+clSaneExit.o:clSaneExit.cc
+	$(C++) -c $(INCL) clSaneExit.cc
+
+clThrowError.o:clThrowError.cc
+	$(C++) -c $(INCL) clThrowError.cc
+
+clSigHandler.o:clSigHandler.cc
+	$(C++) -c $(INCL) clSigHandler.cc
+
+clErrorObj.o:clErrorObj.cc
+	$(C++) -c $(INCL) clErrorObj.cc
+
+ErrorObj.o: ErrorObj.cc
+	$(C++) -c $(INCL) ErrorObj.cc
+
+cl.o: cl.f cl.inc
+	$(F77) -c $(INCL) cl.f
+
+clIsInteractive.o: clIsInteractive.cc
+	$(C++) -c $(INCL) clIsInteractive.cc
+#-------------------------------------------------------------------
+# Library targets
+#
+libshccl.a: $(CLOBJS)
+	ar r libshccl.a $(CLOBJS)
+#	if [ -f $(RANLIB) ]; then $(RANLIB) libshccl.a; fi
+
+libsh.a: $(SHOBJS)
+	ar r libsh.a $(SHOBJS)
+#	if [ -f $(RANLIB) ]; then $(RANLIB) libsh.a; fi
+
+libparafeed.a: $(CLOBJS) $(SHOBJS) $(CALCHOME)/libcalc.a
+	ar r libparafeed.a $(SHOBJS) $(CALCHOME)/*.o $(CLOBJS)
+#ar -rcT libparafeed.a libsh.a calc/libcalc.a libshccl.a
+
+libshfcl.a: $(FCLOBJS)
+	ar r libshfcl.a $(FCLOBJS)
+#	if [ -f $(RANLIB) ]; then $(RANLIB) libshfcl.a; fi
+
+$(CALCHOME)/libcalc.a libcalc.a: 
+	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile.calc.generic libcalc.a
+
+#-------------------------------------------------------------------
+# Applicaion targets
+#
+gcalc: gcalc.c $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) -Icalc gcalc.c -o gcalc $(PARAFEEDLIB) $(LIBS)
+
+tst: tst.c $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tst.c -o tst $(PARAFEEDLIB) $(LIBS)
+
+tst2: tst2.cc $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tst2.cc -o tst2 $(PARAFEEDLIB) $(LIBS)
+
+#tstcpp: tstcpp.cc libshccl.a libsh.a $(CALCHOME)/libcalc.a clsh.h
+tstcpp: tstcpp.cc $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tstcpp.cc -o tstcpp $(PARAFEEDLIB) $(LIBS)
+
+tst3: tst3.cc $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tst3.cc -o tst3 $(PARAFEEDLIB) $(LIBS)
+
+tstshell:tstshell.c $(PARAFEEDLIB) clsh.h
+	$(C++) $(INCL) tstshell.c -o tstshell $(PARAFEEDLIB) $(LIBS)
+
+ftst: ftst.f $(PARAFEEDLIB)
+	$(F77) $(INCL) ftst.f -o ftst libshccl.a $(PARAFEEDLIB) $(LIBS)
+
+#-------------------------------------------------------------------
+# Housekeeping targets
+#
+clean: 
+	\rm -rf *.o *~ tst ftst tst2 *.a
+	\rm -rf y.tab.c y.tab.h lex.yy.c shell.tab.c shell.tab.h lex.sh_.c callbacks_awk.c
+	\rm -rf lex.yy.c lex.sh_.c calc/y.tab.c calc/y.tab.h calc/lex.yy.c
+	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile.calc.generic clean

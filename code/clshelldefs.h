@@ -21,6 +21,7 @@
 #include <map>
 #include <string>
 #include <vector>
+using namespace std;
 typedef std::map<std::string, std::vector<std::string> > SMap;
 typedef std::vector<std::string> VString;
 
@@ -45,11 +46,12 @@ extern "C" {
     unsigned short Class;
     unsigned int NVals;
     unsigned int Attributes;
-    char **Val;
+    std::vector<std::string> Val;
 #ifdef __cplusplus
     SMap smap;
     VString DefaultVal;
     VString Options;
+    SymbolType(): Val(0), smap(), DefaultVal(0), Options(0) {};
 #endif
     struct SymbolType *Next, *Previous;
   } Symbol;

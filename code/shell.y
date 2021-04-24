@@ -65,17 +65,35 @@ char *sh_sys_cmd=NULL;
    {
      if (N >= s->NVals)
        {
-	 fprintf(stderr,"###Error: No. of vals=%d\n",s->NVals);
+	 fprintf(stderr,"###Error: Range of index is [0 - %d]\n",s->NVals-1);
 	 return 0;
        }
      return 1;
    }
 %}
-%union {
+//%language "c++"
+%code requires {
+#include <iostream>
+#include <stdio.h>
+
+/* If you insist :) */
+//using namespace std;
+
+}
+
+%code provides {
+
+  //void yyerror (char const*);
+//int  yylex (YYSTYPE*, YYLTYPE*);
+extern "C" int yyparse ();
+}
+%union yy_lval{
   double    Result;
   char      *String;
   Symbol    *symb;
   CmdSymbol *cmd;
+/*   std::string tt; */
+/* yy_lval(): tt() {}; */
 }
 %token <symb>   VAR 
 %token <cmd>    COMMAND
@@ -97,8 +115,10 @@ list:     '\n'                   { PROMPT(sh_Prompt);return 1;}
 asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;}
 
         |  VAR '=' expr           {
+	  //cerr << $1->Name << "=" << $3 << endl;
                                     if ($3) SetVar($1->Name,$3,sh_SymbTab,0,0,1);
 	                            $$=$1;
+				    FreeStr(&$3);
 	                          }
 
         |  VAR '[' NUMBER ']' '=' expr 
@@ -106,6 +126,7 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 	                            if (RangeOK($1,(int)$3))
 				      SetVal($6,$1,(int)$3);
 				    $$=$1;
+				    FreeStr(&$6);
 				  }
 
         |  VAR '[' NUMBER ']' '=' '$' VAR 
@@ -114,7 +135,7 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 				      {
 					unsigned int i; char *s=NULL;
 					for (i=0;i<$7->NVals;i++)
-					  CopyStr(&s,$7->Val[i]);
+					  CopyStr(&s,(char *)$7->Val[i].c_str());
 					SetVal(s,$1,(int)$3);
 					FreeStr(&s);
 				      }
@@ -124,7 +145,7 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
         |  VAR '=' '$' VAR        { 
 	                             unsigned int i;
 				     for(i=0;i<$4->NVals;i++)
-				       SetVal($4->Val[i],$1,i);
+				       SetVal((char *)$4->Val[i].c_str(),$1,i);
 				     $$=$1;
                                   }
         ;
@@ -132,10 +153,12 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 expr:     STRING                 {$$=$1;}
 
         | '$' VAR '[' NUMBER ']' {
-                                   if ((unsigned int)$4>=$2->NVals)
-	                           {fprintf(stderr,"###Error: No. of vals=%d\n"
-					    ,$2->NVals);$$=NULL;} 
-	                           else $$=$2->Val[(int)$4];
+                                   /* if ((unsigned int)$4>=$2->NVals) */
+				   /*   { */
+				   /*     fprintf(stderr,"###Error: Index should be in the range [0-%d]\n" */
+				   /* 	    ,$2->NVals-1);$$=NULL; */
+				   /*   }  */
+	                           if (RangeOK($2, (int)$4)) $$=(char *)$2->Val[(int)$4].c_str();
                                  }
         ;
 /*--------------------------------------------------------------------------*/
@@ -148,7 +171,7 @@ externcmd:  UNDEF                   {CopyStr(&sh_sys_cmd,$1);free($1);}
 	                             CopyStr(&sh_sys_cmd,$1);free($1);
 	                             CopyStr(&sh_sys_cmd," ");
 	                             for(i=0;i<$3->NVals;i++)
-				       CopyStr(&sh_sys_cmd,$3->Val[i]);
+				       CopyStr(&sh_sys_cmd,(char *)$3->Val[i].c_str());
                                     }
 
            |  UNDEF expr            { 
@@ -174,8 +197,9 @@ comd:    asign                   {$$=1;}
 				 }
 
         | UNDEF '=' expr         { 
-                                   yyerror((char *)"undefined symbol");
-				   /*FreeVSymb($1);free($3);*/
+                                   yyerror("undefined symbol");
+				   FreeStr(&$1);
+				   FreeStr(&$3);
                                    $$=1;
 				 }
 

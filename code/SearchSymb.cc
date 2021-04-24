@@ -16,36 +16,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#if !defined(CALC_H)
-/* $Id: calc.h,v 1.9 2000/02/22 15:08:12 sanjay Exp $ */
-#define CALC_H
-#include <math.h>
-
-//#define yyin cl_in
-//#define yyout cl_out
-
-typedef struct {
-  char *Name;
-  int type;
-  double value;
-  double (*func1)(double);
-  double (*func2)(double,double);
-  double (*ufunc)(char *);
-} Calc_Symbol;
-extern double Result;
-extern Calc_Symbol s2;
-double (*UserFunc)(char *);
-int yylex();
-int calc_error(char *s);
-int ywarn(char *s, char *t);
-int calc(char *, double *);
-
-Calc_Symbol *calcget(char *);
-double todeg(double);
-double todms(double);
-double b2j(double, double);
-double j2b(double, double);
+/* $Id: SearchSymb.c,v 2.0 1998/11/11 07:12:41 sanjay Exp sbhatnag $ */
+#include <stdio.h>
+#include <shell.h>
+#include <cllib.h>
+#include <string>
+#ifdef __cplusplus
+extern "C" {
 #endif
-#define LINELEN 128
-extern char Calc_line[LINELEN];
-extern int Calc_index;
+
+  Symbol *SearchVSymbFullMatch(const std::string& Name, Symbol *Tab)
+{
+  Symbol *t;
+  for (t=Tab;t!=NULL;t=t->Next)
+    if (!strcmp(t->Name,Name.c_str())) break;
+  return t;
+}
+Symbol *SearchVSymb(const char *Name, Symbol *Tab){return minmatch(Name,Tab);}
+/*----------------------------------------------------------------------*/
+  CmdSymbol *SearchCSymb(const std::string& Name, CmdSymbol *Tab)
+{
+  CmdSymbol *t;
+  for (t=Tab;t!=NULL;t=t->Next)
+    {
+      if (!strcmp(t->Name,Name.c_str())) break;
+    }
+  return t;
+}
+#ifdef __cplusplus
+	   }
+#endif

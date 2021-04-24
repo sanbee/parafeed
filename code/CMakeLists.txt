@@ -1,16 +1,62 @@
+# -*- cmake -*-
+#
+# create a single, composite library
+#
+add_library(parafeed_parafeed)
+set_target_properties(parafeed_parafeed PROPERTIES
+  VERSION 0.0.1
+  SOVERSION 0
+  EXPORT_NAME parafeed
+  OUTPUT_NAME parafeed)
+# link to readline
+target_link_libraries(parafeed_parafeed
+  PUBLIC PkgConfig::readline)
+# compile definitions (like -DFOO)
+target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
+# define include directories, at build time and for clients
+target_include_directories(parafeed_parafeed PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
+# install target
+install(TARGETS parafeed_parafeed
+  EXPORT parafeed_libraries
+  DESTINATION ${CMAKE_INSTALL_LIBDIR})
+# target alias in parafeed namespace
+add_library(parafeed::parafeed ALIAS parafeed_parafeed)
+
 #
 # define parser and scanner targets
 #
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 bison_target(ShellParser
   shell.y
-  ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c
-  COMPILE_FLAGS "-p sh_"
+  ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.cc
+  COMPILE_FLAGS "-p sh_ -o shell.tab.cc"
   DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.h)
+#  set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c PROPERTY LANGUAGE CXX))
 flex_target(ShellScanner
   shell.l
-  ${CMAKE_CURRENT_BINARY_DIR}/shell.c
-  COMPILE_FLAGS "-Ce -Psh_")
+  ${CMAKE_CURRENT_BINARY_DIR}/shell.cc
+  COMPILE_FLAGS "-Ce -Psh_ -o shell.cc")
 add_flex_bison_dependency(ShellScanner ShellParser)
+target_sources(parafeed_parafeed
+  PRIVATE ${BISON_ShellParser_OUTPUTS} ${FLEX_ShellScanner_OUTPUTS})
+
+# not sure why, but calc bison and flex stuff has to be in this
+# directory when using target_sources()
+bison_target(CalcParser
+  calc/calc.y
+  ${CMAKE_CURRENT_BINARY_DIR}/y.tab.c
+  COMPILE_FLAGS "-p calc_"
+  DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/y.tab.h)
+flex_target(CalcScanner
+  calc/lex.l
+  ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c
+  COMPILE_FLAGS "-Pcalc_")
+add_flex_bison_dependency(CalcScanner CalcParser)
+target_sources(parafeed_parafeed
+  PRIVATE ${BISON_CalcParser_OUTPUTS} ${FLEX_CalcScanner_OUTPUTS})
 
 #
 # sh library
@@ -18,60 +64,39 @@ add_flex_bison_dependency(ShellScanner ShellParser)
 
 # we need to tell CMake that the sources are actually C++
 set(sh_sources
-  CopySymb.c
-  AddCmd.c
-  AddNode.c
-  AddVar.c
-  AllocSymb.c
-  AddQKey.c
-  DeleteCmd.c
-  DeleteVar.c
-  DeleteNode.c
-  DeleteTab.c
-  FreeSymb.c
-  SearchNode.c
-  SearchSymb.c
-  TransferTab.c
-  PrintVals.c
-  SetVar.c
-  SetPrompt.c
-  SetSymbTab.c
-  SetCmdTab.c
-  yyerror.c
-  minmatch.c
+  CopySymb.cc
+  AddCmd.cc
+  AddNode.cc
+  AddVar.cc
+  AllocSymb.cc
+  AddQKey.cc
+  DeleteCmd.cc
+  DeleteVar.cc
+  DeleteNode.cc
+  DeleteTab.cc
+  FreeSymb.cc
+  SearchNode.cc
+  SearchSymb.cc
+  TransferTab.cc
+  PrintVals.cc
+  SetVar.cc
+  SetPrompt.cc
+  SetSymbTab.cc
+  SetCmdTab.cc
+  yyerror.cc
+  minmatch.cc
   isBool.cc)
 foreach(source IN LISTS sh_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
+target_sources(parafeed_parafeed PRIVATE ${sh_sources})
 
-# define the sh library and its sources
-add_library(parafeed_sh STATIC
-  ${sh_sources}
-  ${BISON_ShellParser_OUTPUTS}
-  ${FLEX_ShellScanner_OUTPUTS})
-# link to readline and flex (libfl)
-target_link_libraries(parafeed_sh
-  PUBLIC parafeed_shccl PkgConfig::readline
-  PRIVATE ${FLEX_LIBRARIES})
-# compile definitions (like -DFOO)
-target_compile_definitions(parafeed_sh PUBLIC HAVE_STRING_H GNUREADLINE)
-# define include directories, at build time and for clients
-target_include_directories(parafeed_sh PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
-# set some properties to get the desired library name and version
-set_target_properties(parafeed_sh PROPERTIES
-  VERSION 0.0.1
-  SOVERSION 0
-  EXPORT_NAME sh
-  OUTPUT_NAME sh)
-# install target
-install(TARGETS parafeed_sh
-  EXPORT parafeed_libraries
-  DESTINATION ${CMAKE_INSTALL_LIBDIR})
-# target alias in parafeed namespace
-add_library(parafeed::sh ALIAS parafeed_sh)
+add_custom_command(
+   OUTPUT callbacks_awk.cc
+   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
+   MAIN_DEPENDENCY callbacks.cc
+   COMMENT "Preprocessing callbacks.cc"
+   VERBATIM)
 
 #
 # shccl library
@@ -79,104 +104,65 @@ add_library(parafeed::sh ALIAS parafeed_sh)
 
 # we need to tell CMake that the sources are actually C++
 set(shccl_sources
-  ParseCmdLine.c
-  clparseVal.c
-  InstallSymb.c
-  clgetFVal.c
-  clgetIVal.c
-  clgetSVal.c
-  clgetFullVal.c
-  clgetNFVal.c
-  clgetNIVal.c
-  clgetNSVal.c
-  clgetNVals.c
-  cldbggetFVal.c
-  cldbggetIVal.c
-  cldbggetSVal.c
-  cldbggetNFVal.c
-  cldbggetNIVal.c
-  cldbggetNSVal.c
-  cldbggetFullVal.c
-  clStartInteractive.c
-  clRestartShell.c
-  clfInteractive.c
-  clstring.c
-  clgetOptsList.c
-  clclearOptsList.c
-  clgetCommandLine.c
-  clgetOpt.c
-  clstrtStream.c
-  clloadConfig.c
-  callbacks.c
-  support.c
-  clgetInputFile.c
-  clgetOutputFile.c
-  clgetNOpts.c
-  clCleanUp.c
-  clReset.c
-  clgetConfigFile.c
-  clSaneExit.c
-  clThrowError.c
-  clRetry.c
-  clSigHandler.c
-  clIsInteractive.c
+  ParseCmdLine.cc
+  clparseVal.cc
+  InstallSymb.cc
+  clgetFVal.cc
+  clgetIVal.cc
+  clgetSVal.cc
+  clgetFullVal.cc
+  clgetNFVal.cc
+  clgetNIVal.cc
+  clgetNSVal.cc
+  clgetNVals.cc
+  cldbggetFVal.cc
+  cldbggetIVal.cc
+  cldbggetSVal.cc
+  cldbggetNFVal.cc
+  cldbggetNIVal.cc
+  cldbggetNSVal.cc
+  cldbggetFullVal.cc
+  clStartInteractive.cc
+  clRestartShell.cc
+  clfInteractive.cc
+  clstring.cc
+  clstrtok.cc
+  clgetOptsList.cc
+  clclearOptsList.cc
+  clgetCommandLine.cc
+  clgetOpt.cc
+  clstrtStream.cc
+  clloadConfig.cc
+  callbacks_awk.cc
+  support.cc
+  clgetInputFile.cc
+  clgetOutputFile.cc
+  clgetNOpts.cc
+  clCleanUp.cc
+  clReset.cc
+  clgetConfigFile.cc
+  clSaneExit.cc
+  clThrowError.cc
+  clRetry.cc
+  clSigHandler.cc
+  clIsInteractive.cc
   ErrorObj.cc
   rl_interface.cc
   clSetOptions.cc
   clTextColouring.cc
   clgetBVal.cc
-  cldbggetBVal.c
-  clgetNBVal.c
-  cldbggetNBVal.c
-  clBreakStr.cc)
+  cldbggetBVal.cc
+  clgetNBVal.cc
+  cldbggetNBVal.cc
+  clBreakStr.cc
+  GetStdString.cc)
 foreach(source IN LISTS shccl_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
-
-# define the shccl library and its sources
-add_library(parafeed_shccl STATIC
-  ${shccl_sources}
-  shell.tab.h)
-# link to readline
-target_link_libraries(parafeed_shccl
-  PUBLIC parafeed_sh parafeed_calc PkgConfig::readline)
-# compile definitions (like -DFOO)
-target_compile_definitions(parafeed_shccl PUBLIC HAVE_STRING_H GNUREADLINE)
-# include directories, both at build and for clients
-target_include_directories(parafeed_shccl PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
-# set some properties to get the desired library name and version
-set_target_properties(parafeed_shccl PROPERTIES
-  VERSION 0.0.1
-  SOVERSION 0
-  EXPORT_NAME shccl
-  OUTPUT_NAME shccl)
-# install target
-install(TARGETS parafeed_shccl
-  EXPORT parafeed_libraries
-  DESTINATION ${CMAKE_INSTALL_LIBDIR})
-# target alias in parafeed namespace
-add_library(parafeed::shccl ALIAS parafeed_shccl)
+target_sources(parafeed_parafeed PRIVATE ${shccl_sources})
 
 # add calc sub-directory
 add_subdirectory(calc)
-
-#
-# create a single, composite library
-#
-add_library(parafeed_parafeed INTERFACE)
-target_link_libraries(parafeed_parafeed
-  INTERFACE parafeed_calc parafeed_shccl parafeed_sh)
-set_target_properties(parafeed_parafeed PROPERTIES
-  EXPORT_NAME parafeed)
-# install target
-install(TARGETS parafeed_parafeed
-  EXPORT parafeed_libraries
-  DESTINATION ${CMAKE_INSTALL_LIBDIR})
-# target alias in parafeed namespace
-add_library(parafeed::parafeed ALIAS parafeed_parafeed)
 
 # define the parafeed_libraries export
 install(EXPORT parafeed_libraries

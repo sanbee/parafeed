@@ -124,9 +124,9 @@ extern int add_history(char *);
     CL package's internal stuff
   */
 Symbol   *IntallSymb(char *, char *, Symbol *);
-Symbol   *SearchQSymb(const char *Name, char *Type);
+  Symbol   *SearchQSymb(const std::string& Name, const std::string& Type);
 Symbol   *SearchVSymb(const char *Name, Symbol *Tab);
-Symbol   *AddQKey(const char *Name, char *Type, 
+Symbol   *AddQKey(const char *Name, const char *Type, 
 		  Symbol **Head, Symbol **Tail);
 int       ParseCmdLine(int, char **);
   int startShell();
@@ -211,7 +211,7 @@ int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(const char *);
 #ifdef __cplusplus
-int       docopyright(char *arg=NULL);
+  int       docopyright(const std::string& arg);
 #endif
 int       dowarranty(char *);
 #ifdef __cplusplus
@@ -226,7 +226,7 @@ int       PrintKey(FILE *f, Symbol *S);
 #ifdef __cplusplus
 void      printMap(SMap& smap);
 #endif
-int       namePrintFormat(char *format, char *append);
+  int       namePrintFormat(std::string& format, const std::string& append);
 int       clIsInteractive();
   /*
 void mkfilename(char *out,char *envvar,char *name,char *type);
@@ -238,9 +238,9 @@ int  InstallSymb();
 int  sh_parse();
 int  UnsetVar(Symbol *,int);
 int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
-void SetVal(char *, Symbol *, int);
+  //void SetVal(const char *, Symbol *, int);
 #ifdef __cplusplus
-void VerifyVal(char *, Symbol *,string &);
+void VerifyVal(const char *, Symbol *,string &);
 #endif
 int  CopyVSymb(Symbol *, Symbol *,int);
 int  FreeVSymb(Symbol *);

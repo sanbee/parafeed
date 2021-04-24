@@ -16,36 +16,45 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#if !defined(CALC_H)
-/* $Id: calc.h,v 1.9 2000/02/22 15:08:12 sanjay Exp $ */
-#define CALC_H
-#include <math.h>
+/* $Id: AllocSymb.c,v 2.0 1998/11/11 07:12:00 sanjay Exp $ */
+#include <cllib.h>
+#include <clshelldefs.h>
+#include <stdio.h>
 
-//#define yyin cl_in
-//#define yyout cl_out
-
-typedef struct {
-  char *Name;
-  int type;
-  double value;
-  double (*func1)(double);
-  double (*func2)(double,double);
-  double (*ufunc)(char *);
-} Calc_Symbol;
-extern double Result;
-extern Calc_Symbol s2;
-double (*UserFunc)(char *);
-int yylex();
-int calc_error(char *s);
-int ywarn(char *s, char *t);
-int calc(char *, double *);
-
-Calc_Symbol *calcget(char *);
-double todeg(double);
-double todms(double);
-double b2j(double, double);
-double j2b(double, double);
+#ifdef __cplusplus
+extern "C" {
 #endif
-#define LINELEN 128
-extern char Calc_line[LINELEN];
-extern int Calc_index;
+Symbol *AllocVSymb(int n)
+{
+  Symbol *S;
+  //  S = (Symbol *)getmem(sizeof(Symbol)*n,"AllocVSymb");
+  S = new Symbol();
+  S->Name = NULL;
+  S->Type = NULL;
+  S->Val.resize(0);
+  S->Exposed=1;
+  S->Used = 0;
+  S->Class = CL_APPLNCLASS;
+  S->NVals=0;
+#ifdef __cplusplus
+  S->DefaultVal.resize(0);
+  S->Options.resize(0);
+#endif
+  //  S->Attributes=CL_KEYWORD;
+  S->Attributes=0;
+  SETBIT(S->Attributes,CL_KEYWORD);
+  return S;
+}
+
+CmdSymbol *AllocCSymb(int n)
+{
+  CmdSymbol *S;
+  S = (CmdSymbol *)getmem(sizeof(CmdSymbol)*n,"AllocCSymb");
+  S->Name = NULL;
+  S->Doc  = NULL;
+  S->func = NULL;
+  return S;
+}
+#ifdef __cplusplus
+}
+#endif
