@@ -16,6 +16,6 @@ The library `libparafeed.a` contains .o files from three independent libraries: 
 
 While at this point the package is primarily meant for use in applications written in the C++ and C languages, code for FORTRAN interface exists and was used in the past.  For use with FORTRAN, `libshfcl.a` is required instead of `libshccl.a`.  However, this interface has not been used for a long time and may be in disrepair. If you do find the need the FORTRAN interface and are not able to build `libshfcl.a`, please contact the authors.
 
-Note that the C and FORTRAN interfaces have limitations.  In particular, context based exposing/hiding of parameters is available only via the C++ interface.  C++ interface can however be used in most C programs if they can be complied with a C++ compiler.
+Note that the C and FORTRAN interfaces have limitations.  In particular, [context based exposing/hiding](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#parameter-unwinding-context-sensitive-parameter-hidingexposing) of parameters is available only via the C++ interface.  C++ interface can however be used in most C programs if they can be complied with a C++ compiler.
 
 A more detailed document describing the API is under preparation.  Till then, ask for help from the authors.
