@@ -7,8 +7,15 @@ _parafeed_ project can be built with the `cmake` tool.  Alternatively, it can al
 
 CMake-based build system requires `cmake` version 3 or later.  To build, execute the `cmake` command in the top-most directory.  This will build the required `makefiles`.  Issuing the `make` command, also in the root directory, should build the _parafeed_ package.
 
-While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. Using the command `cd code; source ../Setup/RC; make -f nocmake_makefiles/makefile.cllib.generic` should build the _parafeed_ project.
+While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. Using the command `cd code; make -f nocmake_makefiles/makefile` should build the _parafeed_ project.
 
 Successfully building and linking the test program `code/tstcpp` ensures that all libraries required by client codes are ready.  For now, copy all `code/libparafeed.a`, `code/*.h` and `code/calc/*.h` files to the required location for linking your application.   
 
-A more detailed document describing the API is under prepration.  Till then, ask for help from the authors.
+### Interfaces
+The library `libparafeed.a` contains .o files from three independent libraries: `libsh.a`, `libshccl.a` and `libcalc.a`.  These can be built and linked to separately as well in the order `libshccl.a libsh.a libcalc.a`.  For using in applications written in C and C++, `libparafeed.a` is sufficient.
+
+While at this point the package is primarily meant for use in applications written in the C++ and C languages, code for FORTRAN interface exists and was used in the past.  For use in FORTRAN, `libshfcl.a` is required instead of `libshccl.a`.  However, this interface has not been used for a long time and may be in disrepair. If you do find the need for using the FORTRAN interface and are not able to build `libshfcl.a`, please contact the authors.
+
+Note that the C and FORTRAN interfaces have limitations.  In particular, context based exposing/hiding of parameters is available only via the C++ interface.  C++ interface can however be used in most C programs if they can be complied with a C++ compiler.
+
+A more detailed document describing the API is under preparation.  Till then, ask for help from the authors.

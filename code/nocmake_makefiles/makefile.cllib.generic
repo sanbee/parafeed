@@ -348,6 +348,9 @@ cl.o: cl.f cl.inc
 
 clIsInteractive.o: clIsInteractive.cc
 	$(C++) -c $(INCL) clIsInteractive.cc
+#-------------------------------------------------------------------
+# Library targets
+#
 libshccl.a: $(CLOBJS)
 	ar r libshccl.a $(CLOBJS)
 #	if [ -f $(RANLIB) ]; then $(RANLIB) libshccl.a; fi
@@ -358,7 +361,7 @@ libsh.a: $(SHOBJS)
 
 libparafeed.a: $(CLOBJS) $(SHOBJS) $(CALCHOME)/libcalc.a
 	ar r libparafeed.a $(SHOBJS) $(CALCHOME)/*.o $(CLOBJS)
-	#ar -rcT libparafeed.a libsh.a calc/libcalc.a libshccl.a
+#ar -rcT libparafeed.a libsh.a calc/libcalc.a libshccl.a
 
 libshfcl.a: $(FCLOBJS)
 	ar r libshfcl.a $(FCLOBJS)
@@ -367,6 +370,9 @@ libshfcl.a: $(FCLOBJS)
 $(CALCHOME)/libcalc.a libcalc.a: 
 	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile.calc.generic libcalc.a
 
+#-------------------------------------------------------------------
+# Applicaion targets
+#
 gcalc: gcalc.c $(PARAFEEDLIB) clsh.h
 	$(C++) $(INCL) -Icalc gcalc.c -o gcalc $(PARAFEEDLIB) $(LIBS)
 
@@ -389,6 +395,9 @@ tstshell:tstshell.c $(PARAFEEDLIB) clsh.h
 ftst: ftst.f $(PARAFEEDLIB)
 	$(F77) $(INCL) ftst.f -o ftst libshccl.a $(PARAFEEDLIB) $(LIBS)
 
+#-------------------------------------------------------------------
+# Housekeeping targets
+#
 clean: 
 	\rm -rf *.o *~ tst ftst tst2 *.a
 	\rm -rf y.tab.c y.tab.h lex.yy.c shell.tab.c shell.tab.h lex.sh_.c callbacks_awk.c
