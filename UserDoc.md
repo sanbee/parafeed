@@ -243,6 +243,29 @@ red-coloured keyword above it in the list of displayed keywords).
 Green coloured keywords indicate that this keyword could be hiding
 other keywords and could itself be hidden by some other keyword.
 
+In the example below, the keyword `bool` is diplayed in red colour indicating that it's value is hiding another keyword.  Setting `bool=true` exposes another keyword `bool1`, which is displayed in blue colour indicating that it can be hidden based on the setting of the red-coloured keyword immediately before it (the keyword `bool`).
+
+_(And I am still trying to figure out a way to preserve the colours in a GitHub page!)_
+
+```
+tstcpp>inp
+bool       = 0
+float      = 0
+string     = 
+strarr     = 
+farray     = 0,0,0,0,0,0,0,0,0,0
+tstcpp>bool=Yes
+bool1      = 0
+tstcpp>inp
+bool       = Yes
+bool1      = 0
+float      = 0
+string     = 
+strarr     = 
+farray     = 0,0,0,0,0,0,0,0,0,0
+tstcpp>
+```
+
 ## Non-interactive mode ##
 
 The application using _parafeed_ can also be started in a
