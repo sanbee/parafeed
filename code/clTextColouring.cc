@@ -107,12 +107,12 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
   {
     startSeq=Esc+"1;";
       
-    if (ISSET(textType,CL_HIDDENKEYWORD))          
-      startSeq += FGColourMap[FG_HiddenKeyWord];
-    else if (ISSET(textType,CL_HIDINGKEYWORD))     
-      startSeq += FGColourMap[FG_HidingKeyWord];
-    else if (ISSET(textType,CL_HIDENSEEKKEYWORD))  
+    if (ISSET(textType,CL_HIDENSEEKKEYWORD))
       startSeq += FGColourMap[FG_HidenSeekKeyWord];
+    else if (ISSET(textType,CL_HIDINGKEYWORD))
+      startSeq += FGColourMap[FG_HidingKeyWord];
+    else if (ISSET(textType,CL_HIDDENKEYWORD))
+      startSeq += FGColourMap[FG_HiddenKeyWord];
     else
       startSeq += FGColourMap[FG_Default];
 
