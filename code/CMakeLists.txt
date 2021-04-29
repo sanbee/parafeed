@@ -91,12 +91,12 @@ foreach(source IN LISTS sh_sources)
 endforeach()
 target_sources(parafeed_parafeed PRIVATE ${sh_sources})
 
-add_custom_command(
-   OUTPUT callbacks_awk.cc
-   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
-   MAIN_DEPENDENCY callbacks.cc
-   COMMENT "Preprocessing callbacks.cc"
-   VERBATIM)
+#add_custom_command(
+#   OUTPUT callbacks_awk.cc
+#   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
+#   MAIN_DEPENDENCY callbacks.cc
+#   COMMENT "Preprocessing callbacks.cc"
+#   VERBATIM)
 
 #
 # shccl library
@@ -133,7 +133,7 @@ set(shccl_sources
   clgetOpt.cc
   clstrtStream.cc
   clloadConfig.cc
-  callbacks_awk.cc
+  callbacks.cc
   support.cc
   clgetInputFile.cc
   clgetOutputFile.cc
