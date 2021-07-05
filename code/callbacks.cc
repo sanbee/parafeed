@@ -147,7 +147,11 @@ END{									\
 	    vector<string> sv=(*i).second;
 	    for(unsigned int j=0;j<sv.size();j++)
 	      {
-		S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab);
+		if ((S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab))==NULL)
+		    {
+		      string mesg = "Programmer error: Watch key \"" + sv[j] + "\" not found.";
+		      clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+		    }
 		S->Exposed=0;
                 SETBIT(S->Attributes,CL_HIDDENKEYWORD);
 	      }
@@ -300,7 +304,7 @@ END{									\
   {
     //char format[12];
     std::string format;
-    namePrintFormat(format,"");
+    int maxNameLength = namePrintFormat(format,"");
     string fullFormat;
     //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");

@@ -22,8 +22,9 @@
 #
 RANLIB=/bin/ranlib
 #
-LEX      = flex -Pcalc_
-YACC     = bison -y -p calc_
+PREFIX   = calc_
+LEX      = flex -P$(PREFIX)
+YACC     = bison -y -p $(PREFIX)
 ARCH     = $(GOSDIR)
 OPTFLAGS = -g
 DEFINES  = -Wall
@@ -55,4 +56,4 @@ calcinit.o:calcinit.c symboltable.h y.tab.h
 	$(CC) $(CFLAGS) -c calcinit.c
 
 clean: 
-	\rm -rf y.tab.h y.tab.c *.o *~ tst *.a
+	\rm -rf y.tab.h y.tab.c *.o *~ tst *.a lex.$(PREFIX).c
