@@ -80,6 +80,7 @@ int clgetSValp(const string &Name, string& val, int& n)
   else
     S=SearchQSymb((char *)Name.c_str(),"string");
   N = _ABS(n);
+  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
 
   setAutoSDefaults(S,val);
   if (S!=NULL) 

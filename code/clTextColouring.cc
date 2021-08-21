@@ -77,22 +77,25 @@ void clTextColouring(const string& text, const unsigned int textType,string& sta
 	  fstream fd;
 	  string line;
 	  string name,val;
-	  fd.open(userColourMapFile);
+	  fd.open(userColourMapFile,ios::in);
+	  if (fd)
 	  while (!fd.eof())
 	    {
 	      string mesg;
 	      getline(fd,line);
-	      clBreakStr(line,name,val);
-
-	      if (FGColourMap.find(val)==FGColourMap.end())
+	      if (line.length() > 0)
 		{
-		  mesg = "User supplied colour " + val + " for " + name + " not supported.";
-		  clThrowUp(mesg.c_str(),"###Informational ",CL_INFORMATIONAL);
+		  clBreakStr(line,name,val);
+		  if (FGColourMap.find(val)==FGColourMap.end())
+		    {
+		      mesg = "User supplied colour " + val + " for " + name + " not supported.";
+		      clThrowUp(mesg.c_str(),"###Informational ",CL_INFORMATIONAL);
+		    }
+		  if (name == "defaultfg") FG_Default=val;
+		  else if (name == "hiddenseekfg") FG_HidenSeekKeyWord=val;
+		  else if (name == "hiddenfg") FG_HiddenKeyWord=val;
+		  else if (name == "hidingfg") FG_HidingKeyWord=val;
 		}
-	      if (name == "defaultfg") FG_Default=val;
-	      else if (name == "hiddenseekfg") FG_HidenSeekKeyWord=val;
-	      else if (name == "hiddenfg") FG_HiddenKeyWord=val;
-	      else if (name == "hidingfg") FG_HidingKeyWord=val;
 	    }
 	}
     }
