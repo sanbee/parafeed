@@ -280,6 +280,7 @@ int       dbgclgetSValp(const string& Name, string& Val, int& N);
 int       clgetNSValp(const string& Name, vector<string>& Val, int& N);
 int       dbgclgetNSValp(const string& Name, vector<string>& Val, int& N);
 int       clgetSValp(const string& Name, string& Val, int& N, SMap &smap);
+int       clgetFValp(const string& Name, float& Val, int& N, SMap &smap);
 int       clgetBValp(const string& Name, bool& Val, int& N, SMap &smap);
 void      clTextColouring(const string& text, const unsigned int textType, string& startSeq, string& endSeq);
 #endif

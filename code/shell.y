@@ -33,7 +33,6 @@
 #define PROMPT(s)   fprintf(stderr,"%s>",s)
 #endif
 
-
 #define YYDEBUG 0
 
 
@@ -197,7 +196,7 @@ comd:    asign                   {$$=1;}
 				 }
 
         | UNDEF '=' expr         { 
-                                   yyerror("undefined symbol");
+                                   yyerror((char *)"undefined symbol");
 				   FreeStr(&$1);
 				   FreeStr(&$3);
                                    $$=1;
