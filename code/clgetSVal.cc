@@ -86,17 +86,7 @@ int clgetSValp(const string &Name, string& val, int& n)
     {
       if (N <= S->NVals) 
 	{
-	  // val=""; /* Initialize the output string */
-	  // buf = (char *)S->Val[N-1].c_str();
-	  // while (*buf == ' ') buf++;
-	  // val = val + buf;
 	  val = trim(S->Val[N-1]);
-	  //char *buf,*c=NULL;
-	  // buf = (char *)S->Val[N-1].c_str();
-	  // //	  strncpy(val,buf,strlen(buf)+1);
-	  // if ((c=strstr(buf,"\\\""))) 
-	  //   while (*c) *c = *(++c);
-	  // return strlen(buf);
 	  return val.size();
 	}
       else 
@@ -104,5 +94,34 @@ int clgetSValp(const string &Name, string& val, int& n)
     }
   else
     return CL_FAIL;
+}
+int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
+{
+  Symbol *S;
+  unsigned int N;
+
+HANDLE_EXCEPTIONS(
+		  if (n < 0)
+		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+		  else
+		    S=SearchQSymb((char *)Name.c_str(),"string");
+		  N = _ABS(n);
+		  setAutoSDefaults(S,val);
+
+		  if (S!=NULL) 
+		    {
+		      SETBIT(S->Attributes,CL_STRINGTYPE);
+		      S->smap = smap;
+		      if (N <= S->NVals) 
+			{
+			  val = trim(S->Val[N-1]);
+			  return val.size();
+			}
+		      else 
+			return CL_FAIL;
+		    }
+		  else
+		    return CL_FAIL;
+		  );
 }
 #endif
