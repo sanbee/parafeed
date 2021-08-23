@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     }
   catch(clError& x)
     {
-      x << x << " " << x.Severity() << endl;
+      x << x << " " << endl;//x.Severity() << endl;
       
       if (x.Severity() != ErrorObj::Fatal) restart=true;
     }

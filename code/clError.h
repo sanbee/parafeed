@@ -35,6 +35,7 @@ class clError: public ErrorObj
 public:
   clError() {};
   clError(const char *m, const char *i, int l=0): ErrorObj(m,i,l) {};
+  clError(const string& m, const string& i, int l=0): ErrorObj(m,i,l) {};
   clError(const clError& that) : ErrorObj()
   {
     //    cerr << "clError(clError)" << endl;

@@ -27,10 +27,21 @@ using namespace std;
 class ErrorObj{
  public:
   enum {Informational=100,Recoverable,Severe,Fatal};
-  ErrorObj():Id(), Msg(), Src(), Message() {Id.resize(0);Msg.resize(0);Src.resize(0);Message.resize(0);};
-  ErrorObj(const char *m,const char *i,int l=0);
+  ErrorObj():Id(), Msg(), Src(), Message(),Level(0)
+  {};
+  //    Id.resize(0);Msg.resize(0);Src.resize(0);Message.resize(0);};
+
+  ErrorObj(const char *m, const char *i, int l=0):
+    Id(i), Msg(m), Src(), Message(),Level(l) 
+  {};
+
+  ErrorObj(const string &m, const string &i, int l):
+    Id(i), Msg(m), Src(), Message(),Level(l)
+  {};
+
   ErrorObj(const ErrorObj& that);
-  ~ErrorObj() {};
+  ~ErrorObj()
+  {};
   
   void SetSource(const char *m=0);
   const char *Source()               {return Src.c_str();}

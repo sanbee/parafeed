@@ -69,6 +69,16 @@ char *sh_sys_cmd=NULL;
        }
      return 1;
    }
+ void catchHiddenSymbol(Symbol *s)
+ {
+   if (s->Exposed!=1)
+     {
+       string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\')."; 
+       //clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
+       clError x(msg,string("###Error"),CL_INFORMATIONAL);
+       throw(x);
+     }
+ }
 %}
 //%language "c++"
 %code requires {
@@ -111,10 +121,13 @@ list:     '\n'                   { PROMPT(sh_Prompt);return 1;}
         | FINIS                  { exit(0);}
         ;
 /*--------------------------------------------------------------------------*/
-asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;}
+asign:     VAR '='                {
+                                    catchHiddenSymbol($1);
+                                    SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
+                                  }
 
         |  VAR '=' expr           {
-	  //cerr << $1->Name << "=" << $3 << endl;
+                                    catchHiddenSymbol($1);
                                     if ($3) SetVar($1->Name,$3,sh_SymbTab,0,0,1);
 	                            $$=$1;
 				    FreeStr(&$3);
@@ -122,6 +135,7 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 
         |  VAR '[' NUMBER ']' '=' expr 
                                   { 
+                                    catchHiddenSymbol($1);
 	                            if (RangeOK($1,(int)$3))
 				      SetVal($6,$1,(int)$3);
 				    $$=$1;
@@ -130,6 +144,8 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 
         |  VAR '[' NUMBER ']' '=' '$' VAR 
                                   {
+                                    catchHiddenSymbol($1);
+                                    catchHiddenSymbol($7);
 				    if (RangeOK($1,(int)$3))
 				      {
 					unsigned int i; char *s=NULL;
@@ -142,6 +158,8 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 				  }
 
         |  VAR '=' '$' VAR        { 
+                                    catchHiddenSymbol($1);
+                                    catchHiddenSymbol($4);
 	                             unsigned int i;
 				     for(i=0;i<$4->NVals;i++)
 				       SetVal((char *)$4->Val[i].c_str(),$1,i);
@@ -152,6 +170,8 @@ asign:     VAR '='                {SetVar($1->Name,NULL,sh_SymbTab,0,0,1);$$=$1;
 expr:     STRING                 {$$=$1;}
 
         | '$' VAR '[' NUMBER ']' {
+                                    catchHiddenSymbol($2);
+
                                    /* if ((unsigned int)$4>=$2->NVals) */
 				   /*   { */
 				   /*     fprintf(stderr,"###Error: Index should be in the range [0-%d]\n" */
@@ -208,7 +228,11 @@ comd:    asign                   {$$=1;}
                                  }
         ;
 /*--------------------------------------------------------------------------*/
-stmt:     '$' VAR                {PrintVals(stderr,$2,1);$$=1;}
+stmt:     '$' VAR                {
+                                   catchHiddenSymbol($2);
+
+                                   PrintVals(stderr,$2,1);$$=1;
+                                 }
 
         | expr                   {if ($1) fprintf(stderr,"%s\n",$1);$$=1; }
 
