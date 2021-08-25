@@ -107,6 +107,8 @@ install: libs
 
 $(LIBSH): %.o:  %.cc 
 	$(C++) -c $< -o $@
+ParseCmdLine.o: ParseCmdLine.cc SymbTab.h
+
 $(LIBCL): %.o:  %.cc 
 	$(C++) -c $< -o $@
 

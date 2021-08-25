@@ -349,6 +349,15 @@ END{									\
             )
            formatTypeHelp(S,fullFormat);
      }
+    else if (string(arg) == "-a")
+      {
+       fprintf(stderr,s0.c_str());
+       fprintf(stderr,s1.c_str());
+       for (S=cl_SymbTab;S;S=S->Next)
+         if (((S->Class==CL_APPLNCLASS) ||
+	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
+           formatTypeHelp(S,fullFormat);
+      }
     else 
      {
        if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
@@ -373,8 +382,7 @@ END{									\
   {
     CmdSymbol *S;
     fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:   Indicates that the current setting of the keyword is hiding other\n");
-    fprintf(stderr,"         keywords.\n");
+    fprintf(stderr,"  Red:   Indicates that the keyword can hide other keywords.\n");
     fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
     fprintf(stderr,"         (usually by the first red coloured keyword above).\n");
     fprintf(stderr,"  Green: Indicates that the keyword can be hidden by some other keyword(s)\n");
@@ -405,7 +413,7 @@ END{									\
     fprintf(stderr,"Use <Key>=<RETURN> to unset value(s) for a keywords\n\n");
     for (S=cl_CmdTab;S;S=S->Next) 
       fprintf(stderr," %-11s : %s\n",S->Name,S->Doc);
-    fprintf(stderr,"\nAny other input will be passed to the system shell\n\n");
+    fprintf(stderr,"\nAny other input is passed to the system shell\n\n");
     return 1;
   }
   /*---------------------------------------------------------------------
