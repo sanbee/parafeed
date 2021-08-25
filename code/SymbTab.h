@@ -19,7 +19,7 @@
 /* $Id: SymbTab.h,v 2.2 2000/03/12 04:51:37 sanjay Exp $ */
 #include <clhashdefines.h>
 CmdSymbol CmdTab[]={
-  {(char *)"inp", (char *)"To see the various keywords and the values they have been set to",NULL,NULL,doinp,CL_ARG_KEYWORD},
+  {(char *)"inp", (char *)"To see the various keywords and their values. Option \"-a\" will display hidden keywords also",NULL,NULL,doinp,CL_ARG_KEYWORD},
   {(char *)"go",  (char *)"To run the application",NULL,NULL,dogo,CL_ARG_NONE},
   {(char *)"gob", (char *)"To run the application in background",NULL,NULL,dogob,CL_ARG_NONE},
   {(char *)"cd",  (char *)"Change working directory",NULL,NULL,docd,CL_ARG_FILENAME},

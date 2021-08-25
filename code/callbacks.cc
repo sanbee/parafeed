@@ -105,8 +105,7 @@ END{									\
 	    for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
 	      {
 		bool logicalKey = clIsTrue((*loc).first.c_str());
-		//	    cerr << "checkVal " << " " << clBoolCmp(t->Val[0],logicalKey) << " " << t->Val[0] << " " << logicalKey << endl;
-		if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+		if ((found = (clBoolCmp(t->Val[0],logicalKey)==logicalKey))) break;
 	      }
 	  }
 	else
@@ -158,11 +157,13 @@ END{									\
 	  }
 	//
 	// Now set for display those watched-keys which are exposed by
-	// the current setting of this symbol. For now, the "current
-	// setting" is only the first value (i.e. ignores other possible
-	// comma seperated values).
+	// the current setting of this symbol. If the current symbol
+	// (t) is not exposed itself, the keys are that watching
+	// remain unexposed. For now, the "current setting" is only
+	// the first value (i.e. ignores other possible comma
+	// seperated values).
 	//
-	if (t->NVals > 0)
+	if ((t->NVals > 0) && (t->Exposed==1))
 	  {
 	    // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
 	    // if (loc != t->smap.end())
@@ -171,7 +172,6 @@ END{									\
 	      {
 		//		vector<string> sv=(*loc).second;
 		vector<string> sv=mapVal;
-	
 		for(unsigned int j=0;j<sv.size();j++)
 		  {
 		    S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
@@ -217,8 +217,19 @@ END{									\
       for (t=cl_SymbTab;t;t=t->Next)
 	{
 	  if ((t->Exposed) && 
-              ((t->Class==CL_APPLNCLASS) || 
+	     ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
+	    {
+	      //              if (t->smap.begin() != t->smap.end())
+	      PrintKey(stderr, t);
+	      PrintVals(stderr,t,1);
+	    }
+	}
+    else if (string(arg) == "-a")
+      for (t=cl_SymbTab;t;t=t->Next)
+	{
+	  if ((t->Class==CL_APPLNCLASS) || 
+	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	    {
 	      //              if (t->smap.begin() != t->smap.end())
 	      PrintKey(stderr, t);
@@ -228,6 +239,11 @@ END{									\
     else
       {
 	t=SearchVSymb((char*)arg,cl_SymbTab);
+	if (t==NULL)
+	  {
+	    string mesg = "Illegal command \"inp "+string(arg)+"\"";
+	    clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+	  }
 	// if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
 	//     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	//   {
@@ -308,7 +324,17 @@ END{									\
     string fullFormat;
     //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
-    string s0="   Key                Type          Factory defaults        Options\n";
+    //    cerr << "Max length: " << maxNameLength << " " << fullFormat << endl;
+    string s0;
+    s0.insert(0,maxNameLength/2-1,' ');
+    s0.append("Key");
+    s0.insert(s0.end(),maxNameLength/2+5,' ');
+    s0.append("Type");
+    s0.insert(s0.end(),10,' ');
+    s0.append("Factory defaults");
+    s0.insert(s0.end(),maxNameLength,' ');
+    s0.append("Options\n");
+    // s0.append("Key                Type          Factory defaults        Options\n");
     string s1="---------          ----------       ----------------        -------\n";
     Symbol *S;
 
