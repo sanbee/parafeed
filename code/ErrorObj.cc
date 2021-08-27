@@ -18,12 +18,6 @@
  */
 #include <ErrorObj.h>
 
-ErrorObj::ErrorObj(const char *m, const char *i, int l):Id(i), Msg(m), Src(), Message() 
-  //  :Id(i),Msg(m),Src(NULL),Message(NULL)
-{
-  Id = string(i); Msg = string(m);
-  Level=l;
-}
 ErrorObj::ErrorObj(const ErrorObj& that)
 {
   Id = that.Id; Msg=that.Msg;Level=that.Level;
