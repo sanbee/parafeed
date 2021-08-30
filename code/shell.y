@@ -73,10 +73,10 @@ char *sh_sys_cmd=NULL;
  {
    if (s->Exposed!=1)
      {
-       string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\')."; 
-       //clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
-       clError x(msg,string("###Error"),CL_INFORMATIONAL);
-       throw(x);
+       //string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\')."; 
+       ////clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
+       //clError x(msg,string("###Error"),CL_INFORMATIONAL);
+       //throw(x);
      }
  }
 %}
