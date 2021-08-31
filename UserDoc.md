@@ -82,52 +82,55 @@ The keywords can be set/reset from this shell by commands of type
 
 Following is a short description of the shell commands:
 
-  * `inp:`
-> > Display the current setting of all the keywords.  If a keyword is given as an argument, the
-> > setting of only that keyword will be displayed.
+  * `inp [-a]` or `show [-a]`:	
 
-  * `go:`
+> > Display the current setting of all the keywords.  If a keyword is given as an argument, the
+> > setting of only that keyword will be displayed.  The `-a` option will display keywords that 
+> > may be currently hidden.
+
+  * `go`:
 > > End of the interactive session.  The current value of the keywords are used
 > > and the application resumes normal execution.
 
-  * `gob:`
+  * `gob`:
 > > Similar to `go` except that it will run the application in the background and print the
 > > process ID (PID) number of the background process on the screen (also see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
-  * `cd:`
+  * `cd`:
 > > Change the current working directory within the interactive shell.
 
-  * `'?':`
+  * `'? [-a]'`:
 > > Print some basic information about the type, the number of values the keywords expects,
 > > factory settings for the keywords and list of options, if available.  If a keyword is given as an argument,
-> > information about only that keyword will be printed.
+> > information about only that keyword will be printed.  With the `-a` option, information about the currently
+> > hidden keywords is also displayed.
 
-  * `explain:`
+  * `explain`:
 > > Print as detailed a help about the application and the keywords as the author of the
 > > application has cared to write in the help file.  These help files are located in the directory specified by
 > > the environment variable `GDOC` (see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
-  * `save:`
+  * `save`:
 > > Save the current setting of the keywords in a file.  By default, these values are saved in a
 > > file named `./<Application Name>.def`.  If a file name is supplied as an argument of this command,
 > > the values will be saved in the file.
 
-  * `savecmd:`
+  * `savecmd`:
 > > Save the current setting of the keywords in a file in the form of a UNIX command.  By
 > > default, these values are saved in a file named `./<Application Name>.cmd`.  If a file name is
 > > supplied as an argument of this command, the values will be saved in the file.
 
-  * `load:`
+  * `load`:
 > > Load the values of keywords from a file. By default it loads the settings for the keywords
 > > from the file `./<Application Name>.def`.  If this file is already present when the application is
 > > started, it is loaded automatically.  Alternatively, it can load settings from a file provided as an argument
 > > to the `load` command.
 
-  * `edit:`
+  * `edit`:
 > > Edit the keyword values in an editor of choice specified by the environment variable
 > > `EDITOR` (see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
-  * `quit:`
+  * `quit`:
 > > Quits the interactive session without executing the application.
 
 All inputs to the interactive shell, which are not any of the above
@@ -378,6 +381,9 @@ command-line and their effect:
 > > script. When run in this mode, value of all the keywords which needs to be set must be supplied on the
 > > command-line (the order of the command-line options is not important).  The keywords must be fully
 > > spelled in the command-line options (i.e., no minimum-match will be applicable).
+
+  * `help=noprompt,dryrun`:
+> > An additional comma-separated specification `dryrun` can be given with the `noprompt` option.  In this mode, the application will parse all the keywords supplied on the command-line and silently exit immediately after this parsing phase.  Any error during the parsing phase will trigger an error condition (C++ exception).  This is useful in the development stage where the inputs can be verified without running the full application.
 
   * `help=explain`:
 > > This executes the `explain` command of the interactive shell (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands))
