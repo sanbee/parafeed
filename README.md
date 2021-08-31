@@ -12,7 +12,7 @@ While the hand-written `makefiles` have been tested with `make` version 3 only, 
 Successfully building and linking the test program `code/tstcpp` ensures that all libraries required by client codes are ready.  For now, copy all `code/libparafeed.a`, `code/*.h` and `code/calc/*.h` files to the required location for linking your application.   
 
 ### Interfaces
-The library `libparafeed.a` contains .o files from three independent libraries: `libsh.a`, `libshccl.a` and `libcalc.a`.  These can be built and linked to separately as well in the order `libshccl.a libsh.a libcalc.a`.  For using in applications written in C and C++, `libparafeed.a` is sufficient.
+The library `libparafeed.a` contains .o files from three independent libraries: `libsh.a`, `libshccl.a` and `libcalc.a`.  These can be built and linked-to separately as well in the order `libshccl.a libsh.a libcalc.a`.  For use in applications written in C and C++, `libparafeed.a` is sufficient.
 
 While at this point the package is primarily meant for use in applications written in the C++ and C languages, code for FORTRAN interface exists and was used in the past.  For use with FORTRAN, `libshfcl.a` is required instead of `libshccl.a`.  However, this interface has not been used for a long time and may be in disrepair. If you do find the need the FORTRAN interface and are not able to build `libshfcl.a`, please contact the authors.
 
