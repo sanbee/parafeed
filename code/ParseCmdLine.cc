@@ -49,7 +49,7 @@ unsigned short cl_CmdLineFirst=0;
 unsigned short cl_InteractiveShell=0;
 unsigned short cl_DOCLEANUP=1, cl_SymbLoaded = 0;
 unsigned short cl_Pass = 0, cl_FORTRAN=0, cl_NoOfOpts=0;
-unsigned short cl_RegistrationMode=1, cl_NoPrompt=0;
+unsigned short cl_RegistrationMode=1, cl_NoPrompt=0, cl_DryRun=0;
 unsigned short CL_DBG_ON=0;
 static short cl_defaultsLoaded=0;
 jmp_buf *cl_env=0;
@@ -244,6 +244,8 @@ int ParseCmdLine(int argc, char *argv[])
 	  {
 	    cl_RegistrationMode=0;
 	    cl_NoPrompt = 1;
+	    if ((S->NVals > 1) && (S->Val[1] == "dryrun"))
+	      cl_DryRun=1;
 	  }
 	//if (!strcmp(S->Val[0],"dbg"))
 	if (S->Val[0]=="dbg")
@@ -470,9 +472,10 @@ int EndCL()
 
 #ifdef GNUREADLINE
 /* Put the history in the history file */
-       char *var = (char*)"GHIST";
-       save_hist(var,(char *)CL_HIST_DEFAULT);
+  char *var = (char*)"GHIST";
+  save_hist(var,(char *)CL_HIST_DEFAULT);
 #endif
+  if (cl_DryRun==1) exit(0);
   return 1;
 }
 /*------------------------------------------------------------------------
