@@ -23,8 +23,12 @@
 #include <calc.h>
 #include <stdlib.h>
 
+ static double
+ fooUserFunc(char*s) { return 0.0; }
+
  double Result=0.0;
  Calc_Symbol s2;
+ double (*UserFunc)(char *) = fooUserFunc;
 %}
 %union {
   double val;
