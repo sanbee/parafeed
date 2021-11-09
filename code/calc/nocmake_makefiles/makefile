@@ -29,7 +29,7 @@ ARCH     = $(GOSDIR)
 OPTFLAGS = -g
 DEFINES  = -Wall
 INCL     = -I. 
-CFLAGS   = $(OPTFLAGS) $(DEFINES) $(INCL)
+CFLAGS   = -fPIC $(OPTFLAGS) $(DEFINES) $(INCL)
 CC       = gcc
 #CC=/usr/local/compilers/7.2/gcc_3.2.3/bin/gcc
 
