@@ -105,8 +105,7 @@ END{									\
 	    for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
 	      {
 		bool logicalKey = clIsTrue((*loc).first.c_str());
-		//	    cerr << "checkVal " << " " << clBoolCmp(t->Val[0],logicalKey) << " " << t->Val[0] << " " << logicalKey << endl;
-		if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+		if ((found = (clBoolCmp(t->Val[0],logicalKey)==logicalKey))) break;
 	      }
 	  }
 	else
@@ -158,11 +157,13 @@ END{									\
 	  }
 	//
 	// Now set for display those watched-keys which are exposed by
-	// the current setting of this symbol. For now, the "current
-	// setting" is only the first value (i.e. ignores other possible
-	// comma seperated values).
+	// the current setting of this symbol. If the current symbol
+	// (t) is not exposed itself, the keys are that watching
+	// remain unexposed. For now, the "current setting" is only
+	// the first value (i.e. ignores other possible comma
+	// seperated values).
 	//
-	if (t->NVals > 0)
+	if ((t->NVals > 0) && (t->Exposed==1))
 	  {
 	    // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
 	    // if (loc != t->smap.end())
@@ -171,7 +172,6 @@ END{									\
 	      {
 		//		vector<string> sv=(*loc).second;
 		vector<string> sv=mapVal;
-	
 		for(unsigned int j=0;j<sv.size();j++)
 		  {
 		    S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
@@ -217,8 +217,19 @@ END{									\
       for (t=cl_SymbTab;t;t=t->Next)
 	{
 	  if ((t->Exposed) && 
-              ((t->Class==CL_APPLNCLASS) || 
+	     ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
+	    {
+	      //              if (t->smap.begin() != t->smap.end())
+	      PrintKey(stderr, t);
+	      PrintVals(stderr,t,1);
+	    }
+	}
+    else if (string(arg) == "-a")
+      for (t=cl_SymbTab;t;t=t->Next)
+	{
+	  if ((t->Class==CL_APPLNCLASS) || 
+	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	    {
 	      //              if (t->smap.begin() != t->smap.end())
 	      PrintKey(stderr, t);
@@ -228,6 +239,11 @@ END{									\
     else
       {
 	t=SearchVSymb((char*)arg,cl_SymbTab);
+	if (t==NULL)
+	  {
+	    string mesg = "Illegal command \"inp "+string(arg)+"\"";
+	    clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+	  }
 	// if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
 	//     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 	//   {
@@ -308,7 +324,17 @@ END{									\
     string fullFormat;
     //  fullFormat << "  " <<format <<"         %-10.10s" << endl << "\0";
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
-    string s0="   Key                Type          Factory defaults        Options\n";
+    //    cerr << "Max length: " << maxNameLength << " " << fullFormat << endl;
+    string s0;
+    s0.insert(0,maxNameLength/2-1,' ');
+    s0.append("Key");
+    s0.insert(s0.end(),maxNameLength/2+5,' ');
+    s0.append("Type");
+    s0.insert(s0.end(),10,' ');
+    s0.append("Factory defaults");
+    s0.insert(s0.end(),maxNameLength,' ');
+    s0.append("Options\n");
+    // s0.append("Key                Type          Factory defaults        Options\n");
     string s1="---------          ----------       ----------------        -------\n";
     Symbol *S;
 
@@ -323,6 +349,15 @@ END{									\
             )
            formatTypeHelp(S,fullFormat);
      }
+    else if (string(arg) == "-a")
+      {
+       fprintf(stderr,s0.c_str());
+       fprintf(stderr,s1.c_str());
+       for (S=cl_SymbTab;S;S=S->Next)
+         if (((S->Class==CL_APPLNCLASS) ||
+	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
+           formatTypeHelp(S,fullFormat);
+      }
     else 
      {
        if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
@@ -347,8 +382,7 @@ END{									\
   {
     CmdSymbol *S;
     fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:   Indicates that the current setting of the keyword is hiding other\n");
-    fprintf(stderr,"         keywords.\n");
+    fprintf(stderr,"  Red:   Indicates that the keyword can hide other keywords.\n");
     fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
     fprintf(stderr,"         (usually by the first red coloured keyword above).\n");
     fprintf(stderr,"  Green: Indicates that the keyword can be hidden by some other keyword(s)\n");
@@ -379,7 +413,7 @@ END{									\
     fprintf(stderr,"Use <Key>=<RETURN> to unset value(s) for a keywords\n\n");
     for (S=cl_CmdTab;S;S=S->Next) 
       fprintf(stderr," %-11s : %s\n",S->Name,S->Doc);
-    fprintf(stderr,"\nAny other input will be passed to the system shell\n\n");
+    fprintf(stderr,"\nAny other input is passed to the system shell\n\n");
     return 1;
   }
   /*---------------------------------------------------------------------

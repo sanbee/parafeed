@@ -52,12 +52,17 @@ void UI(bool restart, int argc, char **argv)
 
 	i=1;clgetIValp("int",j,i);
 	i=1;clgetFValp("float",f,i);
-	i=1;clgetSValp("string",str,i);
+
+	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
+	exposedKeys.push_back("strarr");
+	watchPoints["showstrarr"]=exposedKeys;
+	i=1;clgetSValp("string",str,i,watchPoints);
+
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNFValp("farray",fv,N);
 	VString options;
-	options.resize(3);
-	options[0]="one"; options[1]="two"; options[2]="three";
+	options.resize(4);
+	options[0]="one"; options[1]="two"; options[2]="three"; options[3]="showstrarr";
 	clSetOptions("string",options);
       }
       EndCL();
@@ -93,7 +98,7 @@ int main(int argc, char **argv)
     }
   catch(clError& x)
     {
-      x << x << " " << x.Severity() << endl;
+      x << x << " " << endl;//x.Severity() << endl;
       
       if (x.Severity() != ErrorObj::Fatal) restart=true;
     }

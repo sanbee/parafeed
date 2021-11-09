@@ -84,6 +84,13 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     pos=SearchVSymb(key,Tab);
   //  if ((pos=SearchVSymb(key,Tab))==0) return -2;
   if(pos==0) return -2;
+    // if (pos->Exposed!=1)
+    //   {
+    // 	string msg="Attempted modification of a hidden variable (named \'" + string(pos->Name) + "\')."; 
+    // 	//clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
+    // 	clError x(msg.c_str(),"###Error",CL_INFORMATIONAL);
+    // 	throw(x);
+    //   }
 
   if (!Force)
     if (pos->Class == CL_USERCLASS)
@@ -170,6 +177,14 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     int Matched=1;
     ostringstream os;
     newval=v;
+    // if (S->Exposed!=1)
+    //   {
+    // 	string msg="Attempted modification of a hidden variable (named \'" + string(S->Name) + "\')."; 
+    // 	//clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
+    // 	clError x(msg.c_str(),"###Error",CL_INFORMATIONAL);
+    // 	throw(x);
+    //   }
+
     if (ISSET(S->Attributes,CL_BOOLTYPE))
       {
 	Matched=0;
