@@ -34,7 +34,7 @@ typedef struct {
 } Calc_Symbol;
 extern double Result;
 extern Calc_Symbol s2;
-double (*UserFunc)(char *);
+extern double (*UserFunc)(char *);
 int yylex();
 int calc_error(char *s);
 int ywarn(char *s, char *t);

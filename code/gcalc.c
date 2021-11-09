@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <cl.h>
+#include <readline/readline.h>
 extern "C" {
 #include <calc.h>
 	   }
