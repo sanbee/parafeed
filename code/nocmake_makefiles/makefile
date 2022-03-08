@@ -71,7 +71,7 @@ SHSRC = CopySymb.cc AddCmd.cc AddNode.cc AddVar.cc AllocSymb.cc AddQKey.cc      
 	 PrintVals.cc SetVar.cc SetPrompt.cc SetSymbTab.cc SetCmdTab.cc         \
 	 yyerror.cc  minmatch.cc isBool.cc
 
-CLSRC = ParseCmdLine.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
+CLSRC = ParseCmdLine.cc clMakeArgvFromFile.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
 	 clgetSVal.cc clgetFullVal.cc clgetNFVal.cc clgetNIVal.cc clgetNSVal.cc \
 	 clgetNVals.cc cldbggetFVal.cc cldbggetIVal.cc cldbggetSVal.cc         \
 	 cldbggetNFVal.cc cldbggetNIVal.cc cldbggetNSVal.cc cldbggetFullVal.cc\

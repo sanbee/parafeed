@@ -247,9 +247,20 @@ int ParseCmdLine(int argc, char *argv[])
 	    if ((S->NVals > 1) && (S->Val[1] == "dryrun"))
 	      cl_DryRun=1;
 	  }
-	//if (!strcmp(S->Val[0],"dbg"))
+	if (S->Val[0]=="dryrun")
+	  cl_DryRun=1;
 	if (S->Val[0]=="dbg")
 	  CL_DBG_ON = 1;
+	if (S->Val[0] == "def")
+	  {
+	    cl_RegistrationMode=0;
+	    cl_NoPrompt=1;
+	    if (S->NVals > 1)
+	      clMakeArgvFromFile(string(S->Val[1]));
+	    else
+	      clThrowUp(std::string("Usage: ")+cl_ProgName+std::string(" help=def,FileName"), "###Fatal", CL_FATAL);
+
+	  }
       }
   }
   
@@ -461,6 +472,11 @@ int EndCL()
       i=startShell();
 
       if (cl_DOCLEANUP) clCleanUp();
+      if (cl_DryRun==1)
+	{
+	  clThrowUp("Exiting in EndCL() due to dryrun mode", "###Informational", CL_INFORMATIONAL);
+	  exit(0);
+	}
       return i;
     }
   /*
@@ -475,7 +491,10 @@ int EndCL()
   char *var = (char*)"GHIST";
   save_hist(var,(char *)CL_HIST_DEFAULT);
 #endif
-  if (cl_DryRun==1) exit(0);
+  if (cl_DryRun==1)
+    {
+      exit(0);
+    }
   return 1;
 }
 /*------------------------------------------------------------------------
