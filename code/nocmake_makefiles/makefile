@@ -36,7 +36,7 @@
 ARCH          = $(GOSDIR)
 OPTFLAGS      = -g
 DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
-CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS) $(INCL)
+CFLAGS        = -fPIC $(OPTFLAGS) $(DEFINES) $(COMMONOPTS) $(INCL)
 PREFIX        = sh_
 #
 # Compilers
@@ -188,7 +188,7 @@ ftst: ftst.f $(PARAFEEDLIB)
 # Housekeeping targets
 #
 clean: 
-	\rm -rf *.o *~ tst ftst tst2 tstcpp *.a
+	\rm -rf *.o *~ tst ftst tst2 tstcpp gcalc *.a *.so
 	\rm -rf y.tab.c y.tab.cc y.tab.h lex.yy.cc shell.tab.c shell.tab.cc shell.tab.h lex.sh_.{cc,c} callbacks_awk.cc
 	\rm -rf calc/y.tab.c calc/y.tab.h calc/lex.yy.c
 	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile clean
