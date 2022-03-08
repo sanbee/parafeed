@@ -244,13 +244,15 @@ int ParseCmdLine(int argc, char *argv[])
 	  {
 	    cl_RegistrationMode=0;
 	    cl_NoPrompt = 1;
-	    if ((S->NVals > 1) && (S->Val[1] == "dryrun"))
-	      cl_DryRun=1;
 	  }
-	if (S->Val[0]=="dryrun")
-	  cl_DryRun=1;
 	if (S->Val[0]=="dbg")
 	  CL_DBG_ON = 1;
+
+	if ((S->NVals > 1) && (S->Val[1] == "dryrun"))
+	  cl_DryRun=1;
+
+	if (S->Val[0]=="dryrun")
+	  cl_DryRun=1;
 	if (S->Val[0] == "def")
 	  {
 	    cl_RegistrationMode=0;
@@ -259,7 +261,6 @@ int ParseCmdLine(int argc, char *argv[])
 	      clMakeArgvFromFile(string(S->Val[1]));
 	    else
 	      clThrowUp(std::string("Usage: ")+cl_ProgName+std::string(" help=def,FileName"), "###Fatal", CL_FATAL);
-
 	  }
       }
   }
