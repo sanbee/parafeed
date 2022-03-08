@@ -71,7 +71,7 @@ SHSRC = CopySymb.cc AddCmd.cc AddNode.cc AddVar.cc AllocSymb.cc AddQKey.cc      
 	 PrintVals.cc SetVar.cc SetPrompt.cc SetSymbTab.cc SetCmdTab.cc         \
 	 yyerror.cc  minmatch.cc isBool.cc
 
-CLSRC = ParseCmdLine.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
+CLSRC = ParseCmdLine.cc clMakeArgvFromFile.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
 	 clgetSVal.cc clgetFullVal.cc clgetNFVal.cc clgetNIVal.cc clgetNSVal.cc \
 	 clgetNVals.cc cldbggetFVal.cc cldbggetIVal.cc cldbggetSVal.cc         \
 	 cldbggetNFVal.cc cldbggetNIVal.cc cldbggetNSVal.cc cldbggetFullVal.cc\
@@ -188,7 +188,7 @@ ftst: ftst.f $(PARAFEEDLIB)
 # Housekeeping targets
 #
 clean: 
-	\rm -rf *.o *~ tst ftst tst2 tstcpp *.a
+	\rm -rf *.o *~ tst ftst tst2 tstcpp gcalc *.a *.so
 	\rm -rf y.tab.c y.tab.cc y.tab.h lex.yy.cc shell.tab.c shell.tab.cc shell.tab.h lex.sh_.{cc,c} callbacks_awk.cc
 	\rm -rf calc/y.tab.c calc/y.tab.h calc/lex.yy.c
 	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile clean

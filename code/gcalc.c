@@ -24,7 +24,7 @@ extern "C" {
 #include <calc.h>
 	   }
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   char *s=NULL;
   double ans;
