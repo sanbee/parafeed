@@ -617,12 +617,13 @@ END{									\
 	//	while(!feof(fd))
 	while(!ifs.eof())
 	  {
-	    string strcpp;
+	    string line;
 	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
 	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
-	    if (getline(ifs,strcpp))
+	    if (getline(ifs,line))
 	      {
-		char *str_p=(char *)strcpp.c_str();
+		char *str_p=(char *)line.c_str();
+		//		cerr << line << endl;
 		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
 		if (strlen(str_p) > 0)
 		  {
@@ -637,7 +638,100 @@ END{									\
 			if ((pos->NVals == 0))
 			  pos = (Symbol *)NULL;
 		      }
-		    if (!pos) SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
+		    if (pos==NULL)
+		      SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
+		    if (Name != NULL) {free(Name);Name=NULL;}
+		    if (Val != NULL) {free(Val);Name=NULL;}
+		  }
+	      }
+	  }
+	//	fclose(fd);
+      }
+    cl_do_doinp=0;
+    return 1;
+  }
+  /*-----------------------------------------------------------------------
+    Functional difference from doload is that this loads the first
+    adds (AddVar) and then sets the variables (SetVar).  This is
+    called for help=def,<FILE> option.
+
+    This needs code cleanup to remove parts from doload() that aren't
+    necessary here.  08Mar, 2022.
+    ------------------------------------------------------------------------*/
+  int doload_and_register(char *f)
+  {
+    // FILE *fd;
+    // char str[MAXBUF];
+    int Complement=0;
+
+    ifstream ifs;
+    string strcpp;
+
+    cl_do_doinp=0;
+    
+    stripwhite(f);
+    if(f==NULL || strlen(f) == 0)
+      {
+	strcpp = cl_ProgName; 
+	//	strcpy(str,cl_ProgName);
+#ifdef GNUREADLINE
+	//	str[strlen(cl_ProgName)-1]='\0';
+	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
+#endif
+	//	strcat(str,".def");
+	strcpp.append(".def");
+      }
+    else 
+      //      strcpy(str,f);
+      strcpp = f;
+    
+    //    if (str[strlen(str)-1] == '!') 
+    if (strcpp[strcpp.size()-1] == '!') 
+      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
+
+    //    cerr << "Loading from " << strcpp << "...not yet working" << endl;
+    ifs.open(strcpp.c_str());
+    //    if ((fd = fopen(str,"r"))==NULL)
+    if (!ifs.good())
+      {
+	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
+	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
+    	return 2;
+      }
+    else
+      {
+	char *Name=NULL, *Val=NULL;
+	Symbol *pos;
+	
+	//	while(!feof(fd))
+	while(!ifs.eof())
+	  {
+	    string line;
+	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
+	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
+	    if (getline(ifs,line))
+	      {
+		char *str_p=(char *)line.c_str();
+		//		cerr << line << endl;
+		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
+		if (strlen(str_p) > 0)
+		  {
+		    BreakStr(str_p,&Name,&Val);
+		    pos = NULL;
+		    if (Complement)
+		      {
+			//		      pos=SearchVSymb(Name,cl_SymbTab);
+			pos=SearchVSymbFullMatch(Name,cl_SymbTab);
+			if ((pos == (Symbol *)NULL))
+			  pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
+			if ((pos->NVals == 0))
+			  pos = (Symbol *)NULL;
+		      }
+		    if (pos==NULL)
+		      {
+			pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
+			SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
+		      }
 		    if (Name != NULL) {free(Name);Name=NULL;}
 		    if (Val != NULL) {free(Val);Name=NULL;}
 		  }

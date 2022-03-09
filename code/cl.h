@@ -129,7 +129,7 @@ extern int add_history(char *);
   Symbol   *AddQKey(const char *Name, const char *Type, 
 		    Symbol **Head, Symbol **Tail);
   int       ParseCmdLine(int, char **);
-  int clMakeArgvFromFile(const string& Name);
+  vector<string> clMakeArgvFromFile(const string& Name);
 
   int startShell();
   void clLoadSymb();
@@ -209,6 +209,7 @@ int       doexplain(char *);
 int       dosave(char *);
 int       docmdsave(char *);
 int       doload(char *);
+int       doload_and_register(char *);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(const char *);
