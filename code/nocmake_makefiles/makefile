@@ -36,7 +36,7 @@
 ARCH          = $(GOSDIR)
 OPTFLAGS      = -g
 DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
-CFLAGS        = -fPIC $(OPTFLAGS) $(DEFINES) $(COMMONOPTS) $(INCL)
+CFLAGS        = -fPIC -std=c++11 $(OPTFLAGS) $(DEFINES) $(COMMONOPTS) $(INCL)
 PREFIX        = sh_
 #
 # Compilers

@@ -20,13 +20,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 #include <shell.h>
 #include <shell.tab.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-  int clMakeArgvFromFile(const string& Name)
+  vector<string> clMakeArgvFromFile(const string& Name)
   {
     cerr << "From clMakeArgvFromFile " << Name << endl;
     vector<string> argv;
@@ -36,9 +37,11 @@ extern "C" {
     string line;
     while(getline(defFile,line))
       {
-	cerr << line << endl;
+	string tt;
+	for(auto c : line) if ((c != ' ') && (c != '\t')) tt.push_back(c);
+	argv.push_back(tt);
       }
-    return argv.size();
+    return argv;
   }
 #ifdef __cplusplus
 	   }
