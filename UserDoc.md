@@ -38,7 +38,7 @@ Alternatively, the application can be used as a non-interactive program where th
 
 ## Interactive mode ##
 
-This is the default mode.  Upon startup, applications will present a
+This is the default mode.  Upon start-up, applications will present a
 list of its parameters in the form of keyword names followed by their
 current values.  The default values displayed will be
 those set by the application programmer.  The settings of the various
@@ -173,7 +173,7 @@ Following functions and constants can be used in these expression:
     1. `C:` speed of light in meters per second.
     1. `R2D,D2R:` multiplicative constants for conversion from Radians to Deg. and vice versa
     1. `H2R,R2H:` multiplicative constants for conversion from Hours to Radians and vice versa
-    1. `SOL2SID,SID2SOL:` multiplicative constants for conversion from Solar to Sidreal time and vice versa
+    1. `SOL2SID,SID2SOL:` multiplicative constants for conversion from Solar to Sidereal time and vice versa
 
 Numbers in the expression can be in any of the following representations:
 
@@ -196,7 +196,7 @@ However, by default, none of the `const symbols` are presented to
 the user and it is the responsibility of application programmer to add
 extra shell-commands for viewing the list of `const symbols`.
 
-Values can be transfered from one keyword or a `const symbol` to
+Values can be transferred from one keyword or a `const symbol` to
 another keyword.  E.g. to transfer the i^{th} value from keyword
 `Key1` to a keyword `Key2`, one could use `Key2=$Key1[i]`.  `Key2=$Key1` will transfer all values of `Key1`
 to `Key2`.
@@ -215,21 +215,21 @@ that the keyword can accept is infinite - e.g. list of integers),
 further TABs will have no effect.
 
 For keywords that accept strings, and do not have a list of options
-available, GNU Readline file-name completion will be envoked.
+available, GNU Readline file-name completion will be invoked.
 
 Two TABs after a completed shell command will print a context
 sensitive list of possible options.  For commands that can take a file
-name as an argument, file name completion will be envoked.  For
+name as an argument, file name completion will be invoked.  For
 commands that can take keywords are argument, keyword completion will
-be envoked.
+be invoked.
 
 ### Parameter unwinding (context sensitive parameter hiding/exposing) ###
 
 For applications with a long list of possible keywords, it is useful
 to expose only a minimum set of required keywords. There might be
-keywords, the value of which is either irrelavent to the application
+keywords, the value of which is either irrelevant to the application
 or the default value is acceptable, depending upon the value of some
-other keyword.  For such applcations, keywords are exposed only if it
+other keyword.  For such applications, keywords are exposed only if it
 is required that their values be set by the user.  Displayed keywords
 are colour coded to indicate if the current setting of a keyword could
 be hiding other keywords, the keyword could itself be hidden by
@@ -246,7 +246,7 @@ red-coloured keyword above it in the list of displayed keywords).
 Green coloured keywords indicate that this keyword could be hiding
 other keywords and could itself be hidden by some other keyword.
 
-In the example below, the keyword `bool` is diplayed in red colour indicating that it's value is hiding another keyword.  Setting `bool=true` exposes another keyword `bool1`, which is displayed in blue colour indicating that it can be hidden based on the setting of the red-coloured keyword immediately before it (the keyword `bool`).
+In the example below, the keyword `bool` is displayed in red colour indicating that it's value is hiding another keyword.  Setting `bool=true` exposes another keyword `bool1`, which is displayed in blue colour indicating that it can be hidden based on the setting of the red-coloured keyword immediately before it (the keyword `bool`).
 
 _(And I am still trying to figure out a way to preserve the colours in a GitHub page!)_
 
@@ -319,11 +319,11 @@ variables.
 
   * `GERR, GOUT:` `GERR` and `GOUT` variables are used when the application is run using the `gob` command (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands)).  The standard output of the application will be redirected to the file specified by `GOUT` while the standard error stream will be redirected to the file specified by `GERR`.  By default, these variables are set to `/dev/null`.
 
-  * `GCONF`: Some applications may load frequently used setting for some keywords.  These values are loaded as constants of the interactive shell and can be stored in a configuration file.  Their values can be transfered to the application keywords by referring to their value by '$' mechanism (see section on [De-referencing Mechanism](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#de-referencing-mechanism)).  The path of the directory containing these configuration files is specified by the environment variable `GCONF`.  The configuration filename is constructed by appending the suffix "`.config`" to the application name.  If `GCONF` is not defined, the application looks in the directory specified by `GDOC`.  If this variable is also not defined, or the configuration file is not found, the application will look for the configuration file in the current directory.
+  * `GCONF`: Some applications may load frequently used setting for some keywords.  These values are loaded as constants of the interactive shell and can be stored in a configuration file.  Their values can be transferred to the application keywords by referring to their value by '$' mechanism (see section on [De-referencing Mechanism](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#de-referencing-mechanism)).  The path of the directory containing these configuration files is specified by the environment variable `GCONF`.  The configuration filename is constructed by appending the suffix "`.config`" to the application name.  If `GCONF` is not defined, the application looks in the directory specified by `GDOC`.  If this variable is also not defined, or the configuration file is not found, the application will look for the configuration file in the current directory.
 
   * `EDITOR`:`EDITOR` environment variable is used to specify the name of the text editor to be used in the `edit` command (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands)).  The default editor is `emacs`.
 
-  * `GDEFAULTS`: The default values of keywords can be saved in "defaults file".  `GDEFAULTS` variable specifies the directory where these files are stored.  Such a file can be automatically loaded by the applications upon startup.  The defaults file name is constructed by appending the suffix "`.def`" to the application name.
+  * `GDEFAULTS`: The default values of keywords can be saved in "defaults file".  `GDEFAULTS` variable specifies the directory where these files are stored.  Such a file can be automatically loaded by the applications upon start-up.  The defaults file name is constructed by appending the suffix "`.def`" to the application name.
 
 
  By default, the application will look for the defaults file in the current directory.  If a keyword appears in the "`.def`" as well as in the "`.config`" file, the keyword will be treated as a shell constant.  This can be used to effectively produce specialized versions of an application program by writing an appropriated "`.config`", where keywords can have fixed values, not alterable by the user (e.g., a version of `xtract` which will read input from the shared memory of the GMRT data acquisition system).
@@ -382,8 +382,8 @@ command-line and their effect:
 > > command-line (the order of the command-line options is not important).  The keywords must be fully
 > > spelled in the command-line options (i.e., no minimum-match will be applicable).
 
-  * `help=noprompt,dryrun`:
-> > An additional comma-separated specification `dryrun` can be given with the `noprompt` option.  In this mode, the application will parse all the keywords supplied on the command-line and silently exit immediately after this parsing phase.  Any error during the parsing phase will trigger an error condition (C++ exception).  This is useful in the development stage where the inputs can be verified without running the full application.
+  * `help=dryrun` or `help=noprompt,dryrun` or `help=dbg,dryrun`:
+> > The `dryrun` option can be given by itself, or with the `noprompt` or `dbg` options.  By itself or with the `dbg` option, the application will start the interactive shell and exit immediately after the `go` command with a message indicating that it is exiting due to the `dryrun` option. When used with the `noprompt` option, the application will parse all the keywords supplied on the command-line and exit silently immediately after this parsing phase.  Any error during the parsing phase will trigger an error condition (C++ exception).  This is useful in the development stage where the inputs can be verified without running the full application.
 
   * `help=explain`:
 > > This executes the `explain` command of the interactive shell (see section on [User Commands](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#user-commands))
@@ -403,6 +403,9 @@ command-line and their effect:
 > > Application programmers can define hidden keywords which are normally not displayed for the user,
 > > but will be used by the application internally.  These keywords can be accessed as normal keywords
 > > by setting `help` keyword to the value "`dbg`".
+
+  * `help=def,<FILE>`
+> > The application will run in the `noprompt` mode and attempt to load the keyword settings from the <FILE> as if it was used with the `load` command in the interactive shell (but without starting the interactive shell).  If `<FILE>` is missing, the application exits with an error message.
 
 ## Example ##
 Here is a typical screen-shot of an application using _parafeed_ for user interface, when started in the interactive mode:
