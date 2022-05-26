@@ -226,21 +226,17 @@ int ParseCmdLine(int argc, char *argv[])
 
 	if (S->Val[0] == "def")
 	  {
-	    //vector<string> targv;
-	    //cl_RegistrationMode=0;
 	    cl_NoPrompt=1; // Don't start the interactive shell in EndCL().
-	    if (S->NVals > 1)
+
+	    if ((S->NVals > 1) && (S->Val[1]==""))
+	      clThrowUp(std::string("Usage: ")+cl_ProgNameStr+std::string(" help=def[,<FileName>]"), "###Error", CL_FATAL);
+
+	    if (S->NVals == 1)
+		clLoadSymb();
+	    else if (S->NVals > 1)
 	      {
 		doload_and_register((char *)string(S->Val[1]).c_str());
-		//cl_defaultsLoaded=1;
 		clLoadSymb();
-
-		// targv = clMakeArgvFromFile(string(S->Val[1]));
-		// for(auto c : targv) cerr << c << " ";cerr << endl;
-	      }
-	    else
-	      {
-		clThrowUp(std::string("Usage: ")+cl_ProgNameStr+std::string(" help=def,[<FileName>]"), "###Error", CL_FATAL);
 	      }
 	  }
       }
