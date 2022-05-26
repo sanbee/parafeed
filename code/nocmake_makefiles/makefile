@@ -36,7 +36,7 @@
 ARCH          = $(GOSDIR)
 OPTFLAGS      = -g
 DEFINES       = -Wall -DHAVE_STRING_H -DGNUREADLINE
-CFLAGS        = $(OPTFLAGS) $(DEFINES) $(COMMONOPTS) $(INCL)
+CFLAGS        = -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -std=c++11 $(OPTFLAGS) $(DEFINES) $(COMMONOPTS) $(INCL)
 PREFIX        = sh_
 #
 # Compilers
@@ -71,7 +71,7 @@ SHSRC = CopySymb.cc AddCmd.cc AddNode.cc AddVar.cc AllocSymb.cc AddQKey.cc      
 	 PrintVals.cc SetVar.cc SetPrompt.cc SetSymbTab.cc SetCmdTab.cc         \
 	 yyerror.cc  minmatch.cc isBool.cc
 
-CLSRC = ParseCmdLine.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
+CLSRC = ParseCmdLine.cc clMakeArgvFromFile.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
 	 clgetSVal.cc clgetFullVal.cc clgetNFVal.cc clgetNIVal.cc clgetNSVal.cc \
 	 clgetNVals.cc cldbggetFVal.cc cldbggetIVal.cc cldbggetSVal.cc         \
 	 cldbggetNFVal.cc cldbggetNIVal.cc cldbggetNSVal.cc cldbggetFullVal.cc\
@@ -82,7 +82,7 @@ CLSRC = ParseCmdLine.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
 	 clReset.cc clgetConfigFile.cc clSaneExit.cc clThrowError.cc clRetry.cc \
 	 clSigHandler.cc clIsInteractive.cc ErrorObj.cc rl_interface.cc        \
 	 clSetOptions.cc clTextColouring.cc clgetBVal.cc cldbggetBVal.cc clgetNBVal.cc \
-         cldbggetNBVal.cc clBreakStr.cc 
+         cldbggetNBVal.cc clBreakStr.cc clgetenv.cc
 
 FCLSRC = ParseCmdLine.cc InstallSymb.cc AddQKey.cc clgetFVal.cc clgetIVal.cc   \
 	  clgetSVal.cc clgetNFVal.cc clgetNIVal.cc clgetNSVal.cc clgetNVals.cc  \
@@ -188,7 +188,7 @@ ftst: ftst.f $(PARAFEEDLIB)
 # Housekeeping targets
 #
 clean: 
-	\rm -rf *.o *~ tst ftst tst2 tstcpp *.a
+	\rm -rf *.o *~ tst ftst tst2 tstcpp gcalc *.a *.so
 	\rm -rf y.tab.c y.tab.cc y.tab.h lex.yy.cc shell.tab.c shell.tab.cc shell.tab.h lex.sh_.{cc,c} callbacks_awk.cc
 	\rm -rf calc/y.tab.c calc/y.tab.h calc/lex.yy.c
 	cd $(CALCHOME); $(MAKE) -f nocmake_makefiles/makefile clean

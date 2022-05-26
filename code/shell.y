@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <shell.h>
+#include <sstream>
+  
 #ifdef GNUREADLINE
 #define PROMPT(s)   
 #else
@@ -69,14 +71,36 @@ char *sh_sys_cmd=NULL;
        }
      return 1;
    }
+
  void catchHiddenSymbol(Symbol *s)
  {
+   int v = CL_ALLOWHIDDEN; // Default: Allow accessing hidden
+			   // variables for any operation
+   char *valStr=NULL;
+   if ((valStr = std::getenv("CL_ALLOWHIDDEN")) != NULL)
+     {
+       stringstream toT2(valStr);
+       toT2 >> v;
+     }
+   //   v=cl_getenv("CL_ALLOWHIDDEN",1); // DOES NOT FIND THE TEMPLATE
+   //   FUNCTION AT LINK TIME.  I DON'T KNOW WHY!
+
+   if (v==CL_ALLOWHIDDEN) return; // Allow setting hidden variables, without warning even.
+   
    if (s->Exposed!=1)
      {
-       //string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\')."; 
-       ////clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
-       //clError x(msg,string("###Error"),CL_INFORMATIONAL);
-       //throw(x);
+       if (v==CL_ALLOWHIDDEN_WITHWARNING) // Allow, but give a warning
+	 {
+	   string msg="Accessing a hidden variable (named \'" + string(s->Name) + "\')."; 
+	   clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
+	   //clThrowUp(msg.c_str(),"###Error",CL_SEVERE);
+	 }
+       else if (v==CL_STRICTLY_NOT_ALLOWHIDDEN) // Strictly not allowed.  Value is left unchanged and an exception is emitted.
+	 {
+	   string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\').";
+	   clError x(msg,string("###Error"),CL_INFORMATIONAL);
+	   throw(x);
+	 }
      }
  }
 %}

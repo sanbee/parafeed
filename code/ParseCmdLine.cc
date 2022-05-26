@@ -142,6 +142,7 @@ int ParseCmdLine(int argc, char *argv[])
 
   cl_ProgName = (char *)getmem(i,"BeginParam:2"); /* Store the program name */
   strcpy(cl_ProgName, buf);
+  string cl_ProgNameStr(buf);
 
 #ifdef GNUREADLINE
   strcat(cl_ProgName,">");
@@ -158,14 +159,9 @@ int ParseCmdLine(int argc, char *argv[])
 
       if (*buf == '=')
 	{
-	  /* char str[128]; */
-	  /* sprintf(str, "%s> Unknown token \"%s\" found.\n",cl_ProgName,buf); */
-	  /* clThrowUp(str,"###Fatal ",CL_FATAL); */
-
 	  stringstream os;
-	  os << cl_ProgName << " Unknwon token \"" << buf << "\"found." << endl;
+	  os << cl_ProgNameStr << " Unknown token \"" << buf << "\"found." << endl;
 	  clThrowUp(os.str().c_str(), "###Error", CL_FATAL);
-
 
 	  exit(-1);
 	}
@@ -204,33 +200,6 @@ int ParseCmdLine(int argc, char *argv[])
 	  // for(unsigned i=0;i<tokens.size();i++) cerr <<"\"" <<tokens[i]<<"\"";cerr << endl;
 	  
 	  for(unsigned i=0;i<tokens.size();i++) S->Val[i] = tokens[i];
-
-	  // n = ntok(buf,&comma,CL_ESC);
-	  // if (n && (strlen(buf) > 0))
-	  //   S->Val.resize(n+1);
-	  //   //S->Val = (char **) getmem(sizeof(char **)*(n+1),"Parse:Symb->Val");
-	  // n=0;
-	  // tok=(char *)clstrtok(buf,&comma,CL_ESC);
-	  // while (tok)
-	  //   {
-	  //     m = strlen(tok);
-	  //     if (m > 0)
-	  // 	{
-	  // 	  m--;
-	  // 	  while (tok[m] == ' ') m--;
-	  // 	  if (m >= 0) 
-	  // 	    {
-	  // 	      S->NVals++;
-	  // 	      tok[m+1]='\0';
-	  // 	      S->Val[n]=tok;
-	  // 	      /* S->Val[n] = (char *)getmem(m+2,"BeginParam:3"); */
-	  // 	      /* strncpy(S->Val[n], tok,m+1); */
-	  // 	      /* S->Val[n][m+1]='\0'; */
-	  // 	      n++;
-	  // 	    }
-	  // 	}
-	  //     tok=(char *)clstrtok(NULL,&comma,CL_ESC);
-	  //   }
 	  AddVNode(S,&cl_SymbTab,&cl_TabTail);
 	}
     }
@@ -244,12 +213,32 @@ int ParseCmdLine(int argc, char *argv[])
 	  {
 	    cl_RegistrationMode=0;
 	    cl_NoPrompt = 1;
-	    if ((S->NVals > 1) && (S->Val[1] == "dryrun"))
-	      cl_DryRun=1;
 	  }
-	//if (!strcmp(S->Val[0],"dbg"))
+
 	if (S->Val[0]=="dbg")
 	  CL_DBG_ON = 1;
+
+	if ((S->NVals > 1) && (S->Val[1] == "dryrun"))
+	  cl_DryRun=1;
+
+	if (S->Val[0]=="dryrun")
+	  cl_DryRun=1;
+
+	if (S->Val[0] == "def")
+	  {
+	    cl_NoPrompt=1; // Don't start the interactive shell in EndCL().
+
+	    if ((S->NVals > 1) && (S->Val[1]==""))
+	      clThrowUp(std::string("Usage: ")+cl_ProgNameStr+std::string(" help=def[,<FileName>]"), "###Error", CL_FATAL);
+
+	    if (S->NVals == 1)
+		clLoadSymb();
+	    else if (S->NVals > 1)
+	      {
+		doload_and_register((char *)string(S->Val[1]).c_str());
+		clLoadSymb();
+	      }
+	  }
       }
   }
   
@@ -461,6 +450,11 @@ int EndCL()
       i=startShell();
 
       if (cl_DOCLEANUP) clCleanUp();
+      if (cl_DryRun==1)
+	{
+	  clThrowUp("Exiting in EndCL() due to dryrun mode", "###Informational", CL_INFORMATIONAL);
+	  exit(0);
+	}
       return i;
     }
   /*
@@ -475,7 +469,10 @@ int EndCL()
   char *var = (char*)"GHIST";
   save_hist(var,(char *)CL_HIST_DEFAULT);
 #endif
-  if (cl_DryRun==1) exit(0);
+  if (cl_DryRun==1)
+    {
+      exit(0);
+    }
   return 1;
 }
 /*------------------------------------------------------------------------

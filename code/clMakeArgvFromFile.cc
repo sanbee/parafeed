@@ -1,4 +1,3 @@
-#-*-makefile-*-
 /*
  * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
@@ -17,35 +16,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-include $(GSRCROOT)/../Setup/Setup.$(GOSDIR)
-#----------------------------------------------------------------
-#
-# The 'ranlib' program to be run, if it exists
-#
-RANLIB=/bin/ranlib
-#
-LEX = flex
-YACC=bison -y -p calc_
-#CC=/usr/local/compilers/7.2/gcc_3.2.3/bin/gcc
+/* $Id: AddCmd.c,v 2.1 1999/08/13 12:18:30 sanjay Exp $ */
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <shell.h>
+#include <shell.tab.h>
 
-libcalc.a: calc.o calcinit.o
-	ar r libcalc.a calc.o calcinit.o
-	if [ -f $(RANLIB) ]; then $(RANLIB) libcalc.a; fi
+#ifdef __cplusplus
+extern "C" {
+#endif
+  vector<string> clMakeArgvFromFile(const string& Name)
+  {
+    cerr << "From clMakeArgvFromFile " << Name << endl;
+    vector<string> argv;
+    ifstream defFile;
+    defFile.open(Name.c_str());
 
-y.tab.c: calc.y lex.yy.c yyerror.c
-	$(YACC) calc.y
-
-calc.o: y.tab.c calc.h
-	$(CC) $(CFLAGS) -c y.tab.c -o calc.o
-
-lex.yy.c: lex.l
-	$(LEX) lex.l
-
-y.tab.h: calc.y
-	$(YACC) -d calc.y
-
-calcinit.o:calcinit.c symboltable.h y.tab.h
-	$(CC) $(CFLAGS) -c calcinit.c
-
-clean: 
-	\rm -rf *.o *~ tst *.a
+    string line;
+    while(getline(defFile,line))
+      {
+	string tt;
+	for(auto c : line) if ((c != ' ') && (c != '\t')) tt.push_back(c);
+	argv.push_back(tt);
+      }
+    return argv;
+  }
+#ifdef __cplusplus
+	   }
+#endif
