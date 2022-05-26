@@ -82,7 +82,7 @@ CLSRC = ParseCmdLine.cc clMakeArgvFromFile.cc clparseVal.cc InstallSymb.cc clget
 	 clReset.cc clgetConfigFile.cc clSaneExit.cc clThrowError.cc clRetry.cc \
 	 clSigHandler.cc clIsInteractive.cc ErrorObj.cc rl_interface.cc        \
 	 clSetOptions.cc clTextColouring.cc clgetBVal.cc cldbggetBVal.cc clgetNBVal.cc \
-         cldbggetNBVal.cc clBreakStr.cc 
+         cldbggetNBVal.cc clBreakStr.cc clgetenv.cc
 
 FCLSRC = ParseCmdLine.cc InstallSymb.cc AddQKey.cc clgetFVal.cc clgetIVal.cc   \
 	  clgetSVal.cc clgetNFVal.cc clgetNIVal.cc clgetNSVal.cc clgetNVals.cc  \

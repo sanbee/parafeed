@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <shell.h>
+#include <support.h>
+  
 #ifdef GNUREADLINE
 #define PROMPT(s)   
 #else
@@ -69,14 +71,25 @@ char *sh_sys_cmd=NULL;
        }
      return 1;
    }
+
  void catchHiddenSymbol(Symbol *s)
  {
+   int v = 0;
+   //   v=cl_getenv("CL_ALLOWHIDDEN",1);
+   if (v==1) return;
+   
    if (s->Exposed!=1)
      {
-       //string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\')."; 
-       ////clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
-       //clError x(msg,string("###Error"),CL_INFORMATIONAL);
-       //throw(x);
+       {
+	 string msg="Accessing a hidden variable (named \'" + string(s->Name) + "\')."; 
+	 clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
+	 //clThrowUp(msg.c_str(),"###Error",CL_SEVERE);
+       }
+       /* { */
+       /* 	 string msg="Attempted access of a hidden variable (named \'" + string(s->Name) + "\').";  */
+       /* 	 clError x(msg,string("###Error"),CL_INFORMATIONAL); */
+       /* 	 throw(x); */
+       /* } */
      }
  }
 %}
