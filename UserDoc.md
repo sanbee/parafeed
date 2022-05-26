@@ -207,7 +207,7 @@ TABBED completion is available, when the library is compiled with GNU
 Readline support.
 
 At the interactive shell prompt, two TABs will display the list of
-shell commands and keywords available for completion.  A TAB after a
+shell commands and keywords available for completion.  A TAB after aThi5 is f0r h0bby w0rc
 completed keyword will add the '=' sign.  Two TABs after this will
 print the list of available options for the completed keyword.  If no
 options are available (typically because the list of possible values
@@ -336,6 +336,8 @@ libraries.
   * `GHIST`:`GHIST` specifies the file in which the history of the commands issued in the interactive session is saved.  This file will be common to all applications.  The default history file is `$HOME/.g_hist`.  This is also the file from which all applications will load the command history.
 
   * `MAXGHIST`: `MAXGHIST` should be set to the maximum number of command history entries which the user wishes to save.  By default this is set to 100.
+  
+  * `CL_ALLOWHIDDEN`: Control how access to the hidden keywords is handled in an interactive session.  Value of 0 strictly disallows access hidden keywords and an error message is issued.  Value of 1 allows accessing, including change the values of hidden keywords and no warning message is issued.  Value of 2 allows accessing/setting hidden keywords but a warning is issued.  Default value is 1 (quietly allow access to hidden keywords).  In a non-interactive session (`help=noprompt` or `help=def,[FILE]`) concept of hidden keywords does not make sense.  Full access to all keywords is possible in this mode.
 
 ### Customization: Parameter Unrolling ###
 
@@ -404,7 +406,7 @@ command-line and their effect:
 > > but will be used by the application internally.  These keywords can be accessed as normal keywords
 > > by setting `help` keyword to the value "`dbg`".
 
-  * `help=def,<FILE>`
+  * `help=def,[<FILE>]`
 > > The application will run in the `noprompt` mode and attempt to load the keyword settings from the `<FILE>` as if it was used with the `load` command in the interactive shell (but without starting the interactive shell).  If `<FILE>` is omitted, the application attempts to load the default `.def` file (`<APPLICATION NAME>.def`).  If `,` is also omitted the application exits with an error message.
 
 ## Example ##
