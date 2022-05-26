@@ -406,8 +406,8 @@ command-line and their effect:
 > > but will be used by the application internally.  These keywords can be accessed as normal keywords
 > > by setting `help` keyword to the value "`dbg`".
 
-  * `help=def,[<FILE>]`
-> > The application will run in the `noprompt` mode and attempt to load the keyword settings from the `<FILE>` as if it was used with the `load` command in the interactive shell (but without starting the interactive shell).  If `<FILE>` is omitted, the application attempts to load the default `.def` file (`<APPLICATION NAME>.def`).  If `,` is also omitted the application exits with an error message.
+  * `help=def[,<FILE>]`
+> > The application will run in the `noprompt` mode and attempt to load the keyword settings from the `<FILE>` as if it was used with the `load` command in the interactive shell (but without starting the interactive shell).  If `<FILE>` is omitted, the application attempts to load the default `.def` file (`<APPLICATION NAME>.def`).  For `help=def,` the application exits with an error message.
 
 ## Example ##
 Here is a typical screen-shot of an application using _parafeed_ for user interface, when started in the interactive mode:
