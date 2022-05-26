@@ -214,6 +214,7 @@ int ParseCmdLine(int argc, char *argv[])
 	    cl_RegistrationMode=0;
 	    cl_NoPrompt = 1;
 	  }
+
 	if (S->Val[0]=="dbg")
 	  CL_DBG_ON = 1;
 
@@ -222,6 +223,7 @@ int ParseCmdLine(int argc, char *argv[])
 
 	if (S->Val[0]=="dryrun")
 	  cl_DryRun=1;
+
 	if (S->Val[0] == "def")
 	  {
 	    //vector<string> targv;

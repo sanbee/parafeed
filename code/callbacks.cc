@@ -695,8 +695,9 @@ END{									\
     if (!ifs.good())
       {
 	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
-	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
-    	return 2;
+	clThrowUp(std::string("Error in opening file \"")+strcpp+std::string("\""), "###Error", CL_FATAL);
+	//cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
+	return 2;
       }
     else
       {
