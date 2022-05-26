@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,8 @@ T cl_getenv(const char *name, const T defaultVal)
   }
   return val;
 }
-template int cl_getenv(const char *name, const int defaultVal);
+// template
+//   int cl_getenv(const char *name, const int defaultVal);
  // template 
  //   bool cl_getenv(const char *name, const bool defaultVal);
  // template 

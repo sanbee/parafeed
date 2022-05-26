@@ -39,6 +39,10 @@
 #define   CL_ARG_FILENAME 2
 #define   CL_ARG_KEYWORD  4
 
+#define CL_STRICTLY_NOT_ALLOWHIDDEN 0 // keyword value unchanged
+#define CL_ALLOWHIDDEN 1              // keyword value change, no warning issued
+#define CL_ALLOWHIDDEN_WITHWARNING 2  // keyword value change, warning issued
+
 #define SETBIT(V,MASK)    ((V) |= (MASK))  // Bitwise OR with the mask
 #define RESETBIT(V,MASK)  ((V) &= ~(MASK)) // Bitwise AND with the complement of the mask
 #define ISSET(V,MASK)     ((((V) & (MASK))==(MASK)))
