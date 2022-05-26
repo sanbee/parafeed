@@ -240,7 +240,7 @@ int ParseCmdLine(int argc, char *argv[])
 	      }
 	    else
 	      {
-		clThrowUp(std::string("Usage: ")+cl_ProgNameStr+std::string(" help=def,<FileName>"), "###Error", CL_FATAL);
+		clThrowUp(std::string("Usage: ")+cl_ProgNameStr+std::string(" help=def,[<FileName>]"), "###Error", CL_FATAL);
 	      }
 	  }
       }
