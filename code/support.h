@@ -24,8 +24,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  int cl_getenv(const char *name, const int defaultVal);
-
   void setAutoIDefaults(Symbol *S, const int& val);
   void setAutoBDefaults(Symbol *S, const bool& val);
   void setAutoFDefaults(Symbol *S, const float& val);
