@@ -384,7 +384,7 @@ END{									\
     fprintf(stderr,"Colour coding of the keywords:\n");
     fprintf(stderr,"  Red:   Indicates that the keyword can hide other keywords.\n");
     fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
-    fprintf(stderr,"         (usually by the first red coloured keyword above).\n");
+    fprintf(stderr,"         (usually by the first red or green coloured keyword above).\n");
     fprintf(stderr,"  Green: Indicates that the keyword can be hidden by some other keyword(s)\n");
     fprintf(stderr,"         and can itself be also hidding other keyword(s).\n");
     fprintf(stderr,"--------------------------------------------------------------------\n");

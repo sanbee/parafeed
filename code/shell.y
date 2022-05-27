@@ -28,7 +28,8 @@
 #include <unistd.h>
 #include <shell.h>
 #include <sstream>
-  
+#include <clgetenv.h>
+
 #ifdef GNUREADLINE
 #define PROMPT(s)   
 #else
@@ -76,14 +77,9 @@ char *sh_sys_cmd=NULL;
  {
    int v = CL_ALLOWHIDDEN; // Default: Allow accessing hidden
 			   // variables for any operation
-   char *valStr=NULL;
-   if ((valStr = std::getenv("CL_ALLOWHIDDEN")) != NULL)
-     {
-       stringstream toT2(valStr);
-       toT2 >> v;
-     }
-   //   v=cl_getenv("CL_ALLOWHIDDEN",1); // DOES NOT FIND THE TEMPLATE
-   //   FUNCTION AT LINK TIME.  I DON'T KNOW WHY!
+   // Return a value of an env. variable.  If not set, return the
+   // default value (2nd. arg.).
+   v=cl_getenv("CL_ALLOWHIDDEN",v);
 
    if (v==CL_ALLOWHIDDEN) return; // Allow setting hidden variables, without warning even.
    
