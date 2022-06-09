@@ -50,7 +50,12 @@ void UI(bool restart, int argc, char **argv)
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetBValp("bool1",b1,i,watchPoints);
 
-	i=1;clgetIValp("int",j,i);
+	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
+	exposedKeys.push_back("float");
+	watchPoints["1"]=exposedKeys;
+	i=1;clgetIValp("int",j,i,watchPoints);
+	// i=1;clgetIValp("int",j,i);
+
 	i=1;clgetFValp("float",f,i);
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
