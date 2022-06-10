@@ -59,8 +59,10 @@ extern "C" {
 #ifdef __cplusplus
 int clgetNFValp(const string& Key, vector<float>& val, int& m)
 {
-  SMap EmptyMap;
-  return clgetNValp(Key,val,m,EmptyMap);
+  HANDLE_EXCEPTIONS(
+		    SMap EmptyMap;
+		    return clgetGenericNValp(Key,val,m,EmptyMap);
+		    )
   // int n,n0;
   // double d;
   // Symbol *S;
@@ -97,6 +99,8 @@ int clgetNFValp(const string& Key, vector<float>& val, int& m)
 }
 int clgetNFValp(const string& Key, vector<float>& val, int& m, SMap& smap)
 {
-  return clgetNValp(Key,val,m,smap);
+  HANDLE_EXCEPTIONS(
+		    return clgetGenericNValp(Key,val,m,smap);
+		    );
 }
 #endif

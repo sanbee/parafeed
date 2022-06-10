@@ -116,7 +116,7 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap
 		    );
 }
 template <class T>
-T clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
+T clgetGenericNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
 {
   Symbol *S;
   double d;
