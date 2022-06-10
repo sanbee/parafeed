@@ -21,83 +21,91 @@
 #include <vector>
 #include <support.h>
 #include <sstream>
+#include <clgetBaseCode.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*---------------------------------------------------------------------------*/
-/* Extract a m number of values associated with Key.  If *m is negative,     */
-/* fatal error occurs.  If the return value is positive, it is the number of */
-/* associated values that are returned in *Vals.  Vals should have enough    */
-/* space to hold the returned values.                                        */
-/*---------------------------------------------------------------------------*/
-int clgetNBVal(char *Key, bool *val, int *m)
-{
-  int i=1,n;
-  double d;
-  Symbol *S;
-
-HANDLE_EXCEPTIONS(
-		  std::ostringstream os;
-		  if (*m <= 0)
-		    os << "bool[]";
-		  //sprintf(tmp,"bool[]");
-		  else
-		    os << "bool[" << *m << "]";
-		  //sprintf(tmp,"bool[%d]",*m);
-
-		  S = SearchQSymb(Key, os.str());
-		  i=1;
-		  while(i <= *m)
-		    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
-		    else if (n==0) break;
-		    else {val[i-1] = (bool)(d==0?false:true);i++;}
-
-		  return i-1;
-		  )
-}
-
-#ifdef __cplusplus
-	   }
-#endif
-#ifdef __cplusplus
-  int clgetNBValp(const string& Key, vector<bool>& val, int& m)
+  /*---------------------------------------------------------------------------*/
+  /* Extract a m number of values associated with Key.  If *m is negative,     */
+  /* fatal error occurs.  If the return value is positive, it is the number of */
+  /* associated values that are returned in *Vals.  Vals should have enough    */
+  /* space to hold the returned values.                                        */
+  /*---------------------------------------------------------------------------*/
+  int clgetNBVal(char *Key, bool *val, int *m)
   {
-    int n,n0;
+    int i=1,n;
     double d;
     Symbol *S;
     
-   HANDLE_EXCEPTIONS(
-		     std::ostringstream os;
-		     
-		     if (m <= 0)
-		       os << "bool[]";
-		       //sprintf(tmp,"bool[]");
-		     else
-		       os << "bool[" << m << "]";
-		       //sprintf(tmp,"bool[%d]",m);
+    HANDLE_EXCEPTIONS(
+		      std::ostringstream os;
+		      if (*m <= 0)
+			os << "bool[]";
+		      //sprintf(tmp,"bool[]");
+		      else
+			os << "bool[" << *m << "]";
+		      //sprintf(tmp,"bool[%d]",*m);
 		      
-		     S = SearchQSymb((char *)Key.c_str(), os.str());
-		     //
-		     // Remember the number of values set by the user.
-		     //
-		     setAutoNBDefaults(S,val);
-		     n0=S->NVals;
-		     int i=1;
-		     for(int j=0;j<n0;j++)
-		       {
-			 if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
-			   {
-			     if (n==0) {m=S->NVals=i-1;return i-1;}
-			     else 
-			       {
-				 val.resize(i);
-				 val[i-1] = (bool)(d==0?false:true);
-				 i++;
-			       }
-			   }
-		       }
-		     m=S->NVals=i-1;
-		     return i-1;
-		     );
-  }
+		      S = SearchQSymb(Key, os.str());
+		      i=1;
+		      while(i <= *m)
+			if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
+			else if (n==0) break;
+			else {val[i-1] = (bool)(d==0?false:true);i++;}
+		      
+		      return i-1;
+		      )
+      }
+  
+#ifdef __cplusplus
+}
+#endif
+#ifdef __cplusplus
+int clgetNBValp(const string& Key, vector<bool>& val, int& m)
+{
+  SMap EmptyMap;
+  return clgetNValp(Key,val,m,EmptyMap);
+  //  int n,n0;
+  //  double d;
+  //  Symbol *S;
+  
+  // HANDLE_EXCEPTIONS(
+  // 		     std::ostringstream os;
+  
+  // 		     if (m <= 0)
+  // 		       os << "bool[]";
+  // 		       //sprintf(tmp,"bool[]");
+  // 		     else
+  // 		       os << "bool[" << m << "]";
+  // 		       //sprintf(tmp,"bool[%d]",m);
+  
+  // 		     S = SearchQSymb((char *)Key.c_str(), os.str());
+  // 		     //
+  // 		     // Remember the number of values set by the user.
+  // 		     //
+  // 		     setAutoNBDefaults(S,val);
+  // 		     n0=S->NVals;
+  // 		     int i=1;
+  // 		     for(int j=0;j<n0;j++)
+  // 		       {
+  // 			 if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
+  // 			   {
+  // 			     if (n==0) {m=S->NVals=i-1;return i-1;}
+  // 			     else 
+  // 			       {
+  // 				 val.resize(i);
+  // 				 val[i-1] = (bool)(d==0?false:true);
+  // 				 i++;
+  // 			       }
+  // 			   }
+  // 		       }
+  // 		     m=S->NVals=i-1;
+  // 		     return i-1;
+  // 		     );
+}
+
+int clgetNBValp(const string& Key, vector<bool>& val, int& m, SMap& smap)
+{
+  return clgetNValp(Key,val,m,smap);
+}
 #endif

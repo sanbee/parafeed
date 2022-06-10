@@ -87,7 +87,61 @@ T clgetGenericValp(const string& Name, T& val, int& n, SMap& smap)
 		    );
 }
 
+template <class T>
+Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap=SMap())
+{
+  Symbol *S;
+  std::ostringstream os;
 
+  if      (std::is_same<T, int>::value)
+    {if (m <= 0) os << "int[]";  else os << "int[" << m << "]";}
+  else if (std::is_same<T, float>::value)
+    {if (m <= 0) os << "float[]";  else os << "float[" << m << "]";}
+  else if (std::is_same<T, bool>::value)
+    {if (m <= 0) os << "bool[]";  else os << "bool[" << m << "]";}
+  else if (std::is_same<T, std::string>::value)
+    {if (m <= 0) os << "string[]";  else os << "string[" << m << "]";}
+
+    
+  HANDLE_EXCEPTIONS(
+		    S = SearchQSymb((char *)Name.c_str(), os.str());
+		    //
+		    // Remember the number of values set by the user.
+		    //
+		    setAutoDefaults(S,val);
+
+		    if (S!=NULL) 
+		      {if (!smap.empty()) S->smap = smap;}
+		    return S;
+		    );
+}
+template <class T>
+T clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
+{
+  Symbol *S;
+  double d;
+
+  HANDLE_EXCEPTIONS(
+		    S=clgetNValBaseCode(Name,val,m,smap);
+		    int n0=S->NVals;
+		    int i=1;
+		    for(int j=0;j<n0;j++)
+		      {
+			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
+			  {
+			    if (m==0) {m=S->NVals=i-1;return i-1;}
+			    else 
+			      {
+				val.resize(i);
+				val[i-1] = (T)d;
+				i++;
+			      }
+			  }
+		      }
+		    m=S->NVals=i-1;
+		    return i-1;
+		    );
+}
 // #ifdef __cplusplus
 // 	   }
 // #endif
