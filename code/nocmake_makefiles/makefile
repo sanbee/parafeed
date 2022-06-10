@@ -71,7 +71,7 @@ SHSRC = CopySymb.cc AddCmd.cc AddNode.cc AddVar.cc AllocSymb.cc AddQKey.cc      
 	 PrintVals.cc SetVar.cc SetPrompt.cc SetSymbTab.cc SetCmdTab.cc         \
 	 yyerror.cc  minmatch.cc isBool.cc
 
-CLSRC = ParseCmdLine.cc clgetBaseCode.cc clMakeArgvFromFile.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
+CLSRC = ParseCmdLine.cc clMakeArgvFromFile.cc clparseVal.cc InstallSymb.cc clgetFVal.cc clgetIVal.cc \
 	 clgetSVal.cc clgetFullVal.cc clgetNFVal.cc clgetNIVal.cc clgetNSVal.cc \
 	 clgetNVals.cc cldbggetFVal.cc cldbggetIVal.cc cldbggetSVal.cc         \
 	 cldbggetNFVal.cc cldbggetNIVal.cc cldbggetNSVal.cc cldbggetFullVal.cc\
@@ -107,7 +107,11 @@ install: libs
 
 $(LIBSH): %.o:  %.cc 
 	$(C++) -c $< -o $@
+
 ParseCmdLine.o: ParseCmdLine.cc SymbTab.h
+support.o: setAutoDefaults.h
+CLGETVAL=clgetIVal.o clgetFVal.o clgetBVal.o clgetSVal.o
+$(CLGETVAL): clgetBaseCode.h
 
 $(LIBCL): %.o:  %.cc 
 	$(C++) -c $< -o $@

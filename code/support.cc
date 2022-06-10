@@ -29,91 +29,92 @@
 #include <clGlobals.h>
 #include <sstream>
 #include <clstring.h>
+#include <setAutoDefaults.h>
 /*---------------------------------------------------------------------------*/
 /* Template function to set a single value as default for the Symbol S */
 /*---------------------------------------------------------------------------*/
-template <class T>
-void setAutoDefaults(Symbol *S, const T& val)
-{
-  std::vector<T> tmp;
-  tmp.push_back(val);
-  setAutoDefaults(S, tmp);
-  return;
-}
-/*---------------------------------------------------------------------------*/
-/* Template function to set a vector of values as default for the Symbol S */
-/*---------------------------------------------------------------------------*/
-template <class T>
-void setAutoDefaults(Symbol *S, const vector<T>& val)
-{
-    /* int n=val.size(); */
-    /* if (cl_RegistrationMode == 1) */
-    /*   { */
-    /* 	S->DefaultVal.resize(n,""); */
-    /* 	for(int i=0;i<n;i++) */
-    /* 	  { */
-    /* 	    ostringstream os; */
-    /* 	    os << val[i]; */
-    /* 	    S->DefaultVal[i] = os.str(); */
-    /* 	  } */
-    /*   } */
+// template <class T>
+// void setAutoDefaults(Symbol *S, T const & val)
+// {
+//   std::vector<T> tmp;
+//   tmp.push_back(val);
+//   setAutoDefaults(S, tmp);
+//   return;
+// }
+// /*---------------------------------------------------------------------------*/
+// /* Template function to set a vector of values as default for the Symbol S */
+// /*---------------------------------------------------------------------------*/
+// template <class T>
+// void setAutoDefaults(Symbol *S, const vector<T>& val)
+// {
+//     /* int n=val.size(); */
+//     /* if (cl_RegistrationMode == 1) */
+//     /*   { */
+//     /* 	S->DefaultVal.resize(n,""); */
+//     /* 	for(int i=0;i<n;i++) */
+//     /* 	  { */
+//     /* 	    ostringstream os; */
+//     /* 	    os << val[i]; */
+//     /* 	    S->DefaultVal[i] = os.str(); */
+//     /* 	  } */
+//     /*   } */
     
-    /* if (S->Val.size() == 0) */
-    /*   { */
-    /* 	S->Val.resize(n,""); */
-    /* 	n = S->DefaultVal.size(); */
-    /* 	for(int i=0;i<n;i++) */
-    /* 	  { */
-    /* 	    stringstream os; */
-    /* 	    os << S->DefaultVal[i]; */
-    /* 	    S->Val[i]=os.str(); */
-    /* 	  } */
-    /* 	S->NVals = n; */
-    /*   } */
+//     /* if (S->Val.size() == 0) */
+//     /*   { */
+//     /* 	S->Val.resize(n,""); */
+//     /* 	n = S->DefaultVal.size(); */
+//     /* 	for(int i=0;i<n;i++) */
+//     /* 	  { */
+//     /* 	    stringstream os; */
+//     /* 	    os << S->DefaultVal[i]; */
+//     /* 	    S->Val[i]=os.str(); */
+//     /* 	  } */
+//     /* 	S->NVals = n; */
+//     /*   } */
 
 
-    /* if (S->Val == NULL) */
-    /*   { */
-    /* 	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults"); */
-    /* 	n = S->DefaultVal.size(); */
-    /* 	for(int i=0;i<n;i++) */
-    /* 	  { */
-    /* 	    ostringstream os; */
-    /* 	    os << S->DefaultVal[i]; */
-    /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
-    /* 					"setAutoNIDefaults"); */
-    /* 	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL); */
-    /* 	  } */
-    /* 	S->NVals = n; */
-    /*   } */
+//     /* if (S->Val == NULL) */
+//     /*   { */
+//     /* 	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults"); */
+//     /* 	n = S->DefaultVal.size(); */
+//     /* 	for(int i=0;i<n;i++) */
+//     /* 	  { */
+//     /* 	    ostringstream os; */
+//     /* 	    os << S->DefaultVal[i]; */
+//     /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
+//     /* 					"setAutoNIDefaults"); */
+//     /* 	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL); */
+//     /* 	  } */
+//     /* 	S->NVals = n; */
+//     /*   } */
 
-  int n=val.size();
-  if (cl_RegistrationMode == 1)
-    {
-      S->DefaultVal.resize(n,"");
-      for(int i=0;i<n;i++)
-	{
-	  ostringstream os;
-	  //os << (val[i]==0?false:true);
-	  os << val[i];
-	  S->DefaultVal[i] = os.str();
-	}
-    }
+//   int n=val.size();
+//   if (cl_RegistrationMode == 1)
+//     {
+//       S->DefaultVal.resize(n,"");
+//       for(int i=0;i<n;i++)
+// 	{
+// 	  ostringstream os;
+// 	  //os << (val[i]==0?false:true);
+// 	  os << val[i];
+// 	  S->DefaultVal[i] = os.str();
+// 	}
+//     }
     
-  if (S->Val.size() == 0)
-    {
-      S->Val.resize(n,"");
-      n = S->DefaultVal.size();
-      for(int i=0;i<n;i++)
-	{
-	  stringstream os;
-	  //os << S->DefaultVal[i];
-	  os << val[i];
-	  S->Val[i]=os.str();
-	}
-      S->NVals = n;
-    }
-}
+//   if (S->Val.size() == 0)
+//     {
+//       S->Val.resize(n,"");
+//       n = S->DefaultVal.size();
+//       for(int i=0;i<n;i++)
+// 	{
+// 	  stringstream os;
+// 	  //os << S->DefaultVal[i];
+// 	  os << val[i];
+// 	  S->Val[i]=os.str();
+// 	}
+//       S->NVals = n;
+//     }
+// }
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -390,50 +391,10 @@ extern "C" {
 	    for(unsigned i=0;i<ntok;i++)
 	      S->DefaultVal[i]=tokens[i];
 	  }
-	// if ((comma = ntok(valstr,(char*)",",CL_ESC))==-1) 
-	//   {
-	//     ostringstream os;
-	//     os << "Error in counting commas in the string " << val << endl;
-	//     throw(clError(os.str().c_str(), "setAutoSDefaults",0));
-	//   }
-	
-	// if (cl_RegistrationMode==1)
-	//   {
-	//     S->DefaultVal.resize(comma,"");
-	//     valstr=(char *)val.c_str();
-	//     char *t;
-	//     if ((t=clstrtok(valstr,(char*)",", CL_ESC)) != NULL)
-	//       {
-	// 	S->DefaultVal[0]=t;
-	// 	for(int i=1;i<comma;i++) S->DefaultVal[i]=clstrtok(NULL,(char*)",", CL_ESC);
-	//       }
-	//   }
       }
     else
       {
 	setAutoDefaults(S,val);
-      /* 	ostringstream os; */
-      /* 	os << val; */
-      /* 	if (cl_RegistrationMode == 1) */
-      /* 	  { */
-      /* 	    S->DefaultVal.resize(1,""); */
-      /* 	    S->DefaultVal[0] = os.str(); */
-      /* 	  } */
-	
-      /* 	if (S->Val.size() == 0) */
-      /* 	  { */
-      /* 	    stringstream ss; */
-      /* 	    ss << val; */
-      /* 	    S->Val.resize(1,""); */
-      /* 	    S->Val[0]=ss.str(); */
-      /* 	  } */
-      /* 	/\* if (S->Val == NULL) *\/ */
-      /* 	/\*   { *\/ */
-      /* 	/\*     S->Val = (char **) getmem(sizeof(char *),"setAutoSDefaults"); *\/ */
-      /* 	/\*     S->Val[0] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1),(char*)"setAutoSDefaults"); *\/ */
-      /* 	/\*     sprintf(S->Val[0],"%s",os.str().c_str()); *\/ */
-      /* 	/\*   } *\/ */
-      /* 	S->NVals = 1; */
       }
   }
   /*----------------------------------------------------------------------

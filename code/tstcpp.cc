@@ -11,7 +11,7 @@
 
 void UI(bool restart, int argc, char **argv)
 {
-  int i,j=0,N;
+  int i,j=0,oi=0,N;
   float f=0;
   vector<float> fv(10);
   VString strarr;
@@ -58,9 +58,11 @@ void UI(bool restart, int argc, char **argv)
 
 	i=1;clgetFValp("float",f,i);
 
+	i=1;clgetIValp("oneint",oi,i);
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("strarr");
 	watchPoints["showstrarr"]=exposedKeys;
+	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
 
 	i=0;clgetNSValp("strarr",strarr,i);
@@ -81,6 +83,8 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Bool1       = " << b1 << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
+  cerr << "  OneInt      = " << oi << endl;
+
   cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
   cerr << "  String      = " << str << endl;
   cerr << "  Float Array = ";
