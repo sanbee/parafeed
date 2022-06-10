@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,19 +17,15 @@
  *
  */
 //
-// Generic baseclass type functions that are called in clget?Valp() functions.
+// Generic baseclass type functions that are called in clget?Valp()
+// functions.
 //
-// setAutoDefaults is a template function in support.cc.  In
-// clgetBaseCode() below, it works for T=float,bool,int but not when
-// T=string.  I don't quite understand why, but it seems to do with
-// the fact that setAutoSDefaults(symbol*, const string&, const int)
-// signature in support.cc is different from
-// setAuto{F,I,B}Defaults(symbol *,const {float,int,bool}&) functions
-// all of which just call the templated setAutoDefaults(symbol *,
-// const T&).
-//
-// Due to this problem, current clgetSValp() functions do not use
-// clgetBaseCode().
+// The code is separated into clgetBaseCode() and clgetGenericValp()
+// functions since the code to return the value from the Symbol is
+// differen, at least for T=string.  clgetGenericValp() function has
+// this code for T=int,float,bool and is therefore usable for
+// realizing clget{I,F,B}Valp() functions. clgetSValp() calls
+// clgetBaseCode() directly.
 //
 #ifndef CLGETBASECODE_H
 #define CLGETBASECODE_H
@@ -48,18 +44,22 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
   Symbol *S;
   string type_str="";
   uint type_int=0;
-  if (std::is_same<T, int>::value)   {type_str="int";   type_int=CL_INTEGERTYPE;}
+  //
+  // Set type string and type integer value based on the type of T
+  //
+  if      (std::is_same<T, int>::value)   {type_str="int";   type_int=CL_INTEGERTYPE;}
   else if (std::is_same<T, float>::value) {type_str="float"; type_int=CL_FLOATTYPE;}
   else if (std::is_same<T, bool>::value)  {type_str="bool";  type_int=CL_BOOLTYPE;}
   else if (std::is_same<T, std::string>::value)
-                                     {type_str="string";type_int=CL_STRINGTYPE;}
+                                          {type_str="string";type_int=CL_STRINGTYPE;}
 
   HANDLE_EXCEPTIONS(
 		    if (n < 0)
 		      S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
 		    else
 		      S=SearchQSymb((char *)Name.c_str(),type_str);
-		    //N = _ABS(n);
+
+		    // Use templated function that works for all values of T
 		    setAutoDefaults(S,val);
 
 		    if (S!=NULL) 
@@ -71,7 +71,9 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
 		    )
     return S;
 };
-
+//
+// A convenience function for T=int,float,bool
+//
 template <class T>
 T clgetGenericValp(const string& Name, T& val, int& n, SMap& smap)
 {
@@ -80,14 +82,6 @@ T clgetGenericValp(const string& Name, T& val, int& n, SMap& smap)
   int N;
   HANDLE_EXCEPTIONS(
 		    S=clgetBaseCode(Name,val,n,smap);
-		    
-		    // if (n < 0)
-		    //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
-		    // else
-		    //   S=SearchQSymb((char *)Name.c_str(),(char *)"int");
-		    // setAutoIDefaults(S,val);
-		    // if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
-
 		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
 		    return N;
 		    );

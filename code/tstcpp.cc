@@ -85,8 +85,8 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Int         = " << j << endl;
   cerr << "  OneInt      = " << oi << endl;
 
-  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
   cerr << "  String      = " << str << endl;
+  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
   cerr << "  Float Array = ";
   for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
     cerr << *i << " ";cerr << endl;

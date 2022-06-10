@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,8 @@
 #include <iostream>
 #include <algorithm>
 #include <clstring.h>
-
+//#include <setAutoDefaults.h>
+#include <clgetBaseCode.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,20 +73,25 @@ int clgetSVal(const char *Name, char *val, int *n)
 #endif
 
 #ifdef __cplusplus
+
 int clgetSValp(const string &Name, string& val, int& n)
 {
   Symbol *S;
   unsigned int N;
   
   HANDLE_EXCEPTIONS(
-		    if (n < 0)
-		      S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-		    else
-		      S=SearchQSymb((char *)Name.c_str(),"string");
-		    N = _ABS(n);
-		    if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
+		    SMap emptyMap;
+		    S = clgetBaseCode(Name, val, n, emptyMap);
 
-		    setAutoSDefaults(S,val);
+		    // if (n < 0)
+		    //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+		    // else
+		    //   S=SearchQSymb((char *)Name.c_str(),"string");
+		    // if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
+
+		    // setAutoDefaults(S,val);
+
+		    N = _ABS(n);
 		    if (S!=NULL) 
 		      {
 			if (N <= S->NVals) 
@@ -106,17 +112,23 @@ int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
   unsigned int N;
 
 HANDLE_EXCEPTIONS(
-		  if (n < 0)
-		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-		  else
-		    S=SearchQSymb((char *)Name.c_str(),"string");
-		  N = _ABS(n);
-		  setAutoSDefaults(S,val);
+		  S = clgetBaseCode(Name, val, n, smap);
+		  
+		  // if (n < 0)
+		  //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+		  // else
+		  //   S=SearchQSymb((char *)Name.c_str(),"string");
 
+		  // if (S!=NULL) 
+		  //   {
+		  //     SETBIT(S->Attributes,CL_STRINGTYPE);
+		  //     S->smap = smap;
+		  //   }
+		  // setAutoDefaults(S,val);
+
+		  N = _ABS(n);
 		  if (S!=NULL) 
 		    {
-		      SETBIT(S->Attributes,CL_STRINGTYPE);
-		      S->smap = smap;
 		      if (N <= S->NVals) 
 			{
 			  val = trim(S->Val[N-1]);
