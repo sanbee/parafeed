@@ -286,6 +286,11 @@ int       clgetSValp(const string& Name, string& Val, int& N, SMap &smap);
 int       clgetFValp(const string& Name, float& Val, int& N, SMap &smap);
 int       clgetBValp(const string& Name, bool& Val, int& N, SMap &smap);
 int       clgetIValp(const string& Name, int& Val, int& N, SMap &smap);
+
+//int       clgetNSValp(const string& Name, string& Val, int& N, SMap &smap);
+int       clgetNFValp(const string& Name, float& Val, int& N, SMap &smap);
+int       clgetNBValp(const string& Name, bool& Val, int& N, SMap &smap);
+int       clgetNIValp(const string& Name, int& Val, int& N, SMap &smap);
 int       clgetBaseCore(const string& Name, int& Val, int& N, SMap &smap);
 void      clTextColouring(const string& text, const unsigned int textType, string& startSeq, string& endSeq);
 #endif
