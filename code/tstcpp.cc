@@ -67,9 +67,8 @@ void UI(bool restart, int argc, char **argv)
 
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNFValp("farray",fv,N);
-	VString options;
-	options.resize(4);
-	options[0]="one"; options[1]="two"; options[2]="three"; options[3]="showstrarr";
+
+	VString options={"one","two","three","showstrarr"};
 	clSetOptions("string",options);
       }
       EndCL();
