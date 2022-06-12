@@ -59,17 +59,16 @@ void UI(bool restart, int argc, char **argv)
 	i=1;clgetFValp("float",f,i);
 
 	i=1;clgetIValp("oneint",oi,i);
+
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("strarr");
 	watchPoints["showstrarr"]=exposedKeys;
 	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
+	clSetOptions("string",{"one","two","three","showstrarr"});
 
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNFValp("farray",fv,N);
-
-	VString options={"one","two","three","showstrarr"};
-	clSetOptions("string",options);
       }
       EndCL();
     }
