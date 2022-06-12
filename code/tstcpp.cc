@@ -11,7 +11,7 @@
 
 void UI(bool restart, int argc, char **argv)
 {
-  int i,j=0,N;
+  int i,j=0,oi=0,N;
   float f=0;
   vector<float> fv(10);
   VString strarr;
@@ -50,20 +50,25 @@ void UI(bool restart, int argc, char **argv)
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetBValp("bool1",b1,i,watchPoints);
 
-	i=1;clgetIValp("int",j,i);
+	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
+	exposedKeys.push_back("float");
+	watchPoints["1"]=exposedKeys;
+	i=1;clgetIValp("int",j,i,watchPoints);
+	// i=1;clgetIValp("int",j,i);
+
 	i=1;clgetFValp("float",f,i);
+
+	i=1;clgetIValp("oneint",oi,i);
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("strarr");
 	watchPoints["showstrarr"]=exposedKeys;
+	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
+	clSetOptions("string",{"one","two","three","showstrarr"});
 
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNFValp("farray",fv,N);
-	VString options;
-	options.resize(4);
-	options[0]="one"; options[1]="two"; options[2]="three"; options[3]="showstrarr";
-	clSetOptions("string",options);
       }
       EndCL();
     }
@@ -76,8 +81,10 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Bool1       = " << b1 << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
-  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
+  cerr << "  OneInt      = " << oi << endl;
+
   cerr << "  String      = " << str << endl;
+  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
   cerr << "  Float Array = ";
   for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
     cerr << *i << " ";cerr << endl;
