@@ -83,14 +83,6 @@ int clgetSValp(const string &Name, string& val, int& n)
 		    SMap emptyMap;
 		    S = clgetBaseCode(Name, val, n, emptyMap);
 
-		    // if (n < 0)
-		    //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-		    // else
-		    //   S=SearchQSymb((char *)Name.c_str(),"string");
-		    // if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
-
-		    // setAutoDefaults(S,val);
-
 		    N = _ABS(n);
 		    if (S!=NULL) 
 		      {
@@ -114,17 +106,6 @@ int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
 HANDLE_EXCEPTIONS(
 		  S = clgetBaseCode(Name, val, n, smap);
 		  
-		  // if (n < 0)
-		  //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-		  // else
-		  //   S=SearchQSymb((char *)Name.c_str(),"string");
-
-		  // if (S!=NULL) 
-		  //   {
-		  //     SETBIT(S->Attributes,CL_STRINGTYPE);
-		  //     S->smap = smap;
-		  //   }
-		  // setAutoDefaults(S,val);
 
 		  N = _ABS(n);
 		  if (S!=NULL) 

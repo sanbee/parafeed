@@ -54,22 +54,6 @@ int clgetIValp(const string& Name, int& val, int& n)
 		    SMap empty;
 		    return clgetValp(Name,val,n,empty);
 		   );
-  // Symbol *S;
-  // double d;
-  // int N;
-  // HANDLE_EXCEPTIONS(
-  // 		    S=clgetBaseCode(Name,val,n);
-		    
-  // 		    // if (n < 0)
-  // 		    //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
-  // 		    // else
-  // 		    //   S=SearchQSymb((char *)Name.c_str(),(char *)"int");
-  // 		    // setAutoIDefaults(S,val);
-  // 		    // if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
-
-  // 		    if ((N=clparseVal(S,&n,&d))>0) val = (int)d;
-  // 		    return N;
-  // 		    );
 }
 
 int clgetIValp(const string& Name, int& val, int& n, SMap &smap)
@@ -77,27 +61,6 @@ int clgetIValp(const string& Name, int& val, int& n, SMap &smap)
   HANDLE_EXCEPTIONS(
 		   return clgetValp(Name,val,n,smap);
 		   );
-  // Symbol *S;
-  // unsigned int N;
-  // double d;
-  
-  // HANDLE_EXCEPTIONS(
-  // 		    S=clgetBaseCode(Name,val,n,smap);
-  // 		    // if (n < 0)
-  // 		    //   S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-  // 		    // else
-  // 		    //   S=SearchQSymb((char *)Name.c_str(),"int");
-  // 		    // N = _ABS(n);
-  // 		    // setAutoIDefaults(S,val);
-  // 		    // if (S!=NULL) 
-  // 		    //   {
-  // 		    //     SETBIT(S->Attributes,CL_INTEGERTYPE);
-  // 		    //     S->smap = smap;
-  // 		    //   }
-  // 		    if ((N=clparseVal(S,&n,&d))>0) val = (int)d;
-		    
-  // 		    return N;
-  // 		    );
 }
 
 #endif

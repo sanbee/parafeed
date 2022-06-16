@@ -63,39 +63,6 @@ int clgetNFValp(const string& Key, vector<float>& val, int& m)
 		    SMap EmptyMap;
 		    return clgetNValp(Key,val,m,EmptyMap);
 		    )
-  // int n,n0;
-  // double d;
-  // Symbol *S;
-  
-  // HANDLE_EXCEPTIONS(
-  // 		      std::ostringstream os;
-  // 		      if (m <= 0)
-  // 			os << "float[]";
-  // 		      //sprintf(tmp,"bool[]");
-  // 		      else
-  // 			os << "float[" << m << "]";
-  // 		      //sprintf(tmp,"bool[%d]",*m);
-  
-  // 		      S = SearchQSymb((char *)Key.c_str(), os.str());
-  // 		      setAutoNFDefaults(S,val);
-  // 		      n0=S->NVals;
-  // 		      int i=1;
-  // 		      for (int j=0;j<n0;j++)
-  // 			{
-  // 			  if ((n=clparseVal(S,&i,&d))!=CL_FAIL)
-  // 			    {
-  // 			      if (n==0) {m=S->NVals=i-1;return i-1;}
-  // 			      else 
-  // 				{
-  // 				  val.resize(i);
-  // 				  val[i-1] = (float)d;
-  // 				  i++;
-  // 				}
-  // 			    }
-  // 			}
-  // 		      m=S->NVals=i-1;
-  // 		      return i-1;
-  // 		      );
 }
 int clgetNFValp(const string& Key, vector<float>& val, int& m, SMap& smap)
 {

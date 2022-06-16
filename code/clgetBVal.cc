@@ -56,21 +56,6 @@ int clgetBValp(const string& Name, bool& val, int& n)
 		    SMap empty;
 		    return clgetValp(Name,val,n,empty);
 		   );
-//   Symbol *S;
-//   double d;
-//   int N;
-//   bool tval;
-//   tval=(val==0?false:true);
-// HANDLE_EXCEPTIONS(
-// 		  if (n < 0)
-// 		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
-// 		  else
-// 		    S=SearchQSymb((char *)Name.c_str(),"bool");
-// 		  setAutoBDefaults(S,tval);
-// 		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
-// 		  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
-// 		  return N;
-// 		  );
 }
 
 int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
@@ -78,27 +63,5 @@ int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
   HANDLE_EXCEPTIONS(
 		   return clgetValp(Name,val,n,smap);
 		   );
-//   Symbol *S;
-//   unsigned int N;
-//   double d;
-
-// HANDLE_EXCEPTIONS(
-// 		  if (n < 0)
-// 		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-// 		  else
-// 		    S=SearchQSymb((char *)Name.c_str(),"bool");
-// 		  N = _ABS(n);
-// 		  setAutoBDefaults(S,val);
-
-// 		  if (S!=NULL) 
-// 		    {
-// 		      SETBIT(S->Attributes,CL_BOOLTYPE);
-// 		      S->smap = smap;
-// 		    }
-
-// 		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
-
-// 		  return N;
-// 		  );
 }
 #endif
