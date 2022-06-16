@@ -54,7 +54,7 @@ int clgetFValp(const string& Name, float &val, int &n)
 {
   HANDLE_EXCEPTIONS(
 		    SMap empty;
-		    return clgetGenericValp(Name,val,n,empty);
+		    return clgetValp(Name,val,n,empty);
 		   );
   // Symbol *S;
   // int N;
@@ -74,7 +74,7 @@ int clgetFValp(const string& Name, float &val, int &n)
 int clgetFValp(const string& Name, float& val, int& n, SMap &smap)
 {
   HANDLE_EXCEPTIONS(
-		    return clgetGenericValp(Name,val,n,smap);
+		    return clgetValp(Name,val,n,smap);
 		   );
 //   Symbol *S;
 //   unsigned int N;

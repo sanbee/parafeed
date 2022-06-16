@@ -65,7 +65,7 @@ int clgetNIValp(const string& Key, vector<int>& val, int& m)
 {
   HANDLE_EXCEPTIONS(
 		    SMap EmptyMap;
-		    return clgetGenericNValp(Key,val,m,EmptyMap);
+		    return clgetNValp(Key,val,m,EmptyMap);
 		    )
   //  int n,n0;
   //  double d;
@@ -107,7 +107,7 @@ int clgetNIValp(const string& Key, vector<int>& val, int& m)
 int clgetNIValp(const string& Key, vector<int>& val, int& m, SMap& smap)
 {
   HANDLE_EXCEPTIONS(
-		    return clgetGenericNValp(Key,val,m,smap);
+		    return clgetNValp(Key,val,m,smap);
 		    )
 }
 #endif

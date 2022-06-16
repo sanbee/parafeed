@@ -54,7 +54,7 @@ int clgetBValp(const string& Name, bool& val, int& n)
 {
   HANDLE_EXCEPTIONS(
 		    SMap empty;
-		    return clgetGenericValp(Name,val,n,empty);
+		    return clgetValp(Name,val,n,empty);
 		   );
 //   Symbol *S;
 //   double d;
@@ -76,7 +76,7 @@ int clgetBValp(const string& Name, bool& val, int& n)
 int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
 {
   HANDLE_EXCEPTIONS(
-		   return clgetGenericValp(Name,val,n,smap);
+		   return clgetValp(Name,val,n,smap);
 		   );
 //   Symbol *S;
 //   unsigned int N;

@@ -34,9 +34,7 @@
 #include <support.h>
 #include <setAutoDefaults.h>
 #include <type_traits>
-// #ifdef __cplusplus
-// extern "C" {
-// #endif
+
 
 template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
@@ -72,10 +70,14 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
     return S;
 };
 //
-// A convenience function for T=int,float,bool
+// //
+//----------------------------------------------------------------------
+// The templated AIP-level function that can be used in the applications.
+// The clget?Valp() functions are wrappers around this function for
+// backward compatibility.
 //
 template <class T>
-T clgetGenericValp(const string& Name, T& val, int& n, SMap& smap)
+T clgetValp(const string& Name, T& val, int& n, SMap& smap)
 {
   Symbol *S;
   double d;
@@ -86,7 +88,9 @@ T clgetGenericValp(const string& Name, T& val, int& n, SMap& smap)
 		    return N;
 		    );
 }
-
+//
+// Templated functions for NVal calls.  
+//
 template <class T>
 Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap=SMap())
 {
@@ -115,8 +119,14 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap
 		    return S;
 		    );
 }
+//
+//----------------------------------------------------------------------
+// The templated AIP-level function that can be used in the applications.
+// The clgetN?Valp() functions are wrappers around this function for
+// backward compatibility.
+//
 template <class T>
-T clgetGenericNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
+T clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
 {
   Symbol *S;
   double d;
@@ -142,7 +152,4 @@ T clgetGenericNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
 		    return i-1;
 		    );
 }
-// #ifdef __cplusplus
-// 	   }
-// #endif
 #endif

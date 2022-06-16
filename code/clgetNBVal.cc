@@ -65,7 +65,7 @@ int clgetNBValp(const string& Key, vector<bool>& val, int& m)
 {
   HANDLE_EXCEPTIONS(
 		    SMap EmptyMap;
-		    return clgetGenericNValp(Key,val,m,EmptyMap);
+		    return clgetNValp(Key,val,m,EmptyMap);
 		    )
   //  int n,n0;
   //  double d;
@@ -109,7 +109,7 @@ int clgetNBValp(const string& Key, vector<bool>& val, int& m)
 int clgetNBValp(const string& Key, vector<bool>& val, int& m, SMap& smap)
 {
   HANDLE_EXCEPTIONS(
-		    return clgetGenericNValp(Key,val,m,smap);
+		    return clgetNValp(Key,val,m,smap);
 		    )
 }
 #endif
