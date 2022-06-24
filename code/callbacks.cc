@@ -960,7 +960,7 @@ END{									\
 //
   int docopyright(const std::string& Msg)
 {
-  cerr //<< "   parafeed 2.0" << endl
+  cerr << "   parafeed 2.0" << endl
        << "   Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar (DOT) sanjay (AT) gmail (DOT) com)"
        << endl
        << "   This is free software with ABSOLUTELY NO WARRANTY." << endl;
