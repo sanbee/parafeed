@@ -20,11 +20,11 @@
 #include <clhashdefines.h>
 CmdSymbol CmdTab[]={
   {(char *)"inp", (char *)"Show the various keywords and their values. Use option \"-a\" to include hidden keywords",NULL,NULL,doinp,CL_ARG_KEYWORD},
+  {(char *)"go",  (char *)"Run the application.  Use option \"-b\" to run in background",NULL,NULL,dogo,CL_ARG_NONE},
+  //  {(char *)"gob", (char *)"Run the application in background",NULL,NULL,dogob,CL_ARG_NONE},
   {(char *)"show", (char *)"Same as the \"inp\" command",NULL,NULL,doinp,CL_ARG_KEYWORD},
-  {(char *)"go",  (char *)"Run the application",NULL,NULL,dogo,CL_ARG_NONE},
-  {(char *)"gob", (char *)"Run the application in background",NULL,NULL,dogob,CL_ARG_NONE},
   {(char *)"run",  (char *)"Same as the \"go\" command",NULL,NULL,dogo,CL_ARG_NONE},
-  {(char *)"runb", (char *)"Same as the \"gob\" command",NULL,NULL,dogob,CL_ARG_NONE},
+  //  {(char *)"runb", (char *)"Same as the \"gob\" command",NULL,NULL,dogob,CL_ARG_NONE},
   {(char *)"cd",  (char *)"Change working directory",NULL,NULL,docd,CL_ARG_FILENAME},
   {(char *)"help",(char *)"This help",NULL,NULL,dohelp,CL_ARG_NONE},
   {(char *)"?",   (char *)"Information on all exposed keywords, optionally on a single keyword.\n"

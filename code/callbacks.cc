@@ -87,7 +87,21 @@ END{									\
 }'"
   
   /*----------------------------------------------------------------------*/
-  int dogo(char *arg) {return EOF;}
+  int dogo(char *arg)
+  {
+    if (arg==NULL) return EOF;
+    else
+      {
+	if (string(arg) == "")
+	  return EOF;
+	else if (string(arg) == "-b")
+	  {
+	    dogob(arg);
+	    return EOF;
+	  }
+      }
+    return EOF;
+  }
   /*----------------------------------------------------------------------*/
   bool checkVal(Symbol* t, vector<string>& mapVal)
   {
