@@ -772,7 +772,7 @@ END{									\
     return 1;
   }
   /*------------------------------------------------------------------------
-    Allow editing of the keyword values using the "favourate" editor.
+    Allow editing of the keyword values using the "favorite" editor.
     -------------------------------------------------------------------------*/
   int doedit(char *arg)
   {
