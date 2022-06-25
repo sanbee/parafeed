@@ -776,11 +776,13 @@ END{									\
     -------------------------------------------------------------------------*/
   int doedit(char *arg)
   {
-    char *tmpname=tempnam("/tmp","cl_");
+    char tmpname[]="/tmp/cl_XXXXXX";//tempnam("/tmp","cl_");
+    int fd = mkstemp(tmpname);
     // Build and issue a system command to edit a file with current
     // keyword=value pairs
     {
       char *editor=(char *)getenv(CL_EDITORENV);
+      if (editor==NULL) editor = (char *)getenv("EDITOR");
       std::ostringstream str;
     
       if (dosave(tmpname)>1) return 1;
@@ -794,12 +796,9 @@ END{									\
       doload(tmpname);
     }
 
-    // Build and issue a system command to remove the temp file
-    {
-      std::ostringstream str;
-      str << "/bin/rm -rf " << tmpname << "*";
-      system(str.str().c_str());
-    }
+    // Remove the temp file
+    unlink(tmpname);
+    close(fd);
     return 1;
   }
   /*----------------------------------------------------------------------*/
