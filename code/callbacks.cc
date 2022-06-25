@@ -777,7 +777,12 @@ END{									\
   int doedit(char *arg)
   {
     char tmpname[]="/tmp/cl_XXXXXX";//tempnam("/tmp","cl_");
-    int fd = mkstemp(tmpname);
+    int fd;
+    if ((fd = mkstemp(tmpname)) == -1)
+      {
+	std::string msg=std::string("Error in opening tempfile in \"edit")+std::string("\" command. ")+std::string(strerror(errno));
+	clThrowUp(msg, "###Error", CL_INFORMATIONAL);
+      }
     // Build and issue a system command to edit a file with current
     // keyword=value pairs
     {
