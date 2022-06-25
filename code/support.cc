@@ -30,6 +30,9 @@
 #include <sstream>
 #include <clstring.h>
 #include <setAutoDefaults.h>
+
+#include <regex>
+
 /*---------------------------------------------------------------------------*/
 /* Template function to set a single value as default for the Symbol S */
 /*---------------------------------------------------------------------------*/
@@ -340,7 +343,20 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void setAutoNFDefaults(Symbol *S, const vector<float>& val)
   {setAutoDefaults(S,val);}
-
 #ifdef __cplusplus
 }
 #endif
+
+std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx)
+{
+  //std::regex rgx("\\s+");
+  std::sregex_token_iterator iter(in.begin(),
+				  in.end(),
+				  rgx,
+				  -1);
+  std::sregex_token_iterator end;
+  std::vector<string> out;
+  for ( ; iter != end; ++iter)
+    out.push_back(*iter);
+  return out;
+}

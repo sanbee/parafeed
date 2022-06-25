@@ -25,6 +25,7 @@
 #include <cl.h>
 #include <shell.h>
 #include <shell.tab.h>
+#include <support.h>
 #include <string>
 #include <errno.h>
 #include <limits.h>
@@ -127,8 +128,11 @@ END{									\
 	    //
 	    // For all other types, check by string comparision only.
 	    //
-	    loc = t->smap.find(string(t->Val[0]));
-	    found = (loc != t->smap.end()); 
+	    if (t->Val.size() > 0)
+	      {
+		loc = t->smap.find(string(t->Val[0]));
+		found = (loc != t->smap.end());
+	      }
 	  }
 	if (found) mapVal=(*loc).second;
       }
@@ -223,11 +227,16 @@ END{									\
     // First expose the keywords for this session
     //
     for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
-
+    std::vector<std::string> sv;
+    if (arg)
+      {
+	sv = stokenize(string(arg), std::regex("\\s+"));
+	//for(auto i:sv) cerr << i << " ";cerr << endl;
+      }
     //    
     // Now print the viewable keywords.
     //
-    if (arg == NULL)
+    if (sv.size()==0)//arg == NULL)
       for (t=cl_SymbTab;t;t=t->Next)
 	{
 	  if ((t->Exposed) && 
@@ -239,7 +248,7 @@ END{									\
 	      PrintVals(stderr,t,1);
 	    }
 	}
-    else if (string(arg) == "-a")
+    else if (sv.size()==1 && sv[0]=="-a")//string(arg) == "-a")
       for (t=cl_SymbTab;t;t=t->Next)
 	{
 	  if ((t->Class==CL_APPLNCLASS) || 
@@ -252,30 +261,35 @@ END{									\
 	}
     else
       {
-	t=SearchVSymb((char*)arg,cl_SymbTab);
-	if (t==NULL)
+	bool showAll=false;
+	if (sv[0]=="-a")
 	  {
-	    string mesg = "Illegal command \"inp "+string(arg)+"\"";
-	    clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+	    showAll=true;
+	    sv.erase(sv.begin());
 	  }
-	// if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
-	//     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-	//   {
-	//     fprintf(stderr,format,t->Name);
-	//     PrintVals(stderr,t);
-	//   }
-	vector<string> mapVal;
-	checkVal(t,mapVal);
-	for (unsigned int j=0; j < mapVal.size(); j++)
+	for(auto iarg : sv)
 	  {
-	    Symbol *S;
-	    S=SearchVSymb((char *)mapVal[j].c_str(),cl_SymbTab);
-	    if (((S->Exposed) && (S->Class == CL_APPLNCLASS)) ||
-		(((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	    if (t==NULL)
 	      {
-		PrintKey(stderr, S);
-		PrintVals(stderr,S,1);
+		string mesg = "Illegal command \"inp "+string(iarg)+"\"";
+		clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
 	      }
+	    vector<string> mapVal;
+	    checkVal(t,mapVal);
+
+	    //	for (unsigned int j=0; j < mapVal.size(); j++)
+	    {
+	      Symbol *S;
+	      //S=SearchVSymb((char *)mapVal[j].c_str(),cl_SymbTab);
+	      S=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
+		  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+		{
+		  PrintKey(stderr, S);
+		  PrintVals(stderr,S,1);
+		}
+	    }
 	  }
       }
     return 1;

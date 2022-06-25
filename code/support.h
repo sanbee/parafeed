@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <stdbool.h>
+#include <regex>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -38,4 +39,5 @@ extern "C" {
 #ifdef __cplusplus
 	   }
 #endif
+std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx);
 #endif
