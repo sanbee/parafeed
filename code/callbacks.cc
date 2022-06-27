@@ -344,6 +344,8 @@ END{									\
   }
 
   /*----------------------------------------------------------------------*/
+  // TODO: The constants in the code below need to be determined programmatically.
+  // The necessary information to do so is there in the (global) symbol table.
   int dotypehelp(char *arg)
   {
     //char format[12];
@@ -354,16 +356,17 @@ END{									\
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
     //    cerr << "Max length: " << maxNameLength << " " << fullFormat << endl;
     string s0;
-    s0.insert(0,maxNameLength/2-1,' ');
-    s0.append("Key");
-    s0.insert(s0.end(),maxNameLength/2+5,' ');
-    s0.append("Type");
-    s0.insert(s0.end(),10,' ');
-    s0.append("Factory defaults");
-    s0.insert(s0.end(),maxNameLength,' ');
-    s0.append("Options\n");
+    s0.insert(0,maxNameLength/2-1,' ');          s0.append("Key");
+    s0.insert(s0.end(),maxNameLength/2+10,' ');  s0.append("Type");
+    s0.insert(s0.end(),10,' ');                  s0.append("Factory defaults");
+    s0.insert(s0.end(),maxNameLength,' ');       s0.append("Options\n");
     // s0.append("Key                Type          Factory defaults        Options\n");
-    string s1="---------          ----------       ----------------        -------\n";
+    string s1;//="---------          ----------       ----------------        -------\n";
+    s1.insert(0,maxNameLength,'-');
+    s1.insert(s1.end(),maxNameLength/2+6,' '); s1.insert(s1.end(), 6 ,'-');
+    s1.insert(s1.end(),9,' ');                 s1.insert(s1.end(), 16 ,'-');
+    s1.insert(s1.end(),10,' ');                s1.insert(s1.end(), 7 ,'-');
+    s1.insert(s1.end(),'\n');
     Symbol *S;
 
     if (arg==NULL)
