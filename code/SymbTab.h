@@ -19,7 +19,8 @@
 /* $Id: SymbTab.h,v 2.2 2000/03/12 04:51:37 sanjay Exp $ */
 #include <clhashdefines.h>
 CmdSymbol CmdTab[]={
-  {(char *)"inp", (char *)"Show the various keywords and their values. Use option \"-a\" to include hidden keywords",NULL,NULL,doinp,CL_ARG_KEYWORD},
+  {(char *)"inp", (char *)"Show the various keywords and their values.\n"
+"                Use option \"-a\" to include hidden keywords",NULL,NULL,doinp,CL_ARG_KEYWORD},
   {(char *)"go",  (char *)"Run the application.  Use option \"-b\" to run in background",NULL,NULL,dogo,CL_ARG_NONE},
   //  {(char *)"gob", (char *)"Run the application in background",NULL,NULL,dogob,CL_ARG_NONE},
   {(char *)"show", (char *)"Same as the \"inp\" command",NULL,NULL,doinp,CL_ARG_KEYWORD},
@@ -31,7 +32,7 @@ CmdSymbol CmdTab[]={
 "                Use option \"-a\" to include hidden keywords", NULL,NULL,dotypehelp,CL_ARG_KEYWORD},
   {(char *)"explain",(char *)"Detailed help, optionally of keywords/task [[Key][:Task]]",NULL,NULL,doexplain,CL_ARG_KEYWORD},
   {(char *)"save",   (char *)"Save the values, optionally in a given file",NULL,NULL,dosave,CL_ARG_FILENAME},
-  {(char *)"savecmd",(char *)"Save the settings as UNIX shell command string, optionally in a given file",NULL,NULL,docmdsave,CL_ARG_FILENAME},
+  {(char *)"savecmd",(char *)"Save the settings as UNIX shell command string, optionally in a file",NULL,NULL,docmdsave,CL_ARG_FILENAME},
   {(char *)"load",   (char *)"Load the values, optionally from a file",NULL,NULL,doload,CL_ARG_FILENAME},
   {(char *)"edit",   (char *)"Use an editor to (un)set the values",NULL,NULL,doedit,CL_ARG_FILENAME},
   {(char *)"warranty",   (char *)"Show warranty information",NULL,NULL,dowarranty,CL_ARG_NONE},
