@@ -870,11 +870,6 @@ END{									\
     if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
       cl_ProgName[strlen(cl_ProgName)-1]='\0';
     
-    // fprintf(stdout,"%%N %s\n",cl_ProgName);
-    // fprintf(stdout,);
-    // fprintf(stdout,"%%P Author\n");
-    // fprintf(stdout,"\t<Put your name and e-mail address here>\n\n");
-    
     cout <<"%%N " << cl_ProgName << endl;
     cout << "\t<Put the explaination for the task here>" << endl << endl;
     cout << "%%P Author" << endl;
@@ -904,10 +899,10 @@ END{									\
 	    if (S->smap.begin() != S->smap.end())
 	      cout << endl << endl << "\tWatched keywords (<VALUE> : <Keywords exposed>):" << endl;
 
-	    for(auto sm : S->smap)
+	    for(auto sm : S->smap) // std::SMap
 	      {
-		cout <<"          " << (sm).first << " : ";
-		for(auto sv : sm.second)
+		cout <<"          " << sm.first << " : "; // Value that exposes other keywords
+		for(auto sv : sm.second) // std::vector<std::string> as list of exposed keywords
 		  cout << sv;
 		cout << endl;
 	      }
