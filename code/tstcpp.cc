@@ -11,7 +11,7 @@
 
 void UI(bool restart, int argc, char **argv)
 {
-  int i,j=0,oi=0,N;
+  int i,j=0,dj=1,oi=0,N;
   float f=0;
   vector<float> fv(10);
   VString strarr;
@@ -54,7 +54,7 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.push_back("float");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetIValp("int",j,i,watchPoints);
-	// i=1;clgetIValp("int",j,i);
+	i=1;dbgclgetIValp("dbgint",dj,i);
 
 	i=1;clgetFValp("float",f,i);
 
@@ -84,10 +84,8 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  OneInt      = " << oi << endl;
 
   cerr << "  String      = " << str << endl;
-  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
-  cerr << "  Float Array = ";
-  for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
-    cerr << *i << " ";cerr << endl;
+  cerr << "  StrArr      = "; for(auto s : strarr) cerr << s << " "; cerr << endl;
+  cerr << "  Float Array = "; for(auto f : fv)     cerr << f << " "; cerr << endl;
 }
 
 //
