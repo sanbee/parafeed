@@ -886,42 +886,33 @@ END{									\
 	    //
 	    // Print name and default value
 	    //
-	    fprintf(stdout,"%%A %s (default=%s)",
-		    S->Name,val.c_str());
-	    //
-	    // Print options, if available
-	    //
+	    cout << "%%A " << S->Name << " (default=" << val <<")";
 	    if (S->Options.size() > 0)
 	      {
-		fprintf(stdout," Options:[");
-		for(unsigned int i=0;i<S->Options.size();i++)
-		  fprintf(stdout,"%s ",S->Options[i].c_str());
-		fprintf(stdout,"]");
+		cout << " Options:[";
+		for(auto op : S->Options) cout << " " << op;
+		cout << "]";
 	      }
 	    //
 	    // Print watched-keywords map, if available
 	    //
 	    if (S->smap.begin() != S->smap.end())
-	      fprintf(stdout,"\n\n\tWatched keywords (<VALUE>: <Keywords exposed>):\n");
-	    for(SMap::iterator i=S->smap.begin(); i != S->smap.end(); i++)
+	      cout << endl << endl << "\tWatched keywords (<VALUE> : <Keywords exposed>):" << endl;
+
+	    for(auto sm : S->smap)
 	      {
-		fprintf(stdout,"          %s: ",(*i).first.c_str());
-		vector<string> sv=(*i).second;
-		for(unsigned int j=0;j<sv.size();j++)
-		  {
-		    fprintf(stdout,"%s ",(char *)sv[j].c_str());
-		  }
-		fprintf(stdout,"\n");
+		cout <<"          " << (sm).first << " : ";
+		for(auto sv : sm.second)
+		  cout << sv;
+		cout << endl;
 	      }
 	    //
 	    // ...rest is upto a human to fill-in.
 	    //
-	    fprintf(stdout,
-		    "\n\n\t<Put the explaination for the keyword here>\n\n\n");
+	    cout << endl << endl << "\t<Put the explaination for the keyword here>" << endl << endl << endl;
 	  }
 	if (S->Class==CL_DBGCLASS)
-	  fprintf(stdout,
-		  "\t***This keyword is exposed with a command-line argument of \"help=dbg\"***\n");
+	  cout << "\t***This keyword is exposed with a command-line argument of \"help=dbg\"***" << endl;
       }
     exit(0);
     return 1;
