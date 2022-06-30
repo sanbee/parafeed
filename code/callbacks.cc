@@ -870,11 +870,16 @@ END{									\
     if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
       cl_ProgName[strlen(cl_ProgName)-1]='\0';
     
-    fprintf(stdout,"%%N %s\n",cl_ProgName);
-    fprintf(stdout,"\t<Put the explaination for the task here>\n\n");
-    fprintf(stdout,"%%P Author\n");
-    fprintf(stdout,"\t<Put your name and e-mail address here>\n\n");
+    // fprintf(stdout,"%%N %s\n",cl_ProgName);
+    // fprintf(stdout,);
+    // fprintf(stdout,"%%P Author\n");
+    // fprintf(stdout,"\t<Put your name and e-mail address here>\n\n");
     
+    cout <<"%%N " << cl_ProgName << endl;
+    cout << "\t<Put the explaination for the task here>" << endl << endl;
+    cout << "%%P Author" << endl;
+    cout << "\t<Put your name and e-mail address here>" << endl << endl;
+
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
