@@ -326,8 +326,9 @@ variables.
   * `GDEFAULTS`: The default values of keywords can be saved in "defaults file".  `GDEFAULTS` variable specifies the directory where these files are stored.  Such a file can be automatically loaded by the applications upon start-up.  The defaults file name is constructed by appending the suffix "`.def`" to the application name.
 
 
- By default, the application will look for the defaults file in the current directory.  If a keyword appears in the "`.def`" as well as in the "`.config`" file, the keyword will be treated as a shell constant.  This can be used to effectively produce specialized versions of an application program by writing an appropriated "`.config`", where keywords can have fixed values, not alterable by the user (e.g., a version of `xtract` which will read input from the shared memory of the GMRT data acquisition system).
+      By default, the application will look for the defaults file in the current directory.  If a keyword appears in the "`.def`" as well as in the "`.config`" file, the keyword will be treated as a shell constant.  This can be used to effectively produce specialized versions of an application program by writing an appropriated "`.config`", where keywords can have fixed values, not alterable by the user (e.g., a version of `xtract` which will read input from the shared memory of the GMRT data acquisition system).
 
+  * `CL_ALLOWHIDDEN`: Control how access to the hidden keywords is handled in an interactive session.  Value of 0 strictly disallows access hidden keywords and an error message is issued.  Value of 1 allows accessing, including change the values of hidden keywords and no warning message is issued.  Value of 2 allows accessing/setting hidden keywords but a warning is issued.  Default value is 1 (quietly allow access to hidden keywords).  In a non-interactive session (`help=noprompt` or `help=def,[FILE]`) concept of hidden keywords does not make sense.  Full access to all keywords is possible in this mode.
 
 The following two variables are effective only for versions of the
 user interface libraries which use the GNU Readline and the History
@@ -337,7 +338,6 @@ libraries.
 
   * `MAXGHIST`: `MAXGHIST` should be set to the maximum number of command history entries which the user wishes to save.  By default this is set to 100.
   
-  * `CL_ALLOWHIDDEN`: Control how access to the hidden keywords is handled in an interactive session.  Value of 0 strictly disallows access hidden keywords and an error message is issued.  Value of 1 allows accessing, including change the values of hidden keywords and no warning message is issued.  Value of 2 allows accessing/setting hidden keywords but a warning is issued.  Default value is 1 (quietly allow access to hidden keywords).  In a non-interactive session (`help=noprompt` or `help=def,[FILE]`) concept of hidden keywords does not make sense.  Full access to all keywords is possible in this mode.
 
 ### Customization: Parameter Unrolling ###
 
