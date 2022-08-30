@@ -35,7 +35,6 @@
 #include <setAutoDefaults.h>
 #include <type_traits>
 
-
 template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
 {
@@ -88,6 +87,19 @@ T clgetValp(const string& Name, T& val, int& n, SMap& smap)
 		    return N;
 		    );
 }
+template <class T>
+T clgetValp(const string& Name, T& val, int& n)
+{
+  Symbol *S;
+  double d;
+  int N;
+  SMap empty;
+  HANDLE_EXCEPTIONS(
+		    S=clgetBaseCode(Name,val,n,empty);
+		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+		    return N;
+		    );
+}
 //
 // Templated functions for NVal calls.  
 //
@@ -133,6 +145,33 @@ T clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
 
   HANDLE_EXCEPTIONS(
 		    S=clgetNValBaseCode(Name,val,m,smap);
+		    int n0=S->NVals;
+		    int i=1;
+		    for(int j=0;j<n0;j++)
+		      {
+			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
+			  {
+			    if (m==0) {m=S->NVals=i-1;return i-1;}
+			    else 
+			      {
+				val.resize(i);
+				val[i-1] = (T)d;
+				i++;
+			      }
+			  }
+		      }
+		    m=S->NVals=i-1;
+		    return i-1;
+		    );
+}
+template <class T>
+T clgetNValp(const string& Name, vector<T>& val, int& m)
+{
+  Symbol *S;
+  double d;
+  SMap empty;
+  HANDLE_EXCEPTIONS(
+		    S=clgetNValBaseCode(Name,val,m,empty);
 		    int n0=S->NVals;
 		    int i=1;
 		    for(int j=0;j<n0;j++)

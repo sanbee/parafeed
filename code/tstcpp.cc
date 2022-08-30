@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <exception>
+#include <clgetBaseCode.h>
 /*
    Test program to test the embedded shell via the commandline library
 */
@@ -41,24 +42,24 @@ void UI(bool restart, int argc, char **argv)
 
 	exposedKeys.push_back("bool1");
 	watchPoints["1"]=exposedKeys;
-	i=1;clgetBValp("bool",b,i,watchPoints);
+	i=1;clgetValp("bool",b,i,watchPoints); // Equivalent to clgetBValp()
 
 	// Create a HIDENDSEEK type keyword (one which is hidden and
 	// also hides another keyword).
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("int");
 	watchPoints["1"]=exposedKeys;
-	i=1;clgetBValp("bool1",b1,i,watchPoints);
+	i=1;clgetValp("bool1",b1,i,watchPoints); // Equivalent to clgetBValp()
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("float");
 	watchPoints["1"]=exposedKeys;
-	i=1;clgetIValp("int",j,i,watchPoints);
+	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
 	i=1;dbgclgetIValp("dbgint",dj,i);
 
-	i=1;clgetFValp("float",f,i);
+	i=1;clgetValp("float",f,i); // Equivalent to clgetIValp()
 
-	i=1;clgetIValp("oneint",oi,i);
+	i=1;clgetValp("oneint",oi,i); // Equivalent to clgetIValp()
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("strarr");
@@ -68,7 +69,7 @@ void UI(bool restart, int argc, char **argv)
 	clSetOptions("string",{"one","two","three","showstrarr"});
 
 	i=0;clgetNSValp("strarr",strarr,i);
-	N=3;N=clgetNFValp("farray",fv,N);
+	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();
     }
