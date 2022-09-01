@@ -278,17 +278,20 @@ END{									\
 	    vector<string> mapVal;
 	    checkVal(t,mapVal);
 
-	    //	for (unsigned int j=0; j < mapVal.size(); j++)
+	    for (auto key : mapVal)
 	    {
 	      Symbol *S;
-	      //S=SearchVSymb((char *)mapVal[j].c_str(),cl_SymbTab);
-	      S=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	      S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+	      //S=SearchVSymb(iarg.c_str(),cl_SymbTab);
 	      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
 		  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
 		{
 		  PrintKey(stderr, S);
 		  PrintVals(stderr,S,1);
 		}
+	      // Recusively show watched keys, if exposed by the
+	      // current value of the parent key.
+	      doinp((char *)key.c_str());
 	    }
 	  }
       }

@@ -83,8 +83,26 @@ T clgetValp(const string& Name, T& val, int& n, SMap& smap)
   int N;
   HANDLE_EXCEPTIONS(
 		    S=clgetBaseCode(Name,val,n,smap);
-		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		    return N;
+		    // if (std::is_same<T,std::string>::value)
+		    //   {
+		    // 	if (S!=NULL) 
+		    // 	  {
+		    // 	    if (N <= S->NVals) 
+		    // 	      {
+		    // 		val = (T)trim(S->Val[N-1]);
+		    // 		return val.size();
+		    // 	      }
+		    // 	    else 
+		    // 	      return CL_FAIL;
+		    // 	  }
+		    // 	else
+		    // 	  return CL_FAIL;
+		    //   }
+		    // else
+		      {
+			if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+			return N;
+		      }
 		    );
 }
 template <class T>

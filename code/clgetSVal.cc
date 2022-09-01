@@ -35,38 +35,46 @@ extern "C" {
 ------------------------------------------------------------------------*/
 int clgetSVal(const char *Name, char *val, int *n)
 {
-  Symbol *S;
-  unsigned int N;
-  
   HANDLE_EXCEPTIONS(
-		    if (*n < 0)
-		      S=SearchVSymb(Name,cl_SymbTab);
-		    else
-		      S=SearchQSymb(Name,"string");
-		    N = _ABS(*n);
-		    if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
-		    if (S!=NULL) 
-		      {
-			if (N <= S->NVals) 
-			  {
-			    std::string trimmed=trim(S->Val[N-1]);
-			    int len=trimmed.size();
-			    strncpy(val, trimmed.c_str(), len);
-			    return len;
-			    //char *buf, *c=NULL;
-			    // buf = (char *)S->Val[N-1].c_str();
-			    // while (*buf == ' ') buf++;
-			    // strncpy(val,buf,strlen(buf)+1);
-			    // if ((c=strstr(buf,"\\\""))) 
-			    //   while (*c) *c = *(++c);
-			    // return strlen(buf);
-			  }
-			else 
-			  return CL_FAIL;
-		      }
-		    else
-		      return CL_FAIL;
+		    string valp;
+		    int r;
+		    if ((r = clgetSValp(std::string(Name), valp, *n))!= CL_FAIL)
+		      strncpy(val,valp.c_str(),valp.size()+1);
+		    return r;
 		    );
+  // Symbol *S;
+
+  // unsigned int N;
+  
+  // HANDLE_EXCEPTIONS(
+  // 		    if (*n < 0)
+  // 		      S=SearchVSymb(Name,cl_SymbTab);
+  // 		    else
+  // 		      S=SearchQSymb(Name,"string");
+  // 		    N = _ABS(*n);
+  // 		    if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
+  // 		    if (S!=NULL) 
+  // 		      {
+  // 			if (N <= S->NVals) 
+  // 			  {
+  // 			    std::string trimmed=trim(S->Val[N-1]);
+  // 			    int len=trimmed.size();
+  // 			    strncpy(val, trimmed.c_str(), len);
+  // 			    return len;
+  // 			    //char *buf, *c=NULL;
+  // 			    // buf = (char *)S->Val[N-1].c_str();
+  // 			    // while (*buf == ' ') buf++;
+  // 			    // strncpy(val,buf,strlen(buf)+1);
+  // 			    // if ((c=strstr(buf,"\\\""))) 
+  // 			    //   while (*c) *c = *(++c);
+  // 			    // return strlen(buf);
+  // 			  }
+  // 			else 
+  // 			  return CL_FAIL;
+  // 		      }
+  // 		    else
+  // 		      return CL_FAIL;
+  // 		    );
 }
 #ifdef __cplusplus
 	   }
@@ -76,27 +84,31 @@ int clgetSVal(const char *Name, char *val, int *n)
 
 int clgetSValp(const string &Name, string& val, int& n)
 {
-  Symbol *S;
-  unsigned int N;
-  
   HANDLE_EXCEPTIONS(
 		    SMap emptyMap;
-		    S = clgetBaseCode(Name, val, n, emptyMap);
-
-		    N = _ABS(n);
-		    if (S!=NULL) 
-		      {
-			if (N <= S->NVals) 
-			  {
-			    val = trim(S->Val[N-1]);
-			    return val.size();
-			  }
-			else 
-			  return CL_FAIL;
-		      }
-		    else
-		      return CL_FAIL;
+		    return clgetSValp(Name, val, n, emptyMap);
 		    );
+  // Symbol *S;
+  // unsigned int N;
+  
+  // HANDLE_EXCEPTIONS(
+  // 		    SMap emptyMap;
+  // 		    S = clgetBaseCode(Name, val, n, emptyMap);
+
+  // 		    N = _ABS(n);
+  // 		    if (S!=NULL) 
+  // 		      {
+  // 			if (N <= S->NVals) 
+  // 			  {
+  // 			    val = trim(S->Val[N-1]);
+  // 			    return val.size();
+  // 			  }
+  // 			else 
+  // 			  return CL_FAIL;
+  // 		      }
+  // 		    else
+  // 		      return CL_FAIL;
+  // 		    );
 }
 int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
 {

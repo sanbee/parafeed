@@ -37,7 +37,27 @@ void reportParseError(const Symbol& S, const int& N)
   os << "In conversion of " << S.Name << "[" << N << "]=" << S.Val[N];
   clThrowUp(os.str().c_str(), "###Error", CL_FAIL);
 }
+#ifdef __cplusplus
+	   }
+#endif
+int clparseVal(Symbol *S, int *Which, string& val)
+{
+  unsigned int N = _ABS(*Which);
+  
+  if (S!=NULL) 
+    {
+      if (N <= S->NVals) 
+	{
+	  val = trim(S->Val[N-1]);
+	  return val.size();
+	}
+      else 
+	return CL_FAIL;
+    }
+  else
+    return CL_FAIL;
 
+}
 int clparseVal(Symbol *S, int *Which, double *d)
 {
   unsigned int N = _ABS(*Which),n;
@@ -62,6 +82,3 @@ HANDLE_EXCEPTIONS(
   else return CL_FAIL;
 )
 }
-#ifdef __cplusplus
-	   }
-#endif

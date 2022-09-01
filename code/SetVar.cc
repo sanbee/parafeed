@@ -92,6 +92,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
     // 	throw(x);
     //   }
 
+  int ret=1;
   if (!Force)
     if (pos->Class == CL_USERCLASS)
       {
@@ -102,28 +103,24 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 
   if ((val==NULL) || (strlen(val) == 0)) 
     {
-      return UnsetVar(pos,1);
+      ret= UnsetVar(pos,1);
     }
-
-  cltruncateFromBack(val);
-  /*
-  i=strlen(val)-1;
-  while ((val[i] == ' ') || (val[i] == '\t'))i--;  val[i+1]='\0';
-  */
-  /* 
-     Count the number of commas. Strip off leading and trailing white
-     spaces from val, copy into another buffer, take comma seperated
-     tokens from the new buffer and put it in Tab.
-  */
-
-  //  try
+  else
     {
-      vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
-      unsigned ntokens=tokens.size();
-      pos->NVals=ntokens;
-      pos->Val.resize(pos->NVals);
-      for (unsigned i=0;i<ntokens;i++)
-	SetVal(tokens[i].c_str(),pos,i);
+      cltruncateFromBack(val);
+
+      // Count the number of commas. Strip off leading and trailing white
+      // spaces from val, copy into another buffer, take comma seperated
+      // tokens from the new buffer and put it in Tab.
+      //  try
+      {
+	vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
+	unsigned ntokens=tokens.size();
+	pos->NVals=ntokens;
+	pos->Val.resize(pos->NVals);
+	for (unsigned i=0;i<ntokens;i++)
+	  SetVal(tokens[i].c_str(),pos,i);
+      }
     }
   // catch(clError& cl)
   //   {
@@ -168,7 +165,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 
   if (dodoinp) doinp(key);
   //  free(k);
-  return 1;
+  return ret;
 }
 /*----------------------------------------------------------------------*/
   void VerifyVal(const char *v, Symbol *S,string& newval)
