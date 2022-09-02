@@ -83,39 +83,19 @@ T clgetValp(const string& Name, T& val, int& n, SMap& smap)
   int N;
   HANDLE_EXCEPTIONS(
 		    S=clgetBaseCode(Name,val,n,smap);
-		    // if (std::is_same<T,std::string>::value)
-		    //   {
-		    // 	if (S!=NULL) 
-		    // 	  {
-		    // 	    if (N <= S->NVals) 
-		    // 	      {
-		    // 		val = (T)trim(S->Val[N-1]);
-		    // 		return val.size();
-		    // 	      }
-		    // 	    else 
-		    // 	      return CL_FAIL;
-		    // 	  }
-		    // 	else
-		    // 	  return CL_FAIL;
-		    //   }
-		    // else
-		      {
-			if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-			return N;
-		      }
+		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+		    return N;
 		    );
 }
+//
+//-------------------------------------------------------------------------
+//
 template <class T>
 T clgetValp(const string& Name, T& val, int& n)
 {
-  Symbol *S;
-  double d;
-  int N;
   SMap empty;
   HANDLE_EXCEPTIONS(
-		    S=clgetBaseCode(Name,val,n,empty);
-		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		    return N;
+		    return clgetValp(Name,val,n,empty);
 		    );
 }
 //
@@ -127,14 +107,10 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap
   Symbol *S;
   std::ostringstream os;
 
-  if      (std::is_same<T, int>::value)
-    {if (m <= 0) os << "int[]";  else os << "int[" << m << "]";}
-  else if (std::is_same<T, float>::value)
-    {if (m <= 0) os << "float[]";  else os << "float[" << m << "]";}
-  else if (std::is_same<T, bool>::value)
-    {if (m <= 0) os << "bool[]";  else os << "bool[" << m << "]";}
-  else if (std::is_same<T, std::string>::value)
-    {if (m <= 0) os << "string[]";  else os << "string[" << m << "]";}
+  if      (std::is_same<T, int>::value)   (m <= 0) ? os << "int[]"   : os << "int[" << m << "]";
+  else if (std::is_same<T, float>::value) (m <= 0) ? os << "float[]" : os << "float[" << m << "]";
+  else if (std::is_same<T, bool>::value)  (m <= 0) ? os << "bool[]"  : os << "bool[" << m << "]";
+  else if (std::is_same<T, std::string>::value) (m <= 0) ? os << "string[]" : os << "string[" << m << "]";
 
     
   HANDLE_EXCEPTIONS(
