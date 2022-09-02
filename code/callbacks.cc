@@ -237,8 +237,8 @@ END{									\
 	    PrintKey(stderr, S);
 	    PrintVals(stderr,S,1);
 	  }
-	// Recusively show watched keys, if exposed by the
-	// current value of the parent key.
+	// Recusively show watched keys, if exposed by the current
+	// value of the parent key or if showAll==True.
 	showExposedKeys(S,showAll);
       }
   }
@@ -276,7 +276,7 @@ END{									\
     // Single argument.  It can be "-a" or name of a key. 
     else if (sv.size()==1)
       {
-	if (sv[0]=="-a")
+	if (sv[0]=="-a") // Apply -a on all keys
 	  for (t=cl_SymbTab;t;t=t->Next)
 	    {
 	      if ((t->Class==CL_APPLNCLASS) || 
@@ -286,20 +286,18 @@ END{									\
 		  PrintVals(stderr,t,1);
 		}
 	    }
-	else
+	else // Print the single given key
 	  {
-	    t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
-	    if (t!=NULL && t->Exposed)
+	    if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
+	      {
+		string mesg = "Key not found or is not currently exposed";
+		clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
+	      }
+	    else
 	      {
 		PrintKey(stderr,t);
 		PrintVals(stderr,t,1);
 	      }
-	    else
-	      {
-		string mesg = "Key not found or is not currently exposed";
-		clThrowUp(mesg.c_str(),"###Info ",CL_INFORMATIONAL);
-	      }
-
 	  }
       }
     // Multiple arguments.  E.g. "-a name1 name2 ..."
@@ -319,11 +317,6 @@ END{									\
 	    PrintKey(stderr,t);
 	    PrintVals(stderr,t,1);
 	
-	    if (t==NULL)
-	      {
-		string mesg = "Illegal command \"inp "+string(iarg)+"\"";
-		clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
-	      }
 	    // Recusrively show keys associated with the root key that
 	    // are exposed with its current setting.
 	    showExposedKeys(t,showAll);

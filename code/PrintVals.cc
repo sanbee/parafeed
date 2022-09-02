@@ -31,43 +31,48 @@ extern "C" {
   extern char      *cl_ProgName;
   extern unsigned short CL_DBG_ON;
 
-/*----------------------------------------------------------------------*/
-int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
-{
-  unsigned int i;
-  unsigned int N=S->NVals;
-  if (N==0) 
+  /*----------------------------------------------------------------------*/
+  int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
+  {
+    if (S==NULL)
+      {
+	string mesg = "Key not found or is not currently exposed";
+	clThrowUp(mesg.c_str(),"###Informational",CL_FATAL);
+      }
+    unsigned int i;
+    unsigned int N=S->NVals;
+    if (N==0)
+      {
+	N = S->DefaultVal.size();
+	char *str;
+	if (N>0)
+	  {
+	    for(i=0;i<N-1;i++)
+	      {
+		str=(char *)S->DefaultVal[i].c_str();
+		tokenize(fd,str,",",CL_ESC);
+		fputc(',',fd);
+	      }
+	    str=(char *)S->DefaultVal[N-1].c_str();
+	    tokenize(fd,(char *)S->DefaultVal[N-1].c_str(),",",CL_ESC);
+	    if (newline) fputc('\n',fd);
+	  }
+	else
+	  if (newline) fprintf(fd,"\n");
+	return 1;
+      }
+
     {
-      N = S->DefaultVal.size();
-      char *str;
-      if (N>0)
-	{
-	  for(i=0;i<N-1;i++)
-	    {
-	      str=(char *)S->DefaultVal[i].c_str();
-	      tokenize(fd,str,",",CL_ESC);
-	      fputc(',',fd);
-	    }
-	  str=(char *)S->DefaultVal[N-1].c_str();
-	  tokenize(fd,(char *)S->DefaultVal[N-1].c_str(),",",CL_ESC);
-	  if (newline) fputc('\n',fd);
-	}
-      else
-	if (newline) fprintf(fd,"\n");
+      for (i=0;i<S->NVals-1;i++)
+	{tokenize(fd,(char *)S->Val[i].c_str(),",",CL_ESC);fputc(',',fd);}
+      tokenize(fd,(char *)S->Val[S->NVals-1].c_str(),",",CL_ESC);
+      if (newline) fputc('\n',fd);
       return 1;
     }
 
-  {
-    for (i=0;i<S->NVals-1;i++)
-      {tokenize(fd,(char *)S->Val[i].c_str(),",",CL_ESC);fputc(',',fd);}
-    tokenize(fd,(char *)S->Val[S->NVals-1].c_str(),",",CL_ESC);
-    if (newline) fputc('\n',fd);
+    if (newline) fprintf(fd,"\n");
     return 1;
   }
-
-  if (newline) fprintf(fd,"\n");
-  return 1;
-}
   /*----------------------------------------------------------------------*/
   int namePrintFormat(std::string& format, const std::string& append)
   {
@@ -97,24 +102,29 @@ int PrintVals(FILE *fd,Symbol *S, unsigned int newline)
 	  }
       }
   }
-/*----------------------------------------------------------------------*/
-int PrintKey(FILE *fd,Symbol *S)
-{
-  /* char format[12]; */
-  /* namePrintFormat(format," = "); */
-  std::string format;
-  namePrintFormat(format," = ");
-  if (ISSET(S->Attributes,CL_KEYWORD))
-    {
-      string startSeq,endSeq;
-      clTextColouring(S->Name,(unsigned int)S->Attributes, startSeq,endSeq);
-      fprintf(fd,"%s",startSeq.c_str());
+  /*----------------------------------------------------------------------*/
+  int PrintKey(FILE *fd,Symbol *S)
+  {
+    if (S==NULL)
+      {
+	string mesg = "Key not found or is not currently exposed";
+	clThrowUp(mesg.c_str(),"###Informational",CL_FATAL);
+      }
+    /* char format[12]; */
+    /* namePrintFormat(format," = "); */
+    std::string format;
+    namePrintFormat(format," = ");
+    if (ISSET(S->Attributes,CL_KEYWORD))
+      {
+	string startSeq,endSeq;
+	clTextColouring(S->Name,(unsigned int)S->Attributes, startSeq,endSeq);
+	fprintf(fd,"%s",startSeq.c_str());
+	fprintf(fd,format.c_str(),S->Name);
+	fprintf(fd,"%s",endSeq.c_str());
+      }
+    else
       fprintf(fd,format.c_str(),S->Name);
-      fprintf(fd,"%s",endSeq.c_str());
-    }
-  else
-    fprintf(fd,format.c_str(),S->Name);
-  return 1;
-}
+    return 1;
+  }
 }
 #endif
