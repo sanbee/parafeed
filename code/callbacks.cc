@@ -223,13 +223,13 @@ END{									\
   void showExposedKeys(Symbol* t, const bool& showAll)
   {
     vector<string> mapVal;
-    checkVal(t,mapVal);
+    //checkVal(t,mapVal);
     mapVal = (t->smap.begin())->second;
     for (auto key : mapVal)
       {
-	cerr << "@ " << key << " " << endl;
 	Symbol *S;
 	S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+	if (S==NULL) break;
 	//S=SearchVSymb(iarg.c_str(),cl_SymbTab);
 	if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
 	    (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
@@ -289,8 +289,17 @@ END{									\
 	else
 	  {
 	    t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
-	    PrintKey(stderr,t);
-	    PrintVals(stderr,t,1);
+	    if (t!=NULL && t->Exposed)
+	      {
+		PrintKey(stderr,t);
+		PrintVals(stderr,t,1);
+	      }
+	    else
+	      {
+		string mesg = "Key not found or is not currently exposed";
+		clThrowUp(mesg.c_str(),"###Info ",CL_INFORMATIONAL);
+	      }
+
 	  }
       }
     // Multiple arguments.  E.g. "-a name1 name2 ..."
