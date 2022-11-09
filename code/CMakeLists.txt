@@ -8,10 +8,10 @@ set_target_properties(parafeed_parafeed PROPERTIES
   SOVERSION ${MAJOR_VERSION}
   EXPORT_NAME parafeed
   OUTPUT_NAME parafeed)
-message("mysub: PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}")
-message("mysub: PROJECT_BINARY_DIR=${PROJECT_BINARY_DIR}")
-message("mysub: PROJECT_CURRENT_SOURCE_DIR=${PROJECT_CURRENT_SOURCE_DIR}")
-message("mysub: PROJECT_CURRENT_BINARY_DIR=${PROJECT_CURRENT_BINARY_DIR}")
+message("subdir: PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}")
+message("subdir: PROJECT_BINARY_DIR=${PROJECT_BINARY_DIR}")
+message("subdir: CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+message("subdir: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 
 # link to readline
 #target_link_libraries(parafeed_parafeed
@@ -105,9 +105,9 @@ target_sources(parafeed_parafeed PRIVATE ${sh_sources})
 # the source code, callbacks.cc will be directly compiled. Till then,
 # the following is required.
 add_custom_command(
-   OUTPUT ${PROJECT_CURRENT_SOURCE_DIR}/callbacks_awk.cc
-   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" ${PROJECT_CURRENT_SOURCE_DIR}/callbacks.cc > ${PROJECT_CURRENT_SOURCE_DIR}/callbacks_awk.cc
-   MAIN_DEPENDENCY ${PROJECT_CURRENT_SOURCE_DIR}/callbacks.cc
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/callbacks_awk.cc
+   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.cc > ${CMAKE_CURRENT_SOURCE_DIR}/callbacks_awk.cc
+   MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.cc
    COMMENT "Preprocessing callbacks.cc"
    VERBATIM)
 
