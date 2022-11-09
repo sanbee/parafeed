@@ -4,10 +4,15 @@
 #
 add_library(parafeed_parafeed)
 set_target_properties(parafeed_parafeed PROPERTIES
-  VERSION 1.0.0
-  SOVERSION 0
+  VERSION ${MAJOR_VERSION}.0.0
+  SOVERSION ${MAJOR_VERSION}
   EXPORT_NAME parafeed
   OUTPUT_NAME parafeed)
+message("mysub: CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
+message("mysub: CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}")
+message("mysub: CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+message("mysub: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
+
 # link to readline
 #target_link_libraries(parafeed_parafeed
 #  PUBLIC PkgConfig::readline)
@@ -93,7 +98,7 @@ foreach(source IN LISTS sh_sources)
 endforeach()
 target_sources(parafeed_parafeed PRIVATE ${sh_sources})
 
-# commands to process callbacks.cc file and write out the
+# Commands to process callbacks.cc file and write out the
 # callbacks_awk.cc file to compile.  The input source file uses the
 # "awk" command and the code below is to set the actual command for
 # running "awk".  Ultimately, once the need to use awk goes away in

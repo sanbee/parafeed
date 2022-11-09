@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.17)
+set(MAJOR_VERSION 1)
 project(
   parafeed
-  VERSION 1.0.0
+  VERSION ${MAJOR_VERSION}.0.0
   LANGUAGES CXX C)
 include(GNUInstallDirs)
 include(CheckCXXCompilerFlag)
@@ -89,6 +90,9 @@ set_target_properties(readline PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/inc
 
 # code sub-directory
 add_subdirectory(code)
+message("top: CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
+message("top: CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
+
 
 # install all parafeed exports
 include(CMakePackageConfigHelpers)
