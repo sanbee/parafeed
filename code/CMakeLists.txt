@@ -93,12 +93,18 @@ foreach(source IN LISTS sh_sources)
 endforeach()
 target_sources(parafeed_parafeed PRIVATE ${sh_sources})
 
-#add_custom_command(
-#   OUTPUT callbacks_awk.cc
-#   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
-#   MAIN_DEPENDENCY callbacks.cc
-#   COMMENT "Preprocessing callbacks.cc"
-#   VERBATIM)
+# commands to process callbacks.cc file and write out the
+# callbacks_awk.cc file to compile.  The input source file uses the
+# "awk" command and the code below is to set the actual command for
+# running "awk".  Ultimately, once the need to use awk goes away in
+# the source code, callbacks.cc will be directly compiled. Till then,
+# the following is required.
+add_custom_command(
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/callbacks_awk.cc
+   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.cc > ${CMAKE_CURRENT_SOURCE_DIR}/callbacks_awk.cc
+   MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.cc
+   COMMENT "Preprocessing callbacks.cc"
+   VERBATIM)
 
 #
 # shccl library
@@ -135,7 +141,7 @@ set(shccl_sources
   clgetOpt.cc
   clstrtStream.cc
   clloadConfig.cc
-  callbacks.cc
+  callbacks_awk.cc
   support.cc
   clgetInputFile.cc
   clgetOutputFile.cc

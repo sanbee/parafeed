@@ -498,7 +498,7 @@ END{									\
       ss += script + std::string(" ") + path + std::string("/");
     //sprintf(str,"%s %s/",script,path);
     else
-      ss +=  std::string(" ") + script;
+      ss +=  std::string(" ") + script + std::string(" ");
     //sprintf(str,"%s ",script);
     
     if (arg)
