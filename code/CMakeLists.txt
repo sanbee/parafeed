@@ -4,13 +4,15 @@
 #
 add_library(parafeed_parafeed)
 set_target_properties(parafeed_parafeed PROPERTIES
-  VERSION 0.0.1
+  VERSION 1.0.0
   SOVERSION 0
   EXPORT_NAME parafeed
   OUTPUT_NAME parafeed)
 # link to readline
+#target_link_libraries(parafeed_parafeed
+#  PUBLIC PkgConfig::readline)
 target_link_libraries(parafeed_parafeed
-  PUBLIC PkgConfig::readline)
+  PUBLIC libreadline.so)
 # compile definitions (like -DFOO)
 target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
 # define include directories, at build time and for clients
