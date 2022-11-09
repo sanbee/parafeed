@@ -934,7 +934,7 @@ END{									\
 	      {
 		cout <<"          " << sm.first << " : "; // Value that exposes other keywords
 		for(auto sv : sm.second) // std::vector<std::string> as list of exposed keywords
-		  cout << sv;
+		  cout << sv << " ";
 		cout << endl;
 	      }
 	    //
