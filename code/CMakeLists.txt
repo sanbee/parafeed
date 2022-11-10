@@ -26,9 +26,37 @@ target_include_directories(parafeed_parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
 # install target
+set(header_list
+  boolError.h
+  clbool.h
+  clconvert.h
+  clError.h
+  clgetBaseCode.h
+  clgetenv.h
+  clGlobals.h
+  cl.h
+  clhashdefines.h
+  clinteract.h
+  cllib.h
+  clshelldefs.h
+  clsh.h
+  clstring.h
+  ErrorObj.h
+  rl_interface.h
+  setAutoDefaults.h
+  shell.h
+  support.h
+  SymbTab.h
+)
+#set_target_properties(parafeed_parafeed PROPERTIES PUBLIC_HEADER ${header_list})
+
 install(TARGETS parafeed_parafeed
   EXPORT parafeed_libraries
   DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+foreach(s ${header_list})
+  install(FILES ${s} DESTINATION  ${CMAKE_INSTALL_INCLUDEDIR})
+endforeach()
 # target alias in parafeed namespace
 add_library(parafeed::parafeed ALIAS parafeed_parafeed)
 
