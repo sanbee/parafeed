@@ -24,7 +24,7 @@ target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
 target_include_directories(parafeed_parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 # install target
 set(header_list
   boolError.h
