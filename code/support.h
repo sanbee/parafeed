@@ -21,6 +21,7 @@
 
 #include <vector>
 #include <stdbool.h>
+#include <regex>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -28,6 +29,7 @@ extern "C" {
   void setAutoBDefaults(Symbol *S, const bool& val);
   void setAutoFDefaults(Symbol *S, const float& val);
   void setAutoSDefaults(Symbol *S, const string& val, const int fullVal=0);
+  //  void setAutoSDefaults(Symbol *S, const string& val);
   void setAutoNIDefaults(Symbol *S, const vector<int>& val);
   void setAutoNBDefaults(Symbol *S, const vector<bool>& val);
   void setAutoNFDefaults(Symbol *S, const vector<float>& val);
@@ -37,4 +39,5 @@ extern "C" {
 #ifdef __cplusplus
 	   }
 #endif
+std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx);
 #endif

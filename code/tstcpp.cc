@@ -5,13 +5,14 @@
 #include <stdio.h>
 #include <vector>
 #include <exception>
+#include <clgetBaseCode.h>
 /*
    Test program to test the embedded shell via the commandline library
 */
 
 void UI(bool restart, int argc, char **argv)
 {
-  int i,j=0,N;
+  int i,j=0,dj=1,oi=0,N;
   float f=0;
   vector<float> fv(10);
   VString strarr;
@@ -41,29 +42,34 @@ void UI(bool restart, int argc, char **argv)
 
 	exposedKeys.push_back("bool1");
 	watchPoints["1"]=exposedKeys;
-	i=1;clgetBValp("bool",b,i,watchPoints);
+	i=1;clgetValp("bool",b,i,watchPoints); // Equivalent to clgetBValp()
 
 	// Create a HIDENDSEEK type keyword (one which is hidden and
 	// also hides another keyword).
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("int");
 	watchPoints["1"]=exposedKeys;
-	i=1;clgetBValp("bool1",b1,i,watchPoints);
+	i=1;clgetValp("bool1",b1,i,watchPoints); // Equivalent to clgetBValp()
 
-	i=1;clgetIValp("int",j,i);
-	i=1;clgetFValp("float",f,i);
+	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
+	exposedKeys.push_back("float");
+	watchPoints["1"]=exposedKeys;
+	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
+	i=1;dbgclgetIValp("dbgint",dj,i);
+
+	i=1;clgetValp("float",f,i); // Equivalent to clgetIValp()
+
+	i=1;clgetValp("oneint",oi,i); // Equivalent to clgetIValp()
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("strarr");
 	watchPoints["showstrarr"]=exposedKeys;
+	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
+	clSetOptions("string",{"one","two","three","showstrarr"});
 
 	i=0;clgetNSValp("strarr",strarr,i);
-	N=3;N=clgetNFValp("farray",fv,N);
-	VString options;
-	options.resize(4);
-	options[0]="one"; options[1]="two"; options[2]="three"; options[3]="showstrarr";
-	clSetOptions("string",options);
+	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();
     }
@@ -76,11 +82,11 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Bool1       = " << b1 << endl;
   cerr << "  Float       = " << f << endl;
   cerr << "  Int         = " << j << endl;
-  cerr << "  StrArr      = "; for(uint ii=0;ii<strarr.size();ii++) cerr << strarr[ii] << " "; cerr << endl;
+  cerr << "  OneInt      = " << oi << endl;
+
   cerr << "  String      = " << str << endl;
-  cerr << "  Float Array = ";
-  for (vector<float>::const_iterator i=fv.begin();i!=fv.end();i++) 
-    cerr << *i << " ";cerr << endl;
+  cerr << "  StrArr      = "; for(auto s : strarr) cerr << s << " "; cerr << endl;
+  cerr << "  Float Array = "; for(auto f : fv)     cerr << f << " "; cerr << endl;
 }
 
 //

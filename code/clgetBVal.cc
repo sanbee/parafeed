@@ -21,6 +21,7 @@
 #include <shell.h>
 #include <string>
 #include <support.h>
+#include <clgetBaseCode.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -51,46 +52,16 @@ HANDLE_EXCEPTIONS(
 #ifdef __cplusplus
 int clgetBValp(const string& Name, bool& val, int& n)
 {
-  Symbol *S;
-  double d;
-  int N;
-  bool tval;
-  tval=(val==0?false:true);
-HANDLE_EXCEPTIONS(
-		  if (n < 0)
-		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
-		  else
-		    S=SearchQSymb((char *)Name.c_str(),"bool");
-		  setAutoBDefaults(S,tval);
-		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
-		  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
-		  return N;
-		  );
+  HANDLE_EXCEPTIONS(
+		    SMap empty;
+		    return clgetValp(Name,val,n,empty);
+		   );
 }
 
 int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
 {
-  Symbol *S;
-  unsigned int N;
-  double d;
-
-HANDLE_EXCEPTIONS(
-		  if (n < 0)
-		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-		  else
-		    S=SearchQSymb((char *)Name.c_str(),"bool");
-		  N = _ABS(n);
-		  setAutoBDefaults(S,val);
-
-		  if (S!=NULL) 
-		    {
-		      SETBIT(S->Attributes,CL_BOOLTYPE);
-		      S->smap = smap;
-		    }
-
-		  if ((N=clparseVal(S,&n,&d))>0) val = (bool)(d==0?false:true);
-
-		  return N;
-		  );
+  HANDLE_EXCEPTIONS(
+		   return clgetValp(Name,val,n,smap);
+		   );
 }
 #endif

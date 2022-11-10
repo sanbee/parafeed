@@ -20,45 +20,47 @@
 #include <cllib.h>
 #include <shell.h>
 #include <support.h>
+#include <cl.h>
+#include <clgetBaseCode.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*------------------------------------------------------------------------
-   Return the Nth value of Name as an integer
-------------------------------------------------------------------------*/
-int clgetIVal(char *Name, int *val, int *n)
-{
-  Symbol *S;
-  double d;
-  int N;
-HANDLE_EXCEPTIONS(
-  if (*n < 0)
-    S=SearchVSymb(Name,cl_SymbTab);  
-  else
-    S=SearchQSymb(Name,(char *)"int");
-  if ((N=clparseVal(S,n,&d))>0) *val = (int)d;
-  if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
-  return N;
-  );
-}
+  /*------------------------------------------------------------------------
+    Return the Nth value of Name as an integer
+    ------------------------------------------------------------------------*/
+  int clgetIVal(char *Name, int *val, int *n)
+  {
+    Symbol *S;
+    double d;
+    int N;
+    HANDLE_EXCEPTIONS(
+		      if (*n < 0)
+			S=SearchVSymb(Name,cl_SymbTab);  
+		      else
+			S=SearchQSymb(Name,(char *)"int");
+		      setAutoIDefaults(S,*val);
+		      if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
+		      if ((N=clparseVal(S,n,&d))>0) *val = (int)d;
+		      return N;
+		      );
+  }
 #ifdef __cplusplus
-	   }
+}
 #endif
 #ifdef __cplusplus
 int clgetIValp(const string& Name, int& val, int& n)
 {
-  Symbol *S;
-  double d;
-  int N;
-HANDLE_EXCEPTIONS(
-		  if (n < 0)
-		    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);  
-		  else
-		    S=SearchQSymb((char *)Name.c_str(),(char *)"int");
-		  setAutoIDefaults(S,val);
-		  if ((N=clparseVal(S,&n,&d))>0) val = (int)d;
-		  if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
-		  return N;
-		  );
+  HANDLE_EXCEPTIONS(
+		    SMap empty;
+		    return clgetValp(Name,val,n,empty);
+		   );
 }
+
+int clgetIValp(const string& Name, int& val, int& n, SMap &smap)
+{
+  HANDLE_EXCEPTIONS(
+		   return clgetValp(Name,val,n,smap);
+		   );
+}
+
 #endif

@@ -107,7 +107,11 @@ install: libs
 
 $(LIBSH): %.o:  %.cc 
 	$(C++) -c $< -o $@
+
 ParseCmdLine.o: ParseCmdLine.cc SymbTab.h
+support.o: setAutoDefaults.h
+CLGETVAL=clgetIVal.o clgetFVal.o clgetBVal.o clgetSVal.o
+$(CLGETVAL): clgetBaseCode.h
 
 $(LIBCL): %.o:  %.cc 
 	$(C++) -c $< -o $@

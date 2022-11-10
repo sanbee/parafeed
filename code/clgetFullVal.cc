@@ -62,7 +62,8 @@ int clgetFullVal(char *Name, char **val)
 int clgetFullValp(const string& Name, string& val)
 {
   int n,i,len=0;
-  char tmp[FILENAME_MAX];
+  //  char tmp[FILENAME_MAX];
+  string tmp;
   Symbol *S;
 
   S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
@@ -72,17 +73,17 @@ int clgetFullValp(const string& Name, string& val)
       val="";
       for (i=1;i<=n;i++)
 	{
-	  clgetSVal((char *)Name.c_str(),tmp,&i);
-	  len += strlen(tmp)+1;
+	  clgetSValp(Name,tmp,i);
+	  len += tmp.size()+1;
 	}
 
-      i=1; clgetSVal((char *)Name.c_str(),tmp,&i);
+      i=1; clgetSValp(Name,tmp,i);
       val=tmp;
 
       for (i=2;i<=n;i++)
 	{
 	  val = val +",";
-	  clgetSVal((char *)Name.c_str(),tmp,&i);
+	  clgetSValp(Name,tmp,i);
 	  val = val + tmp;
 	}
     }

@@ -25,6 +25,7 @@
 #include <cl.h>
 #include <shell.h>
 #include <shell.tab.h>
+#include <support.h>
 #include <string>
 #include <errno.h>
 #include <limits.h>
@@ -87,7 +88,21 @@ END{									\
 }'"
   
   /*----------------------------------------------------------------------*/
-  int dogo(char *arg) {return EOF;}
+  int dogo(char *arg)
+  {
+    if (arg==NULL) return EOF;
+    else
+      {
+	if (string(arg) == "")
+	  return EOF;
+	else if (string(arg) == "-b")
+	  {
+	    dogob(arg);
+	    return EOF;
+	  }
+      }
+    return EOF;
+  }
   /*----------------------------------------------------------------------*/
   bool checkVal(Symbol* t, vector<string>& mapVal)
   {
@@ -98,9 +113,9 @@ END{									\
 	if (ISSET(t->Attributes,CL_BOOLTYPE))
 	  {
 	    //
-	    // This a BOOLTYPE keyword.  Check for logical true/false.
-	    // String comparision is not enough (e.g. string "0" and "no"
-	    // are both logical false).
+	    // This is a BOOLTYPE keyword.  Check for logical
+	    // true/false.  String comparision is not enough
+	    // (e.g. string "0" and "no" are both logical false).
 	    //
 	    for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
 	      {
@@ -113,8 +128,11 @@ END{									\
 	    //
 	    // For all other types, check by string comparision only.
 	    //
-	    loc = t->smap.find(string(t->Val[0]));
-	    found = (loc != t->smap.end()); 
+	    if (t->Val.size() > 0)
+	      {
+		loc = t->smap.find(string(t->Val[0]));
+		found = (loc != t->smap.end());
+	      }
 	  }
 	if (found) mapVal=(*loc).second;
       }
@@ -202,66 +220,107 @@ END{									\
     return exposedSomething;
   }
   /*----------------------------------------------------------------------*/
+  void showExposedKeys(Symbol* t, const bool& showAll)
+  {
+    vector<string> mapVal;
+    //checkVal(t,mapVal);
+    mapVal = (t->smap.begin())->second;
+    for (auto key : mapVal)
+      {
+	Symbol *S;
+	S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+	if (S==NULL) break;
+	//S=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
+	    (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+	  {
+	    PrintKey(stderr, S);
+	    PrintVals(stderr,S,1);
+	  }
+	// Recusively show watched keys, if exposed by the current
+	// value of the parent key or if showAll==True.
+	showExposedKeys(S,showAll);
+      }
+  }
+
   int doinp(char *arg)
   {
     Symbol *t;
     //
-    // First expose the keywords for this session
+    // First ensure that the key-exposure algorithm is executed (it
+    // can be run anywhere any number of times).
     //
     for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
 
+    std::vector<std::string> sv;
+    if (arg)
+      {
+	sv = stokenize(string(arg), std::regex("\\s+"));
+      }
     //    
-    // Now print the viewable keywords.
+    // Now print the viewable keywords. The below is little
+    // state-machine (just about at the level that the author can code
+    // by-hand).
     //
-    if (arg == NULL)
+    if (sv.size()==0)//arg == NULL)
       for (t=cl_SymbTab;t;t=t->Next)
 	{
 	  if ((t->Exposed) && 
 	     ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
-	      //              if (t->smap.begin() != t->smap.end())
 	      PrintKey(stderr, t);
 	      PrintVals(stderr,t,1);
 	    }
 	}
-    else if (string(arg) == "-a")
-      for (t=cl_SymbTab;t;t=t->Next)
-	{
-	  if ((t->Class==CL_APPLNCLASS) || 
-	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+    // Single argument.  It can be "-a" or name of a key. 
+    else if (sv.size()==1)
+      {
+	if (sv[0]=="-a") // Apply -a on all keys
+	  for (t=cl_SymbTab;t;t=t->Next)
 	    {
-	      //              if (t->smap.begin() != t->smap.end())
-	      PrintKey(stderr, t);
-	      PrintVals(stderr,t,1);
+	      if ((t->Class==CL_APPLNCLASS) || 
+		  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+		{
+		  PrintKey(stderr, t);
+		  PrintVals(stderr,t,1);
+		}
 	    }
-	}
+	else // Print the single given key
+	  {
+	    if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
+	      {
+		string mesg = "Key not found or is not currently exposed";
+		clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
+	      }
+	    else
+	      {
+		PrintKey(stderr,t);
+		PrintVals(stderr,t,1);
+	      }
+	  }
+      }
+    // Multiple arguments.  E.g. "-a name1 name2 ..."
     else
       {
-	t=SearchVSymb((char*)arg,cl_SymbTab);
-	if (t==NULL)
+	bool showAll=false;
+	if (sv[0]=="-a")
 	  {
-	    string mesg = "Illegal command \"inp "+string(arg)+"\"";
-	    clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+	    showAll=true;
+	    sv.erase(sv.begin());
 	  }
-	// if ((t->Exposed) && (t->Class==CL_APPLNCLASS) || 
-	//     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-	//   {
-	//     fprintf(stderr,format,t->Name);
-	//     PrintVals(stderr,t);
-	//   }
-	vector<string> mapVal;
-	checkVal(t,mapVal);
-	for (unsigned int j=0; j < mapVal.size(); j++)
+	t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
+	for(auto iarg : sv)
 	  {
-	    Symbol *S;
-	    S=SearchVSymb((char *)mapVal[j].c_str(),cl_SymbTab);
-	    if (((S->Exposed) && (S->Class == CL_APPLNCLASS)) ||
-		(((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
-	      {
-		PrintKey(stderr, S);
-		PrintVals(stderr,S,1);
-	      }
+	    // Show the root key first.
+	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	    PrintKey(stderr,t);
+	    PrintVals(stderr,t,1);
+	
+	    // Recusrively show keys associated with the root key that
+	    // are exposed with its current setting.
+	    showExposedKeys(t,showAll);
+	    fprintf(stderr,"\n");
 	  }
       }
     return 1;
@@ -316,6 +375,9 @@ END{									\
   }
 
   /*----------------------------------------------------------------------*/
+  // TODO: The constants in the code below need to be determined
+  // programmatically.  The necessary information to do so is in the
+  // (global) symbol table (various strings to be printed).
   int dotypehelp(char *arg)
   {
     //char format[12];
@@ -326,16 +388,17 @@ END{									\
     fullFormat = string("  ") + string(format) + string("         %-10.10s\0");
     //    cerr << "Max length: " << maxNameLength << " " << fullFormat << endl;
     string s0;
-    s0.insert(0,maxNameLength/2-1,' ');
-    s0.append("Key");
-    s0.insert(s0.end(),maxNameLength/2+5,' ');
-    s0.append("Type");
-    s0.insert(s0.end(),10,' ');
-    s0.append("Factory defaults");
-    s0.insert(s0.end(),maxNameLength,' ');
-    s0.append("Options\n");
+    s0.insert(0,maxNameLength/2-1,' ');          s0.append("Key");
+    s0.insert(s0.end(),maxNameLength/2+10,' ');  s0.append("Type");
+    s0.insert(s0.end(),10,' ');                  s0.append("Factory defaults");
+    s0.insert(s0.end(),maxNameLength,' ');       s0.append("Options\n");
     // s0.append("Key                Type          Factory defaults        Options\n");
-    string s1="---------          ----------       ----------------        -------\n";
+    string s1;//="---------          ----------       ----------------        -------\n";
+    s1.insert(0,maxNameLength,'-');
+    s1.insert(s1.end(),11,' ');           s1.insert(s1.end(), 6 ,'-');
+    s1.insert(s1.end(),9,' ');            s1.insert(s1.end(), 16 ,'-');
+    s1.insert(s1.end(),maxNameLength,' ');s1.insert(s1.end(), 7 ,'-');
+    s1.insert(s1.end(),'\n');
     Symbol *S;
 
     if (arg==NULL)
@@ -435,7 +498,7 @@ END{									\
       ss += script + std::string(" ") + path + std::string("/");
     //sprintf(str,"%s %s/",script,path);
     else
-      ss +=  std::string(" ") + script;
+      ss +=  std::string(" ") + script + std::string(" ");
     //sprintf(str,"%s ",script);
     
     if (arg)
@@ -744,15 +807,22 @@ END{									\
     return 1;
   }
   /*------------------------------------------------------------------------
-    Allow editing of the keyword values using the "favourate" editor.
+    Allow editing of the keyword values using the "favorite" editor.
     -------------------------------------------------------------------------*/
   int doedit(char *arg)
   {
-    char *tmpname=tempnam("/tmp","cl_");
+    char tmpname[]="/tmp/cl_XXXXXX";//tempnam("/tmp","cl_");
+    int fd;
+    if ((fd = mkstemp(tmpname)) == -1)
+      {
+	std::string msg=std::string("Error in opening tempfile in \"edit")+std::string("\" command. ")+std::string(strerror(errno));
+	clThrowUp(msg, "###Error", CL_INFORMATIONAL);
+      }
     // Build and issue a system command to edit a file with current
     // keyword=value pairs
     {
       char *editor=(char *)getenv(CL_EDITORENV);
+      if (editor==NULL) editor = (char *)getenv("EDITOR");
       std::ostringstream str;
     
       if (dosave(tmpname)>1) return 1;
@@ -766,12 +836,9 @@ END{									\
       doload(tmpname);
     }
 
-    // Build and issue a system command to remove the temp file
-    {
-      std::ostringstream str;
-      str << "/bin/rm -rf " << tmpname << "*";
-      system(str.str().c_str());
-    }
+    // Remove the temp file
+    unlink(tmpname);
+    close(fd);
     return 1;
   }
   /*----------------------------------------------------------------------*/
@@ -834,11 +901,11 @@ END{									\
     if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
       cl_ProgName[strlen(cl_ProgName)-1]='\0';
     
-    fprintf(stdout,"%%N %s\n",cl_ProgName);
-    fprintf(stdout,"\t<Put the explaination for the task here>\n\n");
-    fprintf(stdout,"%%P Author\n");
-    fprintf(stdout,"\t<Put your name and e-mail address here>\n\n");
-    
+    cout <<"%%N " << cl_ProgName << endl;
+    cout << "\t<Put the explaination for the task here>" << endl << endl;
+    cout << "%%P Author" << endl;
+    cout << "\t<Put your name and e-mail address here>" << endl << endl;
+
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
@@ -850,42 +917,33 @@ END{									\
 	    //
 	    // Print name and default value
 	    //
-	    fprintf(stdout,"%%A %s (default=%s)",
-		    S->Name,val.c_str());
-	    //
-	    // Print options, if available
-	    //
+	    cout << "%%A " << S->Name << " (default=" << val <<")";
 	    if (S->Options.size() > 0)
 	      {
-		fprintf(stdout," Options:[");
-		for(unsigned int i=0;i<S->Options.size();i++)
-		  fprintf(stdout,"%s ",S->Options[i].c_str());
-		fprintf(stdout,"]");
+		cout << " Options:[";
+		for(auto op : S->Options) cout << " " << op;
+		cout << "]";
 	      }
 	    //
 	    // Print watched-keywords map, if available
 	    //
 	    if (S->smap.begin() != S->smap.end())
-	      fprintf(stdout,"\n\n\tWatched keywords (<VALUE>: <Keywords exposed>):\n");
-	    for(SMap::iterator i=S->smap.begin(); i != S->smap.end(); i++)
+	      cout << endl << endl << "\tWatched keywords (<VALUE> : <Keywords exposed>):" << endl;
+
+	    for(auto sm : S->smap) // std::SMap
 	      {
-		fprintf(stdout,"          %s: ",(*i).first.c_str());
-		vector<string> sv=(*i).second;
-		for(unsigned int j=0;j<sv.size();j++)
-		  {
-		    fprintf(stdout,"%s ",(char *)sv[j].c_str());
-		  }
-		fprintf(stdout,"\n");
+		cout <<"          " << sm.first << " : "; // Value that exposes other keywords
+		for(auto sv : sm.second) // std::vector<std::string> as list of exposed keywords
+		  cout << sv << " ";
+		cout << endl;
 	      }
 	    //
 	    // ...rest is upto a human to fill-in.
 	    //
-	    fprintf(stdout,
-		    "\n\n\t<Put the explaination for the keyword here>\n\n\n");
+	    cout << endl << endl << "\t<Put the explaination for the keyword here>" << endl << endl << endl;
 	  }
 	if (S->Class==CL_DBGCLASS)
-	  fprintf(stdout,
-		  "\t***This keyword is exposed with a command-line argument of \"help=dbg\"***\n");
+	  cout << "\t***This keyword is exposed with a command-line argument of \"help=dbg\"***" << endl;
       }
     exit(0);
     return 1;
@@ -960,8 +1018,8 @@ END{									\
 //
   int docopyright(const std::string& Msg)
 {
-  cerr << "   SCI 2.0" << endl
-       << "      Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar (DOT) sanjay (AT) gmail (DOT) com)"
+  cerr << "   parafeed 2.0" << endl
+       << "   Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar (DOT) sanjay (AT) gmail (DOT) com)"
        << endl
        << "   This is free software with ABSOLUTELY NO WARRANTY." << endl;
   if (Msg!="") cerr << Msg << endl << endl;

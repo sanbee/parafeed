@@ -22,12 +22,13 @@
 #ifdef __cplusplus
 #include <iostream>
 #include <clError.h>
+#include <string>
 using namespace std;
 /*----------------------------------------------------------------------*/
 void clDefaultErrorHandler()
 {
-  char *Throes = (char *)"###Fatal: Uncaught exception of type ",
-    *LastWords = (char *)"###Fatal: Exiting the application.";
+  string Throes = "###Fatal: Uncaught exception of type ",
+    LastWords = "###Fatal: Exiting the application.";
 
   try
     {

@@ -4,24 +4,59 @@
 #
 add_library(parafeed_parafeed)
 set_target_properties(parafeed_parafeed PROPERTIES
-  VERSION 0.0.1
-  SOVERSION 0
+  VERSION ${MAJOR_VERSION}.0.0
+  SOVERSION ${MAJOR_VERSION}
   EXPORT_NAME parafeed
   OUTPUT_NAME parafeed)
+message("subdir: PROJECT_SOURCE_DIR=${PROJECT_SOURCE_DIR}")
+message("subdir: PROJECT_BINARY_DIR=${PROJECT_BINARY_DIR}")
+message("subdir: CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
+message("subdir: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
+
 # link to readline
+#target_link_libraries(parafeed_parafeed
+#  PUBLIC PkgConfig::readline)
 target_link_libraries(parafeed_parafeed
-  PUBLIC PkgConfig::readline)
+  PUBLIC libreadline.so)
 # compile definitions (like -DFOO)
 target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
 # define include directories, at build time and for clients
 target_include_directories(parafeed_parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/parafeed>)
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 # install target
+set(header_list
+  boolError.h
+  clbool.h
+  clconvert.h
+  clError.h
+  clgetBaseCode.h
+  clgetenv.h
+  clGlobals.h
+  cl.h
+  clhashdefines.h
+  clinteract.h
+  cllib.h
+  clshelldefs.h
+  clsh.h
+  clstring.h
+  ErrorObj.h
+  rl_interface.h
+  setAutoDefaults.h
+  shell.h
+  support.h
+  SymbTab.h
+)
+#set_target_properties(parafeed_parafeed PROPERTIES PUBLIC_HEADER ${header_list})
+
 install(TARGETS parafeed_parafeed
   EXPORT parafeed_libraries
   DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+foreach(s ${header_list})
+  install(FILES ${s} DESTINATION  ${CMAKE_INSTALL_INCLUDEDIR})
+endforeach()
 # target alias in parafeed namespace
 add_library(parafeed::parafeed ALIAS parafeed_parafeed)
 
@@ -91,12 +126,18 @@ foreach(source IN LISTS sh_sources)
 endforeach()
 target_sources(parafeed_parafeed PRIVATE ${sh_sources})
 
-#add_custom_command(
-#   OUTPUT callbacks_awk.cc
-#   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" callbacks.cc > callbacks_awk.cc
-#   MAIN_DEPENDENCY callbacks.cc
-#   COMMENT "Preprocessing callbacks.cc"
-#   VERBATIM)
+# Commands to process callbacks.cc file and write out the
+# callbacks_awk.cc file to compile.  The input source file uses the
+# "awk" command and the code below is to set the actual command for
+# running "awk".  Ultimately, once the need to use awk goes away in
+# the source code, callbacks.cc will be directly compiled. Till then,
+# the following is required.
+add_custom_command(
+   OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/callbacks_awk.cc
+   COMMAND sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/awk/" ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.cc > ${CMAKE_CURRENT_SOURCE_DIR}/callbacks_awk.cc
+   MAIN_DEPENDENCY ${CMAKE_CURRENT_SOURCE_DIR}/callbacks.cc
+   COMMENT "Preprocessing callbacks.cc"
+   VERBATIM)
 
 #
 # shccl library
@@ -133,7 +174,7 @@ set(shccl_sources
   clgetOpt.cc
   clstrtStream.cc
   clloadConfig.cc
-  callbacks.cc
+  callbacks_awk.cc
   support.cc
   clgetInputFile.cc
   clgetOutputFile.cc
