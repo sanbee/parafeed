@@ -88,12 +88,9 @@ Following is a short description of the shell commands:
 > > setting of only that keyword will be displayed.  The `-a` option will display keywords that 
 > > may be currently hidden.
 
-  * `go`:
+  * `go [-b]` or `run [-b]:
 > > End of the interactive session.  The current value of the keywords are used
-> > and the application resumes normal execution.
-
-  * `gob`:
-> > Similar to `go` except that it will run the application in the background and print the
+> > and the application resumes normal execution. The `-b` option will run the application in the background and print the 
 > > process ID (PID) number of the background process on the screen (also see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
   * `cd`:
