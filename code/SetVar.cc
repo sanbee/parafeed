@@ -163,7 +163,8 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   /*   } */
   //  cerr << "after = " << pos->NVals << " " << i << endl;
 
-  if (dodoinp) doinp(key);
+  string stmp("-t ");stmp+=key;
+  if (dodoinp) doinp(stmp.c_str());
   //  free(k);
   return ret;
 }

@@ -155,22 +155,22 @@ END{									\
 	// Irrespective of the current value of the symbol, hide all
 	// keys on which a watch was set by this symbol
 	//
-        if (ISSET(t->Attributes,CL_HIDDENKEYWORD))
-          SETBIT(t->Attributes,CL_HIDENSEEKKEYWORD);
-        else
-          SETBIT(t->Attributes,CL_HIDINGKEYWORD);
+	if (ISSET(t->Attributes,CL_HIDDENKEYWORD))
+	  SETBIT(t->Attributes,CL_HIDENSEEKKEYWORD);
+	else
+	  SETBIT(t->Attributes,CL_HIDINGKEYWORD);
 	for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
 	  {
 	    vector<string> sv=(*i).second;
 	    for(unsigned int j=0;j<sv.size();j++)
 	      {
 		if ((S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab))==NULL)
-		    {
-		      string mesg = "Programmer error: Watch key \"" + sv[j] + "\" not found.";
-		      clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
-		    }
+		  {
+		    string mesg = "Programmer error: Watch key \"" + sv[j] + "\" not found.";
+		    clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+		  }
 		S->Exposed=0;
-                SETBIT(S->Attributes,CL_HIDDENKEYWORD);
+		SETBIT(S->Attributes,CL_HIDDENKEYWORD);
 	      }
 	  }
 	//
@@ -181,6 +181,7 @@ END{									\
 	// the first value (i.e. ignores other possible comma
 	// seperated values).
 	//
+
 	if ((t->NVals > 0) && (t->Exposed==1))
 	  {
 	    // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
@@ -243,7 +244,7 @@ END{									\
       }
   }
 
-  int doinp(char *arg)
+  int doinp(const char *arg)
   {
     Symbol *t;
     //
@@ -258,7 +259,7 @@ END{									\
 	sv = stokenize(string(arg), std::regex("\\s+"));
       }
     //    
-    // Now print the viewable keywords. The below is little
+    // Now print the viewable keywords. The code below is a little
     // state-machine (just about at the level that the author can code
     // by-hand).
     //
@@ -290,7 +291,7 @@ END{									\
 	  {
 	    if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
 	      {
-		string mesg = "Key not found or is not currently exposed";
+		string mesg = "Key ("+sv[0]+") not found or is not currently exposed";
 		clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
 	      }
 	    else
@@ -301,6 +302,22 @@ END{									\
 	  }
       }
     // Multiple arguments.  E.g. "-a name1 name2 ..."
+    //
+    // An internal option to print the tree of exposed keys associated
+    // with the symbol t
+    else if (sv[0]=="-t") 
+      {
+	sv.erase(sv.begin());
+	for(auto iarg : sv)
+	  {
+	    // Show the root key first.
+	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	    // Recusrively show keys associated with the root key that
+	    // are exposed with its current setting.
+	    showExposedKeys(t,false);
+	    //	    fprintf(stderr,"\n");
+	  }
+      }
     else
       {
 	bool showAll=false;
@@ -314,13 +331,13 @@ END{									\
 	  {
 	    // Show the root key first.
 	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	    PrintKey(stderr,t);
-	    PrintVals(stderr,t,1);
+	    // PrintKey(stderr,t);
+	    // PrintVals(stderr,t,1);
 	
 	    // Recusrively show keys associated with the root key that
 	    // are exposed with its current setting.
 	    showExposedKeys(t,showAll);
-	    fprintf(stderr,"\n");
+	    //	    fprintf(stderr,"\n");
 	  }
       }
     return 1;
