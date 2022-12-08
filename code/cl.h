@@ -200,7 +200,7 @@ int       dogo(char *);
 int       dogob(char *);
 int       docd(char *);
 #ifdef __cplusplus
-int       doinp(const char *arg=NULL);
+int       doinp(char *arg=NULL);
 #endif
 int       doquit(char *);
 int       doedit(char *);

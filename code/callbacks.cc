@@ -244,7 +244,7 @@ END{									\
       }
   }
 
-  int doinp(const char *arg)
+  int doinp(char *arg)
   {
     Symbol *t;
     //
