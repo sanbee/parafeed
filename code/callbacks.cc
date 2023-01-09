@@ -420,8 +420,7 @@ END{									\
 
     if (arg==NULL)
      {
-       fprintf(stderr,s0.c_str());
-       fprintf(stderr,s1.c_str());
+       cerr << s0; cerr << s1;
        for (S=cl_SymbTab;S;S=S->Next)
          if (((S->Class==CL_APPLNCLASS) ||
 	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
@@ -431,8 +430,7 @@ END{									\
      }
     else if (string(arg) == "-a")
       {
-       fprintf(stderr,s0.c_str());
-       fprintf(stderr,s1.c_str());
+       cerr << s0; cerr << s1;
        for (S=cl_SymbTab;S;S=S->Next)
          if (((S->Class==CL_APPLNCLASS) ||
 	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
@@ -446,8 +444,7 @@ END{									\
              (S->Exposed)
             )
            {
-             fprintf(stderr,s0.c_str());
-             fprintf(stderr,s1.c_str());
+	     cerr << s0; cerr << s1;
 
              formatTypeHelp(S,fullFormat);
            }
@@ -461,39 +458,39 @@ END{									\
   int dohelp(char *arg)
   {
     CmdSymbol *S;
-    fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:   Indicates that the keyword can hide other keywords.\n");
-    fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
-    fprintf(stderr,"         (usually by the first red or green coloured keyword above).\n");
-    fprintf(stderr,"  Green: Indicates that the keyword can be hidden by some other keyword(s)\n");
-    fprintf(stderr,"         and can itself be also hidding other keyword(s).\n");
-    fprintf(stderr,"--------------------------------------------------------------------\n");
-    fprintf(stderr,"Default values:\n");
-    fprintf(stderr,"  If a keyword is un-set (or set to BLANK), the displayed value is the");
-    fprintf(stderr,"  value that would be used.\n");
-    fprintf(stderr,"--------------------------------------------------------------------\n");
+    cerr << "Colour coding of the keywords:" << endl;
+    cerr << "  Red:   Indicates that the keyword can hide other keywords." << endl;
+    cerr << "  Blue:  Indicates that the keyword can be hidden by some other keyword(s)." << endl;
+    cerr << "         (usually by the first red or green coloured keyword above)." << endl;
+    cerr << "  Green: Indicates that the keyword can be hidden by some other keyword(s)" << endl;
+    cerr << "         and can itself be also hidding other keyword(s)." << endl;
+    cerr << "--------------------------------------------------------------------" << endl;
+    cerr << "Default values:" << endl;
+    cerr << "  If a keyword is un-set (or set to BLANK), the displayed value is the" << endl;
+    cerr << "  value that would be used." << endl;
+    cerr << "--------------------------------------------------------------------" << endl;
 #ifdef GNUREADLINE
-    fprintf(stderr,"TABBED completion:\n");
-    fprintf(stderr,"  Min-match algorithm is used for matching a user input with keywords.\n\n");
-    fprintf(stderr,"  GNU Readline completion mechanism uses all available keywords and \n");
-    fprintf(stderr,"  shell commands.\n");
-    fprintf(stderr,"\n");
-    fprintf(stderr,"  A completed keyword followed by two TABs will display the options\n");
-    fprintf(stderr,"  available for the particular keyword.  Nothing is done for keywords\n");
-    fprintf(stderr,"  for which either no options were defined by the programmer or for \n");
-    fprintf(stderr,"  which finite options do not exist (e.g. if a keyword can take any\n");
-    fprintf(stderr,"  integer value).\n");
-    fprintf(stderr,"\n");
-    fprintf(stderr,"  A completed shell command followed by two TABS will display possible\n");
-    fprintf(stderr,"  options for the particular shell command.\n");
+    cerr << "TABBED completion:" << endl;
+    cerr << "  Min-match algorithm is used for matching a user input with keywords." << endl << endl;
+    cerr << "  GNU Readline completion mechanism uses all available keywords and " << endl;
+    cerr << "  shell commands." << endl;
+    cerr << endl;
+    cerr << "  A completed keyword followed by two TABs will display the options" << endl;
+    cerr << "  available for the particular keyword.  Nothing is done for keywords" << endl;
+    cerr << "  for which either no options were defined by the programmer or for " << endl;
+    cerr << "  which finite options do not exist (e.g. if a keyword can take any" << endl;
+    cerr << "  integer value)." << endl;
+    cerr << endl;
+    cerr << "  A completed shell command followed by two TABS will display possible" << endl;
+    cerr << "  options for the particular shell command." << endl;
 #endif
-    fprintf(stderr,"--------------------------------------------------------------------\n");
-    fprintf(stderr,"Commands in the interactive mode:\n\n");
-    fprintf(stderr,"Use <Key>=<Val1,Val2,..> to set value for a keyword\n");
-    fprintf(stderr,"Use <Key>=<RETURN> to unset value(s) for a keywords\n\n");
+    cerr << "--------------------------------------------------------------------" << endl;
+    cerr << "Commands in the interactive mode:" << endl << endl;
+    cerr << "Use <Key>=<Val1,Val2,..> to set value for a keyword" << endl;
+    cerr << "Use <Key>=<RETURN> to unset value(s) for a keywords" << endl << endl;
     for (S=cl_CmdTab;S;S=S->Next) 
-      fprintf(stderr," %-11s : %s\n",S->Name,S->Doc);
-    fprintf(stderr,"\nAny other input is passed to the system shell\n\n");
+      fprintf(stderr," %-11s : %s\n",S->Name,S->Doc); // Convert this to cerr statement
+    cerr << endl << "Any other input is passed to the system shell" << endl << endl;
     return 1;
   }
   /*---------------------------------------------------------------------
@@ -624,7 +621,7 @@ END{									\
     
     if ((fd=fopen(str,"w"))==NULL)
       {
-	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
+	cerr << "###Error: Error in opening file \"" << str << "\"" << endl;
 	return 2;
       }
     else
