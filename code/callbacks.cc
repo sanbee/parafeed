@@ -31,6 +31,7 @@
 #include <limits.h>
 #include <boolError.h>
 #include <sstream>
+#include <regex>
 //#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
@@ -391,6 +392,24 @@ END{									\
 	}
   }
 
+  std::vector<std::string>
+  splitString(const std::string& stringToSplit,
+	      const std::string& regexPattern)
+  {
+    std::vector<std::string> result;
+
+    const std::regex rgx(regexPattern);
+    std::sregex_token_iterator iter(stringToSplit.begin(),
+				    stringToSplit.end(),
+				    rgx,
+				    -1);
+
+    for (std::sregex_token_iterator end; iter != end; ++iter)
+      result.push_back(iter->str());
+
+    return result;
+  }
+
   /*----------------------------------------------------------------------*/
   // TODO: The constants in the code below need to be determined
   // programmatically.  The necessary information to do so is in the
@@ -416,40 +435,71 @@ END{									\
     s1.insert(s1.end(),9,' ');            s1.insert(s1.end(), 16 ,'-');
     s1.insert(s1.end(),maxNameLength,' ');s1.insert(s1.end(), 7 ,'-');
     s1.insert(s1.end(),'\n');
-    Symbol *S;
 
-    if (arg==NULL)
-     {
-       cerr << s0; cerr << s1;
-       for (S=cl_SymbTab;S;S=S->Next)
-         if (((S->Class==CL_APPLNCLASS) ||
-	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-             (S->Exposed)
-            )
-           formatTypeHelp(S,fullFormat);
-     }
-    else if (string(arg) == "-a")
-      {
-       cerr << s0; cerr << s1;
-       for (S=cl_SymbTab;S;S=S->Next)
-         if (((S->Class==CL_APPLNCLASS) ||
-	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
-           formatTypeHelp(S,fullFormat);
-      }
-    else 
-     {
-       if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
-         if (((S->Class==CL_APPLNCLASS) ||
-	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-             (S->Exposed)
-            )
-           {
-	     cerr << s0; cerr << s1;
+    std::vector<std::string> argv;
 
-             formatTypeHelp(S,fullFormat);
-           }
-     }
+    if (arg!=NULL) argv = splitString(string(arg),string("[ ]+"));
+
+    std::regex regexName(".+");// by default match all keywords
+    bool all=false;
+
+    if (argv.size()>0)
+      if (argv[0]=="-a")
+	{
+	  all=true;
+	  argv.erase (argv.begin());
+	}
+    //for(auto tok : argv) cerr << tok << endl;
+
+    cerr << s0; cerr << s1;
+    auto printer = [&](const std::regex& pat,const bool& showAll)
+		   {
+		     Symbol *S;
+		     for(S=cl_SymbTab; S; S=S->Next)
+		       {
+			 if (std::regex_match(std::string(S->Name), pat) &&
+			     ((S->Class==CL_APPLNCLASS) ||
+			      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
+			     (S->Exposed||showAll)
+			     )
+			   formatTypeHelp(S,fullFormat);
+		       }
+		   };
+    if (argv.size()==0) printer(regexName,all);
+    else for(auto tok : argv) printer(std::regex(tok),all);
     return 1;
+    // if (argv.size()==0)
+    //  {
+    //    cerr << s0; cerr << s1;
+    //    for (S=cl_SymbTab;S;S=S->Next)
+    //      if (((S->Class==CL_APPLNCLASS) ||
+    // 	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
+    //          (S->Exposed)
+    //         )
+    //        formatTypeHelp(S,fullFormat);
+    //  }
+    // else if (argv[0] == "-a")
+    //   {
+    //    cerr << s0; cerr << s1;
+    //    for (S=cl_SymbTab;S;S=S->Next)
+    //      if (((S->Class==CL_APPLNCLASS) ||
+    // 	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
+    //        formatTypeHelp(S,fullFormat);
+    //   }
+    // else 
+    //  {
+    //    if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
+    //      if (((S->Class==CL_APPLNCLASS) ||
+    // 	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
+    //          (S->Exposed)
+    //         )
+    //        {
+    // 	     cerr << s0; cerr << s1;
+
+    //          formatTypeHelp(S,fullFormat);
+    //        }
+     // }
+    // return 1;
   }
   /*------------------------------------------------------------------
     The argument can be use to give help for a specific command only   
