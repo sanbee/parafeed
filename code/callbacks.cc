@@ -449,7 +449,7 @@ END{									\
 	  all=true;
 	  argv.erase (argv.begin());
 	}
-    //for(auto tok : argv) cerr << tok << endl;
+    //    for(auto tok : argv) cerr << tok << endl;
 
     cerr << s0; cerr << s1;
     auto printer = [&](const std::regex& pat,const bool& showAll)
@@ -466,7 +466,21 @@ END{									\
 		       }
 		   };
     if (argv.size()==0) printer(regexName,all);
-    else for(auto tok : argv) printer(std::regex(tok),all);
+    else
+      for(auto tok : argv)
+	{
+	  std::regex re;
+	  try
+	    {
+	      re=std::regex(tok);
+	    }
+	  catch(std::regex_error& ex)
+	    {
+	      cerr << "###Informational: " << ex.what() << " in token \"" << tok << "\"" << endl;
+	      return 1;
+	    }
+	  printer(re,all);
+	}
     return 1;
     // if (argv.size()==0)
     //  {
