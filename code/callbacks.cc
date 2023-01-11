@@ -392,24 +392,6 @@ END{									\
 	}
   }
 
-  std::vector<std::string>
-  splitString(const std::string& stringToSplit,
-	      const std::string& regexPattern)
-  {
-    std::vector<std::string> result;
-
-    const std::regex rgx(regexPattern);
-    std::sregex_token_iterator iter(stringToSplit.begin(),
-				    stringToSplit.end(),
-				    rgx,
-				    -1);
-
-    for (std::sregex_token_iterator end; iter != end; ++iter)
-      result.push_back(iter->str());
-
-    return result;
-  }
-
   /*----------------------------------------------------------------------*/
   // TODO: The constants in the code below need to be determined
   // programmatically.  The necessary information to do so is in the
@@ -438,7 +420,7 @@ END{									\
 
     std::vector<std::string> argv;
 
-    if (arg!=NULL) argv = splitString(string(arg),string("[ ]+"));
+    if (arg!=NULL) argv = stokenize(string(arg),std::regex("[ ]+"));
 
     std::regex regexName(".+");// by default match all keywords
     bool all=false;
@@ -449,7 +431,7 @@ END{									\
 	  all=true;
 	  argv.erase (argv.begin());
 	}
-    //    for(auto tok : argv) cerr << tok << endl;
+    // for(auto tok : argv) cerr << tok << endl;
 
     cerr << s0; cerr << s1;
     auto printer = [&](const std::regex& pat,const bool& showAll)
@@ -473,13 +455,12 @@ END{									\
 	  try
 	    {
 	      re=std::regex(tok);
+	      printer(re,all);
 	    }
 	  catch(std::regex_error& ex)
 	    {
 	      cerr << "###Informational: " << ex.what() << " in token \"" << tok << "\"" << endl;
-	      return 1;
 	    }
-	  printer(re,all);
 	}
     return 1;
     // if (argv.size()==0)

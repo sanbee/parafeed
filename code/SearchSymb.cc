@@ -21,28 +21,38 @@
 #include <shell.h>
 #include <cllib.h>
 #include <string>
+#include <string>
+#include <regex>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
   Symbol *SearchVSymbFullMatch(const std::string& Name, Symbol *Tab)
-{
-  Symbol *t;
-  for (t=Tab;t!=NULL;t=t->Next)
-    if (!strcmp(t->Name,Name.c_str())) break;
-  return t;
-}
-Symbol *SearchVSymb(const char *Name, Symbol *Tab){return minmatch(Name,Tab);}
-/*----------------------------------------------------------------------*/
+  {
+    Symbol *t;
+    for (t=Tab;t!=NULL;t=t->Next)
+      //if (!strcmp(t->Name,Name.c_str())) break;
+      if (t->Name == Name) break;
+    //    if (std::regex_match(t->Name,std::regex(Name))) break;
+    return t;
+  }
+  /*----------------------------------------------------------------------*/
+  Symbol *SearchVSymb(const char *Name, Symbol *Tab)
+  {
+    return minmatch(Name,Tab);
+  }
+  /*----------------------------------------------------------------------*/
   CmdSymbol *SearchCSymb(const std::string& Name, CmdSymbol *Tab)
-{
-  CmdSymbol *t;
-  for (t=Tab;t!=NULL;t=t->Next)
-    {
-      if (!strcmp(t->Name,Name.c_str())) break;
-    }
-  return t;
-}
+  {
+    CmdSymbol *t;
+    for (t=Tab;t!=NULL;t=t->Next)
+      {
+	//if (!strcmp(t->Name,Name.c_str())) break;
+	if (t->Name == Name) break;
+	//      if (std::regex_match(t->Name,std::regex(Name))) break;
+      }
+    return t;
+  }
 #ifdef __cplusplus
 	   }
 #endif
