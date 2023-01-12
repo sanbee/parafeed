@@ -222,7 +222,9 @@ END{									\
     return exposedSomething;
   }
   /*----------------------------------------------------------------------*/
-  void showExposedKeys(Symbol* t, const bool& showAll)
+  void showExposedKeys(Symbol* t, const bool& showAll,
+		       std::function<void(FILE*, Symbol*)> printer
+		       )
   {
     vector<string> mapVal;
     //checkVal(t,mapVal);
@@ -241,7 +243,7 @@ END{									\
 	  }
 	// Recusively show watched keys, if exposed by the current
 	// value of the parent key or if showAll==True.
-	showExposedKeys(S,showAll);
+	showExposedKeys(S,showAll,printer);
       }
   }
 
@@ -255,15 +257,18 @@ END{									\
     for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
 
     std::vector<std::string> sv;
-    if (arg)
-      {
-	sv = stokenize(string(arg), std::regex("\\s+"));
-      }
+    if (arg) sv = stokenize(string(arg), std::regex("\\s+"));
     //    
     // Now print the viewable keywords. The code below is a little
     // state-machine (just about at the level that the author can code
     // by-hand).
     //
+    auto printer = [&](FILE *fd, Symbol *S)
+		   {
+		     PrintKey(stderr, t);
+		     PrintVals(stderr,t,1);
+		   };
+
     if (sv.size()==0)//arg == NULL)
       for (t=cl_SymbTab;t;t=t->Next)
 	{
@@ -271,8 +276,7 @@ END{									\
 	     ((t->Class==CL_APPLNCLASS) || 
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
 	    {
-	      PrintKey(stderr, t);
-	      PrintVals(stderr,t,1);
+	     printer(stderr,t);
 	    }
 	}
     // Single argument.  It can be "-a" or name of a key. 
@@ -284,8 +288,7 @@ END{									\
 	      if ((t->Class==CL_APPLNCLASS) || 
 		  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
 		{
-		  PrintKey(stderr, t);
-		  PrintVals(stderr,t,1);
+		 printer(stderr,t);
 		}
 	    }
 	else // Print the single given key
@@ -297,8 +300,7 @@ END{									\
 	      }
 	    else
 	      {
-		PrintKey(stderr,t);
-		PrintVals(stderr,t,1);
+	       printer(stderr,t);
 	      }
 	  }
       }
@@ -315,8 +317,7 @@ END{									\
 	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
 	    // Recusrively show keys associated with the root key that
 	    // are exposed with its current setting.
-	    showExposedKeys(t,false);
-	    //	    fprintf(stderr,"\n");
+	    showExposedKeys(t,false,printer);
 	  }
       }
     else
@@ -332,13 +333,10 @@ END{									\
 	  {
 	    // Show the root key first.
 	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	    // PrintKey(stderr,t);
-	    // PrintVals(stderr,t,1);
-	
+	    printer(stderr,t);
 	    // Recusrively show keys associated with the root key that
 	    // are exposed with its current setting.
-	    showExposedKeys(t,showAll);
-	    //	    fprintf(stderr,"\n");
+	    showExposedKeys(t,showAll,printer);
 	  }
       }
     return 1;
