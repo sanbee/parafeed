@@ -222,172 +222,49 @@ END{									\
     return exposedSomething;
   }
   /*----------------------------------------------------------------------*/
-  void showExposedKeys(Symbol* t, const bool& showAll,
-		       std::function<void(FILE*, Symbol*)> printer
-		       )
-  {
-    vector<string> mapVal;
-    //checkVal(t,mapVal);
-    mapVal = (t->smap.begin())->second;
-    for (auto key : mapVal)
-      {
-	Symbol *S;
-	S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
-	if (S==NULL) break;
-	//S=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
-	    (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
-	  {
-	    PrintKey(stderr, S);
-	    PrintVals(stderr,S,1);
-	  }
-	// Recusively show watched keys, if exposed by the current
-	// value of the parent key or if showAll==True.
-	showExposedKeys(S,showAll,printer);
-      }
-  }
-
   int doinp(char *arg)
   {
-    Symbol *t;
-    //
-    // First ensure that the key-exposure algorithm is executed (it
-    // can be run anywhere any number of times).
-    //
-    for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
-
-    std::vector<std::string> sv;
-    if (arg) sv = stokenize(string(arg), std::regex("\\s+"));
-    //    
-    // Now print the viewable keywords. The code below is a little
-    // state-machine (just about at the level that the author can code
-    // by-hand).
-    //
-    auto printer = [&](FILE *fd, Symbol *S)
+    auto printer = [](FILE *fd, Symbol *t)
 		   {
 		     PrintKey(stderr, t);
 		     PrintVals(stderr,t,1);
 		   };
-
-    if (sv.size()==0)//arg == NULL)
-      for (t=cl_SymbTab;t;t=t->Next)
-	{
-	  if ((t->Exposed) && 
-	     ((t->Class==CL_APPLNCLASS) || 
-	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
-	    {
-	     printer(stderr,t);
-	    }
-	}
-    // Single argument.  It can be "-a" or name of a key. 
-    else if (sv.size()==1)
-      {
-	if (sv[0]=="-a") // Apply -a on all keys
-	  for (t=cl_SymbTab;t;t=t->Next)
-	    {
-	      if ((t->Class==CL_APPLNCLASS) || 
-		  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-		{
-		 printer(stderr,t);
-		}
-	    }
-	else // Print the single given key
-	  {
-	    if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
-	      {
-		string mesg = "Key ("+sv[0]+") not found or is not currently exposed";
-		clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
-	      }
-	    else
-	      {
-	       printer(stderr,t);
-	      }
-	  }
-      }
-    // Multiple arguments.  E.g. "-a name1 name2 ..."
-    //
-    // An internal option to print the tree of exposed keys associated
-    // with the symbol t
-    else if (sv[0]=="-t") 
-      {
-	sv.erase(sv.begin());
-	for(auto iarg : sv)
-	  {
-	    // Show the root key first.
-	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	    // Recusrively show keys associated with the root key that
-	    // are exposed with its current setting.
-	    showExposedKeys(t,false,printer);
-	  }
-      }
-    else
-      {
-	bool showAll=false;
-	if (sv[0]=="-a")
-	  {
-	    showAll=true;
-	    sv.erase(sv.begin());
-	  }
-	t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
-	for(auto iarg : sv)
-	  {
-	    // Show the root key first.
-	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	    printer(stderr,t);
-	    // Recusrively show keys associated with the root key that
-	    // are exposed with its current setting.
-	    showExposedKeys(t,showAll,printer);
-	  }
-      }
-    return 1;
+    return showKeys(arg,printer);
   }
-  /*----------------------------------------------------------------------*/
-  int doquit(char *arg)
-  {
-#ifdef GNUREADLINE
-    /* Put the history in the history file*/
-    char *var=(char *)"GHIST";
-    save_hist(var,(char *)CL_HIST_DEFAULT);
-#endif
-    
-    if (!arg) exit(0);
-    return 1;
-  }
-
   /*----------------------------------------------------------------------*/
   void formatTypeHelp(Symbol *S, string& fullFormat)
   {
-	{
-	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
-	  exposeKeys(S);
-	  fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
-	  int n=S->DefaultVal.size(),nchar=0, offset=16;;
-	  if ((n=S->DefaultVal.size())>0)
-	    {
-	      fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
-	      nchar += strlen(S->DefaultVal[0].c_str());
-	      for(int i=1;i<n;i++)
-		{
-		  fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
-		  nchar += strlen(S->DefaultVal[i].c_str());
-		}
-	      //	      for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
-	    }
-	  else
-	    offset+=10;
-	  for(int i=0;i<offset-nchar;i++) fprintf(stderr," ");
+    if (S==NULL)
+      clThrowUp(std::string("Key not found or is not currently exposed"), "###Informational", CL_WARNING);
+
+    exposeKeys(S);
+    fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
+    int n=S->DefaultVal.size(),nchar=0, offset=16;;
+    if ((n=S->DefaultVal.size())>0)
+      {
+	fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
+	nchar += strlen(S->DefaultVal[0].c_str());
+	for(int i=1;i<n;i++)
+	  {
+	    fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
+	    nchar += strlen(S->DefaultVal[i].c_str());
+	  }
+	//	      for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
+      }
+    else
+      offset+=10;
+    for(int i=0;i<offset-nchar;i++) fprintf(stderr," ");
 	    
-	  if (ISSET(S->Attributes,CL_BOOLTYPE))
-	    fprintf(stderr, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
-	  if ((n=S->Options.size())>0)
-	    {
-	      fprintf(stderr, " [%-s",S->Options[0].c_str());
-	      for(int i=1;i<n;i++)
-		fprintf(stderr, " %-s",S->Options[i].c_str());
-              fprintf(stderr,"]");
-	    }
-	  fprintf(stderr, "\n");
-	}
+    if (ISSET(S->Attributes,CL_BOOLTYPE))
+      fprintf(stderr, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
+    if ((n=S->Options.size())>0)
+      {
+	fprintf(stderr, " [%-s",S->Options[0].c_str());
+	for(int i=1;i<n;i++)
+	  fprintf(stderr, " %-s",S->Options[i].c_str());
+	fprintf(stderr,"]");
+      }
+    fprintf(stderr, "\n");
   }
 
   /*----------------------------------------------------------------------*/
@@ -396,7 +273,9 @@ END{									\
   // (global) symbol table (various strings to be printed).
   int dotypehelp(char *arg)
   {
-    //char format[12];
+    //
+    // Construct and print the header
+    //
     std::string format;
     int maxNameLength = namePrintFormat(format,"");
     string fullFormat;
@@ -416,88 +295,34 @@ END{									\
     s1.insert(s1.end(),maxNameLength,' ');s1.insert(s1.end(), 7 ,'-');
     s1.insert(s1.end(),'\n');
 
-    std::vector<std::string> argv;
-
-    if (arg!=NULL) argv = stokenize(string(arg),std::regex("[ ]+"));
-
-    std::regex regexName(".+");// by default match all keywords
-    bool all=false;
-
-    if (argv.size()>0)
-      if (argv[0]=="-a")
-	{
-	  all=true;
-	  argv.erase (argv.begin());
-	}
-    // for(auto tok : argv) cerr << tok << endl;
-
     cerr << s0; cerr << s1;
-    auto printer = [&](const std::regex& pat,const bool& showAll)
-		   {
-		     Symbol *S;
-		     for(S=cl_SymbTab; S; S=S->Next)
-		       {
-			 if (std::regex_match(std::string(S->Name), pat) &&
-			     ((S->Class==CL_APPLNCLASS) ||
-			      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-			     (S->Exposed||showAll)
-			     )
-			   formatTypeHelp(S,fullFormat);
-		       }
-		   };
-    if (argv.size()==0) printer(regexName,all);
-    else
-      for(auto tok : argv)
-	{
-	  std::regex re;
-	  try
-	    {
-	      re=std::regex(tok);
-	      printer(re,all);
-	    }
-	  catch(std::regex_error& ex)
-	    {
-	      cerr << "###Informational: " << ex.what() << " in token \"" << tok << "\"" << endl;
-	    }
-	}
-    return 1;
-    // if (argv.size()==0)
-    //  {
-    //    cerr << s0; cerr << s1;
-    //    for (S=cl_SymbTab;S;S=S->Next)
-    //      if (((S->Class==CL_APPLNCLASS) ||
-    // 	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-    //          (S->Exposed)
-    //         )
-    //        formatTypeHelp(S,fullFormat);
-    //  }
-    // else if (argv[0] == "-a")
-    //   {
-    //    cerr << s0; cerr << s1;
-    //    for (S=cl_SymbTab;S;S=S->Next)
-    //      if (((S->Class==CL_APPLNCLASS) ||
-    // 	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
-    //        formatTypeHelp(S,fullFormat);
-    //   }
-    // else 
-    //  {
-    //    if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
-    //      if (((S->Class==CL_APPLNCLASS) ||
-    // 	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-    //          (S->Exposed)
-    //         )
-    //        {
-    // 	     cerr << s0; cerr << s1;
 
-    //          formatTypeHelp(S,fullFormat);
-    //        }
-     // }
-    // return 1;
+    //
+    // Print the keys using the supplied printer.  This also
+    // interprets the arg string.
+    //
+    auto printer = [&fullFormat](FILE *fd, Symbol *t)
+		   {
+		     formatTypeHelp(t,fullFormat);
+		   };
+    return showKeys(arg,printer);
   }
+  /*----------------------------------------------------------------------*/
+  int doquit(char *arg)
+  {
+#ifdef GNUREADLINE
+    /* Put the history in the history file*/
+    char *var=(char *)"GHIST";
+    save_hist(var,(char *)CL_HIST_DEFAULT);
+#endif
+    
+    if (!arg) exit(0);
+    return 1;
+  }
+
   /*------------------------------------------------------------------
     The argument can be use to give help for a specific command only   
     -------------------------------------------------------------------*/
-
   int dohelp(char *arg)
   {
     CmdSymbol *S;

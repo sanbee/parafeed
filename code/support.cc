@@ -346,7 +346,7 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-
+/*----------------------------------------------------------------------*/
 std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx)
 {
   //std::regex rgx("\\s+");
@@ -359,4 +359,123 @@ std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx)
   for ( ; iter != end; ++iter)
     out.push_back(*iter);
   return out;
+}
+/*----------------------------------------------------------------------*/
+// Recursively show exposed keys.  Printing is done using the supplied
+// printer.
+void showExposedKeys(Symbol* t, const bool& showAll,
+		     std::function<void(FILE*, Symbol*)> printer
+		     )
+{
+  vector<string> mapVal;
+  //checkVal(t,mapVal);
+  mapVal = (t->smap.begin())->second;
+  for (auto key : mapVal)
+    {
+      Symbol *S;
+      S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+      if (S==NULL) break;
+      //S=SearchVSymb(iarg.c_str(),cl_SymbTab);
+      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
+	  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+	{
+	  printer(stderr,S);
+	}
+      // Recusively show watched keys, if exposed by the current
+      // value of the parent key or if showAll==True.
+      showExposedKeys(S,showAll,printer);
+    }
+}
+/*----------------------------------------------------------------------*/
+// A generic function for display keys as listed in arg, using the
+// supplied printer function.
+int showKeys(char *arg,
+	     std::function<void(FILE*, Symbol*)> printer)
+{
+  Symbol *t;
+  //
+  // First ensure that the key-exposure algorithm is executed (it
+  // can be run anywhere any number of times).
+  //
+  for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
+
+  std::vector<std::string> sv;
+  if (arg) sv = stokenize(string(arg), std::regex("\\s+"));
+  //    
+  // Now print the viewable keywords. The code below is a little
+  // state-machine (just about at the level that the author can code
+  // by-hand).
+  //
+
+  if (sv.size()==0)//arg == NULL)
+    for (t=cl_SymbTab;t;t=t->Next)
+      {
+	if ((t->Exposed) && 
+	    ((t->Class==CL_APPLNCLASS) || 
+	     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
+	  {
+	    printer(stderr,t);
+	  }
+      }
+  // Single argument.  It can be "-a" or name of a key. 
+  else if (sv.size()==1)
+    {
+      if (sv[0]=="-a") // Apply -a on all keys
+	for (t=cl_SymbTab;t;t=t->Next)
+	  {
+	    if ((t->Class==CL_APPLNCLASS) || 
+		((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	      {
+		printer(stderr,t);
+	      }
+	  }
+      else // Print the single given key
+	{
+	  if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
+	    {
+	      string mesg = "Key ("+sv[0]+") not found or is not currently exposed";
+	      clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
+	    }
+	  else
+	    {
+	      printer(stderr,t);
+	    }
+	}
+    }
+  // Multiple arguments.  E.g. "-a name1 name2 ..."
+  //
+  // An internal option to print the tree of exposed keys associated
+  // with the symbol t
+  else if (sv[0]=="-t") 
+    {
+      sv.erase(sv.begin());
+      for(auto iarg : sv)
+	{
+	  // Show the root key first.
+	  t=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	  // Recusrively show keys associated with the root key that
+	  // are exposed with its current setting.
+	  showExposedKeys(t,false,printer);
+	}
+    }
+  else
+    {
+      bool showAll=false;
+      if (sv[0]=="-a")
+	{
+	  showAll=true;
+	  sv.erase(sv.begin());
+	}
+      //	t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
+      for(auto iarg : sv)
+	{
+	  // Show the root key first.
+	  t=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	  printer(stderr,t);
+	  // Recusrively show keys associated with the root key that
+	  // are exposed with its current setting.
+	  showExposedKeys(t,showAll,printer);
+	}
+    }
+  return 1;
 }

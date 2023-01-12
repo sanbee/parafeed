@@ -40,4 +40,7 @@ extern "C" {
 	   }
 #endif
 std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx);
+int showKeys(char *arg, std::function<void(FILE*, Symbol*)> printer);
+void showExposedKeys(Symbol* t, const bool& showAll,
+		     std::function<void(FILE*, Symbol*)> printer);
 #endif
