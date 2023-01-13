@@ -398,7 +398,7 @@ int showKeys(char *arg,
   // can be run anywhere any number of times).
   //
   for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
-
+  
   std::vector<std::string> sv;
   if (arg) sv = stokenize(string(arg), std::regex("\\s+"));
   //    
@@ -406,7 +406,7 @@ int showKeys(char *arg,
   // state-machine (just about at the level that the author can code
   // by-hand).
   //
-
+  
   if (sv.size()==0)//arg == NULL)
     for (t=cl_SymbTab;t;t=t->Next)
       {
@@ -477,5 +477,179 @@ int showKeys(char *arg,
 	  showExposedKeys(t,showAll,printer);
 	}
     }
+  return 1;
+}
+/*----------------------------------------------------------------------*/
+bool checkVal(Symbol* t, vector<string>& mapVal)
+{
+  bool found=false;
+  SMap::iterator loc;
+  try
+    {
+      if (ISSET(t->Attributes,CL_BOOLTYPE))
+	{
+	  //
+	  // This is a BOOLTYPE keyword.  Check for logical
+	  // true/false.  String comparision is not enough
+	  // (e.g. string "0" and "no" are both logical false).
+	  //
+	  for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
+	    {
+	      bool logicalKey = clIsTrue((*loc).first.c_str());
+	      if ((found = (clBoolCmp(t->Val[0],logicalKey)==logicalKey))) break;
+	    }
+	}
+      else
+	{
+	  //
+	  // For all other types, check by string comparision only.
+	  //
+	  if (t->Val.size() > 0)
+	    {
+	      loc = t->smap.find(string(t->Val[0]));
+	      found = (loc != t->smap.end());
+	    }
+	}
+      if (found) mapVal=(*loc).second;
+    }
+  catch (clError &x)
+    {
+      x << x.what() << endl;
+    }
+  return found;
+}
+/*----------------------------------------------------------------------*/
+int exposeKeys(Symbol *t)
+{
+  Symbol *S;
+  int exposedSomething=0;
+  /*    char *name = t->Name;*/
+  
+  if ((t->smap.size() > 0))
+    {
+      //
+      // Irrespective of the current value of the symbol, hide all
+      // keys on which a watch was set by this symbol
+      //
+      if (ISSET(t->Attributes,CL_HIDDENKEYWORD))
+	SETBIT(t->Attributes,CL_HIDENSEEKKEYWORD);
+      else
+	SETBIT(t->Attributes,CL_HIDINGKEYWORD);
+      for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
+	{
+	  vector<string> sv=(*i).second;
+	  for(unsigned int j=0;j<sv.size();j++)
+	    {
+	      if ((S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab))==NULL)
+		{
+		  string mesg = "Programmer error: Watch key \"" + sv[j] + "\" not found.";
+		  clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
+		}
+	      S->Exposed=0;
+	      SETBIT(S->Attributes,CL_HIDDENKEYWORD);
+	    }
+	}
+      //
+      // Now set for display those watched-keys which are exposed by
+      // the current setting of this symbol. If the current symbol
+      // (t) is not exposed itself, the keys are that watching
+      // remain unexposed. For now, the "current setting" is only
+      // the first value (i.e. ignores other possible comma
+      // seperated values).
+      //
+      
+      if ((t->NVals > 0) && (t->Exposed==1))
+	{
+	  // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
+	  // if (loc != t->smap.end())
+	  vector<string> mapVal;
+	  if (checkVal(t,mapVal))
+	    {
+	      //		vector<string> sv=(*loc).second;
+	      vector<string> sv=mapVal;
+	      for(unsigned int j=0;j<sv.size();j++)
+		{
+		  S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
+		  S->Exposed=1;
+		  exposedSomething=1;
+		  //
+		  // Recursively expose the keys.
+		  //
+		  exposeKeys(S);
+		  //
+		  // Remove the CL_KEYWORD attribute if a keyword is
+		  // hidden due to a setting of another keyword which 
+		  // is made into a shell constant (by the .config
+		  // file).  Such a keyword should not be colour coded
+		  // (since the other keyword which will hide/expose
+		  // this keyword is not exposed itself...hence user
+		  // has really no control on the exposure of these
+		  // keywords).
+		  // 
+		  if (t->Class==CL_USERCLASS) 
+		    {
+		      RESETBIT(S->Attributes,CL_KEYWORD);
+		    }
+		}
+	    }
+	}
+    }
+  return exposedSomething;
+}
+/*----------------------------------------------------------------------*/
+int loadDefaults(int complement)
+{
+  char out[FILENAME_MAX+2]="./", *t;
+  FILE *fd;
+    
+  /*
+    First, do a complimentary load from the .def file available
+    locally.
+  */
+    
+#ifdef GNUREADLINE
+  strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+#else
+  strcat(out,cl_ProgName);
+#endif
+  strcat(out,".def");
+    
+  if ((fd = fopen(out,"r")) != NULL)  
+    {
+      fclose(fd);  
+      if (complement) strcat(out,"!");  /* Perform a complimentery load */
+      doload(out);
+    }
+    
+  /*
+    If CL_DEFAULTSENV env. var. is set, look for a .def file
+    there and if found, do a complimentary load from there too.
+  */
+
+  t=(char *)getenv(CL_DEFAULTSENV);
+  if (t && strlen(t))     {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
+    
+#ifdef GNUREADLINE
+  strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+#else
+  strcat(out,cl_ProgName);
+#endif
+  strcat(out,".def");
+    
+  if ((fd = fopen(out,"r")) != NULL)  
+    {
+      fclose(fd);  
+      //	if (complement) 
+      strcat(out,"!");  /* Perform a complimentery load */
+      doload(out);
+    }
+    
+  /*
+    Final effect will be that first any commandline setting will be
+    set.  Next, the local .def file will be hououred for all those
+    keys which still remain unset.  Next, .def file from CL_DEFAULTSENV
+    area will he honoured for those keys which continue to remain
+    unset.  */
+    
   return 1;
 }
