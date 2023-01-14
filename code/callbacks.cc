@@ -115,39 +115,36 @@ END{									\
     return showKeys(arg,printer);
   }
   /*----------------------------------------------------------------------*/
-  void formatTypeHelp(Symbol *S, string& fullFormat)
+  void formatTypeHelp(FILE *fd, Symbol *S, const string& fullFormat)
   {
-    if (S==NULL)
-      clThrowUp(std::string("Key not found or is not currently exposed"), "###Informational", CL_WARNING);
-
     exposeKeys(S);
-    fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
+    fprintf(fd,fullFormat.c_str(),S->Name,S->Type);
     int n=S->DefaultVal.size(),nchar=0, offset=16;;
     if ((n=S->DefaultVal.size())>0)
       {
-	fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
+	fprintf(fd, "          %-s",S->DefaultVal[0].c_str());
 	nchar += strlen(S->DefaultVal[0].c_str());
 	for(int i=1;i<n;i++)
 	  {
-	    fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
+	    fprintf(fd, ",%-s",S->DefaultVal[i].c_str());
 	    nchar += strlen(S->DefaultVal[i].c_str());
 	  }
-	//	      for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
+	//	      for(int i=0;i<10-nchar;i++) fprintf(fd," ");
       }
     else
       offset+=10;
-    for(int i=0;i<offset-nchar;i++) fprintf(stderr," ");
+    for(int i=0;i<offset-nchar;i++) fprintf(fd," ");
 	    
     if (ISSET(S->Attributes,CL_BOOLTYPE))
-      fprintf(stderr, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
+      fprintf(fd, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
     if ((n=S->Options.size())>0)
       {
-	fprintf(stderr, " [%-s",S->Options[0].c_str());
+	fprintf(fd, " [%-s",S->Options[0].c_str());
 	for(int i=1;i<n;i++)
-	  fprintf(stderr, " %-s",S->Options[i].c_str());
-	fprintf(stderr,"]");
+	  fprintf(fd, " %-s",S->Options[i].c_str());
+	fprintf(fd,"]");
       }
-    fprintf(stderr, "\n");
+    fprintf(fd, "\n");
   }
 
   /*----------------------------------------------------------------------*/
@@ -178,15 +175,20 @@ END{									\
     s1.insert(s1.end(),maxNameLength,' ');s1.insert(s1.end(), 7 ,'-');
     s1.insert(s1.end(),'\n');
 
-    cerr << s0; cerr << s1;
+    //    cerr << s0; cerr << s1;
 
     //
     // Print the keys using the supplied printer.  This also
     // interprets the arg string.
     //
-    auto printer = [&fullFormat](FILE *fd, Symbol *t)
+    auto printer = [&fullFormat,&s0,&s1](FILE *fd, Symbol *t)
 		   {
-		     formatTypeHelp(t,fullFormat);
+		     // Print the header (it is in the s0 and s1
+		     // strings)...
+		     fprintf(fd,"%s%s",s0.c_str(),s1.c_str());
+		     // ...and make sure the header is printed only once.
+		     s0=s1="";
+		     formatTypeHelp(fd,t,fullFormat);
 		   };
     return showKeys(arg,printer);
   }
@@ -393,10 +395,10 @@ END{									\
     return 1;
   }
   /*-----------------------------------------------------------------------
-    Loads the setting for the keywords from a file (typically written by
-    the save command). If *f==NULL, load from ./<ProgName>.def.  If f ends
-    with '!' character, do a complementary load; set only those keywords
-    are not already set.
+    Loads the setting for the keywords from a file (typically written
+    by the save command). If *f==NULL, load from ./<ProgName>.def.  If
+    f ends with '!' character, do a complementary load; set only
+    keywords that are not already set.
     ------------------------------------------------------------------------*/
   int doload(char *f)
   {
