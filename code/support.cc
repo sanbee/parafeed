@@ -451,15 +451,6 @@ int showKeys(char *arg,
 	  }
       else // Print the single given key
 	{
-	  // if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
-	  //   {
-	  //     string mesg = "Key ("+sv[0]+") not found or is not currently exposed";
-	  //     clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
-	  //   }
-	  // else
-	  //   {
-	  //     printer(stderr,t);
-	  //   }
 	  if (t=SearchVSymb_l(sv[0],cl_SymbTab,true))
 	    printer(stderr,t);
 	}
@@ -473,11 +464,6 @@ int showKeys(char *arg,
       sv.erase(sv.begin());
       for(auto iarg : sv)
 	{
-	  // if ((t=SearchVSymb(iarg.c_str(),cl_SymbTab))==NULL)
-	  //   {
-	  //     string mesg = "Key ("+iarg+") not found or is not currently exposed";
-	  //     clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
-	  //   }
 	  // Recusrively show keys associated with the root key that
 	  // are exposed with its current setting.
 	  if (t=SearchVSymb_l(iarg,cl_SymbTab,false))
@@ -495,13 +481,6 @@ int showKeys(char *arg,
       //	t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
       for(auto iarg : sv)
 	{
-	  // Show the root key first.
-	  // if ((t=SearchVSymb(iarg.c_str(),cl_SymbTab))==NULL)
-	  //   {
-	  //     string mesg = "Key ("+iarg+") not found or is not currently exposed";
-	  //     clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
-	  //   }
-	  // else
 	  if ((t=SearchVSymb_l(iarg,cl_SymbTab,false))!=NULL)
 	    {
 	      printer(stderr,t);
