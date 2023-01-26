@@ -401,10 +401,14 @@ END{									\
     f ends with '!' character, do a complementary load; set only
     keywords that are not already set.
     ------------------------------------------------------------------------*/
+  bool isWhiteSpace(const char c)
+  {
+    return std::regex_match(&c,std::regex("[\e\[(.*?)m]"))||!std::isprint(c);
+    //return std::regex_match(&c,std::regex("[ \t\n]"))||!std::isprint(c);
+  }
+
   int doload(char *f)
   {
-    // FILE *fd;
-    // char str[MAXBUF];
     int Complement=0;
 
     ifstream ifs;
@@ -416,27 +420,22 @@ END{									\
     if(f==NULL || strlen(f) == 0)
       {
 	strcpp = cl_ProgName; 
-	//	strcpy(str,cl_ProgName);
 #ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
 	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
 #endif
-	//	strcat(str,".def");
 	strcpp.append(".def");
       }
     else 
-      //      strcpy(str,f);
       strcpp = f;
     
-    //    if (str[strlen(str)-1] == '!') 
+
     if (strcpp[strcpp.size()-1] == '!') 
       {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
 
     ifs.open(strcpp.c_str());
-    //    if ((fd = fopen(str,"r"))==NULL)
+
     if (!ifs.good())
       {
-	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
 	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
     	return 2;
       }
@@ -445,20 +444,21 @@ END{									\
 	char *Name=NULL, *Val=NULL;
 	Symbol *pos;
 	
-	//	while(!feof(fd))
 	while(!ifs.eof())
 	  {
 	    string line;
-	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
-	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
 	    if (getline(ifs,line))
 	      {
+		line.erase(std::remove_if(line.begin(), line.end(), isWhiteSpace), line.end());
 		char *str_p=(char *)line.c_str();
-		//		cerr << line << endl;
-		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
+
+		// char *str_p=(char *)line.c_str();
+		// stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
+
 		if (strlen(str_p) > 0)
 		  {
 		    BreakStr(str_p,&Name,&Val);
+		    cerr << Name << " " << Val << endl;
 		    pos = NULL;
 		    if (Complement)
 		      {
@@ -476,7 +476,6 @@ END{									\
 		  }
 	      }
 	  }
-	//	fclose(fd);
       }
     cl_do_doinp=0;
     return 1;
