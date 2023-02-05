@@ -403,8 +403,15 @@ END{									\
     ------------------------------------------------------------------------*/
   bool isWhiteSpace(const char c)
   {
-    return std::regex_match(&c,std::regex("[\e\[(.*?)m]"))||!std::isprint(c);
-    //return std::regex_match(&c,std::regex("[ \t\n]"))||!std::isprint(c);
+
+    //    return std::regex_match(&c,std::regex("[\x1b\[[0-9;]*m/]"))||!std::isprint(c);
+
+    //Match string like ^[[1;30m
+
+    std::regex re("^(\[[0-9;]*m)$");
+    //    std::regex re("\x1b\[[0-9;]*m");
+    // return std::regex_match(&c,re);
+    return std::regex_match(&c,std::regex("[ \t\n]"))||!std::isprint(c)||std::regex_match(&c,re);
   }
 
   int doload(char *f)
@@ -449,16 +456,18 @@ END{									\
 	    string line;
 	    if (getline(ifs,line))
 	      {
+		cerr << line << endl;
 		line.erase(std::remove_if(line.begin(), line.end(), isWhiteSpace), line.end());
 		char *str_p=(char *)line.c_str();
 
 		// char *str_p=(char *)line.c_str();
 		// stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
 
+		cerr << line << endl;
 		if (strlen(str_p) > 0)
 		  {
 		    BreakStr(str_p,&Name,&Val);
-		    cerr << Name << " " << Val << endl;
+		    //cerr << Name << " " << Val << "\n";
 		    pos = NULL;
 		    if (Complement)
 		      {

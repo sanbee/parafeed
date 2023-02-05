@@ -208,7 +208,6 @@ int ParseCmdLine(int argc, char *argv[])
     Symbol *S;
     if ((S=SearchNode("help",cl_SymbTab))!=NULL && S->NVals > 0)
       {
-	//if (!strcmp(S->Val[0],"noprompt"))
 	if (S->Val[0] == "noprompt")
 	  {
 	    cl_RegistrationMode=0;
