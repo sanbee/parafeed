@@ -291,7 +291,7 @@ help keyword.
       }
     else // programatic equivalent of help=noprompt
       {
-	cl_RegistrationMode=0;
+	//	cl_RegistrationMode=0;
 	cl_NoPrompt = 1;
       }
   }
@@ -473,7 +473,7 @@ int EndCL()
       exit(0);
     }
 
-  //  if ((i==CL_FAIL) || !cl_NoPrompt)
+  //if ((i==CL_FAIL) || !cl_NoPrompt)
   if (!cl_NoPrompt)
     {
       i=startShell();
