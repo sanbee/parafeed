@@ -27,6 +27,10 @@ void UI(bool restart, int argc, char **argv)
   // strcpy(argv_l[0],"test2");
   // argc_l=0;
 
+  // Set the application to be non-interactive by default.
+  // The setting can be changed via the help=prompt keyword.
+  clSetPrompt(false);
+
   if (!restart)
     {
       BeginCL(argc,argv);
