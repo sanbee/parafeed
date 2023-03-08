@@ -32,92 +32,18 @@
 #include <setAutoDefaults.h>
 
 #include <regex>
-
-/*---------------------------------------------------------------------------*/
-/* Template function to set a single value as default for the Symbol S */
-/*---------------------------------------------------------------------------*/
-// template <class T>
-// void setAutoDefaults(Symbol *S, T const & val)
-// {
-//   std::vector<T> tmp;
-//   tmp.push_back(val);
-//   setAutoDefaults(S, tmp);
-//   return;
-// }
-// /*---------------------------------------------------------------------------*/
-// /* Template function to set a vector of values as default for the Symbol S */
-// /*---------------------------------------------------------------------------*/
-// template <class T>
-// void setAutoDefaults(Symbol *S, const vector<T>& val)
-// {
-//     /* int n=val.size(); */
-//     /* if (cl_RegistrationMode == 1) */
-//     /*   { */
-//     /* 	S->DefaultVal.resize(n,""); */
-//     /* 	for(int i=0;i<n;i++) */
-//     /* 	  { */
-//     /* 	    ostringstream os; */
-//     /* 	    os << val[i]; */
-//     /* 	    S->DefaultVal[i] = os.str(); */
-//     /* 	  } */
-//     /*   } */
-    
-//     /* if (S->Val.size() == 0) */
-//     /*   { */
-//     /* 	S->Val.resize(n,""); */
-//     /* 	n = S->DefaultVal.size(); */
-//     /* 	for(int i=0;i<n;i++) */
-//     /* 	  { */
-//     /* 	    stringstream os; */
-//     /* 	    os << S->DefaultVal[i]; */
-//     /* 	    S->Val[i]=os.str(); */
-//     /* 	  } */
-//     /* 	S->NVals = n; */
-//     /*   } */
-
-
-//     /* if (S->Val == NULL) */
-//     /*   { */
-//     /* 	S->Val = (char **) getmem(sizeof(char *)*n,(char*)"setAutoNIDefaults"); */
-//     /* 	n = S->DefaultVal.size(); */
-//     /* 	for(int i=0;i<n;i++) */
-//     /* 	  { */
-//     /* 	    ostringstream os; */
-//     /* 	    os << S->DefaultVal[i]; */
-//     /* 	    S->Val[i] = (char *) getmem(sizeof(char)*(strlen(os.str().c_str())+1), */
-//     /* 					"setAutoNIDefaults"); */
-//     /* 	    sprintf(S->Val[i],"%d%c",val[i],(int)NULL); */
-//     /* 	  } */
-//     /* 	S->NVals = n; */
-//     /*   } */
-
-//   int n=val.size();
-//   if (cl_RegistrationMode == 1)
-//     {
-//       S->DefaultVal.resize(n,"");
-//       for(int i=0;i<n;i++)
-// 	{
-// 	  ostringstream os;
-// 	  //os << (val[i]==0?false:true);
-// 	  os << val[i];
-// 	  S->DefaultVal[i] = os.str();
-// 	}
-//     }
-    
-//   if (S->Val.size() == 0)
-//     {
-//       S->Val.resize(n,"");
-//       n = S->DefaultVal.size();
-//       for(int i=0;i<n;i++)
-// 	{
-// 	  stringstream os;
-// 	  //os << S->DefaultVal[i];
-// 	  os << val[i];
-// 	  S->Val[i]=os.str();
-// 	}
-//       S->NVals = n;
-//     }
-// }
+  /*---------------------------------------------------------------------------*/
+  std::string makeProgName(const std::string& name,
+			   const std::string& def)
+  {
+    std::string out=def;
+#ifdef GNUREADLINE
+    out=name.substr(0,name.size()-1);
+#else
+    out=name;
+#endif
+    return out;
+  }
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -125,13 +51,13 @@ extern "C" {
   string clMakeDefaultsFilename(int complement)
   {
     string fname;
-    char out[FILENAME_MAX+2]="./";
-#ifdef GNUREADLINE
-    strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
-#else
-    strcat(out,cl_ProgName);
-#endif
-    fname = out;
+//     char out[FILENAME_MAX+2]="./";
+// #ifdef GNUREADLINE
+//     strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+// #else
+//     strcat(out,cl_ProgName);
+// #endif
+    fname = makeProgName(std::string(cl_ProgName),std::string("./"));
     fname = fname + ".def";
     if (complement) fname = fname + "!";
     return fname;
@@ -612,7 +538,6 @@ int exposeKeys(Symbol *t)
 /*----------------------------------------------------------------------*/
 int loadDefaults(int complement)
 {
-  char out[FILENAME_MAX+2]="./", *t;
   FILE *fd;
     
   /*
@@ -620,18 +545,21 @@ int loadDefaults(int complement)
     locally.
   */
     
-#ifdef GNUREADLINE
-  strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
-#else
-  strcat(out,cl_ProgName);
-#endif
-  strcat(out,".def");
+//   char out[FILENAME_MAX+2]="./", *t;
+// #ifdef GNUREADLINE
+//   strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+// #else
+//   strcat(out,cl_ProgName);
+// #endif
+  // strcat(out,".def");
+
+  std::string out=makeProgName(std::string(cl_ProgName),std::string("./"))+std::string(".def");
     
-  if ((fd = fopen(out,"r")) != NULL)  
+  if ((fd = fopen((const char*)out.c_str(),"r")) != NULL)
     {
-      fclose(fd);  
-      if (complement) strcat(out,"!");  /* Perform a complimentery load */
-      doload(out);
+      fclose(fd);
+      if (complement) out+=std::string("!");//strcat(out.c_str(),"!");  /* Perform a complimentery load */
+      doload((char*)out.c_str());
     }
     
   /*
@@ -639,22 +567,31 @@ int loadDefaults(int complement)
     there and if found, do a complimentary load from there too.
   */
 
+  char *t;
   t=(char *)getenv(CL_DEFAULTSENV);
-  if (t && strlen(t))     {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
+  //  if (t && strlen(t)) {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
+  if (t && strlen(t))
+    {
+      out=std::string(t)+std::string("/");
+      // strncpy(out,t,FILENAME_MAX);
+      // strcat(out,"/");
+    }
+// #ifdef GNUREADLINE
+//   strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
+// #else
+//   strcat(out,cl_ProgName);
+// #endif
+//   strcat(out,".def");
+
+  out=out+makeProgName(std::string(cl_ProgName),std::string())+std::string(".def");
     
-#ifdef GNUREADLINE
-  strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
-#else
-  strcat(out,cl_ProgName);
-#endif
-  strcat(out,".def");
-    
-  if ((fd = fopen(out,"r")) != NULL)  
+  if ((fd = fopen((char *)out.c_str(),"r")) != NULL)
     {
       fclose(fd);  
       //	if (complement) 
-      strcat(out,"!");  /* Perform a complimentery load */
-      doload(out);
+      out+=std::string("!");
+      //strcat(out,"!");  /* Perform a complimentery load */
+      doload((char *)out.c_str());
     }
     
   /*
