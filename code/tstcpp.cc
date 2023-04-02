@@ -27,6 +27,10 @@ void UI(bool restart, int argc, char **argv)
   // strcpy(argv_l[0],"test2");
   // argc_l=0;
 
+  // Set the application to be non-interactive by default.
+  // The setting can be changed via the help=prompt keyword.
+  clSetPrompt(false);
+
   if (!restart)
     {
       BeginCL(argc,argv);
@@ -66,7 +70,17 @@ void UI(bool restart, int argc, char **argv)
 	watchPoints["showstrarr"]=exposedKeys;
 	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
-	clSetOptions("string",{"one","two","three","showstrarr"});
+
+	// Add another watchpoint for the same keyword that exposes a
+	// differet set of exposed keys.  As an example,
+	// string=testarr will expose the keyworkd bool1.
+	// ClearMap(watchPoints);
+	// exposedKeys.resize(0);
+	// exposedKeys.push_back("bool1");
+	// watchPoints["testarr"]=exposedKeys;
+	// i=1;clgetSValp("string",str,i,watchPoints);
+	
+	clSetOptions("string",{"one","two","three","showstrarr","testarr"});
 
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()

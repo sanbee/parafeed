@@ -215,6 +215,12 @@ int ParseCmdLine(int argc, char *argv[])
 	    cl_NoPrompt = 1;
 	  }
 
+	if (S->Val[0] == "prompt")
+	  {
+	    cl_RegistrationMode=1;
+	    cl_NoPrompt = 0;
+	  }
+
 	if (S->Val[0]=="dbg")
 	  CL_DBG_ON = 1;
 
@@ -267,6 +273,28 @@ int BeginCL(int argc, char **argv)
   //  if (!cl_NoPrompt) loadDefaults();
   return argc-N;
 }
+/*------------------------------------------------------------------------
+Set the default interactive option.  If set to false, the application will
+run without the interactive shell by default.
+
+If this is called before BeginCL(), then this setting can be overridden
+via the help=prompt or help=noprompt user settting.  If it is called
+after BeginCL(), the setting is enforced and cannot be altered via the
+help keyword.
+------------------------------------------------------------------------*/
+  void clSetPrompt(const bool& prompt)
+  {
+    if (prompt)
+      {
+	cl_RegistrationMode=1;
+	cl_NoPrompt = 0;
+      }
+    else // programatic equivalent of help=noprompt
+      {
+	//	cl_RegistrationMode=0;
+	cl_NoPrompt = 1;
+      }
+  }
 /*------------------------------------------------------------------------
   First load the list of options that come from commandline in the 
   symbol table.
@@ -445,7 +473,8 @@ int EndCL()
       exit(0);
     }
 
-  if ((i==CL_FAIL) || !cl_NoPrompt)
+  //if ((i==CL_FAIL) || !cl_NoPrompt)
+  if (!cl_NoPrompt)
     {
       i=startShell();
 

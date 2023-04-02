@@ -42,16 +42,30 @@ file(RELATIVE_PATH relDir
   ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 
-# c++11 is required
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # build dependencies
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
 # link dependencies
 find_package(PkgConfig REQUIRED)
+
+
+
+# c++11 is required
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Allow setting the ABI on commandline.  If not set on commandline,
+# use complier's default ABI.
+if (DEFINED _GLIBCXX_USE_CXX11_ABI)
+  list(APPEND CMAKE_MESSAGE_INDENT "     ")
+  message("Building with -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
+else()
+  list(APPEND CMAKE_MESSAGE_INDENT "     ")
+  message("Building with the complier default ABI setting")
+endif()
+
 #pkg_search_module(readline REQUIRED
 #  IMPORTED_TARGET readline)
 #get_target_property(_readline_interface_include_dirs
@@ -92,7 +106,6 @@ set_target_properties(readline PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/inc
 add_subdirectory(code)
 message("top: CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
 message("top: CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
-
 
 # install all parafeed exports
 include(CMakePackageConfigHelpers)

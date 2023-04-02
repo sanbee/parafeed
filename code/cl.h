@@ -255,6 +255,7 @@ int exposeKeys(Symbol *t);
 
 void clDefaultErrorHandler();
 void clSigHandler(int);
+void      clSetPrompt(const bool& prompt);
 #ifdef	__cplusplus
 }
 #endif

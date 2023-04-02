@@ -31,6 +31,7 @@
 #include <limits.h>
 #include <boolError.h>
 #include <sstream>
+#include <regex>
 //#include <strstream>
 #ifdef GNUREADLINE
 #include <readline/history.h>
@@ -104,274 +105,46 @@ END{									\
     return EOF;
   }
   /*----------------------------------------------------------------------*/
-  bool checkVal(Symbol* t, vector<string>& mapVal)
-  {
-    bool found=false;
-    SMap::iterator loc;
-    try
-      {
-	if (ISSET(t->Attributes,CL_BOOLTYPE))
-	  {
-	    //
-	    // This is a BOOLTYPE keyword.  Check for logical
-	    // true/false.  String comparision is not enough
-	    // (e.g. string "0" and "no" are both logical false).
-	    //
-	    for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
-	      {
-		bool logicalKey = clIsTrue((*loc).first.c_str());
-		if ((found = (clBoolCmp(t->Val[0],logicalKey)==logicalKey))) break;
-	      }
-	  }
-	else
-	  {
-	    //
-	    // For all other types, check by string comparision only.
-	    //
-	    if (t->Val.size() > 0)
-	      {
-		loc = t->smap.find(string(t->Val[0]));
-		found = (loc != t->smap.end());
-	      }
-	  }
-	if (found) mapVal=(*loc).second;
-      }
-    catch (clError &x)
-      {
-	x << x.what() << endl;
-      }
-    return found;
-  }
-  /*----------------------------------------------------------------------*/
-  int exposeKeys(Symbol *t)
-  {
-    Symbol *S;
-    int exposedSomething=0;
-    /*    char *name = t->Name;*/
-    
-    if ((t->smap.size() > 0))
-      {
-	//
-	// Irrespective of the current value of the symbol, hide all
-	// keys on which a watch was set by this symbol
-	//
-        if (ISSET(t->Attributes,CL_HIDDENKEYWORD))
-          SETBIT(t->Attributes,CL_HIDENSEEKKEYWORD);
-        else
-          SETBIT(t->Attributes,CL_HIDINGKEYWORD);
-	for(SMap::iterator i=t->smap.begin(); i != t->smap.end(); i++)
-	  {
-	    vector<string> sv=(*i).second;
-	    for(unsigned int j=0;j<sv.size();j++)
-	      {
-		if ((S=SearchVSymb((char *)sv[j].c_str(),cl_SymbTab))==NULL)
-		    {
-		      string mesg = "Programmer error: Watch key \"" + sv[j] + "\" not found.";
-		      clThrowUp(mesg.c_str(),"###Fatal ",CL_FATAL);
-		    }
-		S->Exposed=0;
-                SETBIT(S->Attributes,CL_HIDDENKEYWORD);
-	      }
-	  }
-	//
-	// Now set for display those watched-keys which are exposed by
-	// the current setting of this symbol. If the current symbol
-	// (t) is not exposed itself, the keys are that watching
-	// remain unexposed. For now, the "current setting" is only
-	// the first value (i.e. ignores other possible comma
-	// seperated values).
-	//
-	if ((t->NVals > 0) && (t->Exposed==1))
-	  {
-	    // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
-	    // if (loc != t->smap.end())
-	    vector<string> mapVal;
-	    if (checkVal(t,mapVal))
-	      {
-		//		vector<string> sv=(*loc).second;
-		vector<string> sv=mapVal;
-		for(unsigned int j=0;j<sv.size();j++)
-		  {
-		    S=SearchVSymb((char*)sv[j].c_str(),cl_SymbTab);
-		    S->Exposed=1;
-		    exposedSomething=1;
-		    //
-		    // Recursively expose the keys.
-		    //
-		    exposeKeys(S);
-                    //
-                    // Remove the CL_KEYWORD attribute if a keyword is
-                    // hidden due to a setting of another keyword which 
-                    // is made into a shell constant (by the .config
-                    // file).  Such a keyword should not be colour coded
-                    // (since the other keyword which will hide/expose
-                    // this keyword is not exposed itself...hence user
-                    // has really no control on the exposure of these
-                    // keywords).
-                    // 
-                    if (t->Class==CL_USERCLASS) 
-                      {
-                        RESETBIT(S->Attributes,CL_KEYWORD);
-                      }
-		  }
-	      }
-	  }
-      }
-    return exposedSomething;
-  }
-  /*----------------------------------------------------------------------*/
-  void showExposedKeys(Symbol* t, const bool& showAll)
-  {
-    vector<string> mapVal;
-    //checkVal(t,mapVal);
-    mapVal = (t->smap.begin())->second;
-    for (auto key : mapVal)
-      {
-	Symbol *S;
-	S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
-	if (S==NULL) break;
-	//S=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
-	    (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
-	  {
-	    PrintKey(stderr, S);
-	    PrintVals(stderr,S,1);
-	  }
-	// Recusively show watched keys, if exposed by the current
-	// value of the parent key or if showAll==True.
-	showExposedKeys(S,showAll);
-      }
-  }
-
   int doinp(char *arg)
   {
-    Symbol *t;
-    //
-    // First ensure that the key-exposure algorithm is executed (it
-    // can be run anywhere any number of times).
-    //
-    for (t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
-
-    std::vector<std::string> sv;
-    if (arg)
+    auto printer = [](FILE *fd, Symbol *t)
+		   {
+		     PrintKey(stderr, t);
+		     PrintVals(stderr,t,1);
+		   };
+    return showKeys(arg,printer);
+  }
+  /*----------------------------------------------------------------------*/
+  void formatTypeHelp(FILE *fd, Symbol *S, const string& fullFormat)
+  {
+    exposeKeys(S);
+    fprintf(fd,fullFormat.c_str(),S->Name,S->Type);
+    int n=S->DefaultVal.size(),nchar=0, offset=16;;
+    if ((n=S->DefaultVal.size())>0)
       {
-	sv = stokenize(string(arg), std::regex("\\s+"));
-      }
-    //    
-    // Now print the viewable keywords. The below is little
-    // state-machine (just about at the level that the author can code
-    // by-hand).
-    //
-    if (sv.size()==0)//arg == NULL)
-      for (t=cl_SymbTab;t;t=t->Next)
-	{
-	  if ((t->Exposed) && 
-	     ((t->Class==CL_APPLNCLASS) || 
-	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON))))
-	    {
-	      PrintKey(stderr, t);
-	      PrintVals(stderr,t,1);
-	    }
-	}
-    // Single argument.  It can be "-a" or name of a key. 
-    else if (sv.size()==1)
-      {
-	if (sv[0]=="-a") // Apply -a on all keys
-	  for (t=cl_SymbTab;t;t=t->Next)
-	    {
-	      if ((t->Class==CL_APPLNCLASS) || 
-		  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-		{
-		  PrintKey(stderr, t);
-		  PrintVals(stderr,t,1);
-		}
-	    }
-	else // Print the single given key
+	fprintf(fd, "          %-s",S->DefaultVal[0].c_str());
+	nchar += strlen(S->DefaultVal[0].c_str());
+	for(int i=1;i<n;i++)
 	  {
-	    if (((t=SearchVSymb(sv[0].c_str(),cl_SymbTab))==NULL) || !t->Exposed)
-	      {
-		string mesg = "Key not found or is not currently exposed";
-		clThrowUp(mesg.c_str(),"###Infomational",CL_INFORMATIONAL);
-	      }
-	    else
-	      {
-		PrintKey(stderr,t);
-		PrintVals(stderr,t,1);
-	      }
+	    fprintf(fd, ",%-s",S->DefaultVal[i].c_str());
+	    nchar += strlen(S->DefaultVal[i].c_str());
 	  }
+	//	      for(int i=0;i<10-nchar;i++) fprintf(fd," ");
       }
-    // Multiple arguments.  E.g. "-a name1 name2 ..."
     else
-      {
-	bool showAll=false;
-	if (sv[0]=="-a")
-	  {
-	    showAll=true;
-	    sv.erase(sv.begin());
-	  }
-	t=SearchVSymb(sv[0].c_str(),cl_SymbTab);
-	for(auto iarg : sv)
-	  {
-	    // Show the root key first.
-	    t=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	    PrintKey(stderr,t);
-	    PrintVals(stderr,t,1);
-	
-	    // Recusrively show keys associated with the root key that
-	    // are exposed with its current setting.
-	    showExposedKeys(t,showAll);
-	    fprintf(stderr,"\n");
-	  }
-      }
-    return 1;
-  }
-  /*----------------------------------------------------------------------*/
-  int doquit(char *arg)
-  {
-#ifdef GNUREADLINE
-    /* Put the history in the history file*/
-    char *var=(char *)"GHIST";
-    save_hist(var,(char *)CL_HIST_DEFAULT);
-#endif
-    
-    if (!arg) exit(0);
-    return 1;
-  }
-
-  /*----------------------------------------------------------------------*/
-  void formatTypeHelp(Symbol *S, string& fullFormat)
-  {
-	{
-	  /*      fprintf(stderr,"  %-10.10s         %-10.10s\n",S->Name,S->Type);*/
-	  exposeKeys(S);
-	  fprintf(stderr,fullFormat.c_str(),S->Name,S->Type);
-	  int n=S->DefaultVal.size(),nchar=0, offset=16;;
-	  if ((n=S->DefaultVal.size())>0)
-	    {
-	      fprintf(stderr, "          %-s",S->DefaultVal[0].c_str());
-	      nchar += strlen(S->DefaultVal[0].c_str());
-	      for(int i=1;i<n;i++)
-		{
-		  fprintf(stderr, ",%-s",S->DefaultVal[i].c_str());
-		  nchar += strlen(S->DefaultVal[i].c_str());
-		}
-	      //	      for(int i=0;i<10-nchar;i++) fprintf(stderr," ");
-	    }
-	  else
-	    offset+=10;
-	  for(int i=0;i<offset-nchar;i++) fprintf(stderr," ");
+      offset+=10;
+    for(int i=0;i<offset-nchar;i++) fprintf(fd," ");
 	    
-	  if (ISSET(S->Attributes,CL_BOOLTYPE))
-	    fprintf(stderr, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
-	  if ((n=S->Options.size())>0)
-	    {
-	      fprintf(stderr, " [%-s",S->Options[0].c_str());
-	      for(int i=1;i<n;i++)
-		fprintf(stderr, " %-s",S->Options[i].c_str());
-              fprintf(stderr,"]");
-	    }
-	  fprintf(stderr, "\n");
-	}
+    if (ISSET(S->Attributes,CL_BOOLTYPE))
+      fprintf(fd, " Use imagination or list by \"%-s=<TAB><TAB>\"", S->Name);
+    if ((n=S->Options.size())>0)
+      {
+	fprintf(fd, " [%-s",S->Options[0].c_str());
+	for(int i=1;i<n;i++)
+	  fprintf(fd, " %-s",S->Options[i].c_str());
+	fprintf(fd,"]");
+      }
+    fprintf(fd, "\n");
   }
 
   /*----------------------------------------------------------------------*/
@@ -380,7 +153,9 @@ END{									\
   // (global) symbol table (various strings to be printed).
   int dotypehelp(char *arg)
   {
-    //char format[12];
+    //
+    // Construct and print the header
+    //
     std::string format;
     int maxNameLength = namePrintFormat(format,"");
     string fullFormat;
@@ -399,84 +174,77 @@ END{									\
     s1.insert(s1.end(),9,' ');            s1.insert(s1.end(), 16 ,'-');
     s1.insert(s1.end(),maxNameLength,' ');s1.insert(s1.end(), 7 ,'-');
     s1.insert(s1.end(),'\n');
-    Symbol *S;
 
-    if (arg==NULL)
-     {
-       fprintf(stderr,s0.c_str());
-       fprintf(stderr,s1.c_str());
-       for (S=cl_SymbTab;S;S=S->Next)
-         if (((S->Class==CL_APPLNCLASS) ||
-	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-             (S->Exposed)
-            )
-           formatTypeHelp(S,fullFormat);
-     }
-    else if (string(arg) == "-a")
-      {
-       fprintf(stderr,s0.c_str());
-       fprintf(stderr,s1.c_str());
-       for (S=cl_SymbTab;S;S=S->Next)
-         if (((S->Class==CL_APPLNCLASS) ||
-	      ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))))
-           formatTypeHelp(S,fullFormat);
-      }
-    else 
-     {
-       if ((S=SearchVSymb(arg,cl_SymbTab))!=NULL) 
-         if (((S->Class==CL_APPLNCLASS) ||
-	     ((S->Class==CL_DBGCLASS) && (CL_DBG_ON))) &&
-             (S->Exposed)
-            )
-           {
-             fprintf(stderr,s0.c_str());
-             fprintf(stderr,s1.c_str());
+    //    cerr << s0; cerr << s1;
 
-             formatTypeHelp(S,fullFormat);
-           }
-     }
+    //
+    // Print the keys using the supplied printer.  This also
+    // interprets the arg string.
+    //
+    auto printer = [&fullFormat,&s0,&s1](FILE *fd, Symbol *t)
+		   {
+		     // Print the header (it is in the s0 and s1
+		     // strings)...
+		     fprintf(fd,"%s%s",s0.c_str(),s1.c_str());
+		     // ...and make sure the header is printed only once.
+		     s0=s1="";
+		     formatTypeHelp(fd,t,fullFormat);
+		   };
+    return showKeys(arg,printer);
+  }
+  /*----------------------------------------------------------------------*/
+  int doquit(char *arg)
+  {
+#ifdef GNUREADLINE
+    /* Put the history in the history file*/
+    char *var=(char *)"GHIST";
+    save_hist(var,(char *)CL_HIST_DEFAULT);
+#endif
+    
+    if (!arg) exit(0);
     return 1;
   }
+
   /*------------------------------------------------------------------
     The argument can be use to give help for a specific command only   
     -------------------------------------------------------------------*/
-
   int dohelp(char *arg)
   {
     CmdSymbol *S;
-    fprintf(stderr,"Colour coding of the keywords:\n");
-    fprintf(stderr,"  Red:   Indicates that the keyword can hide other keywords.\n");
-    fprintf(stderr,"  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n");
-    fprintf(stderr,"         (usually by the first red or green coloured keyword above).\n");
-    fprintf(stderr,"  Green: Indicates that the keyword can be hidden by some other keyword(s)\n");
-    fprintf(stderr,"         and can itself be also hidding other keyword(s).\n");
-    fprintf(stderr,"--------------------------------------------------------------------\n");
-    fprintf(stderr,"Default values:\n");
-    fprintf(stderr,"  If a keyword is un-set (or set to BLANK), the displayed value is the");
-    fprintf(stderr,"  value that would be used.\n");
-    fprintf(stderr,"--------------------------------------------------------------------\n");
+    cerr << "Colour coding of the keywords:\n";
+    cerr << "  Red:   Indicates that the keyword can hide other keywords.\n";
+    cerr << "  Blue:  Indicates that the keyword can be hidden by some other keyword(s).\n";
+    cerr << "         (usually by the first red or green coloured keyword above).\n";
+    cerr << "  Green: Indicates that the keyword can be hidden by some other keyword(s)\n";
+    cerr << "         and can itself be also hidding other keyword(s).\n";
+    cerr << "--------------------------------------------------------------------\n";
+    cerr << "Default values:\n";
+    cerr << "  If a keyword is un-set (or set to BLANK), the displayed value is the\n";
+    cerr << "  value that would be used.\n";
+    cerr << "--------------------------------------------------------------------\n";
 #ifdef GNUREADLINE
-    fprintf(stderr,"TABBED completion:\n");
-    fprintf(stderr,"  Min-match algorithm is used for matching a user input with keywords.\n\n");
-    fprintf(stderr,"  GNU Readline completion mechanism uses all available keywords and \n");
-    fprintf(stderr,"  shell commands.\n");
-    fprintf(stderr,"\n");
-    fprintf(stderr,"  A completed keyword followed by two TABs will display the options\n");
-    fprintf(stderr,"  available for the particular keyword.  Nothing is done for keywords\n");
-    fprintf(stderr,"  for which either no options were defined by the programmer or for \n");
-    fprintf(stderr,"  which finite options do not exist (e.g. if a keyword can take any\n");
-    fprintf(stderr,"  integer value).\n");
-    fprintf(stderr,"\n");
-    fprintf(stderr,"  A completed shell command followed by two TABS will display possible\n");
-    fprintf(stderr,"  options for the particular shell command.\n");
+    cerr << "TABBED completion:\n";
+    cerr << "  Min-match algorithm is used for matching a user input with keywords.\n\n";
+    cerr << "  GNU Readline completion mechanism uses all available keywords and \n";
+    cerr << "  shell commands.\n";
+    cerr << endl;
+    cerr << "  A completed keyword followed by two TABs will display the options\n";
+    cerr << "  available for the particular keyword.  Nothing is done for keywords\n";
+    cerr << "  for which either no options were defined by the programmer or for \n";
+    cerr << "  which finite options do not exist (e.g. if a keyword can take any\n";
+    cerr << "  integer value).\n";
+    cerr << endl;
+    cerr << "  A completed shell command followed by two TABS will display possible\n";
+    cerr << "  options for the particular shell command.\n";
 #endif
-    fprintf(stderr,"--------------------------------------------------------------------\n");
-    fprintf(stderr,"Commands in the interactive mode:\n\n");
-    fprintf(stderr,"Use <Key>=<Val1,Val2,..> to set value for a keyword\n");
-    fprintf(stderr,"Use <Key>=<RETURN> to unset value(s) for a keywords\n\n");
+    cerr << "--------------------------------------------------------------------\n";
+    cerr << "Commands in the interactive mode:\n\n";
+    cerr << "Use <Key>=<Val1,Val2,..> to set value for a keyword\n";
+    cerr << "Use <Key>=<RETURN> to unset value(s) for a keywords\n\n";
     for (S=cl_CmdTab;S;S=S->Next) 
-      fprintf(stderr," %-11s : %s\n",S->Name,S->Doc);
-    fprintf(stderr,"\nAny other input is passed to the system shell\n\n");
+      fprintf(stderr," %-11s : %s\n",S->Name,S->Doc); // Convert this to cerr statement
+
+    cerr << endl << "Any other input is passed to the system shell" << endl << endl;
     return 1;
   }
   /*---------------------------------------------------------------------
@@ -607,7 +375,7 @@ END{									\
     
     if ((fd=fopen(str,"w"))==NULL)
       {
-	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
+	cerr << "###Error: Error in opening file \"" << str << "\"" << endl;
 	return 2;
       }
     else
@@ -628,10 +396,10 @@ END{									\
     return 1;
   }
   /*-----------------------------------------------------------------------
-    Loads the setting for the keywords from a file (typically written by
-    the save command). If *f==NULL, load from ./<ProgName>.def.  If f ends
-    with '!' character, do a complementary load; set only those keywords
-    are not already set.
+    Loads the setting for the keywords from a file (typically written
+    by the save command). If *f==NULL, load from ./<ProgName>.def.  If
+    f ends with '!' character, do a complementary load; set only
+    keywords that are not already set.
     ------------------------------------------------------------------------*/
   int doload(char *f)
   {
@@ -953,63 +721,6 @@ END{									\
   {
     if (val) fprintf(stderr,"Argument to the command was: %s\n",val);
     else fprintf(stderr,"No argument(s) given to the command\n");
-    return 1;
-  }
-  /*----------------------------------------------------------------------*/
-  int loadDefaults(int complement)
-  {
-    char out[FILENAME_MAX+2]="./", *t;
-    FILE *fd;
-    
-    /*
-      First, do a complimentary load from the .def file available
-      locally.
-    */
-    
-#ifdef GNUREADLINE
-    strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
-#else
-    strcat(out,cl_ProgName);
-#endif
-    strcat(out,".def");
-    
-    if ((fd = fopen(out,"r")) != NULL)  
-      {
-	fclose(fd);  
-	if (complement) strcat(out,"!");  /* Perform a complimentery load */
-	doload(out);
-      }
-    
-    /*
-      If CL_DEFAULTSENV env. var. is set, look for a .def file
-      there and if found, do a complimentary load from there too.
-    */
-
-    t=(char *)getenv(CL_DEFAULTSENV);
-    if (t && strlen(t))     {strncpy(out,t,FILENAME_MAX);strcat(out,"/");}
-    
-#ifdef GNUREADLINE
-    strncat(out,cl_ProgName,strlen(cl_ProgName)-1);
-#else
-    strcat(out,cl_ProgName);
-#endif
-    strcat(out,".def");
-    
-    if ((fd = fopen(out,"r")) != NULL)  
-      {
-	fclose(fd);  
-	//	if (complement) 
-	  strcat(out,"!");  /* Perform a complimentery load */
-	doload(out);
-      }
-    
-    /*
-      Final effect will be that first any commandline setting will be
-      set.  Next, the local .def file will be hououred for all those
-      keys which still remain unset.  Next, .def file from CL_DEFAULTSENV
-      area will he honoured for those keys which continue to remain
-      unset.  */
-    
     return 1;
   }
 //

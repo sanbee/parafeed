@@ -40,4 +40,10 @@ extern "C" {
 	   }
 #endif
 std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx);
+int showKeys(char *arg, std::function<void(FILE*, Symbol*)> printer);
+void showExposedKeys(Symbol* t, const bool& showAll,
+		     std::function<void(FILE*, Symbol*)> printer);
+bool checkVal(Symbol* t, vector<string>& mapVal);
+int exposeKeys(Symbol *t);
+int loadDefaults(int complement);
 #endif
