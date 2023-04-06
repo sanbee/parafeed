@@ -34,6 +34,7 @@
 #include <support.h>
 #include <setAutoDefaults.h>
 #include <type_traits>
+#include <cl.h>
 
 template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
@@ -76,26 +77,36 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
 // backward compatibility.
 //
 template <class T>
-T clgetValp(const string& Name, T& val, int& n, SMap& smap)
+int clgetValp(const string& Name, T& val, int& n, SMap& smap)
 {
   Symbol *S;
   double d;
   int N;
   HANDLE_EXCEPTIONS(
-		    S=clgetBaseCode(Name,val,n,smap);
-		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		    return N;
+		    // if (std::is_same<T,std::string>::value)
+		    //   {
+		    // 	return clgetSValp(Name, val, n, smap);
+		    //   }
+		    // else
+		      {
+			S=clgetBaseCode(Name,val,n,smap);
+			if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+			return N;
+		      }
 		    );
 }
 //
 //-------------------------------------------------------------------------
 //
 template <class T>
-T clgetValp(const string& Name, T& val, int& n)
+int clgetValp(const string& Name, T& val, int& n)
 {
   SMap empty;
   HANDLE_EXCEPTIONS(
-		    return clgetValp(Name,val,n,empty);
+		    // if (std::is_same<T,std::string>::value)
+		    //   return clgetSValp(Name, val, n, empty);
+		    // else
+		      return clgetValp(Name,val,n,empty);
 		    );
 }
 //
@@ -111,7 +122,6 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap
   else if (std::is_same<T, float>::value) (m <= 0) ? os << "float[]" : os << "float[" << m << "]";
   else if (std::is_same<T, bool>::value)  (m <= 0) ? os << "bool[]"  : os << "bool[" << m << "]";
   else if (std::is_same<T, std::string>::value) (m <= 0) ? os << "string[]" : os << "string[" << m << "]";
-
     
   HANDLE_EXCEPTIONS(
 		    S = SearchQSymb((char *)Name.c_str(), os.str());
@@ -132,7 +142,7 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap
 // backward compatibility.
 //
 template <class T>
-T clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
+int clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
 {
   Symbol *S;
   double d;
@@ -159,7 +169,7 @@ T clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
 		    );
 }
 template <class T>
-T clgetNValp(const string& Name, vector<T>& val, int& m)
+int clgetNValp(const string& Name, vector<T>& val, int& m)
 {
   Symbol *S;
   double d;
@@ -185,4 +195,5 @@ T clgetNValp(const string& Name, vector<T>& val, int& m)
 		    return i-1;
 		    );
 }
+
 #endif

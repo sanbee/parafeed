@@ -17,8 +17,12 @@
  *
  */
 /* $Id */
+#if !defined(CL_GLOBALS)
+#define CL_GLOBALS
+
 extern unsigned short cl_RegistrationMode;
 extern unsigned short CL_DBG_ON;
 extern Symbol    *cl_SymbTab,*cl_TabTail;
 extern CmdSymbol *cl_CmdTab;
 extern char      *cl_ProgName;
+#endif
