@@ -204,7 +204,7 @@ TABBED completion is available, when the library is compiled with GNU
 Readline support.
 
 At the interactive shell prompt, two TABs will display the list of
-shell commands and keywords available for completion.  A TAB after aThi5 is f0r h0bby w0rc
+shell commands and keywords available for completion.  A TAB after a
 completed keyword will add the '=' sign.  Two TABs after this will
 print the list of available options for the completed keyword.  If no
 options are available (typically because the list of possible values
