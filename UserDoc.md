@@ -57,17 +57,21 @@ of the listed keyword values.  Following commands are available in the
 shell:
 
 ```
- inp         : To see the various keywords and the values they have been set to
- go          : To run the application
- gob         : To run the application in background
+ inp         : Show the various keywords and their values.
+                Use option "-a" to include hidden keywords
+ go          : Run the application.  Use option "-b" to run in background
+ show        : Same as the "inp" command
+ run         : Same as the "go" command
  cd          : Change working directory
  help        : This help
- ?           : Information on all keywords, optionally on a single keyword
+ ?           : Information on all exposed keywords, optionally on a single keyword.
+                Use option "-a" to include hidden keywords
  explain     : Detailed help, optionally of keywords/task [[Key][:Task]]
- save        : Save the values, optionally in a file
- savecmd     : Save the settings as UNIX shell command string
+ save        : Save the values, optionally in a given file
+ savecmd     : Save the settings as UNIX shell command string, optionally in a file
  load        : Load the values, optionally from a file
  edit        : Use an editor to (un)set the values
+ warranty    : Show warranty information
  quit        : Quit the application
 ```
 
@@ -88,7 +92,7 @@ Following is a short description of the shell commands:
 > > setting of only that keyword will be displayed.  The `-a` option will display keywords that 
 > > may be currently hidden.
 
-  * `go [-b]` or `run [-b]:
+  * `go [-b]` or `run [-b]`:
 > > End of the interactive session.  The current value of the keywords are used
 > > and the application resumes normal execution. The `-b` option will run the application in the background and print the 
 > > process ID (PID) number of the background process on the screen (also see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
@@ -107,17 +111,16 @@ Following is a short description of the shell commands:
 > > application has cared to write in the help file.  These help files are located in the directory specified by
 > > the environment variable `GDOC` (see section on [Customization](https://github.com/sanbee/parafeed/blob/wiki/UserDoc.md#customization)).
 
-  * `save`:
+  * `save [FILE]`:
 > > Save the current setting of the keywords in a file.  By default, these values are saved in a
-> > file named `./<Application Name>.def`.  If a file name is supplied as an argument of this command,
-> > the values will be saved in the file.
+> > file named `./<Application Name>.def`, or in the file name provided as an optional argument.
 
-  * `savecmd`:
+  * `savecmd [FILE]`:
 > > Save the current setting of the keywords in a file in the form of a UNIX command.  By
-> > default, these values are saved in a file named `./<Application Name>.cmd`.  If a file name is
-> > supplied as an argument of this command, the values will be saved in the file.
+> > default, these values are saved in a file named `./<Application Name>.cmd`, or in the file 
+> > name provided as an optional argument.
 
-  * `load`:
+  * `load [FILE]`:
 > > Load the values of keywords from a file. By default it loads the settings for the keywords
 > > from the file `./<Application Name>.def`.  If this file is already present when the application is
 > > started, it is loaded automatically.  Alternatively, it can load settings from a file provided as an argument
