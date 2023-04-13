@@ -19,7 +19,7 @@
 #if !defined(CALC_SYMBOLTABLE_H)
 /* $Id */
 #define CALC_SYMBOLTABLE_H
-#include <values.h>
+//#include <values.h>
 #include <math.h>
 #include <calc.h>
 /*
