@@ -19,8 +19,10 @@
 /* $Id: clgetNSVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
 #include <sstream>
+
 #ifdef __cplusplus
 extern "C" {
+#include <clstring.h>
 #endif
 /*------------------------------------------------------------------------
    Return N values of key Name as a strings.
@@ -49,9 +51,11 @@ int clgetNSVal(char *Name, char **Val, int *m)
       if (*m <= i){ n = *m; r = n;}
       for (j=1;j<= n;j++)
 	{
-	  buf = (char *)S->Val[j-1].c_str();
-	  while (*buf == ' ') buf++;
-	  strncpy(Val[j-1],buf,strlen(buf)+1);
+	  string tt=ltrim(S->Val[j-1]);
+	  strncpy(Val[j-1],tt.c_str(),tt.length()+1);
+	  // buf = (char *)S->Val[j-1].c_str();
+	  // while (*buf == ' ') buf++;
+	  // strncpy(Val[j-1],buf,strlen(buf)+1);
 	}
       return r;
     }
@@ -83,10 +87,14 @@ int clgetNSValp(const string& Name, vector<string>& Val, int& m)
       n = S->NVals;
       for (j=0;j< n;j++)
 	{
-	  buf = (char *)S->Val[j].c_str();
-	  while (*buf == ' ') buf++;
+	  string tt=ltrim(S->Val[j]);
 	  Val.resize(j+1);
-	  Val[j]=buf;
+	  Val[j]=tt;
+	  
+	  // buf = (char *)S->Val[j].c_str();
+	  // while (*buf == ' ') buf++;
+	  // Val.resize(j+1);
+	  // Val[j]=buf;
 	  //	  strncpy(Val[j-1],buf,strlen(buf)+1);
 	}
       return r;
