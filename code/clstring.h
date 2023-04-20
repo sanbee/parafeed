@@ -29,11 +29,11 @@ extern "C" {
   int           tokenize(FILE *,char *, const char *,char);
   vector<string> clstrtokp(const string& input, char seperator,
 			 char escape);
-  std::string ltrim(const std::string &s);
-  std::string rtrim(const std::string &s);
-  std::string trim(const std::string &s);
-
 #ifdef	__cplusplus
 }
 #endif
+std::string ltrim(const std::string &s);
+std::string rtrim(const std::string &s);
+std::string trim(const std::string &s);
+
 #endif
