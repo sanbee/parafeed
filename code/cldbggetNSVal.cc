@@ -22,6 +22,7 @@
 
 #ifdef __cplusplus
 extern "C" {
+#include <clstring.h>
 #endif
 /*------------------------------------------------------------------------
    Return N values of Name as a integers
@@ -46,9 +47,11 @@ int dbgclgetNSVal(char *Name, char **Val, int *m)
       if (*m <= i){ n = *m; r = n;}
       for (j=1;j<= n;j++)
 	{
-	  buf = (char *)S->Val[j-1].c_str();
-	  while (*buf == ' ') buf++;
-	  strncpy(Val[j-1],buf,strlen(buf)+1);
+	  string tt=ltrim(S->Val[j-1]);
+	  strncpy(Val[j-1],tt.c_str(),tt.length()+1);
+	  // buf = (char *)S->Val[j-1].c_str();
+	  // while (*buf == ' ') buf++;
+	  // strncpy(Val[j-1],buf,strlen(buf)+1);
 	}
       return r;
     }

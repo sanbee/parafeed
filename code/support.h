@@ -35,10 +35,10 @@ extern "C" {
   void setAutoNFDefaults(Symbol *S, const vector<float>& val);
   void setAutoNSDefaults(Symbol *S, const string& val);
   int sizeofTab(const Symbol *s);
-  string clMakeDefaultsFilename(int complement=1);
 #ifdef __cplusplus
 	   }
 #endif
+string clMakeDefaultsFilename(int complement=1);
 std::vector<std::string> stokenize(const std::string& in, const std::regex& rgx);
 int showKeys(char *arg, std::function<void(FILE*, Symbol*)> printer);
 void showExposedKeys(Symbol* t, const bool& showAll,

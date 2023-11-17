@@ -113,7 +113,7 @@ int clgetValp(const string& Name, T& val, int& n)
 // Templated functions for NVal calls.  
 //
 template <class T>
-Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap=SMap())
+Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap &smap=SMap())
 {
   Symbol *S;
   std::ostringstream os;
@@ -142,7 +142,7 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, SMap &smap
 // backward compatibility.
 //
 template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m, SMap &smap)
+int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap)
 {
   Symbol *S;
   double d;

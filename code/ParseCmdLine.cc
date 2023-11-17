@@ -435,7 +435,7 @@ int EndCL()
 
   //  if (!cl_NoPrompt) loadDefaults(0);
   //  if (!strcmp(val,"doc")) 
-  if (strVal=="doc")
+  if ((strVal=="doc") || (strVal == "params"))
     {
       if (!cl_SymbLoaded) 
 	{
@@ -452,7 +452,8 @@ int EndCL()
 	  if (!cl_defaultsLoaded) {loadDefaults(1);cl_defaultsLoaded=1;}
 	}
       //      DeleteVar("help",&cl_SymbTab,&cl_TabTail);
-      doprintdoc(strVal.c_str());
+      if (strVal=="doc") doprintdoc(strVal.c_str());
+      else doprintparams(strVal.c_str());
     }
   /* If explaination is asked for, look for an argument of explain
     (within brackets).  The argument should of the syntax used by

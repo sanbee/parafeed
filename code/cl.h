@@ -213,6 +213,7 @@ int       doload_and_register(char *);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(const char *);
+int       doprintparams(const char *);
 #ifdef __cplusplus
   int       docopyright(const std::string& arg);
 #endif
