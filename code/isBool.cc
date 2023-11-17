@@ -59,8 +59,8 @@ extern "C" {
 	for(i=0; i<(int)list.size(); i++)
 	  {
 	    //if (lval==list[(int)i]) return true;
-	    if (lval==clBoolFalse[i]) {retVal = 1;break;}
-	    if (lval==clBoolTrue[i]) {retVal = 0;break;}
+	    if (lval==clBoolFalse[i]) {retVal = 0;break;}
+	    if (lval==clBoolTrue[i]) {retVal = 1;break;}
 	  }
       }
       

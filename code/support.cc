@@ -435,7 +435,10 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 	  for(loc=t->smap.begin(); loc!=t->smap.end(); loc++)
 	    {
 	      bool logicalKey = clIsTrue((*loc).first.c_str());
-	      if ((found = (clBoolCmp(t->Val[0],logicalKey)==logicalKey))) break;
+	      // Return true if t->Val[0] string maps to the logical value in logicalKey.
+	      // E.g., t->Val0]="0" and logicalKey=False will return true.
+	      bool symbolBoolVal = clBoolCmp(t->Val[0],logicalKey);
+	      if ((found = (symbolBoolVal==logicalKey))) break;
 	    }
 	}
       else
