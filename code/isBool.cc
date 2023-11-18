@@ -31,7 +31,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*----------------------------------------------------------------------*/
+/*----------------------------------------------------------------------
+Search of a match for the string val in the clBoolTrue list for
+cmpVal=True and in the clBoolFalse list for cmpVal=False.  The
+function returns True if a match was found in the clBool list
+determined by cmpVal, and CL_UNKNOWNBOOL otherwise.  If a match is
+found, the string in val corresponds to the logical value of cmpVal.
+----------------------------------------------------------------------*/
   int clBoolCmp(const string& val, const bool& cmpVal)
   {
     int retVal=CL_UNKNOWNBOOL;
@@ -59,8 +65,8 @@ extern "C" {
 	for(i=0; i<(int)list.size(); i++)
 	  {
 	    //if (lval==list[(int)i]) return true;
-	    if (lval==clBoolFalse[i]) {retVal = 0;break;}
-	    if (lval==clBoolTrue[i]) {retVal = 1;break;}
+	    if (lval==clBoolFalse[i]) {retVal = 1;break;}
+	    if (lval==clBoolTrue[i]) {retVal = 0;break;}
 	  }
       }
       

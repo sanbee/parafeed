@@ -52,7 +52,7 @@ void UI(bool restart, int argc, char **argv)
 	// also hides another keyword).
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("int");
-	watchPoints["1"]=exposedKeys;
+	watchPoints["0"]=exposedKeys;
 	i=1;clgetValp("bool1",b1,i,watchPoints); // Equivalent to clgetBValp()
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
