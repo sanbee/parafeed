@@ -67,7 +67,7 @@ int clgetFullValp(const string& Name, string& val)
   Symbol *S;
 
   S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
-  setAutoSDefaults(S,val,1);
+  //  setAutoSDefaults(S,val,1);
   if ((n=clgetNVals((char *)Name.c_str()))>0)
     {
       val="";

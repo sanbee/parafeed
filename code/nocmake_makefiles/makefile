@@ -135,8 +135,8 @@ shell.tab.h:shell.tab.cc
 
 lex.yy.cc: shell.l shell.tab.h
 	$(LEX) shell.l
-#sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
-	sed "s/#define yywrap $(PREFIX)wrap/#define yywrap libyywrap /"< lex.$(PREFIX).c > lex.yy.cc
+#	sed "s/#define yywrap $(PREFIX)wrap/\/\* #define yywrap $(PREFIX)wrap \*\//"< lex.$(PREFIX).c > lex.yy.c
+#	sed "s/#define yywrap $(PREFIX)wrap/#define yywrap libyywrap /"< lex.$(PREFIX).c > lex.yy.cc
 
 callbacks_awk.cc: callbacks.cc cl.h shell.tab.h
 	sed -e "s/__REPLACE_ME_WITH_AWK_PROG_NAME__/$(AWK)/" \
