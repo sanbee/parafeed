@@ -726,7 +726,7 @@ END{									\
 	    //
 	    // Print name and default value
 	    //
-	    cout << "%%P " << S->Name << " : " << S->Type << " : " << val << " : ";
+	    cout << "%%P:" << S->Name << ":" << S->Type << ":" << val << ":";
 	    if (S->Options.size() > 0)
 	      for(auto op : S->Options) cout << op << "|";
 	    cout << endl;
