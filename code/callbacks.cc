@@ -716,13 +716,17 @@ END{									\
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
-	string val = vecStr2Str(S->DefaultVal);
+	string val;
+	// clgetFullValp(string(S->Name),val);
+	//	cerr << "### " << S->NVals << endl;
+	if (S->Val.size() > 0) val=S->Val[0];
+	for(int i=1;i< S->Val.size();i++) val = val + ',' + S->Val[i];
 	if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
 	  {
 	    //
 	    // Print name and default value
 	    //
-	    cout << "%%P:" << S->Name << ":" << S->Type << ":" << val << ":";
+	    cout << "%%P " << S->Name << " : " << S->Type << " : " << val << " : ";
 	    if (S->Options.size() > 0)
 	      for(auto op : S->Options) cout << op << "|";
 	    cout << endl;
