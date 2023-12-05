@@ -723,7 +723,7 @@ END{									\
     if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
       cl_ProgName[strlen(cl_ProgName)-1]='\0';
 
-    cout <<"%%N " << cl_ProgName << endl;
+    cout <<"%%N:" << cl_ProgName << endl;
 
     for (S=cl_SymbTab;S;S=S->Next)
       {
@@ -738,7 +738,7 @@ END{									\
 	    //
 	    // Print name and default value
 	    //
-	    cout << "%%P " << S->Name << " : " << S->Type << " : " << val << " : ";
+	    cout << "%%P:" << S->Name << ":" << S->Type << ":" << val << ":";
 	    if (S->Options.size() > 0)
 	      for(auto op : S->Options) cout << op << "|";
 	    cout << endl;
