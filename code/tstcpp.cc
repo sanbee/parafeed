@@ -29,7 +29,7 @@ void UI(bool restart, int argc, char **argv)
 
   // Set the application to be non-interactive by default.
   // The setting can be changed via the help=prompt keyword.
-  clSetPrompt(false);
+  //  clSetPrompt(false);
 
   if (!restart)
     {
@@ -59,7 +59,7 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.push_back("float");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
-	i=1;dbgclgetIValp("dbgint",dj,i);
+	i=1;dbgclgetValp("dbgint",dj,i);
 
 	i=1;clgetValp("float",f,i); // Equivalent to clgetIValp()
 
@@ -95,6 +95,7 @@ void UI(bool restart, int argc, char **argv)
   cerr << "  Bool        = " << b << endl;
   cerr << "  Bool1       = " << b1 << endl;
   cerr << "  Float       = " << f << endl;
+  cerr << "  dbgInt      = " << dj << endl;
   cerr << "  Int         = " << j << endl;
   cerr << "  OneInt      = " << oi << endl;
 
