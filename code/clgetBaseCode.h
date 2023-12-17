@@ -37,7 +37,7 @@
 #include <cl.h>
 
 template <class T>
-Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
+Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), bool dbg=false)
 {
   Symbol *S;
   string type_str="";
@@ -62,6 +62,7 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap())
 
 		    if (S!=NULL) 
 		      {
+			if (dbg) S->Class=CL_DBGCLASS;
 			SETBIT(S->Attributes,type_int);
 			if (!smap.empty())
 			  S->smap = smap;
@@ -83,16 +84,11 @@ int clgetValp(const string& Name, T& val, int& n, SMap& smap)
   double d;
   int N;
   HANDLE_EXCEPTIONS(
-		    // if (std::is_same<T,std::string>::value)
-		    //   {
-		    // 	return clgetSValp(Name, val, n, smap);
-		    //   }
-		    // else
-		      {
-			S=clgetBaseCode(Name,val,n,smap);
-			if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-			return N;
-		      }
+		    {
+		      S=clgetBaseCode(Name,val,n,smap);
+		      if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+		      return N;
+		    }
 		    );
 }
 //
@@ -103,12 +99,45 @@ int clgetValp(const string& Name, T& val, int& n)
 {
   SMap empty;
   HANDLE_EXCEPTIONS(
-		    // if (std::is_same<T,std::string>::value)
-		    //   return clgetSValp(Name, val, n, empty);
-		    // else
-		      return clgetValp(Name,val,n,empty);
+		    return clgetValp(Name,val,n,empty);
 		    );
 }
+
+
+//
+//-------------------------------------------------------------------------
+//
+template <class T>
+int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap)
+{
+  Symbol *S;
+  double d;
+  int N;
+  HANDLE_EXCEPTIONS(
+		    {
+		      S=clgetBaseCode(Name,val,n,smap,true);
+		      if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+		      return N;
+		    }
+		    );
+}
+//
+//-------------------------------------------------------------------------
+//
+template <class T>
+int dbgclgetValp(const string& Name, T& val, int& n)
+{
+  SMap empty;
+  HANDLE_EXCEPTIONS(
+		    return dbgclgetValp(Name,val,n,empty);
+		    );
+}
+//
+//-------------------------------------------------------------------------
+//
+
+
+
 //
 // Templated functions for NVal calls.  
 //
@@ -171,29 +200,33 @@ int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap)
 template <class T>
 int clgetNValp(const string& Name, vector<T>& val, int& m)
 {
-  Symbol *S;
-  double d;
   SMap empty;
   HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,empty);
-		    int n0=S->NVals;
-		    int i=1;
-		    for(int j=0;j<n0;j++)
-		      {
-			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
-			  {
-			    if (m==0) {m=S->NVals=i-1;return i-1;}
-			    else 
-			      {
-				val.resize(i);
-				val[i-1] = (T)d;
-				i++;
-			      }
-			  }
-		      }
-		    m=S->NVals=i-1;
-		    return i-1;
+		    return clgetNValp(Name, val, m, empty);
 		    );
+  // Symbol *S;
+  // double d;
+  // SMap empty;
+  // HANDLE_EXCEPTIONS(
+  // 		    S=clgetNValBaseCode(Name,val,m,empty);
+  // 		    int n0=S->NVals;
+  // 		    int i=1;
+  // 		    for(int j=0;j<n0;j++)
+  // 		      {
+  // 			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
+  // 			  {
+  // 			    if (m==0) {m=S->NVals=i-1;return i-1;}
+  // 			    else 
+  // 			      {
+  // 				val.resize(i);
+  // 				val[i-1] = (T)d;
+  // 				i++;
+  // 			      }
+  // 			  }
+  // 		      }
+  // 		    m=S->NVals=i-1;
+  // 		    return i-1;
+  // 		    );
 }
 
 #endif
