@@ -230,13 +230,13 @@ int ParseCmdLine(int argc, char *argv[])
 	if (S->Val[0]=="dryrun")
 	  cl_DryRun=1;
 
-	if (S->Val[0] == "def")
+	if ((S->Val[0] == "def") || (S->Val[0] == "defdbg"))
 	  {
 	    cl_NoPrompt=1; // Don't start the interactive shell in EndCL().
 
 	    if ((S->NVals > 1) && (S->Val[1]==""))
 	      clThrowUp(std::string("Usage: ")+
-			cl_ProgNameStr+std::string(" help=def[,<FileName>]"),
+			cl_ProgNameStr+std::string(" help=def|defdbg[,<FileName>]"),
 			"###Error", CL_FATAL);
 
 	    string defFile=cl_ProgNameStr+".def";
@@ -251,6 +251,7 @@ int ParseCmdLine(int argc, char *argv[])
 	    // sets the cl_TabTail to the beginning of cl_SymbTab!
 	    //
 	    //	    clLoadSymb();
+	    if (S->Val[0] == "defdbg") doinp("-a");
 	  }
       }
   }
