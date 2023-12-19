@@ -251,7 +251,10 @@ int ParseCmdLine(int argc, char *argv[])
 	    // sets the cl_TabTail to the beginning of cl_SymbTab!
 	    //
 	    //	    clLoadSymb();
-	    if (S->Val[0] == "defdbg") doinp((char *)"-a");
+
+	    // Change interface to do*() functions (in
+	    // callbacks_awk.cc) to take const char*.  Someday.
+	    if (S->Val[0] == "defdbg") doinp((char *)("-a"));
 	  }
       }
   }
@@ -378,7 +381,7 @@ int startShell()
       {
 	if (!cl_defaultsLoaded)  /* Load the defaults */
 	  {
-	    loadDefaults(0); cl_defaultsLoaded=1;
+	    loadDefaults(1); cl_defaultsLoaded=1;
 	  }
 	if (doInp)
 	  doinp(NULL);    /* Display the keywords */

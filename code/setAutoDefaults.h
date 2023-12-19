@@ -44,7 +44,7 @@ void setAutoDefaults(Symbol *S, T const & val)
 /* Template function to set a vector of values as default for the Symbol S */
 /*---------------------------------------------------------------------------*/
 template <class T>
-void setAutoDefaults(Symbol *S, const vector<T>& val)
+void setAutoDefaults(Symbol *S, const vector<T>& val,const bool def2val=false)
 {
   int n=val.size();
   if (cl_RegistrationMode == 1)
@@ -59,18 +59,38 @@ void setAutoDefaults(Symbol *S, const vector<T>& val)
 	}
     }
     
+  if (def2val)
+    {
+      if (S->Val.size() == 0)
+	{
+	  S->Val.resize(n,"");
+	  n = S->DefaultVal.size();
+	  for(int i=0;i<n;i++)
+	    {
+	      stringstream os;
+	      //os << S->DefaultVal[i];
+	      os << val[i];
+	      S->Val[i]=os.str();
+	    }
+	  S->NVals = n;
+	}
+    }
+}
+
+template <class T>
+void setValsFromDefaults(Symbol *S)
+{
   if (S->Val.size() == 0)
     {
+      int n = S->DefaultVal.size();
       S->Val.resize(n,"");
-      n = S->DefaultVal.size();
       for(int i=0;i<n;i++)
 	{
 	  stringstream os;
-	  //os << S->DefaultVal[i];
-	  os << val[i];
+	  os << S->DefaultVal[i];
+	  //os << val[i];
 	  S->Val[i]=os.str();
 	}
       S->NVals = n;
     }
 }
-

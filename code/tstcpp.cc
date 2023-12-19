@@ -12,7 +12,7 @@
 
 void UI(bool restart, int argc, char **argv)
 {
-  int i,j=0,dj=1,oi=0,N;
+  int i,j=0,dj=11,oi=0,N;
   float f=0;
   vector<float> fv(10);
   VString strarr;
@@ -40,6 +40,7 @@ void UI(bool restart, int argc, char **argv)
     clRetry();
   try
     {
+      clCmdLineFirst();
       {
 	SMap watchPoints; VString exposedKeys;
 	InitMap(watchPoints,exposedKeys);
