@@ -251,7 +251,7 @@ int ParseCmdLine(int argc, char *argv[])
 	    // sets the cl_TabTail to the beginning of cl_SymbTab!
 	    //
 	    //	    clLoadSymb();
-	    if (S->Val[0] == "defdbg") doinp("-a");
+	    if (S->Val[0] == "defdbg") doinp((char *)"-a");
 	  }
       }
   }
