@@ -100,6 +100,7 @@ extern int add_history(char *);
 #define clgetOpt         clgetopt_
 #define clgetNOpts       clgetnopts_
 #define clgetNVals       clgetnvals_
+#define vecStr2Str       vecStr2Str_
 #define clgetFull        clgetfull_
 #define clgetFullVal     clgetfullval_
 #define clgetIVal        clgetival_
@@ -143,6 +144,7 @@ void      clCmdLineFirst();
 int       clTgetOpt(char *Name, char *Type);
 int       clgetOpt(char *Name);
 int       clgetNVals(char *Name);
+std::string       vecStr2Str(const std::vector<std::string>& src);
 int       clgetFull(char  *Arg,  int   *N);
 int       clgetFullVal(char  *Name,  char **Val);
 int       clgetIVal(char  *Name, int   *Val, int *N);

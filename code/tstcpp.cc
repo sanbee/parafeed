@@ -17,6 +17,7 @@ void UI(bool restart, int argc, char **argv)
   vector<float> fv(10);
   VString strarr;
   string str;
+  string fullVal="";
   bool b=false, b1=false;
   //
   // Change cl-shell prompt
@@ -84,6 +85,7 @@ void UI(bool restart, int argc, char **argv)
 	clSetOptions("string",{"one","two","three","showstrarr","testarr"});
 
 	i=0;clgetNSValp("strarr",strarr,i);
+	i=0;clgetFullValp("fullval",fullVal);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();
@@ -93,16 +95,17 @@ void UI(bool restart, int argc, char **argv)
       x << x << endl;
       clRetry();
     }
-  cerr << "  Bool        = " << b << endl;
-  cerr << "  Bool1       = " << b1 << endl;
-  cerr << "  Float       = " << f << endl;
-  cerr << "  dbgInt      = " << dj << endl;
-  cerr << "  Int         = " << j << endl;
-  cerr << "  OneInt      = " << oi << endl;
+  cerr << "  bool        = " << b << endl;
+  cerr << "  bool1       = " << b1 << endl;
+  cerr << "  float       = " << f << endl;
+  cerr << "  dbgint      = " << dj << endl;
+  cerr << "  int         = " << j << endl;
+  cerr << "  oneint      = " << oi << endl;
 
-  cerr << "  String      = " << str << endl;
-  cerr << "  StrArr      = "; for(auto s : strarr) cerr << s << " "; cerr << endl;
-  cerr << "  Float Array = "; for(auto f : fv)     cerr << f << " "; cerr << endl;
+  cerr << "  string      = " << str << endl;
+  cerr << "  strarr      = "; for(auto s : strarr) cerr << s << " "; cerr << endl;
+  cerr << "  fullval     = " << fullVal << endl;
+  cerr << "  farray      = "; for(auto f : fv) cerr << f << " "; cerr << endl;
 }
 
 //

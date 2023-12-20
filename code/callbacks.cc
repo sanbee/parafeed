@@ -677,8 +677,8 @@ END{									\
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
-	string val;
-	clgetFullValp(string(S->Name),val);
+	string val=vecStr2Str(S->DefaultVal);
+	//	clgetFullValp(string(S->Name),val);
 	
 	if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
 	  {
@@ -728,11 +728,7 @@ END{									\
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
-	string val;
-	// clgetFullValp(string(S->Name),val);
-	//	cerr << "### " << S->NVals << endl;
-	if (S->Val.size() > 0) val=S->Val[0];
-	for(int i=1;i< S->Val.size();i++) val = val + ',' + S->Val[i];
+	string val = vecStr2Str(S->DefaultVal);
 	if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
 	  {
 	    //

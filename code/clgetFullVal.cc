@@ -22,71 +22,79 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-/*------------------------------------------------------------------------
-   Get the value associated with Key as one string.
-------------------------------------------------------------------------*/
-int clgetFullVal(char *Name, char **val)
-{
-  int n,i,len=0;
-  char tmp[FILENAME_MAX];
+  /*----------------------------------------------------------------------*/
+  std::string vecStr2Str(const std::vector<std::string>& src)
+  {
+    std::string val="";
+    if (src.size() > 0) val=src[0];
+    for(int i=1;i< src.size();i++) val = val + ',' + src[i];
+    return val;
+  };
+  /*------------------------------------------------------------------------
+    Get the value associated with Key as one string.
+    ------------------------------------------------------------------------*/
+  int clgetFullVal(char *Name, char **val)
+  {
+    int n,i,len=0;
+    char tmp[FILENAME_MAX];
 
-  if (!*val) free(*val); *val=NULL;
-  if ((n=clgetNVals(Name))>0)
-    {
-      for (i=1;i<=n;i++)
-	{
-	  clgetSVal(Name,tmp,&i);
-	  len += strlen(tmp)+1;
-	}
+    if (!*val) free(*val); *val=NULL;
+    if ((n=clgetNVals(Name))>0)
+      {
+	for (i=1;i<=n;i++)
+	  {
+	    clgetSVal(Name,tmp,&i);
+	    len += strlen(tmp)+1;
+	  }
 
-      *val = (char *)getmem(len,"clgetFullVal");
-      for (i=0;i<len;i++) (*val)[i]=' ';
-      i=1; clgetSVal(Name,tmp,&i);
-      strcpy(*val,tmp);
+	*val = (char *)getmem(len,"clgetFullVal");
+	for (i=0;i<len;i++) (*val)[i]=' ';
+	i=1; clgetSVal(Name,tmp,&i);
+	strcpy(*val,tmp);
 
-      for (i=2;i<=n;i++)
-	{
-	  strcat(*val,",");
-	  clgetSVal(Name,tmp,&i);
-	  strcat(*val,tmp);
-	}
-      *(*val+strlen(*val))='\0';
-    }
-  return n;
-}
+	for (i=2;i<=n;i++)
+	  {
+	    strcat(*val,",");
+	    clgetSVal(Name,tmp,&i);
+	    strcat(*val,tmp);
+	  }
+	*(*val+strlen(*val))='\0';
+      }
+    return n;
+  }
 #ifdef __cplusplus
-	   }
+}
 #endif
 
 #ifdef __cplusplus
 int clgetFullValp(const string& Name, string& val)
 {
-  int n,i,len=0;
-  //  char tmp[FILENAME_MAX];
-  string tmp;
+  int n,i;
   Symbol *S;
 
   S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
-  //  setAutoSDefaults(S,val,1);
-  if ((n=clgetNVals((char *)Name.c_str()))>0)
-    {
-      val="";
-      for (i=1;i<=n;i++)
-	{
-	  clgetSValp(Name,tmp,i);
-	  len += tmp.size()+1;
-	}
+  val = vecStr2Str(S->Val);
+  // //  setAutoSDefaults(S,val,1);
+  // if ((n=clgetNVals((char *)Name.c_str()))>0)
+  //   {
+  //     // val="";
+  //     // for (i=1;i<=n;i++)
+  //     // 	{
+  //     // 	  clgetSValp(Name,tmp,i);
+  //     // 	  len += tmp.size()+1;
+  //     // 	}
 
-      i=1; clgetSValp(Name,tmp,i);
-      val=tmp;
+  // string tmp;
+  //     i=1; clgetSValp(Name,tmp,i);
+  //     val=tmp;
 
-      for (i=2;i<=n;i++)
-	{
-	  val = val +",";
-	  clgetSValp(Name,tmp,i);
-	  val = val + tmp;
-	}
-    }
-  return n;
+  //     for (i=2;i<=n;i++)
+  // 	{
+  // 	  val = val +",";
+  // 	  clgetSValp(Name,tmp,i);
+  // 	  val = val + tmp;
+  // 	}
+  //   }
+  return S->Val.size();
 }
 #endif
