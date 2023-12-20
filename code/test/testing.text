@@ -20,4 +20,9 @@
 
 8. app followed by "load <file>!" should set all keys found in <file>
    that were not already set (complement load).
-   
+
+9. Test for app help=defdbg
+
+10. Test for app help=params.  Verify the output format and the
+    various tokens.
+
