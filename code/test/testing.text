@@ -19,14 +19,10 @@
    defaults for everything else.
 
 8. app followed by "load <file>!" should set all keys found in <file>
-<<<<<<< HEAD
    that were not already set (complement load).  "keys that were not
    already set" really means keys that take string values and are
    currently blank.  All other keys would be set one way or another --
    either as factory defaults, or via app.def or via user interaction.
-=======
-   that were not already set (complement load).
->>>>>>> 4c04e19 (Added more tests to do in code/test/testing.text)
 
 9. Test for app help=defdbg
 
