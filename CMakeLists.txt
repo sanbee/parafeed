@@ -114,3 +114,5 @@ write_basic_package_version_file(parafeedConfigVersion.cmake
   COMPATIBILITY AnyNewerVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/parafeedConfigVersion.cmake
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/parafeed)
+# Generate the parafeed.pc file
+configure_file(parafeed.pc.in ${CMAKE_INSTALL_LIBDIR}/pkgconfig/parafeed.pc @ONLY)
