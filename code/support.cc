@@ -297,21 +297,27 @@ void showExposedKeys(Symbol* t, const bool& showAll,
   //checkVal(t,mapVal);
   if (!t->smap.empty())
     {
-      mapVal = (t->smap.begin())->second;
-      for (auto key : mapVal)
+      // Iterate over all entires in the smap for the symbol
+      for(auto smap : t->smap)
 	{
-	  Symbol *S;
-	  S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
-	  if (S==NULL) break;
-	  //S=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	  if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
-	      (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+	  //	mapVal = (t->smap.begin())->second;
+	  mapVal = smap.second;
+	  // Iterate over all keys in the smap for the symbol
+	  for (auto key : mapVal)
 	    {
-	      printer(stderr,S);
+	      Symbol *S;
+	      S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+	      if (S==NULL) break;
+	      //S=SearchVSymb(iarg.c_str(),cl_SymbTab);
+	      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
+		  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+		{
+		  printer(stderr,S);
+		}
+	      // Recusively show watched keys, if exposed by the current
+	      // value of the parent key or if showAll==True.
+	      showExposedKeys(S,showAll,printer);
 	    }
-	  // Recusively show watched keys, if exposed by the current
-	  // value of the parent key or if showAll==True.
-	  showExposedKeys(S,showAll,printer);
 	}
     }
 }

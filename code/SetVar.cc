@@ -122,52 +122,9 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	  SetVal(tokens[i].c_str(),pos,i);
       }
     }
-  // catch(clError& cl)
-  //   {
-  //     //      cl << cl << endl;
-  //     throw(cl);
-  //   }
 
-  // int coma=0;
-  // char *k=NULL,*v=NULL;
-  // if ((coma = ntok(val,",",CL_ESC))==-1) return 1;
+  if (dodoinp) doinp((char *)(string("-t ")+key).c_str());
 
-  // i=0;j=0;
-  // while(val[j] == ' ')j++;
-
-  // k = (char *)getmem(strlen(&val[j])+1,"cl:loadParams");
-  // strncpy(k,&val[j],(i=strlen(&val[j])));k[i]='\0';
-
-  // v = (char *)clstrtok(k,",",CL_ESC);
-
-  // //  cerr << "before = " << pos->NVals << " " << coma << endl;
-
-  // for (i=coma;i<pos->NVals;i++) pos->Val[i]="";
-  // pos->Val.resize(coma);
-  // pos->NVals=coma;
-
-
-  // /* for (i=coma;i<pos->NVals;i++) free(pos->Val[i]); */
-  // /* pos->Val=(char **)calloc(1,sizeof(char **)*(coma)); */
-  // /* pos->NVals=coma; */
-
-  // for (i=0;i<(unsigned int)coma;i++)
-  //   {
-  //     SetVal(v,pos,i);
-  //     if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break;
-  //   }
-  /* for (i=0;i<(unsigned int)coma;i++) */
-  /*   { */
-  /*     SetVal(v,pos,i); */
-  /*     if ((v = (char *)clstrtok(NULL,",",CL_ESC))==NULL) break; */
-  /*   } */
-  //  cerr << "after = " << pos->NVals << " " << i << endl;
-
-  string stmp("-t ");stmp+=key;
-  char tt[stmp.length()+1];
-  strcpy(tt,stmp.c_str());
-  if (dodoinp) doinp(tt);
-  //  free(k);
   return ret;
 }
 /*----------------------------------------------------------------------*/

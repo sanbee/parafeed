@@ -30,7 +30,7 @@ void UI(bool restart, int argc, char **argv)
 
   // Set the application to be non-interactive by default.
   // The setting can be changed via the help=prompt keyword.
-  //  clSetPrompt(false);
+  clSetPrompt(false);
 
   if (!restart)
     {
@@ -67,9 +67,11 @@ void UI(bool restart, int argc, char **argv)
 
 	i=1;clgetValp("oneint",oi,i); // Equivalent to clgetIValp()
 
-	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
-	exposedKeys.push_back("strarr");
-	watchPoints["showstrarr"]=exposedKeys;
+	ClearMap(watchPoints);
+	// Re-use watchPoints and exposedKeys
+	exposedKeys.resize(0);exposedKeys.push_back("strarr"); watchPoints["showstrarr"]=exposedKeys;
+	//exposedKeys.resize(0);exposedKeys.push_back("fullval"); watchPoints["showfullval"]=exposedKeys;
+
 	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
 
@@ -82,10 +84,10 @@ void UI(bool restart, int argc, char **argv)
 	// watchPoints["testarr"]=exposedKeys;
 	// i=1;clgetSValp("string",str,i,watchPoints);
 	
-	clSetOptions("string",{"one","two","three","showstrarr","testarr"});
+	clSetOptions("string",{"one","two","three","showstrarr","showfullval"});
 
-	i=0;clgetNSValp("strarr",strarr,i);
 	i=0;clgetFullValp("fullval",fullVal);
+	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();
