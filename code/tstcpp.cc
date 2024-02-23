@@ -70,7 +70,7 @@ void UI(bool restart, int argc, char **argv)
 	ClearMap(watchPoints);
 	// Re-use watchPoints and exposedKeys
 	exposedKeys.resize(0);exposedKeys.push_back("strarr"); watchPoints["showstrarr"]=exposedKeys;
-	//exposedKeys.resize(0);exposedKeys.push_back("fullval"); watchPoints["showfullval"]=exposedKeys;
+	exposedKeys.resize(0);exposedKeys.push_back("fullval"); watchPoints["showfullval"]=exposedKeys;
 
 	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
