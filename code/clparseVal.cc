@@ -69,6 +69,14 @@ HANDLE_EXCEPTIONS(
 	{
 	  int retVal;
 	  string val(S->Val[N-1]);
+	  // Test if val string is an integer.  Convert >0 to a string
+	  // "T" and <0 to "F"
+	  {
+	    stringstream ssval(val);
+	    int ival; ssval >> ival;
+	    if (!ssval.fail())
+	      if (ival > 0) val="1"; else val="0";
+	  }
 	  if ((retVal=clIsTrue(val))==1) *d=1;
 	  else if ((retVal=clIsFalse(val))==1) *d=0;
 	  //*d = clIsTrue(val);

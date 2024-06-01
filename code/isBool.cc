@@ -78,7 +78,7 @@ int clIsTrue(const string& val)
   int retVal=clBoolCmp(val, true);
   if (retVal == CL_UNKNOWNBOOL) 
     {
-      boolError bl("Unrecognized value for Bool", "###Error", CL_INFORMATIONAL);
+      boolError bl("Unrecognized value for Bool (True) '"+val+"'", "###Error", CL_INFORMATIONAL);
       throw(bl);
     }
   return retVal;
@@ -88,7 +88,7 @@ int clIsFalse(const string& val)
   int retVal=clBoolCmp(val, false);
   if (retVal == CL_UNKNOWNBOOL) 
     {
-      boolError bl("Unrecognized value for Bool", "###Error", CL_INFORMATIONAL);
+      boolError bl("Unrecognized value for Bool (False) '"+val+"'", "###Error", CL_INFORMATIONAL);
       throw(bl);
     }
   return retVal;
