@@ -677,8 +677,8 @@ END{									\
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
-	string val;
-	clgetFullValp(string(S->Name),val);
+	string val=vecStr2Str(S->DefaultVal);
+	//	clgetFullValp(string(S->Name),val);
 	
 	if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
 	  {
@@ -723,25 +723,20 @@ END{									\
     if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
       cl_ProgName[strlen(cl_ProgName)-1]='\0';
 
-    cout <<"%%N " << cl_ProgName << endl;
+    cout <<"%%N:" << cl_ProgName << endl;
 
     for (S=cl_SymbTab;S;S=S->Next)
       {
 	if (string(S->Name)=="") break;
-	string val;
-	clgetFullValp(string(S->Name),val);
-
+	string val = vecStr2Str(S->DefaultVal);
 	if ((S->Class==CL_APPLNCLASS) || (S->Class == CL_DBGCLASS))
 	  {
 	    //
 	    // Print name and default value
 	    //
-	    cout << "%%P " << S->Name << " : " << S->Type << " : " << val;
+	    cout << "%%P:" << S->Name << ":" << S->Type << ":" << val << ":";
 	    if (S->Options.size() > 0)
-	      {
-		cout << " : ";
-		for(auto op : S->Options) cout << op << "|";
-	      }
+	      for(auto op : S->Options) cout << op << "|";
 	    cout << endl;
 	  }
       }

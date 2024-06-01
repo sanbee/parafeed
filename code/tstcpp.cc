@@ -12,11 +12,12 @@
 
 void UI(bool restart, int argc, char **argv)
 {
-  int i,j=0,dj=1,oi=0,N;
+  int i,j=0,dj=11,oi=0,N;
   float f=0;
   vector<float> fv(10);
   VString strarr;
   string str;
+  string fullVal="";
   bool b=false, b1=false;
   //
   // Change cl-shell prompt
@@ -40,6 +41,7 @@ void UI(bool restart, int argc, char **argv)
     clRetry();
   try
     {
+      clCmdLineFirst();
       {
 	SMap watchPoints; VString exposedKeys;
 	InitMap(watchPoints,exposedKeys);
@@ -59,15 +61,17 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.push_back("float");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
-	i=1;dbgclgetIValp("dbgint",dj,i);
+	i=1;dbgclgetValp("dbgint",dj,i);
 
 	i=1;clgetValp("float",f,i); // Equivalent to clgetIValp()
 
 	i=1;clgetValp("oneint",oi,i); // Equivalent to clgetIValp()
 
-	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
-	exposedKeys.push_back("strarr");
-	watchPoints["showstrarr"]=exposedKeys;
+	ClearMap(watchPoints);
+	// Re-use watchPoints and exposedKeys
+	exposedKeys.resize(0);exposedKeys.push_back("strarr"); watchPoints["showstrarr"]=exposedKeys;
+	exposedKeys.resize(0);exposedKeys.push_back("fullval"); watchPoints["showfullval"]=exposedKeys;
+
 	str="showstrarr";
 	i=1;clgetSValp("string",str,i,watchPoints);
 
@@ -80,8 +84,9 @@ void UI(bool restart, int argc, char **argv)
 	// watchPoints["testarr"]=exposedKeys;
 	// i=1;clgetSValp("string",str,i,watchPoints);
 	
-	clSetOptions("string",{"one","two","three","showstrarr","testarr"});
+	clSetOptions("string",{"one","two","three","showstrarr","showfullval"});
 
+	i=0;clgetFullValp("fullval",fullVal);
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
@@ -92,15 +97,17 @@ void UI(bool restart, int argc, char **argv)
       x << x << endl;
       clRetry();
     }
-  cerr << "  Bool        = " << b << endl;
-  cerr << "  Bool1       = " << b1 << endl;
-  cerr << "  Float       = " << f << endl;
-  cerr << "  Int         = " << j << endl;
-  cerr << "  OneInt      = " << oi << endl;
+  cerr << "  bool        = " << b << endl;
+  cerr << "  bool1       = " << b1 << endl;
+  cerr << "  float       = " << f << endl;
+  cerr << "  dbgint      = " << dj << endl;
+  cerr << "  int         = " << j << endl;
+  cerr << "  oneint      = " << oi << endl;
 
-  cerr << "  String      = " << str << endl;
-  cerr << "  StrArr      = "; for(auto s : strarr) cerr << s << " "; cerr << endl;
-  cerr << "  Float Array = "; for(auto f : fv)     cerr << f << " "; cerr << endl;
+  cerr << "  string      = " << str << endl;
+  cerr << "  strarr      = "; for(auto s : strarr) cerr << s << " "; cerr << endl;
+  cerr << "  fullval     = " << fullVal << endl;
+  cerr << "  farray      = "; for(auto f : fv) cerr << f << " "; cerr << endl;
 }
 
 //

@@ -1,0 +1,31 @@
+1. Run the app in the help=noprompt mode without app.def and no
+   settings.  The printed values should be the factory defaults.
+
+2. app help=noprompt <key>=<val> should print <val> for corresponding
+   <key> on commandline and factory defaults for everything else.
+
+3. app help=def should return an error.
+
+4. Setup app.def.  Run app.  Should return the settings for keys found
+   in app.def and factory defaults for everything else.
+
+5. app help=def should work as if app help=prompt and the "go" command
+   is used.
+
+6. app help=def,tt.def should return error
+
+7. Setup tt.def with some key settings missing.  app help=def,tt.def
+   should return the settings of keys found in tt.def and factory
+   defaults for everything else.
+
+8. app followed by "load <file>!" should set all keys found in <file>
+   that were not already set (complement load).  "keys that were not
+   already set" really means keys that take string values and are
+   currently blank.  All other keys would be set one way or another --
+   either as factory defaults, or via app.def or via user interaction.
+
+9. Test for app help=defdbg
+
+10. Test for app help=params.  Verify the output format and the
+    various tokens.
+

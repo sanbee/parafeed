@@ -230,20 +230,32 @@ int ParseCmdLine(int argc, char *argv[])
 	if (S->Val[0]=="dryrun")
 	  cl_DryRun=1;
 
-	if (S->Val[0] == "def")
+	if ((S->Val[0] == "def") || (S->Val[0] == "defdbg"))
 	  {
 	    cl_NoPrompt=1; // Don't start the interactive shell in EndCL().
 
 	    if ((S->NVals > 1) && (S->Val[1]==""))
-	      clThrowUp(std::string("Usage: ")+cl_ProgNameStr+std::string(" help=def[,<FileName>]"), "###Error", CL_FATAL);
+	      clThrowUp(std::string("Usage: ")+
+			cl_ProgNameStr+std::string(" help=def|defdbg[,<FileName>]"),
+			"###Error", CL_FATAL);
 
-	    if (S->NVals == 1)
-		clLoadSymb();
-	    else if (S->NVals > 1)
-	      {
-		doload_and_register((char *)string(S->Val[1]).c_str());
-		clLoadSymb();
-	      }
+	    string defFile=cl_ProgNameStr+".def";
+	    if (S->NVals > 1)  defFile=S->Val[1];
+
+	    doload_and_register((char *)defFile.c_str());
+	    doinp("-a");
+	    // doload_and_register() reads the .def file into cl_SymbTab directly.
+	    // clLoadSymb() in this case isn't required.
+	    //
+	    // BUG: clLoadSymb() messes up cl_SymbTab if it is called
+	    // *after* cl_SymbTab is already filled.  Specifically, it
+	    // sets the cl_TabTail to the beginning of cl_SymbTab!
+	    //
+	    //	    clLoadSymb();
+
+	    // Change interface to do*() functions (in
+	    // callbacks_awk.cc) to take const char*.  Someday.
+	    if (S->Val[0] == "defdbg") doinp((char *)("-a"));
 	  }
       }
   }
@@ -370,7 +382,7 @@ int startShell()
       {
 	if (!cl_defaultsLoaded)  /* Load the defaults */
 	  {
-	    loadDefaults(0); cl_defaultsLoaded=1;
+	    loadDefaults(1); cl_defaultsLoaded=1;
 	  }
 	if (doInp)
 	  doinp(NULL);    /* Display the keywords */
