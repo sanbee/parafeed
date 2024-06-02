@@ -412,76 +412,58 @@ command-line and their effect:
 ## Example ##
 Here is a typical screen-shot of an application using _parafeed_ for user interface, when started in the interactive mode:
 ```
-sbhatnag@langur> clean
-ms            = ../TestData/data_ic2233.VLA.FullPol.2.cal.ms
-imsize        = 1024*2,1024*2
-cellsize      = 7,7
-model         = test_ic2233.20.3.pcal
-restored      =
-residual      =
-mask          =
-complist      =
-ftmachine     = myftmachine
-facets        = 1
-wplanes       = 1
-applyoffsets  = 0
-pointingtable =
-cfcache       = predict.cfcache
-painc         = 360
-algorithm     = cs
-stokes        = IV
-weighting     = natural
-field         = 0
-spw           = 0
-time          =
-baseline      =
-mode          = continuum
-datanchan     = 20
-datastart     = 6
-datastep      = 1
-gain          = 0.1
-niter         = 1000
-threshold     = 0
-interactive   = 0
-clean>?
-   Key                Type          Factory defaults        Options
----------          ----------       ----------------        -------
-  ms                    string                        
-  imsize                int[2]              0,0        
-  cellsize              float[2]            0,0        
-  model                 string[]            
-  restored              string[]            
-  residual              string[]            
-  mask                  string[]            
-  complist              string                        
-  ftmachine             string              ft         [ft wproject pbwproject pbmosaic]
-  facets                int                 1         
-  wplanes               int                 1         
-  applyoffsets          int                 0         
-  dopbcorr              int                 1         
-  pointingtable         string                        
-  cfcache               string                        
-  painc                 float               360       
-  algorithm             string              cs         [cs clark hogbom mfclark]
-  stokes                string              I          [I IV IQUV]
-  weighting             string              uniform    [uniform natural briggs]
-  field                 Mixed[]                       
-  spw                   Mixed[]                       
-  time                  Mixed[]                       
-  baseline              Mixed[]                       
-  uvrange               Mixed[]                       
-  mode                  string              continuum  [continuum spectral pseudo]
-  datanchan             int[]               1         
-  datastart             int[]               0         
-  datastep              int[]               1         
-  operation             string              clean      [clean predict psf dirty residual]
-  gain                  float               0.1       
-  niter                 int                 0         
-  threshold             float               0         
-  interactive           int                 0         
-clean>algorithm<TAB><TAB>
-clean>algorithm=<TAB><TAB>
-clark    cs       hogbom   mfclark 
-clean>algorithm=cl<TAB>
-clean>algorithm=clark
+>>>./roadrunner 
+vis                  = VLASS2.1.sb38453816.eb38509426.59047.17567765046_split.ms
+imagename            = refim_oneshiftpoint.residual
+modelimagename       = 
+datacolumn           = data
+sowimageext          = sumwt
+complexgrid          = 
+imsize               = 16*1024
+cell                 = 0.6
+stokes               = I
+reffreq              = 3.0GHz
+phasecenter          = 22:10:0.000 -00.30.0.0000 J2000
+weighting            = natural
+wprojplanes          = 32
+gridder              = awphpg
+cfcache              = cfcache_spw2-17_imsize16384_cell0.6arcsec_w32_conjT.cf
+mode                 = residual
+wbawp                = 1
+field                = 
+spw                  = 2~17
+uvrange              = 
+pbcor                = 1
+conjbeams            = 0
+pblimit              = 0.05
+usepointing          = 0
+roadrunner>?
+         Key                    Type          Factory defaults                    Options
+--------------------           ------         ----------------                    -------
+  vis                          string                              
+  imagename                    string                              
+  modelimagename               string                              
+  datacolumn                   string                               [data model corrected]
+  sowimageext                  string                              
+  complexgrid                  string                              
+  imsize                       int                 0               
+  cell                         float               0               
+  stokes                       string              I                [I IV]
+  reffreq                      string              3.0e9           
+  phasecenter                  string                              
+  weighting                    string              natural          [natural uniform briggs]
+  wprojplanes                  int                 1               
+  gridder                      string              awphpg           [awphpg awproject]
+  cfcache                      string                              
+  mode                         string              residual         [weight psf snrpsf residual predict]
+  wbawp                        bool                1                Use imagination or list by "wbawp=<TAB><TAB>"
+  field                        Mixed[]                             
+  spw                          Mixed[]                             
+  uvrange                      Mixed[]                             
+  pbcor                        bool                1                Use imagination or list by "pbcor=<TAB><TAB>"
+  conjbeams                    bool                1                Use imagination or list by "conjbeams=<TAB><TAB>"
+  pblimit                      float               0.001           
+  usepointing                  bool                0                Use imagination or list by "usepointing=<TAB><TAB>"
+roadrunner>
+
 ```
