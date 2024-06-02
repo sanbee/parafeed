@@ -36,8 +36,8 @@ const char* ErrorObj::what()
 
 ostream &operator<<(ostream& o, const ErrorObj &E)
 {
-  if (E.Id.size() > 0)   o << E.Id;
-  if (E.Msg.size() > 0)  o <<": "<< E.Msg;
+  if (E.Id.size() > 0)   o << E.Id << ": ";
+  if (E.Msg.size() > 0)  o << E.Msg;
 
   return o;
 }

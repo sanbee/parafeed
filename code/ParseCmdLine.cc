@@ -243,7 +243,7 @@ int ParseCmdLine(int argc, char *argv[])
 	    if (S->NVals > 1)  defFile=S->Val[1];
 
 	    doload_and_register((char *)defFile.c_str());
-	    doinp("-a");
+	    doinp((char*)string("-a").c_str());
 	    // doload_and_register() reads the .def file into cl_SymbTab directly.
 	    // clLoadSymb() in this case isn't required.
 	    //

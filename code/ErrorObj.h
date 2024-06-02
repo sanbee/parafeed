@@ -46,6 +46,7 @@ class ErrorObj{
   void SetSource(const char *m=0);
   const char *Source()               {return Src.c_str();}
   int Severity()                     {return Level;}
+  const char* ErrorMessage()         {return Msg.c_str();}
   const char *what();
 
   ostream &operator<<(const std::string& m) {return cerr << m;}
