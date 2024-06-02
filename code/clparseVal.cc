@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <boolError.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -67,7 +68,6 @@ HANDLE_EXCEPTIONS(
       if (N > S->NVals) return 0;
       if (ISSET(S->Attributes,CL_BOOLTYPE))
 	{
-	  int retVal;
 	  string val(S->Val[N-1]);
 	  // Test if val string is an integer.  Convert >0 to a string
 	  // "T" and <0 to "F"
@@ -77,8 +77,20 @@ HANDLE_EXCEPTIONS(
 	    if (!ssval.fail())
 	      if (ival > 0) val="1"; else val="0";
 	  }
-	  if ((retVal=clIsTrue(val))==1) *d=1;
-	  else if ((retVal=clIsFalse(val))==1) *d=0;
+
+	  int retVal;
+	  try
+	    {
+	      if ((retVal=clIsTrue(val))==1) *d=1;
+	      else if ((retVal=clIsFalse(val))==1) *d=0;
+	    }
+	  catch(boolError& err)
+	    {
+	      stringstream ss;
+	      ss << err.what() << ": " << S->Name << "=" << val;
+	      boolError bl(ss.str(), "", CL_FATAL);
+	      throw(bl);
+	    }
 	  //*d = clIsTrue(val);
 	  if (retVal == CL_UNKNOWNBOOL ) 
 	    reportParseError(*S, N-1);
