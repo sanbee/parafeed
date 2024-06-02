@@ -70,7 +70,7 @@ HANDLE_EXCEPTIONS(
 	{
 	  string val(S->Val[N-1]);
 	  // Test if val string is an integer.  Convert >0 to a string
-	  // "T" and <0 to "F"
+	  // "1" and <=0 to "0"
 	  {
 	    stringstream ssval(val);
 	    int ival; ssval >> ival;
