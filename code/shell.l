@@ -28,6 +28,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+  using namespace std;
 /*
    This piece is added only if commandline editing (via GNU Readline and
    History lib.) is opted for.  The size of the actual code increases 

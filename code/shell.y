@@ -38,6 +38,12 @@
 
 #define YYDEBUG 0
 
+// The following (re-)defintion of the YY_ marco stops the C++
+// compiler warning of the following type:
+//
+//    warning: ISO C++ forbids converting a string constant to 'char*'
+#define YY_(Msgid) (char *)Msgid
+
 
 Symbol *sh_SymbTab;
 CmdSymbol *sh_CmdTab;
