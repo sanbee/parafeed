@@ -192,12 +192,14 @@ void      clReset();
 void      clRetry();
 FILE      *clstrtstream_(char *, char *, char *);
 void      stripwhite (char *);
+  void      stripwhitep (std::string& str);
 int       redirect(char *, char *);
 void      yyerror(char *);
 int       clgetConfigFile(char *, char *);
 int       AddCmd(const char *Name, char *Doc, int (*func)(char *), 
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
+  int       BreakStrp(const std::string& str, std::string& Name, std::string& Val);
 int       dogo(char *);
 int       dogob(char *);
 int       docd(char *);

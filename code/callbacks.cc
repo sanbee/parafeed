@@ -532,40 +532,44 @@ END{									\
       }
     else
       {
-	char *Name=NULL, *Val=NULL;
+	//	char *Name=NULL, *Val=NULL;
+	std::string Name_str, Val_str;
 	Symbol *pos;
 	
-	//	while(!feof(fd))
 	while(!ifs.eof())
 	  {
 	    string line;
-	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
-	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
 	    if (getline(ifs,line))
 	      {
-		char *str_p=(char *)line.c_str();
-		//		cerr << line << endl;
-		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
-		if (strlen(str_p) > 0)
+		// char *str_p=(char *)line.c_str();
+		// stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
+		stripwhitep(line);
+		//	char *str_p=(char *)line.c_str();
+		//if (strlen(str_p) > 0)
+		if (line.size() > 0)
 		  {
-		    BreakStr(str_p,&Name,&Val);
+		    BreakStrp(line,Name_str,Val_str);
+		    //		    BreakStr(str_p,&Name,&Val);
+
 		    pos = NULL;
 		    if (Complement)
 		      {
 			//		      pos=SearchVSymb(Name,cl_SymbTab);
-			pos=SearchVSymbFullMatch(Name,cl_SymbTab);
+			pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);
 			if ((pos == (Symbol *)NULL))
-			  pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
+			  pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
 			if ((pos->NVals == 0))
 			  pos = (Symbol *)NULL;
 		      }
 		    if (pos==NULL)
 		      {
-			pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
-			SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
+			// pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
+			// SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
+			pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+			SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
 		      }
-		    if (Name != NULL) {free(Name);Name=NULL;}
-		    if (Val != NULL) {free(Val);Name=NULL;}
+		    // if (Name != NULL) {free(Name);Name=NULL;}
+		    // if (Val != NULL) {free(Val);Name=NULL;}
 		  }
 	      }
 	  }

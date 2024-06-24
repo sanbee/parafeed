@@ -243,7 +243,7 @@ int ParseCmdLine(int argc, char *argv[])
 	    if (S->NVals > 1)  defFile=S->Val[1];
 
 	    doload_and_register((char *)defFile.c_str());
-	    doinp((char *)"-a");
+	    //	    doinp((char *)"-a");
 	    // doload_and_register() reads the .def file into cl_SymbTab directly.
 	    // clLoadSymb() in this case isn't required.
 	    //
@@ -255,6 +255,7 @@ int ParseCmdLine(int argc, char *argv[])
 
 	    // Change interface to do*() functions (in
 	    // callbacks_awk.cc) to take const char*.  Someday.
+
 	    if (S->Val[0] == "defdbg") doinp((char *)("-a"));
 	  }
       }
