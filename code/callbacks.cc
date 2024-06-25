@@ -535,11 +535,9 @@ END{									\
 		  {
 		    std::string Name_str, Val_str;
 		    BreakStrp(line,Name_str,Val_str);
-		    cerr << line << endl;
-		    //		     cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
 		    stripwhitep(Name_str);
 		    stripwhitep(Val_str);
-		    //		     cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
+
 		    pos = NULL;
 
 		    if (Complement)

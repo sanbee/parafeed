@@ -485,6 +485,11 @@ int EndCL()
       free(val_t);
       exit(0);
     }
+  // else if (strVal=="def")
+  //   {
+  //     doinp((char *)"-a");
+  //     cl_NoPrompt=1;
+  //   }
 
   //if ((i==CL_FAIL) || !cl_NoPrompt)
   if (!cl_NoPrompt)
