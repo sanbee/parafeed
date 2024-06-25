@@ -491,8 +491,6 @@ END{									\
     ------------------------------------------------------------------------*/
   int doload_and_register(char *f)
   {
-    // FILE *fd;
-    // char str[MAXBUF];
     int Complement=0;
 
     ifstream ifs;
@@ -504,36 +502,27 @@ END{									\
     if(f==NULL || strlen(f) == 0)
       {
 	strcpp = cl_ProgName; 
-	//	strcpy(str,cl_ProgName);
 #ifdef GNUREADLINE
 	//	str[strlen(cl_ProgName)-1]='\0';
 	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
 #endif
-	//	strcat(str,".def");
 	strcpp.append(".def");
       }
     else 
-      //      strcpy(str,f);
       strcpp = f;
     
-    //    if (str[strlen(str)-1] == '!') 
     if (strcpp[strcpp.size()-1] == '!') 
       {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
 
-    //    cerr << "Loading from " << strcpp << "...not yet working" << endl;
     ifs.open(strcpp.c_str());
-    //    if ((fd = fopen(str,"r"))==NULL)
+
     if (!ifs.good())
       {
-	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
 	clThrowUp(std::string("Error in opening file \"")+strcpp+std::string("\""), "###Error", CL_FATAL);
-	//cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
 	return 2;
       }
-    else
+   else
       {
-	//	char *Name=NULL, *Val=NULL;
-	std::string Name_str, Val_str;
 	Symbol *pos;
 	
 	while(!ifs.eof())
@@ -541,20 +530,19 @@ END{									\
 	    string line;
 	    if (getline(ifs,line))
 	      {
-		// char *str_p=(char *)line.c_str();
-		// stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
 		stripwhitep(line);
-		//	char *str_p=(char *)line.c_str();
-		//if (strlen(str_p) > 0)
 		if (line.size() > 0)
 		  {
+		    std::string Name_str, Val_str;
 		    BreakStrp(line,Name_str,Val_str);
-		    //		    BreakStr(str_p,&Name,&Val);
-
+		    // cerr << line << endl;
+		    // cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
+		    stripwhitep(Name_str);
+		    stripwhitep(Val_str);
+		    // cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
 		    pos = NULL;
 		    if (Complement)
 		      {
-			//		      pos=SearchVSymb(Name,cl_SymbTab);
 			pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);
 			if ((pos == (Symbol *)NULL))
 			  pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
@@ -563,17 +551,12 @@ END{									\
 		      }
 		    if (pos==NULL)
 		      {
-			// pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
-			// SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
 			pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
 			SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
 		      }
-		    // if (Name != NULL) {free(Name);Name=NULL;}
-		    // if (Val != NULL) {free(Val);Name=NULL;}
 		  }
 	      }
 	  }
-	//	fclose(fd);
       }
     cl_do_doinp=0;
     return 1;

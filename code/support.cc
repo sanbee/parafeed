@@ -114,14 +114,17 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void stripwhitep (std::string& str)
   {
-    auto beg=str.begin(),
-      end=str.end();
-    auto i=beg,j=end;
-    for(i=beg;i != end; i++)
-      if (!std::isspace(*i)) break;
-    for(j=end;j != i;j--)
-      if (!std::isspace(*j)) break;
-    str = std::string(i,j);
+    string tmp(str);
+    auto beg=tmp.begin(),
+      end=tmp.end();
+
+    for(;beg != end; beg++)
+      if (!std::isspace(*beg)) break;
+
+    for(;end != beg;end--)
+      if (!std::isspace(*end)) break;
+
+    str = std::string(beg,end);
   }
 
   void stripwhite (char *string)
@@ -152,9 +155,14 @@ extern "C" {
     for(i=str.begin(); i != str.end(); i++)
       if (*i == '=') break;
     
-    Name = std::string(str.begin(),i);
-    i++;
-    val = std::string(i,str.end());
+    if (str.begin() != i)
+      Name = std::string(str.begin(),i);
+
+    if (i != str.end())
+      {
+	i++;
+	val = std::string(i,str.end());
+      }
     return 1;
   }
   int BreakStr(char *str, char **Name, char **val)
