@@ -531,16 +531,17 @@ END{									\
 	    if (getline(ifs,line))
 	      {
 		stripwhitep(line);
-		if (line.size() > 0)
+		if ((line.size() > 0) && (line[0] != '#'))
 		  {
 		    std::string Name_str, Val_str;
 		    BreakStrp(line,Name_str,Val_str);
-		    // cerr << line << endl;
-		    // cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
+		    cerr << line << endl;
+		    //		     cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
 		    stripwhitep(Name_str);
 		    stripwhitep(Val_str);
-		    // cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
+		    //		     cerr << "Name:'" << Name_str << "' Val:'" << Val_str << "'" << endl;
 		    pos = NULL;
+
 		    if (Complement)
 		      {
 			pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);

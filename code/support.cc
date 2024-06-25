@@ -114,16 +114,15 @@ extern "C" {
     ----------------------------------------------------------------------*/
   void stripwhitep (std::string& str)
   {
-    string tmp(str);
-    auto beg=tmp.begin(),
-      end=tmp.end();
+    auto beg=str.begin(),
+      end=str.end()-1;
 
     for(;beg != end; beg++)
-      if (!std::isspace(*beg)) break;
+      if (!std::isspace(static_cast<unsigned char>(*beg))) break;
 
     for(;end != beg;end--)
-      if (!std::isspace(*end)) break;
-
+      if (!std::isspace(static_cast<unsigned char>(*end))) break;
+    end++;
     str = std::string(beg,end);
   }
 
