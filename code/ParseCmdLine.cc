@@ -252,7 +252,6 @@ int ParseCmdLine(int argc, char *argv[])
 	    // sets the cl_TabTail to the beginning of cl_SymbTab!
 	    //
 	    //	    clLoadSymb();
-
 	    // Change interface to do*() functions (in
 	    // callbacks_awk.cc) to take const char*.  Someday.
 
