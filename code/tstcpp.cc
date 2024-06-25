@@ -89,7 +89,6 @@ void UI(bool restart, int argc, char **argv)
 	i=0;clgetFullValp("fullval",fullVal);
 	i=0;clgetNSValp("strarr",strarr,i);
 	i=0;clgetFullValp("fullval",fullVal);
-	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();
