@@ -112,6 +112,20 @@ extern "C" {
     Strip any leading white spaces (' ',TAB).  This is useful while 
     reading strings typed by humans.
     ----------------------------------------------------------------------*/
+  void stripwhitep (std::string& str)
+  {
+    auto beg=str.begin(),
+      end=str.end()-1;
+
+    for(;beg != end; beg++)
+      if (!std::isspace(static_cast<unsigned char>(*beg))) break;
+
+    for(;end != beg;end--)
+      if (!std::isspace(static_cast<unsigned char>(*end))) break;
+    end++;
+    str = std::string(beg,end);
+  }
+
   void stripwhite (char *string)
   {
     int i = 0;
@@ -133,6 +147,23 @@ extern "C" {
   /*----------------------------------------------------------------------
     Break a string of the type <Name>=<Value> into Name and Value.
     ----------------------------------------------------------------------*/
+  int BreakStrp(const std::string& str,
+		std::string& Name, std::string& val)
+  {
+    auto i=str.begin();
+    for(i=str.begin(); i != str.end(); i++)
+      if (*i == '=') break;
+    
+    if (str.begin() != i)
+      Name = std::string(str.begin(),i);
+
+    if (i != str.end())
+      {
+	i++;
+	val = std::string(i,str.end());
+      }
+    return 1;
+  }
   int BreakStr(char *str, char **Name, char **val)
   {
     char *t,*off;
