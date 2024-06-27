@@ -396,80 +396,67 @@ END{									\
     ------------------------------------------------------------------------*/
   int doload(char *f)
   {
-    // FILE *fd;
-    // char str[MAXBUF];
-    int Complement=0;
-
     ifstream ifs;
-    string strcpp;
+    string fileName;
+    bool Complement=false;
 
     cl_do_doinp=0;
     
     stripwhite(f);
-    if(f==NULL || strlen(f) == 0)
-      {
-	strcpp = cl_ProgName; 
-	//	strcpy(str,cl_ProgName);
-#ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
-	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
-#endif
-	//	strcat(str,".def");
-	strcpp.append(".def");
-      }
-    else 
-      //      strcpy(str,f);
-      strcpp = f;
-    
-    //    if (str[strlen(str)-1] == '!') 
-    if (strcpp[strcpp.size()-1] == '!') 
-      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
+    if((f==NULL) || (strlen(f) == 0))
+      fileName=ProgName()+".def";
+    else
+      fileName = string(f);
 
-    ifs.open(strcpp.c_str());
-    //    if ((fd = fopen(str,"r"))==NULL)
+    if (fileName[fileName.size()-1] == '!') 
+      {
+	Complement = true;
+	// Remove the trailing '!'
+	fileName = string(fileName.begin(), fileName.end()-1); 
+      }
+
+    ifs.open(fileName.c_str());
+
     if (!ifs.good())
       {
-	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
-	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
+	clThrowUp(std::string("Error in opening file \"")+fileName+std::string("\" for reading"), "###Error", CL_FATAL);
     	return 2;
       }
     else
       {
-	char *Name=NULL, *Val=NULL;
 	Symbol *pos;
-	
-	//	while(!feof(fd))
+
 	while(!ifs.eof())
 	  {
 	    string line;
-	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
-	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
 	    if (getline(ifs,line))
 	      {
-		char *str_p=(char *)line.c_str();
-		//		cerr << line << endl;
-		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
-		if (strlen(str_p) > 0)
+		stripwhitep(line);
+
+		if (line.size() > 0)
 		  {
-		    BreakStr(str_p,&Name,&Val);
+		    std::string Name_str, Val_str;
+
+		    BreakStrp(line,Name_str,Val_str);
+		    stripwhitep(Name_str);
+		    stripwhitep(Val_str);
+		    
 		    pos = NULL;
 		    if (Complement)
 		      {
-			//		      pos=SearchVSymb(Name,cl_SymbTab);
-			pos=SearchVSymbFullMatch(Name,cl_SymbTab);
+			pos=SearchVSymbFullMatch((char *)Name_str.c_str(),cl_SymbTab);
 			if ((pos == (Symbol *)NULL))
-			  pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
+			  pos=AddVar((char *)Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
 			if ((pos->NVals == 0))
 			  pos = (Symbol *)NULL;
 		      }
 		    if (pos==NULL)
-		      SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
-		    if (Name != NULL) {free(Name);Name=NULL;}
-		    if (Val != NULL) {free(Val);Name=NULL;}
+		      SetVar((char *)Name_str.c_str(),
+			     (char *)Val_str.c_str(),
+			     cl_SymbTab,0,1,cl_do_doinp);
 		  }
 	      }
 	  }
-	//	fclose(fd);
       }
     cl_do_doinp=0;
     return 1;
@@ -484,34 +471,30 @@ END{									\
     ------------------------------------------------------------------------*/
   int doload_and_register(char *f)
   {
-    int Complement=0;
+    bool Complement=false;
 
     ifstream ifs;
-    string strcpp;
+    string fileName;
 
     cl_do_doinp=0;
     
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
-      {
-	strcpp = cl_ProgName; 
-#ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
-	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
-#endif
-	strcpp.append(".def");
-      }
+      fileName = ProgName()+".def";
     else 
-      strcpp = f;
+      fileName = f;
     
-    if (strcpp[strcpp.size()-1] == '!') 
-      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
+    if (*(fileName.end()-1) == '!') 
+      {
+	Complement = true;
+	fileName=string(fileName.begin(),fileName.end()-1);
+      }
 
-    ifs.open(strcpp.c_str());
+    ifs.open(fileName.c_str());
 
     if (!ifs.good())
       {
-	clThrowUp(std::string("Error in opening file \"")+strcpp+std::string("\""), "###Error", CL_FATAL);
+	clThrowUp(std::string("Error in opening file \"")+fileName+std::string("\" for reading"), "###Error", CL_FATAL);
 	return 2;
       }
    else
