@@ -45,7 +45,7 @@ extern "C" {
 
   extern Symbol    *cl_SymbTab,*cl_TabTail;
   extern CmdSymbol *cl_CmdTab;
-  extern char      *cl_ProgName;
+  //  extern char      *cl_ProgName;
   extern unsigned short CL_DBG_ON;
   short int cl_do_doinp=1;
 #define MAXBUF     256
@@ -257,17 +257,12 @@ END{									\
     char *path=(char *)getenv(CL_DOCPATH);
     char *sed_script=(char *)"|sed -e \"s/%[ANP]//\"|more";
     char *script = (char *)KEYHELP_AWK,*key=0,*task=0;
-    //    char *str=0;
     std::string ss;
-    
-    //    str=(char *)calloc(1,strlen(script)+FILENAME_MAX);
     
     if (path)
       ss += script + std::string(" ") + path + std::string("/");
-    //sprintf(str,"%s %s/",script,path);
     else
       ss +=  std::string(" ") + script + std::string(" ");
-    //sprintf(str,"%s ",script);
     
     if (arg)
       {
@@ -277,25 +272,18 @@ END{									\
       }
     if (task)
       ss += task;
-      //strcat(str,task);
     else
-#ifdef GNUREADLINE
-      ss += std::string(cl_ProgName).substr(0,strlen(cl_ProgName)-1);
-    //strncat(str,cl_ProgName,strlen(cl_ProgName)-1);
-#else
-      ss += cl_ProgName;
-    //strncat(str,cl_ProgName,strlen(cl_ProgName));
-#endif
+      ss += ProgName();
     
-      ss += std::string(".doc ");
-      //strcat(str,".doc ");
-      if (key) ss += key;
-      //if (key) strncat(str,key,strlen(key));
-      ss += sed_script;
-      //strcat(str,sed_script);
+    ss += std::string(".doc ");
+    //strcat(str,".doc ");
+    if (key) ss += key;
+    //if (key) strncat(str,key,strlen(key));
+    ss += sed_script;
+    //strcat(str,sed_script);
 
-      system(ss.c_str());
-      //if (str) free(str);
+    system(ss.c_str());
+    //if (str) free(str);
     return 1;
   }
   /*------------------------------------------------------------------------
@@ -355,7 +343,8 @@ END{									\
   int docmdsave(char *f)
   {
     FILE *fd;
-    string AppName=ProgName(),fileName;
+    string fileName;
+
     stripwhite(f);
 
     // char rpath[PATH_MAX];
@@ -363,7 +352,7 @@ END{									\
     //   fprintf(stderr,"###Error: %s\n",strerror(errno)); 
 
     if(f==NULL || strlen(f) == 0)
-      fileName=AppName+".cmd";
+      fileName=ProgName()+".cmd";
     else
       fileName=string(f);
     
@@ -375,7 +364,7 @@ END{									\
     else
       {
 	Symbol *t;
-	fprintf(fd,"%s help=noprompt ",AppName.c_str());
+	fprintf(fd,"%s help=noprompt ",ProgName().c_str());
 	for (t=cl_SymbTab;t;t=t->Next)
 	  if ((t->Class==CL_APPLNCLASS) ||
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
@@ -609,7 +598,7 @@ END{									\
 	  Since the child will be executing the code, parent must exit.
 	*/
 	fprintf(stderr,"\"%s\" is running in background (PID=%d)\n",
-		cl_ProgName,PID);
+		ProgName().c_str(),PID);
 	exit(0);
       }
     /*
@@ -628,10 +617,10 @@ END{									\
   int doprintdoc(const char *val)
   {
     Symbol *S;
-    if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
-      cl_ProgName[strlen(cl_ProgName)-1]='\0';
+    // if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
+    //   cl_ProgName[strlen(cl_ProgName)-1]='\0';
     
-    cout <<"%%N " << cl_ProgName << endl;
+    cout <<"%%N " << ProgName() << endl;
     cout << "\t<Put the explaination for the task here>" << endl << endl;
     cout << "%%P Author" << endl;
     cout << "\t<Put your name and e-mail address here>" << endl << endl;
@@ -682,10 +671,10 @@ END{									\
   int doprintparams(const char *val)
   {
     Symbol *S;
-    if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
-      cl_ProgName[strlen(cl_ProgName)-1]='\0';
+    // if (cl_ProgName[strlen(cl_ProgName)-1]=='>')
+    //   cl_ProgName[strlen(cl_ProgName)-1]='\0';
 
-    cout <<"%%N:" << cl_ProgName << endl;
+    cout <<"%%N:" << ProgName() << endl;
 
     for (S=cl_SymbTab;S;S=S->Next)
       {
