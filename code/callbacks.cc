@@ -305,41 +305,49 @@ END{									\
   int dosave(char *f)
   {
     FILE *fd;
-    char str[MAXBUF];
-    //char format[12];
-    std::string format;
+    std::string format,FileName=ProgName();
+
     namePrintFormat(format," = ");
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
-      {
-	strcpy(str,cl_ProgName);
-#ifdef GNUREADLINE
-	str[strlen(cl_ProgName)-1]='\0';
-#endif
-	strcat(str,".def");
-      }
-    else strcpy(str,f);
+      FileName=ProgName()+".def";
+    else
+      FileName=f;
     
-    if ((fd=fopen(str,"w"))==NULL)
+    if ((fd=fopen(FileName.c_str(),"w"))==NULL)
       {
-	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",str);
-	return 2;
+	clThrowUp(std::string("Error in opening file \"")+FileName+std::string("\" for writing"), "###Error", CL_FATAL);
+    	return 2;
       }
     else
       {
-	Symbol *t;
-	
-	for (t=cl_SymbTab;t;t=t->Next)
-	  if ((t->Class==CL_APPLNCLASS) ||
-	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-	    {
-	      fprintf(fd,format.c_str(),t->Name);
-	      PrintVals(fd,t,1);
-	    }
+	dosavefd(fd);
 	fclose(fd);
       }
     return 1;
   }
+  /*------------------------------------------------------------------------
+    Saves the current setting of the various keywords to the given file
+    descriptor
+    -------------------------------------------------------------------------*/
+  int dosavefd(FILE *fd)
+  {
+    std::string format,str;
+    namePrintFormat(format," = ");
+
+    Symbol *t;
+	
+    for (t=cl_SymbTab;t;t=t->Next)
+      if ((t->Class==CL_APPLNCLASS) ||
+	  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	{
+	  fprintf(fd,format.c_str(),t->Name);
+	  PrintVals(fd,t,1);
+	}
+
+    return 1;
+  }
+
   /*------------------------------------------------------------------------
     Saves the current setting of the various keywords as a UNIX shell command
     string to the given file. If *f==NULL, save in ./<ProgName>.cmd
@@ -347,42 +355,27 @@ END{									\
   int docmdsave(char *f)
   {
     FILE *fd;
-    char str[MAXBUF],ProgName[MAXBUF]="";
+    string AppName=ProgName(),fileName;
     stripwhite(f);
 
-    strcpy(str,cl_ProgName);
-#ifdef GNUREADLINE
-    str[strlen(cl_ProgName)-1]='\0';
-#endif
-    strcpy(ProgName,str);
-
-    char rpath[PATH_MAX];
-    
-/*     if (realpath(ProgName,rpath)==NULL) */
-/*       fprintf(stderr,"###Error: %s\n",strerror(errno)); */
-    strcpy(rpath,ProgName);
+    // char rpath[PATH_MAX];
+    // if (realpath(ProgName,rpath)==NULL) 
+    //   fprintf(stderr,"###Error: %s\n",strerror(errno)); 
 
     if(f==NULL || strlen(f) == 0)
-      {
-	strcpy(str,cl_ProgName);
-#ifdef GNUREADLINE
-	str[strlen(cl_ProgName)-1]='\0';
-#endif
-	strcpy(ProgName,str);
-	strcat(str,".cmd");
-      }
-    else strcpy(str,f);
+      fileName=AppName+".cmd";
+    else
+      fileName=string(f);
     
-    if ((fd=fopen(str,"w"))==NULL)
+    if ((fd=fopen(fileName.c_str(),"w"))==NULL)
       {
-	cerr << "###Error: Error in opening file \"" << str << "\"" << endl;
+	clThrowUp(std::string("Error in opening file \"")+fileName+std::string("\" for writing"), "###Error", CL_FATAL);
 	return 2;
       }
     else
       {
 	Symbol *t;
-	//	fprintf(fd,"%s help=noprompt ",ProgName);
-	fprintf(fd,"%s help=noprompt ",rpath);
+	fprintf(fd,"%s help=noprompt ",AppName.c_str());
 	for (t=cl_SymbTab;t;t=t->Next)
 	  if ((t->Class==CL_APPLNCLASS) ||
 	      ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
