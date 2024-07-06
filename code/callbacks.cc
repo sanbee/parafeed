@@ -552,10 +552,15 @@ END{									\
 			pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
 			SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
 		      }
-		    pos->Class=CL_USERCLASS;
 		  }
 	      }
 	  }
+	// Set all symbols loaded in the table to USERCLASS.  The ones
+	// that get queried (via clget*Val() functions) are converted
+	// to CL_APPLNCLASS and only those are then
+	// printed/saved/shown
+	for (Symbol *S=cl_SymbTab; S!=NULL;S=S->Next)
+	  S->Class=CL_USERCLASS;
       }
     cl_do_doinp=0;
     return 1;
