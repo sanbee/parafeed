@@ -23,6 +23,7 @@
 #include <string>
 #include <fstream>
 #include <cl.h>
+#include <clhashdefines.h>
 #include <shell.h>
 #include <shell.tab.h>
 #include <support.h>
@@ -307,7 +308,7 @@ END{									\
     FILE *fd;
     std::string format,FileName=ProgName();
 
-    namePrintFormat(format," = ");
+    //    namePrintFormat(format," = ");
     stripwhite(f);
     if(f==NULL || strlen(f) == 0)
       FileName=ProgName()+".def";
@@ -338,13 +339,18 @@ END{									\
     Symbol *t;
 	
     for (t=cl_SymbTab;t;t=t->Next)
-      if ((t->Class==CL_APPLNCLASS) ||
-	  ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
-	{
-	  fprintf(fd,format.c_str(),t->Name);
-	  PrintVals(fd,t,1);
-	}
-
+      {
+	//	cerr << t->Name << " " << t->Class << endl;
+	// if ((t->Class==CL_APPLNCLASS) ||
+	//     ((t->Class==CL_DBGCLASS) && (CL_DBG_ON)))
+	// if ((t->Class != CL_USERCLASS) ||
+	//     ((t->Class==CL_DBGCLASS) && CL_DBG_ON))
+	if (USE_IF_TRUE(t))
+	  {
+	    fprintf(fd,format.c_str(),t->Name);
+	    PrintVals(fd,t,1);
+	  }
+      }
     return 1;
   }
 
@@ -546,6 +552,7 @@ END{									\
 			pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
 			SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
 		      }
+		    pos->Class=CL_USERCLASS;
 		  }
 	      }
 	  }

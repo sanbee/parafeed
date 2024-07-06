@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <shell.h>
 #include <cl.h>
+#include <clhashdefines.h>
 
 #ifdef __cplusplus
 #include <string>
@@ -79,7 +80,8 @@ extern "C" {
     Symbol *t;
     int maxNameLength=10;
     for (t=cl_SymbTab;t;t=t->Next)
-      if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
+      if (USE_IF_TRUE(t) &&
+	  (int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
     
     ostringstream ss;
     ss << "%-" << maxNameLength << "." << maxNameLength << "s" << append;
