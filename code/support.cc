@@ -148,11 +148,12 @@ extern "C" {
     Break a string of the type <Name>=<Value> into Name and Value.
     ----------------------------------------------------------------------*/
   int BreakStrp(const std::string& str,
-		std::string& Name, std::string& val)
+		std::string& Name, std::string& val,
+		const char& sep)
   {
     auto i=str.begin();
     for(i=str.begin(); i != str.end(); i++)
-      if (*i == '=') break;
+      if (*i == sep) break;
     
     if (str.begin() != i)
       Name = std::string(str.begin(),i);

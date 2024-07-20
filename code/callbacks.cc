@@ -498,13 +498,10 @@ END{									\
     cl_do_doinp=0;
     
     stripwhite(f);
+
     if(f==NULL || strlen(f) == 0)
       {
-	strcpp = cl_ProgName; 
-#ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
-	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
-#endif
+	strcpp = ProgName();
 	strcpp.append(".def");
       }
     else 
@@ -532,25 +529,38 @@ END{									\
 		stripwhitep(line);
 		if ((line.size() > 0) && (line[0] != '#'))
 		  {
+		    // Separate the line into name and value strings
+		    // separated by the first '=' char.  Strip the
+		    // white spaces.
 		    std::string Name_str, Val_str;
 		    BreakStrp(line,Name_str,Val_str);
 		    stripwhitep(Name_str);
 		    stripwhitep(Val_str);
 
-		    pos = NULL;
+		    // Seperate the Name string into scope and Name
+		    // string seperated by ':'
+		    std::string Scope_str;
+		    BreakStrp(Name_str, Scope_str, Name_str,':');
+		    stripwhitep(Name_str);
+		    stripwhitep(Scope_str);
+		    if (Name_str == Scope_str) Scope_str="";
 
-		    if (Complement)
+		    pos = NULL;
+		    if ((Scope_str == "") || (Scope_str == ProgName()))
 		      {
-			pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);
-			if ((pos == (Symbol *)NULL))
-			  pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
-			if ((pos->NVals == 0))
-			  pos = (Symbol *)NULL;
-		      }
-		    if (pos==NULL)
-		      {
-			pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
-			SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
+			if (Complement)
+			  {
+			    pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);
+			    if ((pos == (Symbol *)NULL))
+			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+			    if ((pos->NVals == 0))
+			      pos = (Symbol *)NULL;
+			  }
+			if (pos==NULL)
+			  {
+			    pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+			    SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
+			  }
 		      }
 		  }
 	      }

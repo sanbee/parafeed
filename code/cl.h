@@ -199,7 +199,8 @@ int       clgetConfigFile(char *, char *);
 int       AddCmd(const char *Name, char *Doc, int (*func)(char *), 
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
-int       BreakStrp(const std::string& str, std::string& Name, std::string& Val);
+int       BreakStrp(const std::string& str, std::string& Name, std::string& Val,
+		    const char& sep='=');
 std::string ProgName();
 int       dogo(char *);
 int       dogob(char *);
