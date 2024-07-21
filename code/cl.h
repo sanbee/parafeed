@@ -200,7 +200,7 @@ int       AddCmd(const char *Name, char *Doc, int (*func)(char *),
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
 int       BreakStrp(const std::string& str, std::string& Name, std::string& Val,
-		    const char& sep='=');
+		    const std::string& sep="=");
 std::string ProgName();
 int       dogo(char *);
 int       dogob(char *);
@@ -216,7 +216,7 @@ int       dosave(char *);
 int       dosavefd(FILE *);
 int       docmdsave(char *);
 int       doload(char *);
-int       doload_and_register(char *);
+int       doload_and_register(char *,const bool doregister=true);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(const char *);

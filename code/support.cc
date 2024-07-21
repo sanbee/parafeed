@@ -149,20 +149,29 @@ extern "C" {
     ----------------------------------------------------------------------*/
   int BreakStrp(const std::string& str,
 		std::string& Name, std::string& val,
-		const char& sep)
+		const std::string& sep)
   {
-    auto i=str.begin();
-    for(i=str.begin(); i != str.end(); i++)
-      if (*i == sep) break;
-    
-    if (str.begin() != i)
-      Name = std::string(str.begin(),i);
-
-    if (i != str.end())
+    size_t pos = str.find(sep);
+    if (pos != string::npos)
       {
-	i++;
-	val = std::string(i,str.end());
+	Name = str.substr(0,pos);
+	size_t vpos=pos+sep.size();
+	if (vpos <= str.size())
+	  val = str.substr(vpos,str.size()-1);
       }
+
+    // auto i=str.begin();
+    // for(i=str.begin(); i != str.end(); i++)
+    //   if (*i == sep) break;
+    
+    // if (str.begin() != i)
+    //   Name = std::string(str.begin(),i);
+
+    // if (i != str.end())
+    //   {
+    // 	i++;
+    // 	val = std::string(i,str.end());
+    //   }
     return 1;
   }
   int BreakStr(char *str, char **Name, char **val)

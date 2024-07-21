@@ -402,83 +402,7 @@ END{									\
     ------------------------------------------------------------------------*/
   int doload(char *f)
   {
-    // FILE *fd;
-    // char str[MAXBUF];
-    int Complement=0;
-
-    ifstream ifs;
-    string strcpp;
-
-    cl_do_doinp=0;
-    
-    stripwhite(f);
-    if(f==NULL || strlen(f) == 0)
-      {
-	strcpp = cl_ProgName; 
-	//	strcpy(str,cl_ProgName);
-#ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
-	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
-#endif
-	//	strcat(str,".def");
-	strcpp.append(".def");
-      }
-    else 
-      //      strcpy(str,f);
-      strcpp = f;
-    
-    //    if (str[strlen(str)-1] == '!') 
-    if (strcpp[strcpp.size()-1] == '!') 
-      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
-
-    ifs.open(strcpp.c_str());
-    //    if ((fd = fopen(str,"r"))==NULL)
-    if (!ifs.good())
-      {
-	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
-	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
-    	return 2;
-      }
-    else
-      {
-	char *Name=NULL, *Val=NULL;
-	Symbol *pos;
-	
-	//	while(!feof(fd))
-	while(!ifs.eof())
-	  {
-	    string line;
-	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
-	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
-	    if (getline(ifs,line))
-	      {
-		char *str_p=(char *)line.c_str();
-		//		cerr << line << endl;
-		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
-		if (strlen(str_p) > 0)
-		  {
-		    BreakStr(str_p,&Name,&Val);
-		    pos = NULL;
-		    if (Complement)
-		      {
-			//		      pos=SearchVSymb(Name,cl_SymbTab);
-			pos=SearchVSymbFullMatch(Name,cl_SymbTab);
-			if ((pos == (Symbol *)NULL))
-			  pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
-			if ((pos->NVals == 0))
-			  pos = (Symbol *)NULL;
-		      }
-		    if (pos==NULL)
-		      SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
-		    if (Name != NULL) {free(Name);Name=NULL;}
-		    if (Val != NULL) {free(Val);Name=NULL;}
-		  }
-	      }
-	  }
-	//	fclose(fd);
-      }
-    cl_do_doinp=0;
-    return 1;
+    return doload_and_register(f,false);
   }
   /*-----------------------------------------------------------------------
     Functional difference from doload is that this loads the first
@@ -487,13 +411,16 @@ END{									\
 
     This needs code cleanup to remove parts from doload() that aren't
     necessary here.  08Mar, 2022.
+
+    Consolidated doload() functionality into this function. 
+    Replaced all C-string usage by std::string.  20July2024.
     ------------------------------------------------------------------------*/
-  int doload_and_register(char *f)
+  int doload_and_register(char *f,const bool doregister)
   {
     int Complement=0;
 
     ifstream ifs;
-    string strcpp;
+    string defFile;
 
     cl_do_doinp=0;
     
@@ -501,23 +428,23 @@ END{									\
 
     if(f==NULL || strlen(f) == 0)
       {
-	strcpp = ProgName();
-	strcpp.append(".def");
+	defFile = ProgName();
+	defFile.append(".def");
       }
     else 
-      strcpp = f;
+      defFile = f;
     
-    if (strcpp[strcpp.size()-1] == '!') 
-      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
+    if (defFile[defFile.size()-1] == '!') 
+      {Complement = 1; defFile[defFile.size()-1] = (char)NULL;}
 
-    ifs.open(strcpp.c_str());
+    ifs.open(defFile.c_str());
 
     if (!ifs.good())
       {
-	clThrowUp(std::string("Error in opening file \"")+strcpp+std::string("\""), "###Error", CL_FATAL);
+	clThrowUp(std::string("Error in opening file \"")+defFile+std::string("\""), "###Error", CL_FATAL);
 	return 2;
       }
-   else
+    else
       {
 	Symbol *pos;
 	
@@ -540,7 +467,7 @@ END{									\
 		    // Seperate the Name string into scope and Name
 		    // string seperated by ':'
 		    std::string Scope_str;
-		    BreakStrp(Name_str, Scope_str, Name_str,':');
+		    BreakStrp(Name_str, Scope_str, Name_str,"::");
 		    stripwhitep(Name_str);
 		    stripwhitep(Scope_str);
 		    if (Name_str == Scope_str) Scope_str="";
@@ -550,16 +477,20 @@ END{									\
 		      {
 			if (Complement)
 			  {
-			    pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);
+			    pos=SearchVSymbFullMatch(Name_str.c_str(),
+						     cl_SymbTab);
 			    if ((pos == (Symbol *)NULL))
-			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,
+					 &cl_TabTail);
 			    if ((pos->NVals == 0))
 			      pos = (Symbol *)NULL;
 			  }
 			if (pos==NULL)
 			  {
-			    pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
-			    SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
+			    if (doregister)
+			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+			    SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),
+				   cl_SymbTab,0,1,cl_do_doinp);
 			  }
 		      }
 		  }
@@ -569,8 +500,9 @@ END{									\
 	// that get queried (via clget*Val() functions) are converted
 	// to CL_APPLNCLASS and only those are then
 	// printed/saved/shown
-	for (Symbol *S=cl_SymbTab; S!=NULL;S=S->Next)
-	  S->Class=CL_USERCLASS;
+	if (doregister)
+	  for (Symbol *S=cl_SymbTab; S!=NULL;S=S->Next)
+	    S->Class=CL_USERCLASS;
       }
     cl_do_doinp=0;
     return 1;
