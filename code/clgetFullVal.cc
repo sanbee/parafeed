@@ -73,12 +73,19 @@ int clgetFullValp(const string& Name, string& val)
   int n,i;
   Symbol *S;
 
-  S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+  HANDLE_EXCEPTIONS(
+		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+		    if (S != NULL)
+		      {
+			S->Class=CL_APPLNCLASS;
+			//if (dbg) S->Class=CL_DBGCLASS;
 
-  VString vstr(1);vstr[0]=val;
-  setAutoDefaults<std::string>(S,vstr,true);
+			VString vstr={val};
+			setAutoDefaults<std::string>(S,vstr,true);
 
-  val = vecStr2Str(S->Val);
+			val = vecStr2Str(S->Val);
+		      }
+		    )
   // //  setAutoSDefaults(S,val,1);
   // if ((n=clgetNVals((char *)Name.c_str()))>0)
   //   {
