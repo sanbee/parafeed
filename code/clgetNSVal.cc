@@ -46,6 +46,7 @@ int clgetNSVal(char *Name, char **Val, int *m)
   if (S==NULL) return CL_FAIL;
   else 
     {
+      S->Class=CL_APPLNCLASS;
       i = S->NVals;
       if (i < *m)r = n = i;
       if (*m <= i){ n = *m; r = n;}
@@ -80,10 +81,13 @@ int clgetNSValp(const string& Name, vector<string>& Val, int& m)
   //sprintf(tmp,"bool[%d]",*m);
 
   S = SearchQSymb((char *)Name.c_str(), os.str());
-  if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
+  // if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
   if (S==NULL) return CL_FAIL;
   else 
     {
+      SETBIT(S->Attributes,CL_STRINGTYPE);
+      S->Class=CL_APPLNCLASS;
+
       n = S->NVals;
       for (j=0;j< n;j++)
 	{

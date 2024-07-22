@@ -647,3 +647,17 @@ int loadDefaults(int complement)
     
   return 1;
 }
+/*----------------------------------------------------------------------*/
+/* Contruct application name from the global cl_ProgName                */
+/*----------------------------------------------------------------------*/
+std::string ProgName()
+{
+  std::string ProgNameStr(cl_ProgName);
+#ifdef GNUREADLINE
+  //  ProgNameStr=ProgNameStr.substr(0,strlen(cl_ProgName)-1);
+  ProgNameStr=std::string(ProgNameStr.begin(),
+			  ProgNameStr.end()-1);
+#endif
+  return ProgNameStr;
+}
+/*----------------------------------------------------------------------*/

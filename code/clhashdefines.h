@@ -46,5 +46,6 @@
 #define SETBIT(V,MASK)    ((V) |= (MASK))  // Bitwise OR with the mask
 #define RESETBIT(V,MASK)  ((V) &= ~(MASK)) // Bitwise AND with the complement of the mask
 #define ISSET(V,MASK)     ((((V) & (MASK))==(MASK)))
+#define USE_IF_TRUE(S)   (((S->Class != CL_USERCLASS) || ((S->Class==CL_DBGCLASS) && CL_DBG_ON)))
 
 #endif
