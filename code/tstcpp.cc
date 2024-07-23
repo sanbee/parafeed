@@ -18,6 +18,7 @@ void UI(bool restart, int argc, char **argv)
   VString strarr;
   string str;
   string fullVal="this is the default value";
+  string dbgfullVal="this is the dbg default value";
   bool b=false, b1=false;
   //
   // Change cl-shell prompt
@@ -87,7 +88,7 @@ void UI(bool restart, int argc, char **argv)
 	clSetOptions("string",{"one","two","three","showstrarr","showfullval"});
 
 	i=0;clgetFullValp("fullval",fullVal);
-	i=0;dbgclgetFullValp("dbgfullval",fullVal);
+	i=0;dbgclgetFullValp("dbgfullval",dbgfullVal);
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
