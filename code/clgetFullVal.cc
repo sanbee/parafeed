@@ -68,23 +68,32 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
-int clgetFullValp(const string& Name, string& val)
+int clgetFullValpBase(const string& Name, string& val, bool dbg)
 {
   Symbol *S;
 
   HANDLE_EXCEPTIONS(
 		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+		    if (dbg && (S == NULL))
+		      S = SearchVSymb((char *)Name.c_str(),cl_SymbTab);
 		    if (S != NULL)
 		      {
 			S->Class=CL_APPLNCLASS;
-			//if (dbg) S->Class=CL_DBGCLASS;
+			if (dbg) S->Class=CL_DBGCLASS;
 
 			VString vstr={val};
-			setAutoDefaults<std::string>(S,vstr,true);
+			setAutoDefaults(S,vstr,true);
 
 			val = vecStr2Str(S->Val);
+			return S->Val.size();
 		      }
 		    )
+    return 0;
+}
+
+int clgetFullValp(const string& Name, string& val)
+{
+  return clgetFullValpBase(Name,val,false);
   //int n,i;
   // //  setAutoSDefaults(S,val,1);
   // if ((n=clgetNVals((char *)Name.c_str()))>0)
@@ -107,6 +116,9 @@ int clgetFullValp(const string& Name, string& val)
   // 	  val = val + tmp;
   // 	}
   //   }
-  return S->Val.size();
+}
+int dbgclgetFullValp(const string& Name, string& val)
+{
+  return clgetFullValpBase(Name,val,true);
 }
 #endif

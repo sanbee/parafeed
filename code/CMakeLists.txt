@@ -162,7 +162,7 @@ set(shccl_sources
   cldbggetNFVal.cc
   cldbggetNIVal.cc
   cldbggetNSVal.cc
-  cldbggetFullVal.cc
+#  cldbggetFullVal.cc
   clStartInteractive.cc
   clRestartShell.cc
   clfInteractive.cc

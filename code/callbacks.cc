@@ -334,7 +334,8 @@ END{									\
   int dosavefd(FILE *fd)
   {
     std::string format,str;
-    namePrintFormat(format," = ");
+    std::string scope=ProgName()+"::";
+    namePrintFormat(format," = ");//,scope);
 
     Symbol *t;
 	
@@ -347,7 +348,9 @@ END{									\
 	//     ((t->Class==CL_DBGCLASS) && CL_DBG_ON))
 	if (USE_IF_TRUE(t))
 	  {
-	    fprintf(fd,format.c_str(),t->Name);
+	    //	    string scopedName=scope+t->Name;
+	    string scopedName=t->Name;
+	    fprintf(fd,format.c_str(),scopedName.c_str());
 	    PrintVals(fd,t,1);
 	  }
       }

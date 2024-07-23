@@ -237,7 +237,8 @@ int       PrintKey(FILE *f, Symbol *S);
 #ifdef __cplusplus
 void      printMap(SMap& smap);
 #endif
-  int       namePrintFormat(std::string& format, const std::string& append);
+int       namePrintFormat(std::string& format, const std::string& append,
+			  const std::string& qualifier="");
 int       clIsInteractive();
   /*
 void mkfilename(char *out,char *envvar,char *name,char *type);
