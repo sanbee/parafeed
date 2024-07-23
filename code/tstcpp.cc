@@ -17,7 +17,7 @@ void UI(bool restart, int argc, char **argv)
   vector<float> fv(10);
   VString strarr;
   string str;
-  string fullVal="";
+  string fullVal="this is the default value";
   bool b=false, b1=false;
   //
   // Change cl-shell prompt
@@ -86,8 +86,6 @@ void UI(bool restart, int argc, char **argv)
 	
 	clSetOptions("string",{"one","two","three","showstrarr","showfullval"});
 
-	i=0;clgetFullValp("fullval",fullVal);
-	i=0;clgetNSValp("strarr",strarr,i);
 	i=0;clgetFullValp("fullval",fullVal);
 	i=0;clgetNSValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()

@@ -19,6 +19,7 @@
 /* $Id: clgetFullVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
 #include <support.h>
+#include <setAutoDefaults.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -72,8 +73,19 @@ int clgetFullValp(const string& Name, string& val)
   int n,i;
   Symbol *S;
 
-  S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
-  val = vecStr2Str(S->Val);
+  HANDLE_EXCEPTIONS(
+		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+		    if (S != NULL)
+		      {
+			S->Class=CL_APPLNCLASS;
+			//if (dbg) S->Class=CL_DBGCLASS;
+
+			VString vstr={val};
+			setAutoDefaults<std::string>(S,vstr,true);
+
+			val = vecStr2Str(S->Val);
+		      }
+		    )
   // //  setAutoSDefaults(S,val,1);
   // if ((n=clgetNVals((char *)Name.c_str()))>0)
   //   {

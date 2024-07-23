@@ -58,10 +58,12 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 		      S=SearchQSymb((char *)Name.c_str(),type_str);
 
 		    // Use templated function that works for all values of T
+
 		    setAutoDefaults(S,val);
 
 		    if (S!=NULL) 
 		      {
+			S->Class=CL_APPLNCLASS;
 			if (dbg) S->Class=CL_DBGCLASS;
 			SETBIT(S->Attributes,type_int);
 			if (!smap.empty())
@@ -160,7 +162,10 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap
 		    setAutoDefaults(S,val);
 
 		    if (S!=NULL) 
-		      {if (!smap.empty()) S->smap = smap;}
+		      {
+			S->Class=CL_APPLNCLASS;
+			if (!smap.empty()) S->smap = smap;
+		      }
 		    return S;
 		    );
 }
