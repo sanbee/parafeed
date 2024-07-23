@@ -305,16 +305,50 @@ END{									\
     -------------------------------------------------------------------------*/
   int dosave(char *f)
   {
-    FILE *fd;
-    std::string format,FileName=ProgName();
+    std::string doScoping("-s");
+    std::vector<std::string> sv;
+    if (f!=NULL && strlen(f) > 0)
+      {
+	sv = stokenize(string(f), std::regex("\\s+"));
+	for(auto s : sv) s=stripwhitep(s);
+      }
+    if ((sv.size() > 2) || ((sv.size() == 2) && (sv[0] != doScoping)))
+      {
+	clThrowUp(std::string("Usage: \"save "+doScoping+" [filename]\""), "###Error", CL_FATAL);
+	return 2;
+      }
 
-    //    namePrintFormat(format," = ");
-    stripwhite(f);
-    if(f==NULL || strlen(f) == 0)
-      FileName=ProgName()+".def";
-    else
-      FileName=f;
-    
+    std::string format,FileName;
+
+    switch (sv.size())
+      {
+	// Pick the last element and pass down the first element in
+	// sv.
+      case 2:
+	{
+	  FileName=sv.back();
+	  sv.pop_back();
+	  break;
+	}
+	// If the only option is doScoping, fallthrough.
+      case 1:
+	{
+	  if (sv[0] != doScoping)
+	    {
+	      FileName=sv.back();
+	      sv.pop_back();
+	      break;
+	    }
+	}
+	// Construct the default file name.
+      default:
+	{
+	  FileName=ProgName()+".def";
+	  break;
+	}
+      }
+
+    FILE *fd;
     if ((fd=fopen(FileName.c_str(),"w"))==NULL)
       {
 	clThrowUp(std::string("Error in opening file \"")+FileName+std::string("\" for writing"), "###Error", CL_FATAL);
@@ -322,7 +356,7 @@ END{									\
       }
     else
       {
-	dosavefd(fd);
+	dosavefd(fd,sv);
 	fclose(fd);
       }
     return 1;
@@ -331,11 +365,20 @@ END{									\
     Saves the current setting of the various keywords to the given file
     descriptor
     -------------------------------------------------------------------------*/
-  int dosavefd(FILE *fd)
+int dosavefd(FILE *fd, const std::vector<std::string>& opts)
   {
     std::string format,str;
-    std::string scope=ProgName()+"::";
-    namePrintFormat(format," = ");//,scope);
+    std::string scope;
+    if (opts.size() > 0)
+      if (opts[0] == "-s")
+	scope=ProgName()+"::";
+      else
+	{
+	  clThrowUp(std::string("Unknown option \"")+opts[0]+"\"", "###Error", CL_FATAL);
+	  return 2;
+	}
+
+    namePrintFormat(format," = ",scope);
 
     Symbol *t;
 	
@@ -348,8 +391,8 @@ END{									\
 	//     ((t->Class==CL_DBGCLASS) && CL_DBG_ON))
 	if (USE_IF_TRUE(t))
 	  {
-	    //	    string scopedName=scope+t->Name;
-	    string scopedName=t->Name;
+	    string scopedName=scope+t->Name;
+	    //	    string scopedName=t->Name;
 	    fprintf(fd,format.c_str(),scopedName.c_str());
 	    PrintVals(fd,t,1);
 	  }

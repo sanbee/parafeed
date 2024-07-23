@@ -112,7 +112,7 @@ extern "C" {
     Strip any leading white spaces (' ',TAB).  This is useful while 
     reading strings typed by humans.
     ----------------------------------------------------------------------*/
-  void stripwhitep (std::string& str)
+  std::string stripwhitep (std::string& str)
   {
     auto beg=str.begin(),
       end=str.end()-1;
@@ -124,6 +124,7 @@ extern "C" {
       if (!std::isspace(static_cast<unsigned char>(*end))) break;
     end++;
     str = std::string(beg,end);
+    return str;
   }
 
   void stripwhite (char *string)
