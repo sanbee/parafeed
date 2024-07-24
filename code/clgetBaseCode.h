@@ -72,73 +72,6 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 		    )
     return S;
 };
-//
-// //
-//----------------------------------------------------------------------
-// The templated API-level function that can be used in the applications.
-// The clget?Valp() functions are wrappers around this function for
-// backward compatibility.
-//
-template <class T>
-int clgetValp(const string& Name, T& val, int& n, SMap& smap)
-{
-  Symbol *S;
-  double d;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    {
-		      S=clgetBaseCode(Name,val,n,smap);
-		      if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		      return N;
-		    }
-		    );
-}
-//
-//-------------------------------------------------------------------------
-//
-template <class T>
-int clgetValp(const string& Name, T& val, int& n)
-{
-  SMap empty;
-  HANDLE_EXCEPTIONS(
-		    return clgetValp(Name,val,n,empty);
-		    );
-}
-
-
-//
-//-------------------------------------------------------------------------
-//
-template <class T>
-int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap)
-{
-  Symbol *S;
-  double d;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    {
-		      S=clgetBaseCode(Name,val,n,smap,true);
-		      if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		      return N;
-		    }
-		    );
-}
-//
-//-------------------------------------------------------------------------
-//
-template <class T>
-int dbgclgetValp(const string& Name, T& val, int& n)
-{
-  SMap empty;
-  HANDLE_EXCEPTIONS(
-		    return dbgclgetValp(Name,val,n,empty);
-		    );
-}
-//
-//-------------------------------------------------------------------------
-//
-
-
 
 //
 // Templated functions for NVal calls.  
@@ -171,67 +104,8 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap
 }
 //
 //----------------------------------------------------------------------
-// The templated AIP-level function that can be used in the applications.
-// The clgetN?Valp() functions are wrappers around this function for
-// backward compatibility.
-//
-template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap)
-{
-  Symbol *S;
-  double d;
-
-  HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,smap);
-		    int n0=S->NVals;
-		    int i=1;
-		    for(int j=0;j<n0;j++)
-		      {
-			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
-			  {
-			    if (m==0) {m=S->NVals=i-1;return i-1;}
-			    else 
-			      {
-				val.resize(i);
-				val[i-1] = (T)d;
-				i++;
-			      }
-			  }
-		      }
-		    m=S->NVals=i-1;
-		    return i-1;
-		    );
-}
-template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m)
-{
-  SMap empty;
-  HANDLE_EXCEPTIONS(
-		    return clgetNValp(Name, val, m, empty);
-		    );
-  // Symbol *S;
-  // double d;
-  // SMap empty;
-  // HANDLE_EXCEPTIONS(
-  // 		    S=clgetNValBaseCode(Name,val,m,empty);
-  // 		    int n0=S->NVals;
-  // 		    int i=1;
-  // 		    for(int j=0;j<n0;j++)
-  // 		      {
-  // 			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
-  // 			  {
-  // 			    if (m==0) {m=S->NVals=i-1;return i-1;}
-  // 			    else 
-  // 			      {
-  // 				val.resize(i);
-  // 				val[i-1] = (T)d;
-  // 				i++;
-  // 			      }
-  // 			  }
-  // 		      }
-  // 		    m=S->NVals=i-1;
-  // 		    return i-1;
-  // 		    );
-}
+// This has the API-level templated functions that use the BaseCode
+// functions above.
+#include <clgetValp.h>
 
 #endif
