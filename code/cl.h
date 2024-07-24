@@ -227,7 +227,7 @@ int       dowarranty(char *);
 #ifdef __cplusplus
 int       loadDefaults(int complement=1);
 #endif
-int       clparseVal(Symbol *, int *, double *);
+  //int       clparseVal(Symbol *, int *, double *);
 #ifdef __cplusplus
 void      reportParseError(const Symbol& S, const int& N);
 int       PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
