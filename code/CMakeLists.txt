@@ -47,6 +47,8 @@ set(header_list
   shell.h
   support.h
   SymbTab.h
+  clparseVal.h
+  clgetValp.h
 )
 #set_target_properties(parafeed_parafeed PROPERTIES PUBLIC_HEADER ${header_list})
 
