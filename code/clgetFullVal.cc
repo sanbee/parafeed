@@ -69,7 +69,10 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
-int clgetFullValpBase(const string& Name, string& val, bool dbg)
+//
+// Base function called in API-level functions below.
+//
+Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 {
   Symbol *S;
 
@@ -86,18 +89,37 @@ int clgetFullValpBase(const string& Name, string& val, bool dbg)
 			VString vstr={val};
 			setAutoDefaults(S,vstr);
 		      }
+		    );
 
-		    return S->Val.size();
-		    )
-    return 0;
+    return S;
 }
-
+//
+//----------------------------------------------------------------------
+// The API-level function that can be used in the applications.
+//
 int clgetFullValp(const string& Name, string& val)
 {
-  return clgetFullValpBase(Name,val,false);
+  int N=1;
+  HANDLE_EXCEPTIONS(
+		    {
+		      Symbol *S = clgetFullValpBase(Name,val,false);
+		      N=clparseVal(S,&N,val);
+		      return N;
+		    }
+		    );
 }
+//
+//-------------------------------------------------------------------------
+//
 int dbgclgetFullValp(const string& Name, string& val)
 {
-  return clgetFullValpBase(Name,val,true);
+  int N=1;
+  HANDLE_EXCEPTIONS(
+		    {
+		      Symbol *S	= clgetFullValpBase(Name,val,true);
+		      N=clparseVal(S,&N,val);
+		      return N;
+		    }
+		    );
 }
 #endif

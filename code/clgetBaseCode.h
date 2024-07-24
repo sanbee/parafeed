@@ -20,10 +20,10 @@
 // Generic baseclass type functions that are called in clget?Valp()
 // functions.
 //
-// The code is separated into clgetBaseCode() and clgetGenericValp()
-// functions since the code to return the value from the Symbol is
-// differen, at least for T=string.  clgetGenericValp() function has
-// this code for T=int,float,bool and is therefore usable for
+// The code is separated into clgetBaseCode() and the generic
+// clgetValp() functions since the code to return the value from the
+// Symbol is different, at least for T=string.  The generic functions
+// has this code for T=int,float,bool and is therefore usable for
 // realizing clget{I,F,B}Valp() functions. clgetSValp() calls
 // clgetBaseCode() directly.
 //
@@ -40,7 +40,7 @@
 template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), bool dbg=false)
 {
-  Symbol *S;
+  Symbol *S=NULL;
   string type_str="Mixed";
   uint type_int=CL_MIXEDTYPE;
   //
@@ -58,12 +58,11 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 		    else
 		      S=SearchQSymb((char *)Name.c_str(),type_str);
 
-		    // Use templated function that works for all values of T
-
-		    setAutoDefaults(S,val);
-
 		    if (S!=NULL) 
 		      {
+			// Use templated function that works for all values of T
+			setAutoDefaults(S,val);
+
 			S->Class=CL_APPLNCLASS;
 			if (dbg) S->Class=CL_DBGCLASS;
 			SETBIT(S->Attributes,type_int);
@@ -76,7 +75,7 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 //
 // //
 //----------------------------------------------------------------------
-// The templated AIP-level function that can be used in the applications.
+// The templated API-level function that can be used in the applications.
 // The clget?Valp() functions are wrappers around this function for
 // backward compatibility.
 //

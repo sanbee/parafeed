@@ -17,6 +17,8 @@
  *
  */
 /* $Id: support.c,v 2.3 1999/01/25 04:03:33 sanjay Exp sanjay $ */
+#ifndef SETAUTODEFAULTS_H
+#define SETAUTODEFAULTS_H
 #include <stdio.h>
 #include <string.h>
 #include <shell.h>
@@ -94,3 +96,4 @@ void setValsFromDefaults(Symbol *S)
       S->NVals = n;
     }
 }
+#endif
