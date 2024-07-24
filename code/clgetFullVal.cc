@@ -20,6 +20,7 @@
 #include <cllib.h>
 #include <support.h>
 #include <setAutoDefaults.h>
+#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,15 +79,15 @@ int clgetFullValpBase(const string& Name, string& val, bool dbg)
 		      S = SearchVSymb((char *)Name.c_str(),cl_SymbTab);
 		    if (S != NULL)
 		      {
+			SETBIT(S->Attributes,CL_MIXEDTYPE);
 			S->Class=CL_APPLNCLASS;
 			if (dbg) S->Class=CL_DBGCLASS;
 
 			VString vstr={val};
-			setAutoDefaults(S,vstr,true);
-
-			val = vecStr2Str(S->Val);
-			return S->Val.size();
+			setAutoDefaults(S,vstr);
 		      }
+
+		    return S->Val.size();
 		    )
     return 0;
 }
@@ -94,28 +95,6 @@ int clgetFullValpBase(const string& Name, string& val, bool dbg)
 int clgetFullValp(const string& Name, string& val)
 {
   return clgetFullValpBase(Name,val,false);
-  //int n,i;
-  // //  setAutoSDefaults(S,val,1);
-  // if ((n=clgetNVals((char *)Name.c_str()))>0)
-  //   {
-  //     // val="";
-  //     // for (i=1;i<=n;i++)
-  //     // 	{
-  //     // 	  clgetSValp(Name,tmp,i);
-  //     // 	  len += tmp.size()+1;
-  //     // 	}
-
-  // string tmp;
-  //     i=1; clgetSValp(Name,tmp,i);
-  //     val=tmp;
-
-  //     for (i=2;i<=n;i++)
-  // 	{
-  // 	  val = val +",";
-  // 	  clgetSValp(Name,tmp,i);
-  // 	  val = val + tmp;
-  // 	}
-  //   }
 }
 int dbgclgetFullValp(const string& Name, string& val)
 {

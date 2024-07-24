@@ -19,7 +19,7 @@
 /* $Id: cldbggetNFVal.c,v 2.0 1998/11/11 07:13:00 sanjay Exp $ */
 #include <cllib.h>
 #include <sstream>
-
+#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

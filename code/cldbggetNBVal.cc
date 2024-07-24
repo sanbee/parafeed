@@ -19,6 +19,7 @@
 /* $Id$ */
 #include <cllib.h>
 #include <sstream>
+#include <clparseVal.h>
 
 #ifdef __cplusplus
 /* extern "C" { */

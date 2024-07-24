@@ -33,6 +33,7 @@
 #include <shell.h>
 #include <support.h>
 #include <setAutoDefaults.h>
+#include <clparseVal.h>
 #include <type_traits>
 #include <cl.h>
 
@@ -40,8 +41,8 @@ template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), bool dbg=false)
 {
   Symbol *S;
-  string type_str="";
-  uint type_int=0;
+  string type_str="Mixed";
+  uint type_int=CL_MIXEDTYPE;
   //
   // Set type string and type integer value based on the type of T
   //

@@ -22,6 +22,7 @@
 #include <support.h>
 #include <sstream>
 #include <clgetBaseCode.h>
+#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
