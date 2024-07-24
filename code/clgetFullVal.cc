@@ -20,6 +20,7 @@
 #include <cllib.h>
 #include <support.h>
 #include <setAutoDefaults.h>
+#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -70,22 +71,38 @@ extern "C" {
 #ifdef __cplusplus
 int clgetFullValp(const string& Name, string& val)
 {
-  int n,i;
   Symbol *S;
 
   HANDLE_EXCEPTIONS(
 		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
 		    if (S != NULL)
 		      {
+			SETBIT(S->Attributes,CL_MIXEDTYPE);
 			S->Class=CL_APPLNCLASS;
 			//if (dbg) S->Class=CL_DBGCLASS;
 
 			VString vstr={val};
-			setAutoDefaults<std::string>(S,vstr,true);
+			setAutoDefaults<std::string>(S,vstr);//,true);
 
 			val = vecStr2Str(S->Val);
 		      }
 		    )
+
+    int N = 1;
+    clparseVal(S,&N,val); // The function with val type string does not link.  Don't know why.
+  // if (S!=NULL)
+  //   {
+  //     if (N <= S->NVals)
+  // 	{
+  // 	  val = trim(S->Val[N-1]);
+  // 	  return val.size();
+  // 	}
+  //     else
+  // 	return CL_FAIL;
+  //   }
+
+  return S->Val.size();
+
   // //  setAutoSDefaults(S,val,1);
   // if ((n=clgetNVals((char *)Name.c_str()))>0)
   //   {
@@ -107,6 +124,5 @@ int clgetFullValp(const string& Name, string& val)
   // 	  val = val + tmp;
   // 	}
   //   }
-  return S->Val.size();
 }
 #endif
