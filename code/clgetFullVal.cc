@@ -84,7 +84,7 @@ int clgetFullValp(const string& Name, string& val)
 			VString vstr={val};
 			setAutoDefaults<std::string>(S,vstr);//,true);
 
-			val = vecStr2Str(S->Val);
+			//val = vecStr2Str(S->Val);
 		      }
 		    )
 
