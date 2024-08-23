@@ -41,6 +41,7 @@ set(header_list
   clshelldefs.h
   clsh.h
   clstring.h
+  clparseVal.h
   ErrorObj.h
   rl_interface.h
   setAutoDefaults.h
