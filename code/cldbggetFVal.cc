@@ -20,6 +20,8 @@
 #include <shell.h>
 #include <cllib.h>
 #include <support.h>
+#include <clparseVal.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
