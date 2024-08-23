@@ -57,7 +57,7 @@ void UI(bool restart, int argc, char **argv)
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("int");
 	watchPoints["0"]=exposedKeys;
-	i=1;clgetValp("bool1",b1,i,watchPoints); // Equivalent to clgetBValp()
+	i=1;clgetBValp("bool1",b1,i,watchPoints); // Equivalent to clgetBValp()
 
 	ClearMap(watchPoints); exposedKeys.resize(0); // Re-use watchPoints and exposedKeys
 	exposedKeys.push_back("float");
@@ -65,7 +65,7 @@ void UI(bool restart, int argc, char **argv)
 	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
 	i=1;dbgclgetValp("dbgint",dj,i);
 
-	i=1;clgetValp("float",f,i); // Equivalent to clgetIValp()
+	i=1;clgetFValp("float",f,i); // Equivalent to clgetIValp()
 
 	i=1;clgetValp("oneint",oi,i); // Equivalent to clgetIValp()
 

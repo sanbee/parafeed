@@ -65,43 +65,44 @@ int clgetNSVal(char *Name, char **Val, int *m)
 #ifdef __cplusplus
 	   }
 #endif
-#ifdef __cplusplus
-int clgetNSValp(const string& Name, vector<string>& Val, int& m)
-{
-  int j,r=0,n=0;
-  char *buf;
-  Symbol *S;
 
-  std::ostringstream os;
-  if (m <= 0)
-    os << "string[]";
-  //sprintf(tmp,"bool[]");
-  else
-    os << "string[" << m << "]";
-  //sprintf(tmp,"bool[%d]",*m);
+// #ifdef __cplusplus
+// int clgetNSValp(const string& Name, vector<string>& Val, int& m)
+// {
+//   int j,r=0,n=0;
+//   char *buf;
+//   Symbol *S;
 
-  S = SearchQSymb((char *)Name.c_str(), os.str());
-  // if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
-  if (S==NULL) return CL_FAIL;
-  else 
-    {
-      SETBIT(S->Attributes,CL_STRINGTYPE);
-      S->Class=CL_APPLNCLASS;
+//   std::ostringstream os;
+//   if (m <= 0)
+//     os << "string[]";
+//   //sprintf(tmp,"bool[]");
+//   else
+//     os << "string[" << m << "]";
+//   //sprintf(tmp,"bool[%d]",*m);
 
-      n = S->NVals;
-      for (j=0;j< n;j++)
-	{
-	  string tt=ltrim(S->Val[j]);
-	  Val.resize(j+1);
-	  Val[j]=tt;
+//   S = SearchQSymb((char *)Name.c_str(), os.str());
+//   // if (S!=NULL) SETBIT(S->Attributes,CL_STRINGTYPE);
+//   if (S==NULL) return CL_FAIL;
+//   else 
+//     {
+//       SETBIT(S->Attributes,CL_STRINGTYPE);
+//       S->Class=CL_APPLNCLASS;
+
+//       n = S->NVals;
+//       for (j=0;j< n;j++)
+// 	{
+// 	  string tt=ltrim(S->Val[j]);
+// 	  Val.resize(j+1);
+// 	  Val[j]=tt;
 	  
-	  // buf = (char *)S->Val[j].c_str();
-	  // while (*buf == ' ') buf++;
-	  // Val.resize(j+1);
-	  // Val[j]=buf;
-	  //	  strncpy(Val[j-1],buf,strlen(buf)+1);
-	}
-      return r;
-    }
-}
-#endif
+// 	  // buf = (char *)S->Val[j].c_str();
+// 	  // while (*buf == ' ') buf++;
+// 	  // Val.resize(j+1);
+// 	  // Val[j]=buf;
+// 	  //	  strncpy(Val[j-1],buf,strlen(buf)+1);
+// 	}
+//       return r;
+//     }
+// }
+// #endif

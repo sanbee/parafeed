@@ -49,33 +49,33 @@ int clgetSVal(const char *Name, char *val, int *n)
 
 #ifdef __cplusplus
 
-int clgetSValp(const string &Name, string& val, int& n)
-{
-  HANDLE_EXCEPTIONS(
-		    SMap emptyMap;
-		    return clgetSValp(Name, val, n, emptyMap);
-		    );
-}
-int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
-{
-  Symbol *S;
-  unsigned int N;
+// int clgetSValp(const string &Name, string& val, int& n)
+// {
+//   HANDLE_EXCEPTIONS(
+// 		    SMap emptyMap;
+// 		    return clgetSValp(Name, val, n, emptyMap);
+// 		    );
+// }
+// int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
+// {
+//   Symbol *S;
+//   unsigned int N;
 
-HANDLE_EXCEPTIONS(
-		  S = clgetBaseCode(Name, val, n, smap);
-		  N = _ABS(n);
-		  if (S!=NULL) 
-		    {
-		      if (N <= S->NVals) 
-			{
-			  val = trim(S->Val[N-1]);
-			  return val.size();
-			}
-		      else 
-			return CL_FAIL;
-		    }
-		  else
-		    return CL_FAIL;
-		  );
-}
+// HANDLE_EXCEPTIONS(
+// 		  S = clgetBaseCode(Name, val, n, smap);
+// 		  N = _ABS(n);
+// 		  if (S!=NULL) 
+// 		    {
+// 		      if (N <= S->NVals) 
+// 			{
+// 			  val = trim(S->Val[N-1]);
+// 			  return val.size();
+// 			}
+// 		      else 
+// 			return CL_FAIL;
+// 		    }
+// 		  else
+// 		    return CL_FAIL;
+// 		  );
+// }
 #endif

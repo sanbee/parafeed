@@ -151,24 +151,28 @@ set(shccl_sources
   ParseCmdLine.cc
   clparseVal.cc
   InstallSymb.cc
-  clgetFVal.cc
-  clgetIVal.cc
+#  clgetFVal.cc
+#  clgetNFVal.cc
+#  clgetIVal.cc
+#  clgetNIVal.cc
+#  clgetBVal.cc
+#  clgetNBVal.cc
   clgetSVal.cc
-  clgetFullVal.cc
-  clgetNFVal.cc
-  clgetNIVal.cc
   clgetNSVal.cc
-  clgetNVals.cc
-  cldbggetFVal.cc
-  cldbggetIVal.cc
-  cldbggetSVal.cc
+#  cldbggetFVal.cc
+#  cldbggetIVal.cc
+#  cldbggetBVal.cc
   cldbggetNFVal.cc
+  cldbggetNBVal.cc
   cldbggetNIVal.cc
   cldbggetNSVal.cc
+  cldbggetSVal.cc
+  clgetFullVal.cc
 #  cldbggetFullVal.cc
   clStartInteractive.cc
   clRestartShell.cc
   clfInteractive.cc
+  clgetNVals.cc
   clstring.cc
   clstrtok.cc
   clgetOptsList.cc
@@ -194,10 +198,6 @@ set(shccl_sources
   rl_interface.cc
   clSetOptions.cc
   clTextColouring.cc
-  clgetBVal.cc
-  cldbggetBVal.cc
-  clgetNBVal.cc
-  cldbggetNBVal.cc
   clBreakStr.cc
   GetStdString.cc)
 foreach(source IN LISTS shccl_sources)
