@@ -106,6 +106,6 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap
 //----------------------------------------------------------------------
 // This has the API-level templated functions that use the BaseCode
 // functions above.
-#include <clgetValp.h>
+//#include <clgetValp.h>
 
 #endif

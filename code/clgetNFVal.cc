@@ -21,6 +21,7 @@
 #include <support.h>
 #include <sstream>
 #include <clgetBaseCode.h>
+#include <clgetValp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

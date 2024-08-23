@@ -75,7 +75,8 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.resize(0);exposedKeys.push_back("fullval"); watchPoints["showfullval"]=exposedKeys;
 
 	str="showstrarr";
-	i=1;clgetSValp("string",str,i,watchPoints);
+	//i=1;clgetSValp("string",str,i,watchPoints);
+	i=1;clgetValp("string",str,i,watchPoints);
 
 	// Add another watchpoint for the same keyword that exposes a
 	// differet set of exposed keys.  As an example,

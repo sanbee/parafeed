@@ -43,15 +43,28 @@
 // The clget?Valp() functions are wrappers around this function for
 // backward compatibility.
 //
-template <class T>
-T clgetValp(const string& Name, T& val, int& n, SMap& smap)
+int clgetValp(const string& Name, std::string& val, int& n, SMap& smap)
 {
   Symbol *S;
-  double d;
   int N;
   HANDLE_EXCEPTIONS(
 		    S=clgetBaseCode(Name,val,n,smap);
+		    std::string d;
+		    if ((N=clparseVal(S,&n,d))>0) val = d;
+
+		    return N;
+		    );
+}
+template <class T>
+int clgetValp(const string& Name, T& val, int& n, SMap& smap)
+{
+  Symbol *S;
+  int N;
+  HANDLE_EXCEPTIONS(
+		    S=clgetBaseCode(Name,val,n,smap);
+		    double d;
 		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+
 		    return N;
 		    );
 }
@@ -59,7 +72,7 @@ T clgetValp(const string& Name, T& val, int& n, SMap& smap)
 //-------------------------------------------------------------------------
 //
 template <class T>
-T clgetValp(const string& Name, T& val, int& n)
+int clgetValp(const string& Name, T& val, int& n)
 {
   HANDLE_EXCEPTIONS(
 		    SMap emptyMap;

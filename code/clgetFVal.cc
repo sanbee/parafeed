@@ -22,6 +22,7 @@
 #include <string.h>
 #include <support.h>
 #include <clgetBaseCode.h>
+#include <clgetValp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
