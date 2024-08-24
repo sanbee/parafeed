@@ -233,6 +233,7 @@ int clgetNBValp(const string& Name, vector<bool>& val, int& n, SMap &smap){retur
 int cldbggetBValp(const string& Name, bool& val, int& n)                  {return dbgclgetValp(Name,val,n);}
 
 int clgetSValp(const string& Name, string& val, int &n) {return clgetValp(Name,val,n);}
+int clgetSValp(const string& Name, string& val, int& n, SMap &smap)         {return clgetValp(Name,val,n,smap);}
 int clgetNSValp(const string& Name, vector<string>& val, int& n) {return clgetNValp(Name,val,n);}
 int clgetNSValp(const string& Name, vector<string>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
 //int cldbggetSValp(const string& Name, string& val, int& n) {return dbgclgetValp(Name,val,n);}
