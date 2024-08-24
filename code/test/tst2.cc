@@ -17,7 +17,8 @@ void UI()
 {
   char **argv;
   int argc,i,j=0,N;
-  float f,fa[3];
+  float f;
+  vector<float> fa(3);
   char str[128]="";
   string strp;
   bool b=false;
@@ -30,11 +31,11 @@ void UI()
   BeginCL(argc,argv);
   clInteractive(1);
   {
-    i=1;clgetBVal("bool",&b,&i);
-    i=1;clgetIVal("int",&j,&i);
-    i=1;clgetFVal("float",&f,&i);
+    i=1;clgetBValp("bool",b,i);
+    i=1;clgetIValp("int",j,i);
+    i=1;clgetFValp("float",f,i);
     i=1;clgetSValp("string",strp,i);
-    N=3;N=clgetNFVal("farray",fa,&N);
+    N=3;N=clgetNFValp("farray",fa,N);
     VString options;
     options.resize(3);
     options[0]="one"; options[1]="two"; options[2]="three";

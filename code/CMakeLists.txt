@@ -157,6 +157,7 @@ set(shccl_sources
 #  clgetNIVal.cc
 #  clgetBVal.cc
 #  clgetNBVal.cc
+  clgetValp.cc
   clgetSVal.cc
   clgetNSVal.cc
 #  cldbggetFVal.cc
@@ -216,6 +217,10 @@ install(EXPORT parafeed_libraries
 
 add_executable(tstcpp tstcpp.cc)
 target_link_libraries(tstcpp parafeed_parafeed)
+add_executable(tst2 test/tst2.cc)
+target_link_libraries(tst2 parafeed_parafeed)
+add_executable(tst3 test/tst3.cc)
+target_link_libraries(tst3 parafeed_parafeed)
 
 # install all parafeed exports
 install(FILES parafeedConfig.cmake

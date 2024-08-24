@@ -43,71 +43,26 @@
 // The clget?Valp() functions are wrappers around this function for
 // backward compatibility.
 //
-int clgetValp(const string& Name, std::string& val, int& n, SMap& smap)
-{
-  Symbol *S;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    S=clgetBaseCode(Name,val,n,smap);
-		    std::string d;
-		    if ((N=clparseVal(S,&n,d))>0) val = d;
-
-		    return N;
-		    );
-}
+int clgetValp(const string& Name, std::string& val, int& n, SMap& smap);
 template <class T>
-int clgetValp(const string& Name, T& val, int& n, SMap& smap)
-{
-  Symbol *S;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    S=clgetBaseCode(Name,val,n,smap);
-		    double d;
-		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-
-		    return N;
-		    );
-}
+int clgetValp(const string& Name, T& val, int& n, SMap& smap);
 //
 //-------------------------------------------------------------------------
 //
 template <class T>
-int clgetValp(const string& Name, T& val, int& n)
-{
-  HANDLE_EXCEPTIONS(
-		    SMap emptyMap;
-		    return clgetValp(Name,val,n,emptyMap);
-		    )
-}
+int clgetValp(const string& Name, T& val, int& n);
 
 //
 //-------------------------------------------------------------------------
 //
 template <class T>
-int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap)
-{
-  Symbol *S;
-  double d;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    {
-		      S=clgetBaseCode(Name,val,n,smap,true);
-		      if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		      return N;
-		    }
-		    );
-}
+int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap);
+
 //
 //-------------------------------------------------------------------------
 //
 template <class T>
-int dbgclgetValp(const string& Name, T& val, int& n)
-{
-  SMap empty;
-  HANDLE_EXCEPTIONS(
-		    return dbgclgetValp(Name,val,n,empty);
-		    );
-}
+int dbgclgetValp(const string& Name, T& val, int& n);
 
 //
 //----------------------------------------------------------------------
@@ -116,126 +71,13 @@ int dbgclgetValp(const string& Name, T& val, int& n)
 // backward compatibility.
 //
 template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap)
-{
-  Symbol *S;
-  double d;
+int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap);
 
-  HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,smap);
-		    int n0=S->NVals;
-		    int i=1;
-		    for(int j=0;j<n0;j++)
-		      {
-			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
-			  {
-			    if (m==0) {m=S->NVals=i-1;return i-1;}
-			    else 
-			      {
-				val.resize(i);
-				val[i-1] = (T)d;
-				i++;
-			      }
-			  }
-		      }
-		    m=S->NVals=i-1;
-		    return i-1;
-		    );
-}
 template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m)
-{
-  SMap empty;
-  HANDLE_EXCEPTIONS(
-		    return clgetNValp(Name, val, m, empty);
-		    );
-  // Symbol *S;
-  // double d;
-  // SMap empty;
-  // HANDLE_EXCEPTIONS(
-  // 		    S=clgetNValBaseCode(Name,val,m,empty);
-  // 		    int n0=S->NVals;
-  // 		    int i=1;
-  // 		    for(int j=0;j<n0;j++)
-  // 		      {
-  // 			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
-  // 			  {
-  // 			    if (m==0) {m=S->NVals=i-1;return i-1;}
-  // 			    else 
-  // 			      {
-  // 				val.resize(i);
-  // 				val[i-1] = (T)d;
-  // 				i++;
-  // 			      }
-  // 			  }
-  // 		      }
-  // 		    m=S->NVals=i-1;
-  // 		    return i-1;
-  // 		    );
-}
-int clgetNValp(const string& Name, vector<string>& val, int& m, const SMap &smap)
-{
-  Symbol *S;
-  string d;
+int clgetNValp(const string& Name, vector<T>& val, int& m);
 
-  HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,smap);
-		    int n0=S->NVals;
-		    int i=1;
-		    for(int j=0;j<n0;j++)
-		      {
-			if ((m=clparseVal(S,&i,d))!=CL_FAIL)
-			  {
-			    if (m==0) {m=S->NVals=i-1;return i-1;}
-			    else 
-			      {
-				val.resize(i);
-				val[i-1] = d;
-				i++;
-			      }
-			  }
-		      }
-		    m=S->NVals=i-1;
-		    return i-1;
-		    );
-}
+int clgetNValp(const string& Name, vector<string>& val, int& m, const SMap &smap);
 
-int clgetNValp(const string& Name, vector<string>& val, int& m)
-{
-  SMap empty;
-  HANDLE_EXCEPTIONS(
-		    return clgetNValp(Name, val, m, empty);
-		    );
-}
-//
-//----------------------------------------------------------------------------------------------------------
-// Calls with type in the name for backward compatibility.
-//
-// Similar functions may also be possible for pure-C interface.
-//
-int clgetFValp(const string& Name, float &val, int &n)                      {return clgetValp(Name,val,n);}
-int clgetFValp(const string& Name, float& val, int& n, SMap &smap)          {return clgetValp(Name,val,n,smap);}
-int clgetNFValp(const string& Name, vector<float>& val, int& n)             {return clgetNValp(Name,val,n);}
-int clgetNFValp(const string& Name, vector<float>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
-int cldbggetFValp(const string& Name, float& val, int& n)                   {return dbgclgetValp(Name,val,n);}
-//int cldbggetNFValp(const string& Name, vector<float>& val, int& n) {return dbgclgetNValp(Name,val,n);}
+int clgetNValp(const string& Name, vector<string>& val, int& m);
 
-int clgetIValp(const string& Name, int &val, int &n)                      {return clgetValp(Name,val,n);}
-int clgetIValp(const string& Name, int& val, int& n, SMap &smap)          {return clgetValp(Name,val,n,smap);}
-int clgetNIValp(const string& Name, vector<int>& val, int& n)             {return clgetNValp(Name,val,n);}
-int clgetNIValp(const string& Name, vector<int>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
-int cldbggetIValp(const string& Name, int& val, int& n)                   {return dbgclgetValp(Name,val,n);}
-
-int clgetBValp(const string& Name, bool& val, int &n)                     {return clgetValp(Name,val,n);}
-int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)         {return clgetValp(Name,val,n,smap);}
-int clgetNBValp(const string& Name, vector<bool>& val, int& n)            {return clgetNValp(Name,val,n);}
-int clgetNBValp(const string& Name, vector<bool>& val, int& n, SMap &smap){return clgetNValp(Name,val,n,smap);}
-int cldbggetBValp(const string& Name, bool& val, int& n)                  {return dbgclgetValp(Name,val,n);}
-
-int clgetSValp(const string& Name, string& val, int &n) {return clgetValp(Name,val,n);}
-int clgetSValp(const string& Name, string& val, int& n, SMap &smap)         {return clgetValp(Name,val,n,smap);}
-int clgetNSValp(const string& Name, vector<string>& val, int& n) {return clgetNValp(Name,val,n);}
-int clgetNSValp(const string& Name, vector<string>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
-//int cldbggetSValp(const string& Name, string& val, int& n) {return dbgclgetValp(Name,val,n);}
-//int clgetNSValp(const string& Name, vector<string>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
 #endif
