@@ -28,6 +28,7 @@
 #include <support.h>
 #include <sstream>
 #include <clstring.h>
+#include <clgetValp.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -35,6 +36,8 @@
 #else
 #include <exception>
 #endif
+unsigned short cl_RegistrationMode=1, cl_NoPrompt=0, cl_DryRun=0;
+unsigned short CL_DBG_ON=0;
 extern "C" {
 #endif
 #include <rl_interface.h>
@@ -49,8 +52,6 @@ unsigned short cl_CmdLineFirst=0;
 unsigned short cl_InteractiveShell=0;
 unsigned short cl_DOCLEANUP=1, cl_SymbLoaded = 0;
 unsigned short cl_Pass = 0, cl_FORTRAN=0, cl_NoOfOpts=0;
-unsigned short cl_RegistrationMode=1, cl_NoPrompt=0, cl_DryRun=0;
-unsigned short CL_DBG_ON=0;
 static short cl_defaultsLoaded=0;
 jmp_buf *cl_env=0;
 
