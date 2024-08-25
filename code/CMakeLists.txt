@@ -157,7 +157,6 @@ set(shccl_sources
 #  clgetNIVal.cc
 #  clgetBVal.cc
 #  clgetNBVal.cc
-  clgetValp.cc
   clgetSVal.cc
   clgetNSVal.cc
 #  cldbggetFVal.cc
@@ -169,6 +168,8 @@ set(shccl_sources
   cldbggetNSVal.cc
   cldbggetSVal.cc
   clgetFullVal.cc
+
+#  clgetValp.cc
 #  cldbggetFullVal.cc
   clStartInteractive.cc
   clRestartShell.cc

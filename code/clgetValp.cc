@@ -207,6 +207,10 @@ int clgetNValp(const string& Name, vector<string>& val, int& m)
 		    );
 }
 
+template<class T>
+int cldbggetValp(const string& Name, T& val, int& n)                   {return dbgclgetValp(Name,val,n);}
+
+
 int clgetFValp(const string& Name, float &val, int &n)                      {return clgetValp(Name,val,n);}
 int clgetFValp(const string& Name, float& val, int& n, SMap &smap)          {return clgetValp(Name,val,n,smap);}
 int clgetNFValp(const string& Name, vector<float>& val, int& n)             {return clgetNValp(Name,val,n);}

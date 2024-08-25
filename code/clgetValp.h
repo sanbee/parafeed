@@ -35,7 +35,7 @@
 //#include <setAutoDefaults.h>
 #include <type_traits>
 #include <clgetBaseCode.h>
-
+#include <clgetValp.cc>
 //
 // //
 //----------------------------------------------------------------------
