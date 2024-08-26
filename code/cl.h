@@ -225,9 +225,9 @@ int       doprintparams(const char *);
   int       docopyright(const std::string& arg);
 #endif
 int       dowarranty(char *);
-#ifdef __cplusplus
-int       loadDefaults(int complement=1);
-#endif
+// #ifdef __cplusplus
+// int       loadDefaults(int complement=1);
+// #endif
   //int       clparseVal(Symbol *, int *, double *);
 #ifdef __cplusplus
 void      reportParseError(const Symbol& S, const int& N);

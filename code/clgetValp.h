@@ -35,7 +35,7 @@
 //#include <setAutoDefaults.h>
 #include <type_traits>
 #include <clgetBaseCode.h>
-#include <clgetValp.cc>
+//#include <clgetValp.cc>
 //
 // //
 //----------------------------------------------------------------------
@@ -43,26 +43,26 @@
 // The clget?Valp() functions are wrappers around this function for
 // backward compatibility.
 //
-int clgetValp(const string& Name, std::string& val, int& n, SMap& smap);
-template <class T>
-int clgetValp(const string& Name, T& val, int& n, SMap& smap);
-//
-//-------------------------------------------------------------------------
-//
-template <class T>
-int clgetValp(const string& Name, T& val, int& n);
+// int clgetValp(const string& Name, std::string& val, int& n, SMap& smap);
+// template <class T>
+// int clgetValp(const string& Name, T& val, int& n, SMap& smap);
+// //
+// //-------------------------------------------------------------------------
+// //
+// template <class T>
+// int clgetValp(const string& Name, T& val, int& n);
 
 //
 //-------------------------------------------------------------------------
 //
-template <class T>
-int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap);
+// template <class T>
+// int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap);
 
-//
-//-------------------------------------------------------------------------
-//
-template <class T>
-int dbgclgetValp(const string& Name, T& val, int& n);
+// //
+// //-------------------------------------------------------------------------
+// //
+// template <class T>
+// int dbgclgetValp(const string& Name, T& val, int& n);
 
 //
 //----------------------------------------------------------------------
@@ -70,14 +70,14 @@ int dbgclgetValp(const string& Name, T& val, int& n);
 // The clgetN?Valp() functions are wrappers around this function for
 // backward compatibility.
 //
-template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap);
+// template <class T>
+// int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap);
 
-template <class T>
-int clgetNValp(const string& Name, vector<T>& val, int& m);
+// template <class T>
+// int clgetNValp(const string& Name, vector<T>& val, int& m);
 
-int clgetNValp(const string& Name, vector<string>& val, int& m, const SMap &smap);
+// int clgetNValp(const string& Name, vector<string>& val, int& m, const SMap &smap);
 
-int clgetNValp(const string& Name, vector<string>& val, int& m);
+// int clgetNValp(const string& Name, vector<string>& val, int& m);
 
 #endif

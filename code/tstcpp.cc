@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <exception>
-//#include <clgetValp.h>
+#include <clgetValp.cc>
 /*
    Test program to test the embedded shell via the commandline library
 */
@@ -63,7 +63,7 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.push_back("float");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
-	i=1;dbgclgetValp("dbgint",dj,i);
+	i=1;cldbggetValp("dbgint",dj,i);
 
 	i=1;clgetFValp("float",f,i); // Equivalent to clgetIValp()
 
@@ -91,7 +91,7 @@ void UI(bool restart, int argc, char **argv)
 
 	i=0;clgetFullValp("fullval",fullVal);
 	i=0;dbgclgetFullValp("dbgfullval",dbgfullVal);
-	i=0;clgetNSValp("strarr",strarr,i);
+	i=0;clgetNValp("strarr",strarr,i);
 	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();

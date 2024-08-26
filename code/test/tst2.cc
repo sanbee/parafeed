@@ -18,7 +18,7 @@ void UI()
 {
   char **argv;
   int argc,i,j=0,N;
-  float f;
+  float f=0;
   vector<float> fa(3);
   char str[128]="";
   string strp;

@@ -28,7 +28,7 @@
 #include <support.h>
 #include <sstream>
 #include <clstring.h>
-#include <clgetValp.h>
+//#include <clgetValp.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE

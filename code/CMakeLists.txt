@@ -50,6 +50,7 @@ set(header_list
   SymbTab.h
   clparseVal.h
   clgetValp.h
+  clgetValp.cc
 )
 #set_target_properties(parafeed_parafeed PROPERTIES PUBLIC_HEADER ${header_list})
 
@@ -169,7 +170,8 @@ set(shccl_sources
   cldbggetSVal.cc
   clgetFullVal.cc
 
-#  clgetValp.cc
+  clgetValp.cc
+#  clgetSValp.cc
 #  cldbggetFullVal.cc
   clStartInteractive.cc
   clRestartShell.cc
