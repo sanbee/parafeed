@@ -163,11 +163,12 @@ set(shccl_sources
 #  cldbggetFVal.cc
 #  cldbggetIVal.cc
 #  cldbggetBVal.cc
-  cldbggetNFVal.cc
-  cldbggetNBVal.cc
-  cldbggetNIVal.cc
-  cldbggetNSVal.cc
-  cldbggetSVal.cc
+
+  # cldbggetNFVal.cc
+  # cldbggetNBVal.cc
+  # cldbggetNIVal.cc
+  # cldbggetNSVal.cc
+  # cldbggetSVal.cc
   clgetFullVal.cc
 
   clgetValp.cc

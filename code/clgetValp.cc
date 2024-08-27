@@ -88,6 +88,48 @@ int dbgclgetValp(const string& Name, T& val, int& n, SMap smap=SMap())
 		    }
 		    );
 }
+template <class T>
+int dbgclgetNValp(const string& Name, vector<T>& val, int& n, SMap smap=SMap())
+{
+  Symbol *S;
+  double d;
+  int N;
+  HANDLE_EXCEPTIONS(
+		    {
+		      S=clgetBaseCode(Name,val,n,smap,true);
+		      int i=1;
+		      while(i <= n)
+			{
+			  if ((N=clparseVal(S,&n,&d))==CL_FAIL) return N;
+			  else if (N==0) break;
+			  else {val.push_back((T)d); i++;}
+			}
+		      return i-1;
+		    }
+		    );
+}
+template <>
+int dbgclgetNValp<std::string>(const string& Name, vector<std::string>& val, int& n, SMap smap)=delete;
+
+int dbgclgetNValp(const string& Name, vector<string>& val, int& n, SMap smap=SMap())
+{
+  Symbol *S;
+  string d;
+  int N;
+  HANDLE_EXCEPTIONS(
+		    {
+		      S=clgetBaseCode(Name,val,n,smap,true);
+		      int i=1;
+		      while(i <= n)
+			{
+			  if ((N=clparseVal(S,&n,d))==CL_FAIL) return N;
+			  else if (N==0) break;
+			  else {val.push_back(d); i++;}
+			}
+		      return i-1;
+		    }
+		    );
+}
 //
 //-------------------------------------------------------------------------
 //
@@ -232,9 +274,6 @@ int clgetNFValp(const string& Name, vector<float>& val, int& n)             {ret
 int clgetNFValp(const string& Name, vector<float>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
 int cldbggetFValp(const string& Name, float& val, int& n)                   {return dbgclgetValp(Name,val,n);}
 
-// dbgNValp() templates aren't yet defined
-//int cldbggetNFValp(const string& Name, vector<float>& val, int& n) {return dbgclgetNValp(Name,val,n);}
-
 int clgetIValp(const string& Name, int &val, int &n)                      {return clgetValp(Name,val,n);}
 int clgetIValp(const string& Name, int& val, int& n, SMap &smap)          {return clgetValp(Name,val,n,smap);}
 int clgetNIValp(const string& Name, vector<int>& val, int& n)             {return clgetNValp(Name,val,n);}
@@ -247,10 +286,19 @@ int clgetNBValp(const string& Name, vector<bool>& val, int& n)            {retur
 int clgetNBValp(const string& Name, vector<bool>& val, int& n, SMap &smap){return clgetNValp(Name,val,n,smap);}
 int cldbggetBValp(const string& Name, bool& val, int& n)                  {return dbgclgetValp(Name,val,n);}
 
-int clgetSValp(const string& Name, string& val, int &n) {return clgetValp(Name,val,n);}
-int clgetSValp(const string& Name, string& val, int& n, SMap &smap)         {return clgetValp(Name,val,n,smap);}
-int clgetNSValp(const string& Name, vector<string>& val, int& n) {return clgetNValp(Name,val,n);}
-int clgetNSValp(const string& Name, vector<string>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
+int clgetSValp(const string& Name, string& val, int &n)                           {return clgetValp(Name,val,n);}
+int clgetSValp(const string& Name, string& val, int& n, SMap &smap)               {return clgetValp(Name,val,n,smap);}
+int clgetNSValp(const string& Name, vector<string>& val, int& n)                  {return clgetNValp(Name,val,n);}
+int clgetNSValp(const string& Name, vector<string>& val, int& n, SMap &smap)      {return clgetNValp(Name,val,n,smap);}
 int clgetNSValp(const string& Name, vector<string>& val, int& n, const SMap smap) {return clgetNValp(Name,val,n,smap);}
-int cldbggetSValp(const string& Name, string& val, int& n) {return dbgclgetValp(Name,val,n);}
+int cldbggetSValp(const string& Name, string& val, int& n)                        {return dbgclgetValp(Name,val,n);}
+
+int cldbggetNIValp(const string& Key, vector<int>& val, int& m)               {return dbgclgetNValp(Key, val, m);}
+int cldbggetNIValp(const string& Key, vector<int>& val, int& m, SMap& smap)   {return dbgclgetNValp(Key, val, m,smap);}
+int cldbggetNFValp(const string& Key, vector<float>& val, int& m)             {return dbgclgetNValp(Key, val, m);}
+int cldbggetNFValp(const string& Key, vector<float>& val, int& m, SMap& smap) {return dbgclgetNValp(Key, val, m,smap);}
+int cldbggetNBValp(const string& Key, vector<bool>& val, int& m)              {return dbgclgetNValp(Key, val, m);}
+int cldbggetNBValp(const string& Key, vector<bool>& val, int& m, SMap& smap)  {return dbgclgetNValp(Key, val, m,smap);}
+int cldbggetNSValp(const string& Key, vector<string>& val, int& m)            {return dbgclgetNValp(Key, val, m);}
+int cldbggetNSValp(const string& Key, vector<string>& val, int& m, SMap& smap){return dbgclgetNValp(Key, val, m,smap);}
 #endif
