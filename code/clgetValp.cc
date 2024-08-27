@@ -33,6 +33,8 @@
 //
 // Similar functions may also be possible for pure-C interface.
 //
+#ifndef CLGETVALP_CPP
+#define CLGETVALP_CPP
 #include <clgetValp.h>
 
 //
@@ -251,3 +253,4 @@ int clgetNSValp(const string& Name, vector<string>& val, int& n) {return clgetNV
 int clgetNSValp(const string& Name, vector<string>& val, int& n, SMap &smap) {return clgetNValp(Name,val,n,smap);}
 int clgetNSValp(const string& Name, vector<string>& val, int& n, const SMap smap) {return clgetNValp(Name,val,n,smap);}
 int cldbggetSValp(const string& Name, string& val, int& n) {return dbgclgetValp(Name,val,n);}
+#endif
