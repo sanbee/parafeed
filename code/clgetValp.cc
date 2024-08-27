@@ -20,13 +20,23 @@
 // Generic baseclass type functions that are called in clget?Valp()
 // functions.
 //
-// The code is separated into clgetBaseCode() and clgetGenericValp()
-// functions since the code to return the value from the Symbol is
-// differen, at least for T=string.  clgetGenericValp() function has
-// this code for T=int,float,bool and is therefore usable for
-// realizing clget{I,F,B}Valp() functions. clgetSValp() calls
-// clgetBaseCode() directly.
+// There are templated version of clgetValp(), clgetNValp(),
+// dbgclgetValp() and dbgclgetNValp(). These use the templated
+// clgetBaseCode() and clparseVal().  This file needs to be included
+// in any code that uses clgetValp() interface.  It is therefore
+// included in clinteract.h (which is required in the client code
+// anyway).
 //
+// Templates for std::string type is deleted and overloaded since
+// val = (T)d cannot work the same way for string as it works
+// for float,int, bool types.
+//
+// For directly using clget?Valp() interface, nothing else is required
+// other than these templates.  This useage is recommended.
+// For backward compatibility, the clget[SIBF][N]Valp() functions are
+// implemented which are wrappers around clgetValp() functions.  These
+// functions are still in use in other parts of the library -- so these
+// are required even internally for now.
 //
 //----------------------------------------------------------------------------------------------------------
 // Calls with type in the name for backward compatibility.
@@ -58,8 +68,6 @@ int clgetValp(const std::string& Name, T& val, int& n, SMap smap=SMap())
 //
 //-------------------------------------------------------------------------
 //
-// template <>
-// int clgetValp<std::std::string>(const std::string&, std::string& val, int& n)=delete;
 template <>
 int clgetValp<std::string>(const std::string&, std::string& val, int& n,SMap)=delete;
 //
@@ -115,8 +123,6 @@ int clgetNValp(const std::string& Name, std::vector<T>& val, int& m, const SMap 
 		    );
 
 }
-// template <>
-// int clgetNValp<std::string>(const std::string&, std::vector<std::string>& val, int& n)=delete;
 template <>
 int clgetNValp<std::string>(const std::string&, std::vector<std::string>& val, int& n,const SMap)=delete;
 
