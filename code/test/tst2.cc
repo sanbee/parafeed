@@ -1,11 +1,29 @@
 /* $Id: tst2.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
 #include <cl.h>
 #include <clsh.h>
+/*
+ * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 #include <clinteract.h>
 #include <stdio.h>
-//#include <clgetValp.h>
 /*
    Test program to test the embedded shell via the commandline library
+   This tests clget?Valp() interface.
 */
 void UI();
 
@@ -27,10 +45,10 @@ void UI()
   argv = (char **)malloc(2*sizeof(char **));
   argv[0]=(char *)malloc(20);
   strcpy(argv[0],"test2");
-  argc=0;
+  argc=1;
 
   BeginCL(argc,argv);
-  clInteractive(1);
+  clInteractive(0);
   {
     i=1;clgetBValp("bool",b,i);
     i=1;clgetIValp("int",j,i);
@@ -44,10 +62,8 @@ void UI()
   }
   EndCL();
   fprintf(stderr,"Bool = %d \n",b);
-  fprintf(stderr,"Float = %f   Int = %d \n",f,j);
-  //  fprintf(stderr,"String = %s \n",str);
+  fprintf(stderr,"Float = %f\nInt = %d \n",f,j);
   cerr << "String = " << strp << endl;
   fprintf(stderr,"Float Array = ");
-  for (i=0;i<N;i++) fprintf(stderr,"%f ",fa[i]);
-  fprintf(stderr,"\n");
+  for(auto f : fa) cerr << f << " ";cerr << endl;
 }
