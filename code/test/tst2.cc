@@ -25,29 +25,43 @@
    Test program to test the embedded shell via the commandline library
    This tests clget?Valp() interface.
 */
-void UI();
+void UI(int argc=0, char **argv=NULL);
 
 int main(int argc, char **argv)
 {
-  UI();
+  UI(argc,argv);
+  //UI();
 }
 
-void UI()
+void UI(int argc_l, char **argv_l)
 {
-  char **argv;
-  int argc,i,j=0,N;
+  char **margv;
+  int margc,i,j=0,N;
   float f=0;
   vector<float> fa(3);
   char str[128]="";
   string strp;
   bool b=false;
   
-  argv = (char **)malloc(2*sizeof(char **));
-  argv[0]=(char *)malloc(20);
-  strcpy(argv[0],"test2");
-  argc=1;
+  if (argv_l==NULL)
+    {
+      cerr << "-----------------------------------------------------------------------" << endl
+	   << "This test program deliberately ignores commadline arguments, as example" << endl
+	   << "-----------------------------------------------------------------------"
+	   << endl;
+      
+      margv = (char **)malloc(2*sizeof(char **));
+      margv[0]=(char *)malloc(20);
+      strcpy(margv[0],"test2");
+      margc=1;
+    }
 
-  BeginCL(argc,argv);
+  clSetPrompt(true);
+  if (argv_l==NULL)
+    BeginCL(margc,margv);
+  else
+    BeginCL(argc_l,argv_l);
+    
   clInteractive(0);
   {
     i=1;clgetBValp("bool",b,i);
