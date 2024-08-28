@@ -289,14 +289,14 @@ END{									\
 #endif
     
       ss += std::string(".doc ");
-      //strcat(str,".doc ");
       if (key) ss += key;
-      //if (key) strncat(str,key,strlen(key));
       ss += sed_script;
-      //strcat(str,sed_script);
 
-      system(ss.c_str());
-      //if (str) free(str);
+      if (system(ss.c_str()) < 0)
+	{
+	  perror("doexplain()");
+	  clThrowUp(std::string("Error in system() call in doexplain()"), "###Error", CL_FATAL);
+	}
     return 1;
   }
   /*------------------------------------------------------------------------
@@ -579,7 +579,11 @@ int dosavefd(FILE *fd, const std::vector<std::string>& opts)
       else
 	str << "emacs -nw " << tmpname;
       
-      system(str.str().c_str());
+      if (system(str.str().c_str()) < 0)
+	{
+	  perror("doedit()");
+	  clThrowUp(std::string("Error in system() call in doedit()"), "###Error", CL_FATAL);
+	}
       doload(tmpname);
     }
 
@@ -596,7 +600,13 @@ int dosavefd(FILE *fd, const std::vector<std::string>& opts)
     if (dir == NULL || strlen(dir)==0) s=(char *)getenv(CL_HOMEENV);
     
     if (chdir(s)==-1)   perror(s);
-    else                system("/bin/pwd");
+    else
+      if (system("/bin/pwd") < 0)
+	{
+	  perror("docd");
+	  clThrowUp(std::string("Error in system(\"/bin/pwd\") call in docd()"), "###Error", CL_FATAL);
+	}
+
     return 1;
   }
   /*----------------------------------------------------------------------*/

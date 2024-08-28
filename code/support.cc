@@ -218,12 +218,17 @@ extern "C" {
       {
 	if ((fd=creat(out,0644))<0)
 	  {
-	    perror(out);
+	    perror("parafeed:redirect()::create()");
 	    clThrowUp("In STDOUT redirection.","###Error",
 		      CL_SEVERE);
 	  }
 	close(1);
-	dup(fd);
+	if (dup(fd)<0)
+	  {
+	    perror("parafeed:redirect::dup(fd)");
+	    clThrowUp("In STDOUT redirection.","###Error",
+		      CL_SEVERE);
+	  }
       }
     
     if (ERR)
@@ -242,12 +247,22 @@ extern "C" {
 			  CL_SEVERE);
 	      }
 	    close(2);
-	    dup(fd1);
+	    if (dup(fd1)<0)
+	      {
+		perror("parafeed:redirect::dup(fd1)");
+		clThrowUp("In STDOUT redirection.","###Error",
+			  CL_SEVERE);
+	      }
 	  }
 	else
 	  {
 	    close(2);
-	    dup(fd);
+	    if (dup(fd)<0)
+	      {
+		perror("parafeed:redirect::dup(fd_1)");
+		clThrowUp("In STDOUT redirection.","###Error",
+			  CL_SEVERE);
+	      }
 	  }
       }
     return 1;
