@@ -36,6 +36,7 @@
 #include <clparseVal.h>
 #include <type_traits>
 #include <cl.h>
+#include <iosupport.h>
 
 template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), bool dbg=false)

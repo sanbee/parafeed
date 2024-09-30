@@ -18,19 +18,19 @@
  */
 /* $Id: support.c,v 2.3 1999/01/25 04:03:33 sanjay Exp sanjay $ */
 #include <iosupport.h>
-// template <typename T>
-// ostream& operator<<(ostream& os, const vector<T>& vs)
-// {
-//   for(auto x : vs) os << x << ",";
-//   return os;
-// }
-// template ostream& operator<<<string>(ostream& os, const vector<string>& vs);
-// template ostream& operator<<<int>(ostream& os, const vector<int>& vs);
-// template ostream& operator<<<float>(ostream& os, const vector<float>& vs);
-// template ostream& operator<<<bool>(ostream& os, const vector<bool>& vs);
-//
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& vs)
+{
+  for(auto x : vs) os << x << ",";
+  return os;
+}
+template std::ostream& operator<<(std::ostream& os, const std::vector<std::string>& vs);
+template std::ostream& operator<<(std::ostream& os, const std::vector<int>& vs);
+template std::ostream& operator<<(std::ostream& os, const std::vector<float>& vs);
+template std::ostream& operator<<(std::ostream& os, const std::vector<bool>& vs);
+
 // It will be nice to make the above template code and instantiations work.
-//
+
 std::ostream& operator<<(std::ostream& os, const std::vector<std::string>& vs)
 {
   for(auto x : vs) os << x << ",";

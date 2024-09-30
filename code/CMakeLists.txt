@@ -207,7 +207,6 @@ set(shccl_sources
   clloadConfig.cc
   callbacks_awk.cc
   support.cc
-  iosupport.cc
   clgetInputFile.cc
   clgetOutputFile.cc
   clgetNOpts.cc

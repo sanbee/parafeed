@@ -24,8 +24,15 @@
 #include <regex>
 #include <iostream>
 
-std::ostream& operator<<(std::ostream& os, const std::vector<std::string>& vs);
-std::ostream& operator<<(std::ostream& os, const std::vector<int>& vs);
-std::ostream& operator<<(std::ostream& os, const std::vector<float>& vs);
-std::ostream& operator<<(std::ostream& os, const std::vector<bool>& vs);
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& vs)
+{
+  for(auto x : vs) os << x << ",";
+  return os;
+}
+
+// std::ostream& operator<<(std::ostream& os, const std::vector<std::string>& vs);
+// std::ostream& operator<<(std::ostream& os, const std::vector<int>& vs);
+// std::ostream& operator<<(std::ostream& os, const std::vector<float>& vs);
+// std::ostream& operator<<(std::ostream& os, const std::vector<bool>& vs);
 #endif
