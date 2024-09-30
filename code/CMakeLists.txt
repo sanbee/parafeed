@@ -65,6 +65,7 @@ set(header_list
   setAutoDefaults.h
   shell.h
   support.h
+  iosupport.h
   SymbTab.h
   clparseVal.h
   clgetValp.h
@@ -206,6 +207,7 @@ set(shccl_sources
   clloadConfig.cc
   callbacks_awk.cc
   support.cc
+  iosupport.cc
   clgetInputFile.cc
   clgetOutputFile.cc
   clgetNOpts.cc
