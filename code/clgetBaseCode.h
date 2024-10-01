@@ -61,7 +61,6 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 		    if (S!=NULL) 
 		      {
 			// Use templated function that works for all values of T
-			cerr << "111: " << val << endl;
 			setAutoDefaults(S,val);
 
 			S->Class=CL_APPLNCLASS;
