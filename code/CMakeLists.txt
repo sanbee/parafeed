@@ -65,6 +65,7 @@ set(header_list
   setAutoDefaults.h
   shell.h
   support.h
+  iosupport.h
   SymbTab.h
   clparseVal.h
   clgetValp.h

@@ -25,7 +25,7 @@
 #include <algorithm>
 #include <clstring.h>
 //#include <setAutoDefaults.h>
-#include <clgetBaseCode.h>
+//#include <clgetBaseCode.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
