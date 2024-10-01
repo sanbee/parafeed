@@ -36,7 +36,7 @@
 #include <clparseVal.h>
 #include <type_traits>
 #include <cl.h>
-
+using namespace parafeedio;
 template <class T>
 Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), bool dbg=false)
 {
