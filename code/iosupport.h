@@ -24,11 +24,14 @@
 #include <regex>
 #include <iostream>
 
-template <typename T>
-inline std::ostream& operator<<(std::ostream& os, const std::vector<T>& vs)
+namespace parafeedio
 {
-  for(auto x : vs) os << x << ",";
-  return os;
+  template <typename T>
+  inline std::ostream& operator<<(std::ostream& os, const std::vector<T>& vs)
+  {
+    for(auto x : vs) os << x << ",";
+    return os;
+  }
 }
 
 #endif
