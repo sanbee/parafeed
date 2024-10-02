@@ -489,6 +489,12 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 {
   bool found=false;
   SMap::iterator loc;
+
+  string val_p;
+  if (t->NVals>0) val_p=t->Val[0];
+  else if (t->DefaultVal.size() > 0) val_p=t->DefaultVal[0];
+  else return found;
+
   try
     {
       if (ISSET(t->Attributes,CL_BOOLTYPE))
@@ -507,7 +513,7 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 	      // if ((found = (symbolBoolVal==logicalKey))) break;
 	      // cerr << "LOC: " << t->Name << " " << t->Val[0] << "|" << (*loc).first << " ";
 	      // for (auto x : (*loc).second) cerr << x << " "; cerr << "|" << endl;
-	      if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+	      if ((found = clBoolCmp(val_p,logicalKey))) break;
 	    }
 	}
       else
@@ -517,7 +523,7 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 	  //
 	  if (t->Val.size() > 0)
 	    {
-	      loc = t->smap.find(string(t->Val[0]));
+	      loc = t->smap.find(string(val_p));
 	      found = (loc != t->smap.end());
 	    }
 	}
@@ -534,8 +540,7 @@ int exposeKeys(Symbol *t)
 {
   Symbol *S;
   int exposedSomething=0;
-  /*    char *name = t->Name;*/
-  
+
   if ((t->smap.size() > 0))
     {
       //
@@ -562,21 +567,17 @@ int exposeKeys(Symbol *t)
 	}
       //
       // Now set for display those watched-keys which are exposed by
-      // the current setting of this symbol. If the current symbol
-      // (t) is not exposed itself, the keys are that watching
-      // remain unexposed. For now, the "current setting" is only
-      // the first value (i.e. ignores other possible comma
-      // seperated values).
+      // the current setting of this symbol. If the current symbol (t)
+      // is not exposed itself, the keys it is watching remain
+      // unexposed. For now, the "current setting" used is only the
+      // first value (i.e. ignores other possible comma seperated
+      // values).
       //
-      
-      if ((t->NVals > 0) && (t->Exposed==1))
+      if (t->Exposed==1)
 	{
-	  // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
-	  // if (loc != t->smap.end())
 	  vector<string> mapVal;
 	  if (checkVal(t,mapVal))
 	    {
-	      //		vector<string> sv=(*loc).second;
 	      vector<string> sv=mapVal;
 	      for(unsigned int j=0;j<sv.size();j++)
 		{
