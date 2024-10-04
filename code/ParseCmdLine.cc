@@ -182,7 +182,7 @@ int ParseCmdLine(int argc, char *argv[])
 
 	  S = AllocVSymb(1);
 	  S->Used = 0;         /*Mark the option as unsed */
-	  
+
 	  while (tok[n] == ' ') n--;
 	  S->Name = (char *)getmem(n+1,"BeginParam:2");
 	  strncpy(S->Name, tok,n);
@@ -386,7 +386,18 @@ int startShell()
 	    loadDefaults(1); cl_defaultsLoaded=1;
 	  }
 	if (doInp)
-	  doinp(NULL);    /* Display the keywords */
+	  {
+	    //
+	    // Why is this required?  This gets called anyway via
+	    // doinp()-->showKeys()-->exposeKeys()
+	    //
+	    // Without this here as well, keys provided via
+	    // commandline are exposed in the interactive session till
+	    // key=val command is used.  Strange (SB's comments).
+	    //
+	    for (Symbol* t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
+	    doinp(NULL);    /* Display the keywords */
+	  }
 	  
 #ifdef GNUREADLINE
 	/* Load the history from the history file*/
