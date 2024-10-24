@@ -19,6 +19,8 @@
 #if !defined(SUPPORT_H)
 #define SUPPORT_H
 
+#define PRINTTAB(TAB) {for (Symbol* t=TAB;t;t=t->Next) {cerr << t->Name << "=";PrintVals(stderr,t,false); cerr << " " << t->Exposed << endl;}}
+
 #include <vector>
 #include <stdbool.h>
 #include <regex>

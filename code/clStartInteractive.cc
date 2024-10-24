@@ -26,7 +26,8 @@ extern "C" {
 ------------------------------------------------------------------------*/
 void clStartInteractive(jmp_buf *e, int i)
 {
-  cl_tmpTab = cl_tmpTabTail = NULL;
+  // if (cl_tmpTab == cl_tmpTabTail)
+  //   cl_tmpTab = cl_tmpTabTail = NULL;
   cl_InteractiveShell = 1;
   cl_DOCLEANUP = i;
   cl_env = e;

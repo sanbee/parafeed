@@ -140,7 +140,7 @@ extern int add_history(char *);
 int       BeginCL(int argc, char **argv);
 int       EndCL();
 int       clgetNOpts();
-void      clCmdLineFirst();
+void      clCmdLineFirst(int v=1);
 int       clTgetOpt(char *Name, char *Type);
 int       clgetOpt(char *Name);
 int       clgetNVals(char *Name);

@@ -25,7 +25,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern Symbol *cl_SymbTab, *cl_TabTail;
+  //extern Symbol *cl_SymbTab, *cl_TabTail;
 extern CmdSymbol *cl_CmdTab, *cl_CmdTail;
 /*----------------------------------------------------------------------*/
 int InstallSymb()

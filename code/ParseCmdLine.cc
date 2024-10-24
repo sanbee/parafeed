@@ -201,10 +201,14 @@ int ParseCmdLine(int argc, char *argv[])
 	  // for(unsigned i=0;i<tokens.size();i++) cerr <<"\"" <<tokens[i]<<"\"";cerr << endl;
 	  
 	  for(unsigned i=0;i<tokens.size();i++) S->Val[i] = tokens[i];
-	  AddVNode(S,&cl_SymbTab,&cl_TabTail);
+	  //	  AddVNode(S,&cl_SymbTab,&cl_TabTail);
+	  AddVNode(S,&cl_tmpTab,&cl_tmpTabTail);
 	}
     }
-  cl_tmpTab = cl_SymbTab;  cl_tmpTabTail = cl_TabTail;
+  //  cl_tmpTab = cl_SymbTab;  cl_tmpTabTail = cl_TabTail;
+  cerr << "TTTTTTTTTTTTTTTTTTTTTTTT" << endl;
+  PRINTTAB(cl_tmpTab);
+  cerr << "TTTTTTTTTTTTTTTTTTTTTTTT" << endl;
   {
     Symbol *S;
     if ((S=SearchNode("help",cl_SymbTab))!=NULL && S->NVals > 0)
@@ -312,12 +316,12 @@ help keyword.
   First load the list of options that come from commandline in the 
   symbol table.
 ------------------------------------------------------------------------*/
-void clCmdLineFirst()
+void clCmdLineFirst(int v)
 {  
 /*  
    TransferTab(&cl_SymbTab,&cl_TabTail,cl_tmpTab,1);
 */
-  cl_CmdLineFirst = 1; 
+  cl_CmdLineFirst = v; 
 }
 /*------------------------------------------------------------------------
   Till this is called, all the symbols, as detected from the
@@ -337,7 +341,7 @@ void clLoadSymb()
 	}
       if (cl_CmdLineFirst)
 	{
-	  TransferTab(&cl_SymbTab,&cl_TabTail,cl_tmpTab,0);
+	  TransferTab(&cl_SymbTab,&cl_TabTail,cl_tmpTab,1);
 	  DeleteVTab(&cl_tmpTab, &cl_tmpTabTail);
 	  cl_tmpTab = cl_SymbTab;
 	  cl_tmpTabTail = cl_TabTail;
@@ -380,6 +384,10 @@ int startShell()
       	  clLoadSymb();   /* Transfer symbols from temp. to permanent table*/
 	  doInp=true;
 	}
+      PRINTTAB(cl_SymbTab);
+      cerr << "=====================" << endl;
+      PRINTTAB(cl_tmpTab);
+      cerr << "=====================" << endl;
       {
 	if (!cl_defaultsLoaded)  /* Load the defaults */
 	  {

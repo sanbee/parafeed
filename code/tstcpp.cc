@@ -61,7 +61,7 @@ void UI(bool restart, int argc, char **argv)
     clRetry();
   try
     {
-      //clCmdLineFirst();
+      clCmdLineFirst(1);
       {
 	SMap watchPoints; VString exposedKeys;
 	InitMap(watchPoints,exposedKeys);
