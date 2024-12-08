@@ -359,22 +359,28 @@ void showExposedKeys(Symbol* t, const bool& showAll,
       for(auto smap : t->smap)
 	{
 	  mapVal = smap.second;
-	  if (smap.first == t->Val[0])
+	  // Check if mapVal.first matches the symbol's value.
+	  // Guard against symbol value not yet set.
+	  bool symbValMatched=true;
+	  if (t->Val.size()>0) symbValMatched=(smap.first == t->Val[0]);
+	  else symbValMatched=true;
+
 	  // Iterate over all keys in the smap for the symbol
-	  for (auto key : mapVal)
-	    {
-	      Symbol *S;
-	      S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
-	      if (S==NULL) break;
-	      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
-		  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
-		{
-		  printer(stderr,S);
-		}
-	      // Recusively show watched keys, if exposed by the current
-	      // value of the parent key or if showAll==True.
-	      showExposedKeys(S,showAll,printer);
-	    }
+	  if (symbValMatched)
+	    for (auto key : mapVal)
+	      {
+		Symbol *S;
+		S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+		if (S==NULL) break;
+		if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
+		    (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+		  {
+		    printer(stderr,S);
+		  }
+		// Recusively show watched keys, if exposed by the current
+		// value of the parent key or if showAll==True.
+		showExposedKeys(S,showAll,printer);
+	      }
 	}
     }
 }
