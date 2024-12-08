@@ -352,20 +352,20 @@ void showExposedKeys(Symbol* t, const bool& showAll,
 {
   vector<string> mapVal;
   //checkVal(t,mapVal);
+
   if (!t->smap.empty())
     {
       // Iterate over all entires in the smap for the symbol
       for(auto smap : t->smap)
 	{
-	  //	mapVal = (t->smap.begin())->second;
 	  mapVal = smap.second;
+	  if (smap.first == t->Val[0])
 	  // Iterate over all keys in the smap for the symbol
 	  for (auto key : mapVal)
 	    {
 	      Symbol *S;
 	      S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
 	      if (S==NULL) break;
-	      //S=SearchVSymb(iarg.c_str(),cl_SymbTab);
 	      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
 		  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
 		{
@@ -521,7 +521,8 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 	  //
 	  // For all other types, check by string comparision only.
 	  //
-	  if (t->Val.size() > 0)
+	  //if (t->Val.size() > 0)
+	  if (val_p.size() > 0)
 	    {
 	      loc = t->smap.find(string(val_p));
 	      found = (loc != t->smap.end());
