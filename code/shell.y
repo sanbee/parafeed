@@ -236,7 +236,11 @@ comd:    asign                   {$$=1;}
                                  }
 
         | externcmd              { 
-                                   system(sh_sys_cmd); 
+                                   if (system(sh_sys_cmd)<0)
+				     {
+				       perror("shell.y::externcmd rule");
+				       yyerror((char *)"error in system() call");
+				     }
 	                           FreeStr(&sh_sys_cmd);
                                    $$=1;
 				 }

@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 /* $Id: tst2.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
 #include <cl.h>
 #include <clsh.h>
@@ -5,7 +23,7 @@
 #include <stdio.h>
 #include <vector>
 #include <exception>
-#include <clgetBaseCode.h>
+//#include <clgetValp.cc>
 /*
    Test program to test the embedded shell via the commandline library
 */
@@ -18,6 +36,7 @@ void UI(bool restart, int argc, char **argv)
   VString strarr;
   string str;
   string fullVal="this is the default value";
+  string dbgfullVal="this is the dbg default value";
   bool b=false, b1=false;
   //
   // Change cl-shell prompt
@@ -62,9 +81,9 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.push_back("float");
 	watchPoints["1"]=exposedKeys;
 	i=1;clgetValp("int",j,i,watchPoints); // Equivalent to clgetIValp()
-	i=1;dbgclgetValp("dbgint",dj,i);
+	i=1;cldbggetValp("dbgint",dj,i);
 
-	i=1;clgetValp("float",f,i); // Equivalent to clgetIValp()
+	i=1;clgetValp("float",f,i); // Equivalent to clgetFValp()
 
 	i=1;clgetValp("oneint",oi,i); // Equivalent to clgetIValp()
 
@@ -74,7 +93,8 @@ void UI(bool restart, int argc, char **argv)
 	exposedKeys.resize(0);exposedKeys.push_back("fullval"); watchPoints["showfullval"]=exposedKeys;
 
 	str="showstrarr";
-	i=1;clgetSValp("string",str,i,watchPoints);
+	//i=1;clgetSValp("string",str,i,watchPoints);
+	i=1;clgetValp("string",str,i,watchPoints);
 
 	// Add another watchpoint for the same keyword that exposes a
 	// differet set of exposed keys.  As an example,
@@ -88,8 +108,9 @@ void UI(bool restart, int argc, char **argv)
 	clSetOptions("string",{"one","two","three","showstrarr","showfullval"});
 
 	i=0;clgetFullValp("fullval",fullVal);
-	i=0;clgetNSValp("strarr",strarr,i);
-	N=3;N=clgetNValp("farray",fv,N); // Equivalent to clgetNFValp()
+	i=0;dbgclgetFullValp("dbgfullval",dbgfullVal);
+	i=0;clgetValp("strarr",strarr,i);
+	N=3;N=clgetValp("farray",fv,N); // Equivalent to clgetNFValp()
       }
       EndCL();
     }

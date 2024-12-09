@@ -192,14 +192,15 @@ void      clReset();
 void      clRetry();
 FILE      *clstrtstream_(char *, char *, char *);
 void      stripwhite (char *);
-void      stripwhitep (std::string& str);
+std::string      stripwhitep (std::string& str);
 int       redirect(char *, char *);
 void      yyerror(char *);
 int       clgetConfigFile(char *, char *);
 int       AddCmd(const char *Name, char *Doc, int (*func)(char *), 
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
-int       BreakStrp(const std::string& str, std::string& Name, std::string& Val);
+int       BreakStrp(const std::string& str, std::string& Name, std::string& Val,
+		    const std::string& sep="=");
 std::string ProgName();
 int       dogo(char *);
 int       dogob(char *);
@@ -212,10 +213,10 @@ int       doedit(char *);
 int       dohelp(char *);
 int       doexplain(char *);
 int       dosave(char *);
-int       dosavefd(FILE *);
+int       dosavefd(FILE *,const std::vector<std::string>& opts={});
 int       docmdsave(char *);
 int       doload(char *);
-int       doload_and_register(char *);
+int       doload_and_register(char *,const bool doregister=true);
 int       dotypehelp(char *);
 int       doademo(char *);
 int       doprintdoc(const char *);
@@ -224,9 +225,9 @@ int       doprintparams(const char *);
   int       docopyright(const std::string& arg);
 #endif
 int       dowarranty(char *);
-#ifdef __cplusplus
-int       loadDefaults(int complement=1);
-#endif
+// #ifdef __cplusplus
+// int       loadDefaults(int complement=1);
+// #endif
   //int       clparseVal(Symbol *, int *, double *);
 #ifdef __cplusplus
 void      reportParseError(const Symbol& S, const int& N);
@@ -236,7 +237,8 @@ int       PrintKey(FILE *f, Symbol *S);
 #ifdef __cplusplus
 void      printMap(SMap& smap);
 #endif
-  int       namePrintFormat(std::string& format, const std::string& append);
+int       namePrintFormat(std::string& format, const std::string& append,
+			  const std::string& qualifier="");
 int       clIsInteractive();
   /*
 void mkfilename(char *out,char *envvar,char *name,char *type);

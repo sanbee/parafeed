@@ -31,7 +31,8 @@ CmdSymbol CmdTab[]={
   {(char *)"?",   (char *)"Information on all exposed keywords, optionally on a single keyword.\n"
 "                Use option \"-a\" to include hidden keywords", NULL,NULL,dotypehelp,CL_ARG_KEYWORD},
   {(char *)"explain",(char *)"Detailed help, optionally of keywords/task [[Key][:Task]]",NULL,NULL,doexplain,CL_ARG_KEYWORD},
-  {(char *)"save",   (char *)"Save the values, optionally in a given file",NULL,NULL,dosave,CL_ARG_FILENAME},
+  {(char *)"save",   (char *)"Save the values, optionally in a given file\n"
+"                Use option \"-s\" for saving parameters with the scoping string", NULL,NULL,dosave,CL_ARG_FILENAME},
   {(char *)"savecmd",(char *)"Save the settings as UNIX shell command string, optionally in a file",NULL,NULL,docmdsave,CL_ARG_FILENAME},
   {(char *)"load",   (char *)"Load the values, optionally from a file",NULL,NULL,doload,CL_ARG_FILENAME},
   {(char *)"edit",   (char *)"Use an editor to (un)set the values",NULL,NULL,doedit,CL_ARG_FILENAME},

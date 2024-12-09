@@ -112,7 +112,7 @@ extern "C" {
     Strip any leading white spaces (' ',TAB).  This is useful while 
     reading strings typed by humans.
     ----------------------------------------------------------------------*/
-  void stripwhitep (std::string& str)
+  std::string stripwhitep (std::string& str)
   {
     auto beg=str.begin(),
       end=str.end()-1;
@@ -124,6 +124,7 @@ extern "C" {
       if (!std::isspace(static_cast<unsigned char>(*end))) break;
     end++;
     str = std::string(beg,end);
+    return str;
   }
 
   void stripwhite (char *string)
@@ -148,20 +149,30 @@ extern "C" {
     Break a string of the type <Name>=<Value> into Name and Value.
     ----------------------------------------------------------------------*/
   int BreakStrp(const std::string& str,
-		std::string& Name, std::string& val)
+		std::string& Name, std::string& val,
+		const std::string& sep)
   {
-    auto i=str.begin();
-    for(i=str.begin(); i != str.end(); i++)
-      if (*i == '=') break;
-    
-    if (str.begin() != i)
-      Name = std::string(str.begin(),i);
-
-    if (i != str.end())
+    size_t pos = str.find(sep);
+    if (pos != string::npos)
       {
-	i++;
-	val = std::string(i,str.end());
+	Name = str.substr(0,pos);
+	size_t vpos=pos+sep.size();
+	if (vpos <= str.size())
+	  val = str.substr(vpos,str.size()-1);
       }
+
+    // auto i=str.begin();
+    // for(i=str.begin(); i != str.end(); i++)
+    //   if (*i == sep) break;
+    
+    // if (str.begin() != i)
+    //   Name = std::string(str.begin(),i);
+
+    // if (i != str.end())
+    //   {
+    // 	i++;
+    // 	val = std::string(i,str.end());
+    //   }
     return 1;
   }
   int BreakStr(char *str, char **Name, char **val)
@@ -207,12 +218,17 @@ extern "C" {
       {
 	if ((fd=creat(out,0644))<0)
 	  {
-	    perror(out);
+	    perror("parafeed:redirect()::create()");
 	    clThrowUp("In STDOUT redirection.","###Error",
 		      CL_SEVERE);
 	  }
 	close(1);
-	dup(fd);
+	if (dup(fd)<0)
+	  {
+	    perror("parafeed:redirect::dup(fd)");
+	    clThrowUp("In STDOUT redirection.","###Error",
+		      CL_SEVERE);
+	  }
       }
     
     if (ERR)
@@ -231,12 +247,22 @@ extern "C" {
 			  CL_SEVERE);
 	      }
 	    close(2);
-	    dup(fd1);
+	    if (dup(fd1)<0)
+	      {
+		perror("parafeed:redirect::dup(fd1)");
+		clThrowUp("In STDOUT redirection.","###Error",
+			  CL_SEVERE);
+	      }
 	  }
 	else
 	  {
 	    close(2);
-	    dup(fd);
+	    if (dup(fd)<0)
+	      {
+		perror("parafeed:redirect::dup(fd_1)");
+		clThrowUp("In STDOUT redirection.","###Error",
+			  CL_SEVERE);
+	      }
 	  }
       }
     return 1;
@@ -326,29 +352,35 @@ void showExposedKeys(Symbol* t, const bool& showAll,
 {
   vector<string> mapVal;
   //checkVal(t,mapVal);
+
   if (!t->smap.empty())
     {
       // Iterate over all entires in the smap for the symbol
       for(auto smap : t->smap)
 	{
-	  //	mapVal = (t->smap.begin())->second;
 	  mapVal = smap.second;
+	  // Check if mapVal.first matches the symbol's value.
+	  // Guard against symbol value not yet set.
+	  bool symbValMatched=true;
+	  if (t->Val.size()>0) symbValMatched=(smap.first == t->Val[0]);
+	  else symbValMatched=true;
+
 	  // Iterate over all keys in the smap for the symbol
-	  for (auto key : mapVal)
-	    {
-	      Symbol *S;
-	      S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
-	      if (S==NULL) break;
-	      //S=SearchVSymb(iarg.c_str(),cl_SymbTab);
-	      if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
-		  (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
-		{
-		  printer(stderr,S);
-		}
-	      // Recusively show watched keys, if exposed by the current
-	      // value of the parent key or if showAll==True.
-	      showExposedKeys(S,showAll,printer);
-	    }
+	  if (symbValMatched)
+	    for (auto key : mapVal)
+	      {
+		Symbol *S;
+		S=SearchVSymb((char *)key.c_str(),cl_SymbTab);
+		if (S==NULL) break;
+		if (((S->Exposed || showAll) && (S->Class == CL_APPLNCLASS)) ||
+		    (((S->Class == CL_DBGCLASS) && (CL_DBG_ON))))
+		  {
+		    printer(stderr,S);
+		  }
+		// Recusively show watched keys, if exposed by the current
+		// value of the parent key or if showAll==True.
+		showExposedKeys(S,showAll,printer);
+	      }
 	}
     }
 }
@@ -463,6 +495,12 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 {
   bool found=false;
   SMap::iterator loc;
+
+  string val_p;
+  if (t->NVals>0) val_p=t->Val[0];
+  else if (t->DefaultVal.size() > 0) val_p=t->DefaultVal[0];
+  else return found;
+
   try
     {
       if (ISSET(t->Attributes,CL_BOOLTYPE))
@@ -479,7 +517,9 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 	      // E.g., t->Val0]="0" and logicalKey=False will return true.
 	      // bool symbolBoolVal = clBoolCmp(t->Val[0],logicalKey);
 	      // if ((found = (symbolBoolVal==logicalKey))) break;
-	      if ((found = clBoolCmp(t->Val[0],logicalKey))) break;
+	      // cerr << "LOC: " << t->Name << " " << t->Val[0] << "|" << (*loc).first << " ";
+	      // for (auto x : (*loc).second) cerr << x << " "; cerr << "|" << endl;
+	      if ((found = clBoolCmp(val_p,logicalKey))) break;
 	    }
 	}
       else
@@ -487,9 +527,10 @@ bool checkVal(Symbol* t, vector<string>& mapVal)
 	  //
 	  // For all other types, check by string comparision only.
 	  //
-	  if (t->Val.size() > 0)
+	  //if (t->Val.size() > 0)
+	  if (val_p.size() > 0)
 	    {
-	      loc = t->smap.find(string(t->Val[0]));
+	      loc = t->smap.find(string(val_p));
 	      found = (loc != t->smap.end());
 	    }
 	}
@@ -506,8 +547,7 @@ int exposeKeys(Symbol *t)
 {
   Symbol *S;
   int exposedSomething=0;
-  /*    char *name = t->Name;*/
-  
+
   if ((t->smap.size() > 0))
     {
       //
@@ -534,21 +574,17 @@ int exposeKeys(Symbol *t)
 	}
       //
       // Now set for display those watched-keys which are exposed by
-      // the current setting of this symbol. If the current symbol
-      // (t) is not exposed itself, the keys are that watching
-      // remain unexposed. For now, the "current setting" is only
-      // the first value (i.e. ignores other possible comma
-      // seperated values).
+      // the current setting of this symbol. If the current symbol (t)
+      // is not exposed itself, the keys it is watching remain
+      // unexposed. For now, the "current setting" used is only the
+      // first value (i.e. ignores other possible comma seperated
+      // values).
       //
-      
-      if ((t->NVals > 0) && (t->Exposed==1))
+      if (t->Exposed==1)
 	{
-	  // SMap::iterator loc = (t->smap.find(string(t->Val[0])));
-	  // if (loc != t->smap.end())
 	  vector<string> mapVal;
 	  if (checkVal(t,mapVal))
 	    {
-	      //		vector<string> sv=(*loc).second;
 	      vector<string> sv=mapVal;
 	      for(unsigned int j=0;j<sv.size();j++)
 		{

@@ -2,7 +2,7 @@
  * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ nv * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
@@ -16,23 +16,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id$ */
+/* $Id: clgetNFVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
-#include <vector>
 #include <support.h>
 #include <sstream>
 #include <clgetBaseCode.h>
-#include <clparseVal.h>
+#include <clgetValp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*---------------------------------------------------------------------------*/
-  /* Extract a m number of values associated with Key.  If *m is negative,     */
-  /* fatal error occurs.  If the return value is positive, it is the number of */
-  /* associated values that are returned in *Vals.  Vals should have enough    */
-  /* space to hold the returned values.                                        */
-  /*---------------------------------------------------------------------------*/
-  int clgetNBVal(char *Key, bool *val, int *m)
+  /*------------------------------------------------------------------------
+    Return N values of Name as a integers
+    ------------------------------------------------------------------------*/
+  int clgetNFVal(char *Name, float *val, int *m)
   {
     int i=1,n;
     double d;
@@ -41,39 +37,38 @@ extern "C" {
     HANDLE_EXCEPTIONS(
 		      std::ostringstream os;
 		      if (*m <= 0)
-			os << "bool[]";
+			os << "float[]";
 		      //sprintf(tmp,"bool[]");
 		      else
-			os << "bool[" << *m << "]";
+			os << "float[" << *m << "]";
 		      //sprintf(tmp,"bool[%d]",*m);
 		      
-		      S = SearchQSymb(Key, os.str());
+		      S = SearchQSymb(Name, os.str());
 		      i=1;
+		      
 		      while(i <= *m)
 			if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
 			else if (n==0) break;
-			else {val[i-1] = (bool)(d==0?false:true);i++;}
-		      
-		      return i-1;
+			else {val[i-1] = (float)d;i++;}
 		      )
-      }
+      return i-1;
+  }
   
 #ifdef __cplusplus
 }
 #endif
 #ifdef __cplusplus
-int clgetNBValp(const string& Key, vector<bool>& val, int& m)
+int clgetNFValp(const string& Key, vector<float>& val, int& m)
 {
   HANDLE_EXCEPTIONS(
 		    SMap EmptyMap;
 		    return clgetNValp(Key,val,m,EmptyMap);
 		    )
 }
-
-int clgetNBValp(const string& Key, vector<bool>& val, int& m, SMap& smap)
+int clgetNFValp(const string& Key, vector<float>& val, int& m, SMap& smap)
 {
   HANDLE_EXCEPTIONS(
 		    return clgetNValp(Key,val,m,smap);
-		    )
+		    );
 }
 #endif

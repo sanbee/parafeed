@@ -289,14 +289,14 @@ END{									\
 #endif
     
       ss += std::string(".doc ");
-      //strcat(str,".doc ");
       if (key) ss += key;
-      //if (key) strncat(str,key,strlen(key));
       ss += sed_script;
-      //strcat(str,sed_script);
 
-      system(ss.c_str());
-      //if (str) free(str);
+      if (system(ss.c_str()) < 0)
+	{
+	  perror("doexplain()");
+	  clThrowUp(std::string("Error in system() call in doexplain()"), "###Error", CL_FATAL);
+	}
     return 1;
   }
   /*------------------------------------------------------------------------
@@ -305,16 +305,50 @@ END{									\
     -------------------------------------------------------------------------*/
   int dosave(char *f)
   {
-    FILE *fd;
-    std::string format,FileName=ProgName();
+    std::string doScoping("-s");
+    std::vector<std::string> sv;
+    if (f!=NULL && strlen(f) > 0)
+      {
+	sv = stokenize(string(f), std::regex("\\s+"));
+	for(auto s : sv) s=stripwhitep(s);
+      }
+    if ((sv.size() > 2) || ((sv.size() == 2) && (sv[0] != doScoping)))
+      {
+	clThrowUp(std::string("Usage: \"save "+doScoping+" [filename]\""), "###Error", CL_FATAL);
+	return 2;
+      }
 
-    //    namePrintFormat(format," = ");
-    stripwhite(f);
-    if(f==NULL || strlen(f) == 0)
-      FileName=ProgName()+".def";
-    else
-      FileName=f;
-    
+    std::string format,FileName;
+
+    switch (sv.size())
+      {
+	// Pick the last element and pass down the first element in
+	// sv.
+      case 2:
+	{
+	  FileName=sv.back();
+	  sv.pop_back();
+	  break;
+	}
+	// If the only option is doScoping, fallthrough.
+      case 1:
+	{
+	  if (sv[0] != doScoping)
+	    {
+	      FileName=sv.back();
+	      sv.pop_back();
+	      break;
+	    }
+	}
+	// Construct the default file name.
+      default:
+	{
+	  FileName=ProgName()+".def";
+	  break;
+	}
+      }
+
+    FILE *fd;
     if ((fd=fopen(FileName.c_str(),"w"))==NULL)
       {
 	clThrowUp(std::string("Error in opening file \"")+FileName+std::string("\" for writing"), "###Error", CL_FATAL);
@@ -322,7 +356,7 @@ END{									\
       }
     else
       {
-	dosavefd(fd);
+	dosavefd(fd,sv);
 	fclose(fd);
       }
     return 1;
@@ -331,10 +365,20 @@ END{									\
     Saves the current setting of the various keywords to the given file
     descriptor
     -------------------------------------------------------------------------*/
-  int dosavefd(FILE *fd)
+int dosavefd(FILE *fd, const std::vector<std::string>& opts)
   {
     std::string format,str;
-    namePrintFormat(format," = ");
+    std::string scope;
+    if (opts.size() > 0)
+      if (opts[0] == "-s")
+	scope=ProgName()+"::";
+      else
+	{
+	  clThrowUp(std::string("Unknown option \"")+opts[0]+"\"", "###Error", CL_FATAL);
+	  return 2;
+	}
+
+    namePrintFormat(format," = ",scope);
 
     Symbol *t;
 	
@@ -347,7 +391,9 @@ END{									\
 	//     ((t->Class==CL_DBGCLASS) && CL_DBG_ON))
 	if (USE_IF_TRUE(t))
 	  {
-	    fprintf(fd,format.c_str(),t->Name);
+	    string scopedName=scope+t->Name;
+	    //	    string scopedName=t->Name;
+	    fprintf(fd,format.c_str(),scopedName.c_str());
 	    PrintVals(fd,t,1);
 	  }
       }
@@ -402,83 +448,7 @@ END{									\
     ------------------------------------------------------------------------*/
   int doload(char *f)
   {
-    // FILE *fd;
-    // char str[MAXBUF];
-    int Complement=0;
-
-    ifstream ifs;
-    string strcpp;
-
-    cl_do_doinp=0;
-    
-    stripwhite(f);
-    if(f==NULL || strlen(f) == 0)
-      {
-	strcpp = cl_ProgName; 
-	//	strcpy(str,cl_ProgName);
-#ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
-	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
-#endif
-	//	strcat(str,".def");
-	strcpp.append(".def");
-      }
-    else 
-      //      strcpy(str,f);
-      strcpp = f;
-    
-    //    if (str[strlen(str)-1] == '!') 
-    if (strcpp[strcpp.size()-1] == '!') 
-      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
-
-    ifs.open(strcpp.c_str());
-    //    if ((fd = fopen(str,"r"))==NULL)
-    if (!ifs.good())
-      {
-	//    	fprintf(stderr,"###Error: Error in opening file \"%s\"\n",strcpp.c_str());
-	cerr << "###Error: Error in opening file \"" << strcpp << "\"" << endl;
-    	return 2;
-      }
-    else
-      {
-	char *Name=NULL, *Val=NULL;
-	Symbol *pos;
-	
-	//	while(!feof(fd))
-	while(!ifs.eof())
-	  {
-	    string line;
-	    //	    for (i=0;i<MAXBUF;i++)str[i]='\0';
-	    //	    if (fgets(str,MAXBUF,fd)!=NULL)
-	    if (getline(ifs,line))
-	      {
-		char *str_p=(char *)line.c_str();
-		//		cerr << line << endl;
-		stripwhite(str_p);//str_p[strlen(str_p)-1]='\0';
-		if (strlen(str_p) > 0)
-		  {
-		    BreakStr(str_p,&Name,&Val);
-		    pos = NULL;
-		    if (Complement)
-		      {
-			//		      pos=SearchVSymb(Name,cl_SymbTab);
-			pos=SearchVSymbFullMatch(Name,cl_SymbTab);
-			if ((pos == (Symbol *)NULL))
-			  pos=AddVar(Name,&cl_SymbTab,&cl_TabTail);
-			if ((pos->NVals == 0))
-			  pos = (Symbol *)NULL;
-		      }
-		    if (pos==NULL)
-		      SetVar(Name,Val,cl_SymbTab,0,1,cl_do_doinp);
-		    if (Name != NULL) {free(Name);Name=NULL;}
-		    if (Val != NULL) {free(Val);Name=NULL;}
-		  }
-	      }
-	  }
-	//	fclose(fd);
-      }
-    cl_do_doinp=0;
-    return 1;
+    return doload_and_register(f,false);
   }
   /*-----------------------------------------------------------------------
     Functional difference from doload is that this loads the first
@@ -487,40 +457,40 @@ END{									\
 
     This needs code cleanup to remove parts from doload() that aren't
     necessary here.  08Mar, 2022.
+
+    Consolidated doload() functionality into this function. 
+    Replaced all C-string usage by std::string.  20July2024.
     ------------------------------------------------------------------------*/
-  int doload_and_register(char *f)
+  int doload_and_register(char *f,const bool doregister)
   {
     int Complement=0;
 
     ifstream ifs;
-    string strcpp;
+    string defFile;
 
     cl_do_doinp=0;
     
     stripwhite(f);
+
     if(f==NULL || strlen(f) == 0)
       {
-	strcpp = cl_ProgName; 
-#ifdef GNUREADLINE
-	//	str[strlen(cl_ProgName)-1]='\0';
-	strcpp=strcpp.substr(0,strlen(cl_ProgName)-1);
-#endif
-	strcpp.append(".def");
+	defFile = ProgName();
+	defFile.append(".def");
       }
     else 
-      strcpp = f;
+      defFile = f;
     
-    if (strcpp[strcpp.size()-1] == '!') 
-      {Complement = 1; strcpp[strcpp.size()-1] = (char)NULL;}
+    if (defFile[defFile.size()-1] == '!') 
+      {Complement = 1; defFile[defFile.size()-1] = (char)NULL;}
 
-    ifs.open(strcpp.c_str());
+    ifs.open(defFile.c_str());
 
     if (!ifs.good())
       {
-	clThrowUp(std::string("Error in opening file \"")+strcpp+std::string("\""), "###Error", CL_FATAL);
+	clThrowUp(std::string("Error in opening file \"")+defFile+std::string("\""), "###Error", CL_FATAL);
 	return 2;
       }
-   else
+    else
       {
 	Symbol *pos;
 	
@@ -532,25 +502,42 @@ END{									\
 		stripwhitep(line);
 		if ((line.size() > 0) && (line[0] != '#'))
 		  {
+		    // Separate the line into name and value strings
+		    // separated by the first '=' char.  Strip the
+		    // white spaces.
 		    std::string Name_str, Val_str;
 		    BreakStrp(line,Name_str,Val_str);
 		    stripwhitep(Name_str);
 		    stripwhitep(Val_str);
 
-		    pos = NULL;
+		    // Seperate the Name string into scope and Name
+		    // string seperated by ':'
+		    std::string Scope_str;
+		    BreakStrp(Name_str, Scope_str, Name_str,"::");
+		    stripwhitep(Name_str);
+		    stripwhitep(Scope_str);
+		    if (Name_str == Scope_str) Scope_str="";
 
-		    if (Complement)
+		    pos = NULL;
+		    if ((Scope_str == "") || (Scope_str == ProgName()))
 		      {
-			pos=SearchVSymbFullMatch(Name_str.c_str(),cl_SymbTab);
-			if ((pos == (Symbol *)NULL))
-			  pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
-			if ((pos->NVals == 0))
-			  pos = (Symbol *)NULL;
-		      }
-		    if (pos==NULL)
-		      {
-			pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
-			SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),cl_SymbTab,0,1,cl_do_doinp);
+			if (Complement)
+			  {
+			    pos=SearchVSymbFullMatch(Name_str.c_str(),
+						     cl_SymbTab);
+			    if ((pos == (Symbol *)NULL))
+			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,
+					 &cl_TabTail);
+			    if ((pos->NVals == 0))
+			      pos = (Symbol *)NULL;
+			  }
+			if (pos==NULL)
+			  {
+			    if (doregister)
+			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+			    SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),
+				   cl_SymbTab,0,1,cl_do_doinp);
+			  }
 		      }
 		  }
 	      }
@@ -559,8 +546,9 @@ END{									\
 	// that get queried (via clget*Val() functions) are converted
 	// to CL_APPLNCLASS and only those are then
 	// printed/saved/shown
-	for (Symbol *S=cl_SymbTab; S!=NULL;S=S->Next)
-	  S->Class=CL_USERCLASS;
+	if (doregister)
+	  for (Symbol *S=cl_SymbTab; S!=NULL;S=S->Next)
+	    S->Class=CL_USERCLASS;
       }
     cl_do_doinp=0;
     return 1;
@@ -591,7 +579,11 @@ END{									\
       else
 	str << "emacs -nw " << tmpname;
       
-      system(str.str().c_str());
+      if (system(str.str().c_str()) < 0)
+	{
+	  perror("doedit()");
+	  clThrowUp(std::string("Error in system() call in doedit()"), "###Error", CL_FATAL);
+	}
       doload(tmpname);
     }
 
@@ -608,7 +600,13 @@ END{									\
     if (dir == NULL || strlen(dir)==0) s=(char *)getenv(CL_HOMEENV);
     
     if (chdir(s)==-1)   perror(s);
-    else                system("/bin/pwd");
+    else
+      if (system("/bin/pwd") < 0)
+	{
+	  perror("docd");
+	  clThrowUp(std::string("Error in system(\"/bin/pwd\") call in docd()"), "###Error", CL_FATAL);
+	}
+
     return 1;
   }
   /*----------------------------------------------------------------------*/

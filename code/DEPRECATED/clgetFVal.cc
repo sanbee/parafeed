@@ -16,48 +16,54 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: clgetFullVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
+/* $Id: clgetFVal.c,v 2.1 1999/03/23 15:01:49 sanjay Exp $ */
 #include <shell.h>
 #include <cllib.h>
+#include <string.h>
+#include <support.h>
+#include <clgetBaseCode.h>
+#include <clgetValp.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+/*------------------------------------------------------------------------
+   Return the Nth value of Name as an float
+------------------------------------------------------------------------*/
+int clgetFVal(char *Name, float *val, int *n)
+{
+  Symbol *S;
+  int N;
+  double d;
+
+HANDLE_EXCEPTIONS(  
+  if (*n < 0)
+    S=SearchVSymb(Name,cl_SymbTab);
+  else
+    S=SearchQSymb(Name,(char *)"float");
+  if ((N=clparseVal(S,n,&d))>0) *val=(float)d;
+  if (S!=NULL) SETBIT(S->Attributes,CL_FLOATTYPE);
+  return N;
+)
+}   
 
 #ifdef __cplusplus
-/* extern "C" { */
-/* #endif */
-/*------------------------------------------------------------------------
-   Get the value associated with Key as one string.
-------------------------------------------------------------------------*/
-int dbgclgetFullValp(const string& Name, string& val)
-{
-  int n,i,len=0;
-  char tmp[FILENAME_MAX];
-  Symbol *S;
-  S=SearchQSymb((char*)Name.c_str(),(char *)"Mixed[]");
-  if (S == NULL)
-    S = SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-  
-  if (S != NULL) S->Class=CL_DBGCLASS;
-  
-  if ((n=clgetNVals((char *)Name.c_str()))>0)
-    {
-      val="";
-      for (i=1;i<=n;i++)
-	{
-	  clgetSVal((char *)Name.c_str(),tmp,&i);
-	  len += strlen(tmp)+1;
-	}
-
-      i=1; clgetSVal((char *)Name.c_str(),tmp,&i);
-      val=tmp;
-
-      for (i=2;i<=n;i++)
-	{
-	  val = val +",";
-	  clgetSVal((char *)Name.c_str(),tmp,&i);
-	  val = val + tmp;
-	}
-    }
-  return n;
-}
-/* #ifdef __cplusplus */
-/* 	   } */
+	   }
 #endif
+#ifdef __cplusplus
+
+int clgetFValp(const string& Name, float &val, int &n)
+{
+  HANDLE_EXCEPTIONS(
+		    SMap empty;
+		    return clgetValp(Name,val,n,empty);
+		   );
+}
+int clgetFValp(const string& Name, float& val, int& n, SMap &smap)
+{
+  HANDLE_EXCEPTIONS(
+		    return clgetValp(Name,val,n,smap);
+		   );
+}
+
+#endif   
+

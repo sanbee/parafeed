@@ -69,60 +69,57 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
-int clgetFullValp(const string& Name, string& val)
+//
+// Base function called in API-level functions below.
+//
+Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 {
   Symbol *S;
 
   HANDLE_EXCEPTIONS(
 		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+		    if (dbg && (S == NULL))
+		      S = SearchVSymb((char *)Name.c_str(),cl_SymbTab);
 		    if (S != NULL)
 		      {
 			SETBIT(S->Attributes,CL_MIXEDTYPE);
 			S->Class=CL_APPLNCLASS;
-			//if (dbg) S->Class=CL_DBGCLASS;
+			if (dbg) S->Class=CL_DBGCLASS;
 
 			VString vstr={val};
-			setAutoDefaults<std::string>(S,vstr);//,true);
-
-			//val = vecStr2Str(S->Val);
+			setAutoDefaults(S,vstr);
 		      }
-		    )
+		    );
 
-    int N = 1;
-    clparseVal(S,&N,val); // The function with val type string does not link.  Don't know why.
-  // if (S!=NULL)
-  //   {
-  //     if (N <= S->NVals)
-  // 	{
-  // 	  val = trim(S->Val[N-1]);
-  // 	  return val.size();
-  // 	}
-  //     else
-  // 	return CL_FAIL;
-  //   }
-
-  return S->Val.size();
-
-  // //  setAutoSDefaults(S,val,1);
-  // if ((n=clgetNVals((char *)Name.c_str()))>0)
-  //   {
-  //     // val="";
-  //     // for (i=1;i<=n;i++)
-  //     // 	{
-  //     // 	  clgetSValp(Name,tmp,i);
-  //     // 	  len += tmp.size()+1;
-  //     // 	}
-
-  // string tmp;
-  //     i=1; clgetSValp(Name,tmp,i);
-  //     val=tmp;
-
-  //     for (i=2;i<=n;i++)
-  // 	{
-  // 	  val = val +",";
-  // 	  clgetSValp(Name,tmp,i);
-  // 	  val = val + tmp;
-  // 	}
-  //   }
+    return S;
+}
+//
+//----------------------------------------------------------------------
+// The API-level function that can be used in the applications.
+//
+int clgetFullValp(const string& Name, string& val)
+{
+  int N=1;
+  HANDLE_EXCEPTIONS(
+		    {
+		      Symbol *S = clgetFullValpBase(Name,val,false);
+		      N=clparseVal(S,&N,val);
+		      return N;
+		    }
+		    );
+}
+//
+//-------------------------------------------------------------------------
+//
+int dbgclgetFullValp(const string& Name, string& val)
+{
+  int N=1;
+  HANDLE_EXCEPTIONS(
+		    {
+		      Symbol *S	= clgetFullValpBase(Name,val,true);
+		      N=clparseVal(S,&N,val);
+		      return N;
+		    }
+		    );
 }
 #endif

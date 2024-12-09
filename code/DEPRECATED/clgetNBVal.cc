@@ -16,12 +16,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: clgetNIVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
+/* $Id$ */
 #include <cllib.h>
 #include <vector>
 #include <support.h>
 #include <sstream>
 #include <clgetBaseCode.h>
+#include <clparseVal.h>
+#include <clgetValp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,7 +33,7 @@ extern "C" {
   /* associated values that are returned in *Vals.  Vals should have enough    */
   /* space to hold the returned values.                                        */
   /*---------------------------------------------------------------------------*/
-  int clgetNIVal(char *Key, int *val, int *m)
+  int clgetNBVal(char *Key, bool *val, int *m)
   {
     int i=1,n;
     double d;
@@ -40,10 +42,10 @@ extern "C" {
     HANDLE_EXCEPTIONS(
 		      std::ostringstream os;
 		      if (*m <= 0)
-			os << "int[]";
+			os << "bool[]";
 		      //sprintf(tmp,"bool[]");
 		      else
-			os << "int[" << *m << "]";
+			os << "bool[" << *m << "]";
 		      //sprintf(tmp,"bool[%d]",*m);
 		      
 		      S = SearchQSymb(Key, os.str());
@@ -51,7 +53,7 @@ extern "C" {
 		      while(i <= *m)
 			if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
 			else if (n==0) break;
-			else {val[i-1] = (int)d;i++;}
+			else {val[i-1] = (bool)(d==0?false:true);i++;}
 		      
 		      return i-1;
 		      )
@@ -61,14 +63,15 @@ extern "C" {
 }
 #endif
 #ifdef __cplusplus
-int clgetNIValp(const string& Key, vector<int>& val, int& m)
+int clgetNBValp(const string& Key, vector<bool>& val, int& m)
 {
   HANDLE_EXCEPTIONS(
 		    SMap EmptyMap;
 		    return clgetNValp(Key,val,m,EmptyMap);
 		    )
 }
-int clgetNIValp(const string& Key, vector<int>& val, int& m, SMap& smap)
+
+int clgetNBValp(const string& Key, vector<bool>& val, int& m, SMap& smap)
 {
   HANDLE_EXCEPTIONS(
 		    return clgetNValp(Key,val,m,smap);

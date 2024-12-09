@@ -22,6 +22,7 @@
 #include <vector>
 #include <stdbool.h>
 #include <regex>
+#include <iosupport.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
