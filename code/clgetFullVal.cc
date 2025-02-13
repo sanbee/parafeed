@@ -24,14 +24,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*----------------------------------------------------------------------*/
-  std::string vecStr2Str(const std::vector<std::string>& src)
-  {
-    std::string val="";
-    if (src.size() > 0) val=src[0];
-    for(int i=1;i< src.size();i++) val = val + ',' + src[i];
-    return val;
-  };
   /*------------------------------------------------------------------------
     Get the value associated with Key as one string.
     ------------------------------------------------------------------------*/
@@ -69,12 +61,20 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
+/*----------------------------------------------------------------------*/
+std::string vecStr2Str(const std::vector<std::string>& src)
+{
+  std::string val="";
+  if (src.size() > 0) val=src[0];
+  for(int i=1;i< src.size();i++) val = val + ',' + src[i];
+  return val;
+};
 //
 // Base function called in API-level functions below.
 //
 Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 {
-  Symbol *S;
+  Symbol *S=NULL;
 
   HANDLE_EXCEPTIONS(
 		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
@@ -88,6 +88,8 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 
 			VString vstr={val};
 			setAutoDefaults(S,vstr);
+
+			val = vecStr2Str(S->Val);
 		      }
 		    );
 
@@ -96,30 +98,16 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 //
 //----------------------------------------------------------------------
 // The API-level function that can be used in the applications.
-//
+// Return 0 if symbol not found, 1 otherwise.
 int clgetFullValp(const string& Name, string& val)
 {
-  int N=1;
-  HANDLE_EXCEPTIONS(
-		    {
-		      Symbol *S = clgetFullValpBase(Name,val,false);
-		      N=clparseVal(S,&N,val);
-		      return N;
-		    }
-		    );
+  HANDLE_EXCEPTIONS(return (clgetFullValpBase(Name,val,false)!=NULL););
 }
 //
 //-------------------------------------------------------------------------
 //
 int dbgclgetFullValp(const string& Name, string& val)
 {
-  int N=1;
-  HANDLE_EXCEPTIONS(
-		    {
-		      Symbol *S	= clgetFullValpBase(Name,val,true);
-		      N=clparseVal(S,&N,val);
-		      return N;
-		    }
-		    );
+  HANDLE_EXCEPTIONS(return (clgetFullValpBase(Name,val,true)!=NULL););
 }
 #endif
