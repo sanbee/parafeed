@@ -61,12 +61,12 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
-/*----------------------------------------------------------------------*/
+//----------------------------------------------------------------------
 std::string vecStr2Str(const std::vector<std::string>& src)
 {
-  std::string val="";
-  if (src.size() > 0) val=src[0];
+  std::string val=src.size() > 0 ? src[0] : "";
   for(int i=1;i< src.size();i++) val = val + ',' + src[i];
+
   return val;
 };
 //
@@ -89,7 +89,11 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 			VString vstr={val};
 			setAutoDefaults(S,vstr);
 
-			val = vecStr2Str(S->Val);
+			// Do not modify val if S->Val is empty.  The
+			// in-comming val may have a default value
+			// that is not yet tranferred to S-Val.
+			if (S->NVals > 0) 
+			  val = vecStr2Str(S->Val);
 		      }
 		    );
 
@@ -101,13 +105,17 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 // Return 0 if symbol not found, 1 otherwise.
 int clgetFullValp(const string& Name, string& val)
 {
-  HANDLE_EXCEPTIONS(return (clgetFullValpBase(Name,val,false)!=NULL););
+  HANDLE_EXCEPTIONS(
+		    return (clgetFullValpBase(Name,val,false)!=NULL);
+		    );
 }
 //
 //-------------------------------------------------------------------------
 //
 int dbgclgetFullValp(const string& Name, string& val)
 {
-  HANDLE_EXCEPTIONS(return (clgetFullValpBase(Name,val,true)!=NULL););
+  HANDLE_EXCEPTIONS(
+		    return (clgetFullValpBase(Name,val,true)!=NULL);
+		    );
 }
 #endif
