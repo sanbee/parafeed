@@ -24,14 +24,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*----------------------------------------------------------------------*/
-  std::string vecStr2Str(const std::vector<std::string>& src)
-  {
-    std::string val="";
-    if (src.size() > 0) val=src[0];
-    for(int i=1;i< src.size();i++) val = val + ',' + src[i];
-    return val;
-  };
   /*------------------------------------------------------------------------
     Get the value associated with Key as one string.
     ------------------------------------------------------------------------*/
@@ -69,6 +61,14 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
+//----------------------------------------------------------------------
+std::string vecStr2Str(const std::vector<std::string>& src)
+{
+  std::string val=src.size() > 0 ? src[0] : "";
+  for(int i=1;i< src.size();i++) val = val + ',' + src[i];
+
+  return val;
+};
 //
 // Base function called in API-level functions below.
 //
@@ -88,6 +88,12 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 
 			VString vstr={val};
 			setAutoDefaults(S,vstr);
+
+			// Do not modify val if S->Val is empty.  The
+			// in-comming val may have a default value
+			// that is not yet tranferred to S-Val.
+			if (S->NVals > 0) 
+			  val = vecStr2Str(S->Val);
 		      }
 		    );
 
@@ -99,13 +105,8 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 //
 int clgetFullValp(const string& Name, string& val)
 {
-  int N=1;
   HANDLE_EXCEPTIONS(
-		    {
-		      Symbol *S = clgetFullValpBase(Name,val,false);
-		      N=clparseVal(S,&N,val);
-		      return N;
-		    }
+		    return (clgetFullValpBase(Name,val,false)!=NULL);
 		    );
 }
 //
@@ -113,13 +114,8 @@ int clgetFullValp(const string& Name, string& val)
 //
 int dbgclgetFullValp(const string& Name, string& val)
 {
-  int N=1;
   HANDLE_EXCEPTIONS(
-		    {
-		      Symbol *S	= clgetFullValpBase(Name,val,true);
-		      N=clparseVal(S,&N,val);
-		      return N;
-		    }
+		    return (clgetFullValpBase(Name,val,true)!=NULL);
 		    );
 }
 #endif
