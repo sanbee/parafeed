@@ -114,7 +114,16 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       // tokens from the new buffer and put it in Tab.
       //  try
       {
-	vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
+	//	vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
+
+	// Hold the original (un-trimmed) strings in the Symbol.
+	// clgetValp(), which calls clparseVal() does the trimming
+	// before returning, or parsing, the requested value.
+	// clgetFullValp() reconstructs the string (from un-trimmed
+	// tokens) and is able to return the original string.
+	vector<string> tokens = clstrtokp(string(val),',',CL_ESC);
+	// cerr << val << endl;
+	// for(auto s : tokens) cerr << s << endl;
 	unsigned ntokens=tokens.size();
 	pos->NVals=ntokens;
 	pos->Val.resize(pos->NVals);
@@ -198,7 +207,8 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 void SetVal(const char *v, Symbol *S, int i)
 {
   string vv;
-  string trimmed=trim(string(v));
+  //  string trimmed=trim(string(v));
+  string trimmed=(string(v));
   //  stripwhite(v);
   try
     {
