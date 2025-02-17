@@ -20,7 +20,6 @@
 #include <cllib.h>
 #include <support.h>
 #include <setAutoDefaults.h>
-#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
