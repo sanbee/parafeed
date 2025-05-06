@@ -32,12 +32,16 @@ message("subdir: CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
 message("subdir: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 
 # link to readline
+if (GNUREADLINE)
 #target_link_libraries(parafeed_parafeed
 #  PUBLIC PkgConfig::readline)
-target_link_libraries(parafeed_parafeed
-  PUBLIC libreadline.so)
-# compile definitions (like -DFOO)
-target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
+  target_link_libraries(parafeed_parafeed PUBLIC libreadline.so)
+  # compile definitions (like -DFOO)
+  target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
+else()
+  # compile definitions (like -DFOO)
+  target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H)
+endif()
 # define include directories, at build time and for clients
 target_include_directories(parafeed_parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

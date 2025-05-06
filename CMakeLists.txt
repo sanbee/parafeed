@@ -13,6 +13,11 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   set(default_build_type Debug)
 endif()
 
+# Set the default for using the GNU readline and histroy package
+if(NOT DEFINED GNUREADLINE)
+  set(GNUREADLINE ON)
+endif()
+
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS
     "Setting build type to '${default_build_type}' as none was specified.")
@@ -66,13 +71,15 @@ else()
   message("Building with the complier default ABI setting")
 endif()
 
-#pkg_search_module(readline REQUIRED
-#  IMPORTED_TARGET readline)
-#get_target_property(_readline_interface_include_dirs
-#  PkgConfig::readline INTERFACE_INCLUDE_DIRECTORIES)
-add_library(readline SHARED IMPORTED)
-#set_target_properties(readline PROPERTIES IMPORTED_LOCATION /usr/lib/x86_64-linux-gnu/libreadline.so)
-set_target_properties(readline PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/include)
+if (GNUREADLINE)
+	message("parafeed: Using GNU readline library")
+	pkg_search_module(readline REQUIRED IMPORTED_TARGET readline)
+	# get_target_property(_readline_interface_include_dirs
+	#   PkgConfig::readline INTERFACE_INCLUDE_DIRECTORIES)
+	add_library(readline SHARED IMPORTED)
+	#set_target_properties(readline PROPERTIES IMPORTED_LOCATION /usr/lib/x86_64-linux-gnu/libreadline.so)
+	set_target_properties(readline PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/include)
+endif()
 
 # work around a problem in which the readline.pc file declares
 # "Requires.private: termcap", which prevents setting the
