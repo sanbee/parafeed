@@ -16,52 +16,58 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id$ */
-#include <cllib.h>
+/* $Id: cldbggetFVal.c,v 2.0 1998/11/11 07:13:00 sanjay Exp sanjay $ */
 #include <shell.h>
-#include <string>
+#include <cllib.h>
 #include <support.h>
-#include <clgetBaseCode.h>
+#include <clparseVal.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*------------------------------------------------------------------------
-   Return the Nth value of Name as an integer
+   Return the Nth value of Name as an float
 ------------------------------------------------------------------------*/
-int clgetBVal(char *Name, bool *val, int *n)
+int dbgclgetFVal(char *Name, float *val, int *n)
 {
   Symbol *S;
-  bool tval;
-  double d;
   int N;
-  tval=(val==0?false:true);
+  double d;
+  
 HANDLE_EXCEPTIONS(
   if (*n < 0)
-    S=SearchVSymb(Name,cl_SymbTab);  
+    S=SearchVSymb(Name,cl_SymbTab);
   else
-    S=SearchQSymb(Name,"bool");
-  setAutoBDefaults(S,tval);
-  if ((N=clparseVal(S,n,&d))>0) *val = (bool)(d==0?false:true);
-  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
+    S=SearchQSymb(Name,"float");
+
+  if (S != NULL) S->Class=CL_DBGCLASS;
+
+  if ((N=clparseVal(S,n,&d))!=CL_FAIL) *val=(float)d;
   return N;
-  );
+)
 }
+
 #ifdef __cplusplus
 	   }
 #endif
 #ifdef __cplusplus
-int clgetBValp(const string& Name, bool& val, int& n)
+int dbgclgetFValp(const string& Name, float &val, int &n)
 {
-  HANDLE_EXCEPTIONS(
-		    SMap empty;
-		    return clgetValp(Name,val,n,empty);
-		   );
-}
+  Symbol *S;
+  int N;
+  double d;
 
-int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
-{
-  HANDLE_EXCEPTIONS(
-		   return clgetValp(Name,val,n,smap);
-		   );
-}
+  HANDLE_EXCEPTIONS(  
+  if (n < 0)
+    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+  else
+    S=SearchQSymb((char *)Name.c_str(),"float");
+
+  if (S != NULL) S->Class=CL_DBGCLASS;
+  setAutoFDefaults(S,val);
+
+  if ((N=clparseVal(S,&n,&d))>0) val=(float)d;
+  return N;
+  )
+}   
 #endif

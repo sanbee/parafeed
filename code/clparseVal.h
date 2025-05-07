@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: clinteract.h,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
-#include <clgetValp.cc>
-#ifdef __cplusplus
-extern "C" {
-#endif
-#if !defined(CLINTERACTIVE_H)
-#define CLINTERACTIVE_H
-#include <setjmp.h>
-/*----------------------------------------------------------------------*/
-#define clInteractive(a)    setjmp(__cl_env__);clStartInteractive(&__cl_env__,(a));
-jmp_buf __cl_env__;
-#endif
-#ifdef __cplusplus
-	   }
+#ifndef CLPARSEVAL_H
+#define CLPARSEVAL_H
+#include <cl.h>
+
+int clparseVal(Symbol *S, int *Which, double* val);
+int clparseVal(Symbol *S, int *which, string& val);
 #endif

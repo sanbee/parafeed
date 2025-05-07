@@ -19,17 +19,11 @@
 /* $Id: clgetFullVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
 #include <cllib.h>
 #include <support.h>
+#include <setAutoDefaults.h>
+#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*----------------------------------------------------------------------*/
-  std::string vecStr2Str(const std::vector<std::string>& src)
-  {
-    std::string val="";
-    if (src.size() > 0) val=src[0];
-    for(int i=1;i< src.size();i++) val = val + ',' + src[i];
-    return val;
-  };
   /*------------------------------------------------------------------------
     Get the value associated with Key as one string.
     ------------------------------------------------------------------------*/
@@ -67,34 +61,61 @@ extern "C" {
 #endif
 
 #ifdef __cplusplus
+//----------------------------------------------------------------------
+std::string vecStr2Str(const std::vector<std::string>& src)
+{
+  std::string val=src.size() > 0 ? src[0] : "";
+  for(int i=1;i< src.size();i++) val = val + ',' + src[i];
+
+  return val;
+};
+//
+// Base function called in API-level functions below.
+//
+Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
+{
+  Symbol *S=NULL;
+
+  HANDLE_EXCEPTIONS(
+		    S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
+		    if (dbg && (S == NULL))
+		      S = SearchVSymb((char *)Name.c_str(),cl_SymbTab);
+		    if (S != NULL)
+		      {
+			SETBIT(S->Attributes,CL_MIXEDTYPE);
+			S->Class=CL_APPLNCLASS;
+			if (dbg) S->Class=CL_DBGCLASS;
+
+			VString vstr={val};
+			setAutoDefaults(S,vstr);
+
+			// Do not modify val if S->Val is empty.  The
+			// in-comming val may have a default value
+			// that is not yet tranferred to S-Val.
+			if (S->NVals > 0) 
+			  val = vecStr2Str(S->Val);
+		      }
+		    );
+
+    return S;
+}
+//
+//----------------------------------------------------------------------
+// The API-level function that can be used in the applications.
+// Return 0 if symbol not found, 1 otherwise.
 int clgetFullValp(const string& Name, string& val)
 {
-  int n,i;
-  Symbol *S;
-
-  S=SearchQSymb((char*)Name.c_str(),"Mixed[]");
-  val = vecStr2Str(S->Val);
-  // //  setAutoSDefaults(S,val,1);
-  // if ((n=clgetNVals((char *)Name.c_str()))>0)
-  //   {
-  //     // val="";
-  //     // for (i=1;i<=n;i++)
-  //     // 	{
-  //     // 	  clgetSValp(Name,tmp,i);
-  //     // 	  len += tmp.size()+1;
-  //     // 	}
-
-  // string tmp;
-  //     i=1; clgetSValp(Name,tmp,i);
-  //     val=tmp;
-
-  //     for (i=2;i<=n;i++)
-  // 	{
-  // 	  val = val +",";
-  // 	  clgetSValp(Name,tmp,i);
-  // 	  val = val + tmp;
-  // 	}
-  //   }
-  return S->Val.size();
+  HANDLE_EXCEPTIONS(
+		    return (clgetFullValpBase(Name,val,false)!=NULL);
+		    );
+}
+//
+//-------------------------------------------------------------------------
+//
+int dbgclgetFullValp(const string& Name, string& val)
+{
+  HANDLE_EXCEPTIONS(
+		    return (clgetFullValpBase(Name,val,true)!=NULL);
+		    );
 }
 #endif

@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <shell.h>
 #include <cl.h>
+#include <clhashdefines.h>
 
 #ifdef __cplusplus
 #include <string>
@@ -74,12 +75,17 @@ extern "C" {
     return 1;
   }
   /*----------------------------------------------------------------------*/
-  int namePrintFormat(std::string& format, const std::string& append)
+  int namePrintFormat(std::string& format, const std::string& append,
+		      const std::string& qualifier)
   {
     Symbol *t;
     int maxNameLength=10;
     for (t=cl_SymbTab;t;t=t->Next)
-      if ((int)strlen(t->Name) > maxNameLength) maxNameLength = strlen(t->Name);
+      if (USE_IF_TRUE(t))
+	{
+	  int len=strlen(t->Name)+qualifier.size();
+	  if (len > maxNameLength) maxNameLength = len;
+	}
     
     ostringstream ss;
     ss << "%-" << maxNameLength << "." << maxNameLength << "s" << append;

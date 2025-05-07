@@ -32,16 +32,12 @@ message("subdir: CMAKE_CURRENT_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}")
 message("subdir: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 
 # link to readline
-if (GNUREADLINE)
 #target_link_libraries(parafeed_parafeed
 #  PUBLIC PkgConfig::readline)
-  target_link_libraries(parafeed_parafeed PUBLIC libreadline.so)
-  # compile definitions (like -DFOO)
-  target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
-else()
-  # compile definitions (like -DFOO)
-  target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H)
-endif()
+target_link_libraries(parafeed_parafeed
+  PUBLIC libreadline.so)
+# compile definitions (like -DFOO)
+target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
 # define include directories, at build time and for clients
 target_include_directories(parafeed_parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -175,11 +171,28 @@ set(shccl_sources
   ParseCmdLine.cc
   clparseVal.cc
   InstallSymb.cc
+#  clgetFVal.cc
+#  clgetNFVal.cc
+#  clgetIVal.cc
+#  clgetNIVal.cc
+#  clgetBVal.cc
+#  clgetNBVal.cc
   clgetSVal.cc
   clgetNSVal.cc
+#  cldbggetFVal.cc
+#  cldbggetIVal.cc
+#  cldbggetBVal.cc
+
+  # cldbggetNFVal.cc
+  # cldbggetNBVal.cc
+  # cldbggetNIVal.cc
+  # cldbggetNSVal.cc
+  # cldbggetSVal.cc
   clgetFullVal.cc
 
   clgetValp.cc
+#  clgetSValp.cc
+#  cldbggetFullVal.cc
   clStartInteractive.cc
   clRestartShell.cc
   clfInteractive.cc

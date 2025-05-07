@@ -34,6 +34,7 @@
 #define   CL_STRINGTYPE    128
 #define   CL_CMDLINETYPE   256
 #define   CL_BOOLTYPE      512
+#define   CL_MIXEDTYPE     1024
 
 #define   CL_ARG_NONE 1
 #define   CL_ARG_FILENAME 2
@@ -46,5 +47,6 @@
 #define SETBIT(V,MASK)    ((V) |= (MASK))  // Bitwise OR with the mask
 #define RESETBIT(V,MASK)  ((V) &= ~(MASK)) // Bitwise AND with the complement of the mask
 #define ISSET(V,MASK)     ((((V) & (MASK))==(MASK)))
+#define USE_IF_TRUE(S)   (((S->Class != CL_USERCLASS) || ((S->Class==CL_DBGCLASS) && CL_DBG_ON)))
 
 #endif

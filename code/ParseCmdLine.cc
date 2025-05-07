@@ -28,6 +28,7 @@
 #include <support.h>
 #include <sstream>
 #include <clstring.h>
+//#include <clgetValp.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -35,6 +36,8 @@
 #else
 #include <exception>
 #endif
+unsigned short cl_RegistrationMode=1, cl_NoPrompt=0, cl_DryRun=0;
+unsigned short CL_DBG_ON=0;
 extern "C" {
 #endif
 #include <rl_interface.h>
@@ -49,8 +52,6 @@ unsigned short cl_CmdLineFirst=0;
 unsigned short cl_InteractiveShell=0;
 unsigned short cl_DOCLEANUP=1, cl_SymbLoaded = 0;
 unsigned short cl_Pass = 0, cl_FORTRAN=0, cl_NoOfOpts=0;
-unsigned short cl_RegistrationMode=1, cl_NoPrompt=0, cl_DryRun=0;
-unsigned short CL_DBG_ON=0;
 static short cl_defaultsLoaded=0;
 jmp_buf *cl_env=0;
 
@@ -181,7 +182,7 @@ int ParseCmdLine(int argc, char *argv[])
 
 	  S = AllocVSymb(1);
 	  S->Used = 0;         /*Mark the option as unsed */
-	  
+
 	  while (tok[n] == ' ') n--;
 	  S->Name = (char *)getmem(n+1,"BeginParam:2");
 	  strncpy(S->Name, tok,n);
@@ -252,9 +253,9 @@ int ParseCmdLine(int argc, char *argv[])
 	    // sets the cl_TabTail to the beginning of cl_SymbTab!
 	    //
 	    //	    clLoadSymb();
-
 	    // Change interface to do*() functions (in
 	    // callbacks_awk.cc) to take const char*.  Someday.
+
 	    if (S->Val[0] == "defdbg") doinp((char *)("-a"));
 	  }
       }
@@ -385,7 +386,18 @@ int startShell()
 	    loadDefaults(1); cl_defaultsLoaded=1;
 	  }
 	if (doInp)
-	  doinp(NULL);    /* Display the keywords */
+	  {
+	    //
+	    // Why is this required?  This gets called anyway via
+	    // doinp()-->showKeys()-->exposeKeys()
+	    //
+	    // Without this here as well, keys provided via
+	    // commandline are exposed in the interactive session till
+	    // key=val command is used.  Strange (SB's comments).
+	    //
+	    for (Symbol* t=cl_SymbTab;t;t=t->Next) exposeKeys(t);
+	    doinp(NULL);    /* Display the keywords */
+	  }
 	  
 #ifdef GNUREADLINE
 	/* Load the history from the history file*/
@@ -484,6 +496,11 @@ int EndCL()
       doexplain(arg);
       free(val_t);
       exit(0);
+    }
+  else if (strVal=="def")
+    {
+      dosavefd(stderr);
+      cl_NoPrompt=1;
     }
 
   //if ((i==CL_FAIL) || !cl_NoPrompt)

@@ -16,56 +16,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: cldbggetFVal.c,v 2.0 1998/11/11 07:13:00 sanjay Exp sanjay $ */
-#include <shell.h>
+/* $Id: cldbggetNFVal.c,v 2.0 1998/11/11 07:13:00 sanjay Exp $ */
 #include <cllib.h>
-#include <support.h>
+#include <sstream>
+#include <clparseVal.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 /*------------------------------------------------------------------------
-   Return the Nth value of Name as an float
+   Return N values of Name as a integers
 ------------------------------------------------------------------------*/
-int dbgclgetFVal(char *Name, float *val, int *n)
+int dbgclgetNFVal(char *Name, float *val, int *m)
 {
-  Symbol *S;
-  int N;
+  int i=1,n;
   double d;
-  
+  Symbol *S;
+
 HANDLE_EXCEPTIONS(
-  if (*n < 0)
-    S=SearchVSymb(Name,cl_SymbTab);
-  else
-    S=SearchQSymb(Name,"float");
-
-  if (S != NULL) S->Class=CL_DBGCLASS;
-
-  if ((N=clparseVal(S,n,&d))!=CL_FAIL) *val=(float)d;
-  return N;
-)
+		  std::ostringstream os;
+		  os << "float[" << *m << "]";
+		  S = SearchQSymb(Name, os.str());
+		  /* char tmp[8]; */
+		  /* sprintf(tmp,"float[%d]",*m); */
+		  /* S = SearchQSymb(Name, tmp); */
+		  i=1;
+		  if (S) S->Class = CL_DBGCLASS;
+		  while(i <= *m)
+		    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
+		    else if (n==0) break;
+		    else {val[i-1] = (float)d;i++;}
+		  
+		  return i-1;
+		  )
 }
-
 #ifdef __cplusplus
 	   }
-#endif
-#ifdef __cplusplus
-int dbgclgetFValp(const string& Name, float &val, int &n)
-{
-  Symbol *S;
-  int N;
-  double d;
-
-  HANDLE_EXCEPTIONS(  
-  if (n < 0)
-    S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
-  else
-    S=SearchQSymb((char *)Name.c_str(),"float");
-
-  if (S != NULL) S->Class=CL_DBGCLASS;
-  setAutoFDefaults(S,val);
-
-  if ((N=clparseVal(S,&n,&d))>0) val=(float)d;
-  return N;
-  )
-}   
 #endif

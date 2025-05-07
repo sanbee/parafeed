@@ -16,39 +16,42 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id: clgetIVal.c,v 2.1 1999/03/23 15:01:23 sanjay Exp $ */
+/* $Id$ */
 #include <cllib.h>
 #include <shell.h>
+#include <string>
 #include <support.h>
-#include <cl.h>
 #include <clgetBaseCode.h>
+#include <clgetValp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*------------------------------------------------------------------------
-    Return the Nth value of Name as an integer
-    ------------------------------------------------------------------------*/
-  int clgetIVal(char *Name, int *val, int *n)
-  {
-    Symbol *S;
-    double d;
-    int N;
-    HANDLE_EXCEPTIONS(
-		      if (*n < 0)
-			S=SearchVSymb(Name,cl_SymbTab);  
-		      else
-			S=SearchQSymb(Name,(char *)"int");
-		      setAutoIDefaults(S,*val);
-		      if (S!=NULL) SETBIT(S->Attributes,CL_INTEGERTYPE);
-		      if ((N=clparseVal(S,n,&d))>0) *val = (int)d;
-		      return N;
-		      );
-  }
-#ifdef __cplusplus
+/*------------------------------------------------------------------------
+   Return the Nth value of Name as an integer
+------------------------------------------------------------------------*/
+int clgetBVal(char *Name, bool *val, int *n)
+{
+  Symbol *S;
+  bool tval;
+  double d;
+  int N;
+  tval=(val==0?false:true);
+HANDLE_EXCEPTIONS(
+  if (*n < 0)
+    S=SearchVSymb(Name,cl_SymbTab);  
+  else
+    S=SearchQSymb(Name,"bool");
+  setAutoBDefaults(S,tval);
+  if ((N=clparseVal(S,n,&d))>0) *val = (bool)(d==0?false:true);
+  if (S!=NULL) SETBIT(S->Attributes,CL_BOOLTYPE);
+  return N;
+  );
 }
+#ifdef __cplusplus
+	   }
 #endif
 #ifdef __cplusplus
-int clgetIValp(const string& Name, int& val, int& n)
+int clgetBValp(const string& Name, bool& val, int& n)
 {
   HANDLE_EXCEPTIONS(
 		    SMap empty;
@@ -56,11 +59,10 @@ int clgetIValp(const string& Name, int& val, int& n)
 		   );
 }
 
-int clgetIValp(const string& Name, int& val, int& n, SMap &smap)
+int clgetBValp(const string& Name, bool& val, int& n, SMap &smap)
 {
   HANDLE_EXCEPTIONS(
 		   return clgetValp(Name,val,n,smap);
 		   );
 }
-
 #endif

@@ -16,10 +16,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-/* $Id$ */
+/* $Id: cldbggetNIVal.c,v 2.0 1998/11/11 07:13:00 sanjay Exp $ */
 #include <cllib.h>
 #include <sstream>
-
+#include <clparseVal.h>
 #ifdef __cplusplus
 /* extern "C" { */
 /* #endif */
@@ -29,7 +29,7 @@
 /* associated values that are returned in *Vals.  Vals should have enough    */
 /* space to hold the returned values.                                        */
 /*---------------------------------------------------------------------------*/
-int dbgclgetNBVal(char *Key, bool *val, int *m)
+int dbgclgetNIVal(char *Key, int *val, int *m)
 {
   int i=1,n;
   double d;
@@ -37,17 +37,17 @@ int dbgclgetNBVal(char *Key, bool *val, int *m)
 
 HANDLE_EXCEPTIONS(
 		  std::ostringstream os;
-		  os << "bool[" << *m << "]";
-		  S = SearchQSymb(Key, os.str());
-		  
-		  /* sprintf(tmp,"bool[%d]",*m); */
+		  os << "int[" << *m << "]";
+		  /* char tmp[8]; */
+		  /* sprintf(tmp,"int[%d]",*m); */
 		  /* S = SearchQSymb(Key, tmp); */
+		  S = SearchQSymb(Key,os.str());
 		  i=1;
 		  if (S) S->Class = CL_DBGCLASS;
 		  while(i <= *m)
 		    if ((n=clparseVal(S,&i,&d))==CL_FAIL) return n;
 		    else if (n==0) break;
-		    else {val[i-1] = (bool)(d==0?false:true);i++;}
+		    else {val[i-1] = (int)d;i++;}
 		  
 		  return i-1;
 		  )
