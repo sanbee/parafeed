@@ -56,7 +56,7 @@ find_package(PkgConfig REQUIRED)
 
 
 
-# c++17 is required will work with even c++11.
+# C++17 is required for this project.
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
