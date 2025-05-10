@@ -56,8 +56,8 @@ find_package(PkgConfig REQUIRED)
 
 
 
-# c++11 is required
-set(CMAKE_CXX_STANDARD 11)
+# C++17 is required for this project.
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Allow setting the ABI on commandline.  If not set on commandline,
