@@ -5,6 +5,7 @@
 #include <clinteract.h>
 #include <string>
 #include <vector>
+#include <cstring>
 
 class ParafeedTest : public ::testing::Test {
 protected:
