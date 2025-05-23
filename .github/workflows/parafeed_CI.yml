@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        cxx_std: [17]
+        cxx_std: [11, 17]
 
     steps:
       - name: Checkout code
