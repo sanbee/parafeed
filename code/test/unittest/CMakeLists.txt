@@ -7,16 +7,21 @@ project(ParafeedTests VERSION 1.0
 
 
 
-enable_testing()
+option(ENABLE_TESTING "Enable unit testing" OFF)
+if(ENABLE_TESTING)
+  enable_testing()
+endif()
 
-#find_package(GTest REQUIRED)
-include(FetchContent)
-FetchContent_Declare(
-   googletest
-   URL https://github.com/google/googletest/archive/release-1.12.1.zip
-   DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-)
-FetchContent_MakeAvailable(googletest)
+find_package(GTest QUIET)
+if(NOT GTest_FOUND)
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/release-1.12.1.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+  )
+  FetchContent_MakeAvailable(googletest)
+endif()
 
 link_directories("${CMAKE_SOURCE_DIR}/build/code/")
 

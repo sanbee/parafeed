@@ -24,7 +24,7 @@ jobs:
 
       - name: Configure CMake
         run: |
-          cmake -S . -B build -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
+          cmake -S . -B build -DENABLE_TESTING=ON -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
 
       - name: Build
         run: |

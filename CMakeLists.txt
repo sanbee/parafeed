@@ -67,7 +67,7 @@ set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 if (DEFINED _GLIBCXX_USE_CXX11_ABI)
   list(APPEND CMAKE_MESSAGE_INDENT "     ")
   message("Building with -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
 else()
   list(APPEND CMAKE_MESSAGE_INDENT "     ")
   message("Building with the complier default ABI setting")
@@ -117,10 +117,13 @@ message("top: CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
 message("top: CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
 
 # Enable testing support
-enable_testing()
+option(ENABLE_TESTING "Enable unit testing" OFF)
+if(ENABLE_TESTING)
+  enable_testing()
+  add_subdirectory(code/test/unittest)
+endif()
 
 # Add subdirectories
-add_subdirectory(code/test/unittest)
 
 # install all parafeed exports
 include(CMakePackageConfigHelpers)
