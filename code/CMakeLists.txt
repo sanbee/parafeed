@@ -20,8 +20,8 @@
 #
 # create a single, composite library
 #
-add_library(parafeed_parafeed)
-set_target_properties(parafeed_parafeed PROPERTIES
+add_library(parafeed)
+set_target_properties(parafeed PROPERTIES
   VERSION ${MAJOR_VERSION}.0.0
   SOVERSION ${MAJOR_VERSION}
   EXPORT_NAME parafeed
@@ -35,15 +35,15 @@ message("subdir: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 if (GNUREADLINE)
 #target_link_libraries(parafeed_parafeed
 #  PUBLIC PkgConfig::readline)
-  target_link_libraries(parafeed_parafeed PUBLIC libreadline.so)
+  target_link_libraries(parafeed PUBLIC libreadline.so)
   # compile definitions (like -DFOO)
-  target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
+  target_compile_definitions(parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
 else()
   # compile definitions (like -DFOO)
-  target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H)
+  target_compile_definitions(parafeed PUBLIC HAVE_STRING_H)
 endif()
 # define include directories, at build time and for clients
-target_include_directories(parafeed_parafeed PUBLIC
+target_include_directories(parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
@@ -77,7 +77,7 @@ set(header_list
 )
 #set_target_properties(parafeed_parafeed PROPERTIES PUBLIC_HEADER ${header_list})
 
-install(TARGETS parafeed_parafeed
+install(TARGETS parafeed
   EXPORT parafeed_libraries
   DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
@@ -85,7 +85,7 @@ foreach(s ${header_list})
   install(FILES ${s} DESTINATION  ${CMAKE_INSTALL_INCLUDEDIR})
 endforeach()
 # target alias in parafeed namespace
-add_library(parafeed::parafeed ALIAS parafeed_parafeed)
+add_library(parafeed::parafeed ALIAS parafeed)
 
 #
 # define parser and scanner targets
@@ -102,7 +102,7 @@ flex_target(ShellScanner
   ${CMAKE_CURRENT_BINARY_DIR}/shell.cc
   COMPILE_FLAGS "-Ce -Psh_ -o shell.cc")
 add_flex_bison_dependency(ShellScanner ShellParser)
-target_sources(parafeed_parafeed
+target_sources(parafeed
   PRIVATE ${BISON_ShellParser_OUTPUTS} ${FLEX_ShellScanner_OUTPUTS})
 
 # not sure why, but calc bison and flex stuff has to be in this
@@ -117,7 +117,7 @@ flex_target(CalcScanner
   ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c
   COMPILE_FLAGS "-Pcalc_")
 add_flex_bison_dependency(CalcScanner CalcParser)
-target_sources(parafeed_parafeed
+target_sources(parafeed
   PRIVATE ${BISON_CalcParser_OUTPUTS} ${FLEX_CalcScanner_OUTPUTS})
 
 #
@@ -151,7 +151,7 @@ set(sh_sources
 foreach(source IN LISTS sh_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
-target_sources(parafeed_parafeed PRIVATE ${sh_sources})
+target_sources(parafeed PRIVATE ${sh_sources})
 
 # Commands to process callbacks.cc file and write out the
 # callbacks_awk.cc file to compile.  The input source file uses the
@@ -214,7 +214,7 @@ set(shccl_sources
 foreach(source IN LISTS shccl_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()
-target_sources(parafeed_parafeed PRIVATE ${shccl_sources})
+target_sources(parafeed PRIVATE ${shccl_sources})
 
 # add calc sub-directory
 add_subdirectory(calc)
@@ -226,11 +226,11 @@ install(EXPORT parafeed_libraries
   FILE parafeed_libraries.cmake)
 
 add_executable(tstcpp tstcpp.cc)
-target_link_libraries(tstcpp parafeed_parafeed)
+target_link_libraries(tstcpp parafeed)
 add_executable(tst2 test/tst2.cc)
-target_link_libraries(tst2 parafeed_parafeed)
+target_link_libraries(tst2 parafeed)
 add_executable(tst3 test/tst3.cc)
-target_link_libraries(tst3 parafeed_parafeed)
+target_link_libraries(tst3 parafeed)
 
 # install all parafeed exports
 install(FILES parafeedConfig.cmake

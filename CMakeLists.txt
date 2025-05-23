@@ -114,6 +114,12 @@ add_subdirectory(code)
 message("top: CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
 message("top: CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
 
+# Enable testing support
+enable_testing()
+
+# Add subdirectories
+add_subdirectory(code/test/unittest)
+
 # install all parafeed exports
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(parafeedConfigVersion.cmake
