@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        cxx_std: [17]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake pkg-config bison flex libreadline-dev
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
+
+      - name: Build
+        run: |
+          cmake --build build -- -j$(nproc)
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest --output-on-failure
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: parafeed-artifacts-cxx${{ matrix.cxx_std }}
+          path: build/
