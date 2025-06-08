@@ -17,9 +17,15 @@ if(NOT DEFINED GNUREADLINE)
   set(GNUREADLINE ON)
 endif()
 
+# Search for the path to dir called "readline" using find_path.  If
+# found, include this via include_directories() below.  This ends up
+# as -I<PATH> in the generated files for make.
 find_path(READLINE_INCLUDE_DIR readline
           HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/include)
 
+# Search for the dir where libreadline.so may be found.  If found, add
+# that path via link_directories() below.  This ends up as -L<PATH> in
+# the generated files for make.
 find_library(READLINE_LIB_DIR libreadline.so
           HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/lib usr/lib64)
 
