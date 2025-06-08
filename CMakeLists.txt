@@ -20,13 +20,17 @@ endif()
 find_path(VIEW_DIR include/readline)
 find_library(READLINE_LIB_DIR lib/libreadline.so)
 
-if (NOT VIEW_DIR STREQUAL VIEW_DIR-NOTFOUND)
+if (GNUREADLINE 
+    AND NOT VIEW_DIR STREQUAL VIEW_DIR-NOTFOUND
+    AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
+  message("parafeed: READLINE_INCLUDE_DIR=" ${VIEW_DIR}/include)
+  message("parafeed: READLINE_LIB_DIR=" ${VIEW_DIR}/lib)
   include_directories (${VIEW_DIR}/include)
-  link_directories(${VIEW}/lib)
+  link_directories(${VIEW_DIR}/lib)
 else()
   message(WARNING "GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
   set(GNUREADLINE OFF)
-endif(NOT VIEW_DIR STREQUAL VIEW_DIR-NOTFOUND)
+endif()
 
 # if (GNUREADLINE)
 # 	message("parafeed: Using GNU readline library")
