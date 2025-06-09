@@ -24,25 +24,26 @@ find_path(READLINE_INCLUDE_DIR readline
           HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/include)
 
 # Search for the dir where library "readline" may be found.  The name
-# is translated to platform-specific library file name.  If found, add
-# that path via link_directories() below.  This ends up as -L<PATH> in
-# the generated files for make.
-find_library(READLINE_LIB readline)
-#  HINTS ${READLINE_ROOT_DIR} usr PATH_SUFFIXES lib lib64)
+# is translated to platform-specific library file name in
+# find_library.  If found, add that path via link_directories() below.
+# This ends up as -L<PATH> in the generated files for make.
+find_library(READLINE_LIB NAMES readline
+  HINTS ${READLINE_ROOT_DIR} usr PATH_SUFFIXES lib lib64)
 
-if (GNUREADLINE
-    AND NOT READLINE_INCLUDE_DIR STREQUAL READLINE_INCLUDE_DIR-NOTFOUND
-    AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
+if (GNUREADLINE)
+  if (NOT READLINE_INCLUDE_DIR STREQUAL READLINE_INCLUDE_DIR-NOTFOUND
+      AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
 
-  get_filename_component(READLINE_LIB_DIR ${READLINE_LIB} DIRECTORY)
+    get_filename_component(READLINE_LIB_DIR ${READLINE_LIB} DIRECTORY)
 
-  message(STATUS "parafeed: READLINE_INCLUDE_DIR=" ${READLINE_INCLUDE_DIR})
-  message(STATUS "parafeed: READLINE_LIB_DIR=" ${READLINE_LIB_DIR})
-  include_directories (${READLINE_INCLUDE_DIR})
-  link_directories(${READLINE_LIB_DIR})
-else()
-  message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
-  set(GNUREADLINE OFF)
+    message(STATUS "parafeed: READLINE_INCLUDE_DIR=" ${READLINE_INCLUDE_DIR})
+    message(STATUS "parafeed: READLINE_LIB_DIR=" ${READLINE_LIB_DIR})
+    include_directories (${READLINE_INCLUDE_DIR})
+    link_directories(${READLINE_LIB_DIR})
+  else()
+    message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
+    set(GNUREADLINE OFF)
+  endif()
 endif()
 
 # if (GNUREADLINE)
