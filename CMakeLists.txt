@@ -34,16 +34,14 @@ if (GNUREADLINE
     AND NOT READLINE_INCLUDE_DIR STREQUAL READLINE_INCLUDE_DIR-NOTFOUND
     AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
 
-  message(STATUS "parafeed: !READLINE_LIB=" ${READLINE_LIB})
   get_filename_component(READLINE_LIB_DIR ${READLINE_LIB} DIRECTORY)
-  message(STATUS "parafeed: !READLINE_LIB_DIR=" ${READLINE_LIB_DIR})
 
   message(STATUS "parafeed: READLINE_INCLUDE_DIR=" ${READLINE_INCLUDE_DIR})
   message(STATUS "parafeed: READLINE_LIB_DIR=" ${READLINE_LIB_DIR})
   include_directories (${READLINE_INCLUDE_DIR})
   link_directories(${READLINE_LIB_DIR})
 else()
-  message(WARNING "GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
+  message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
   set(GNUREADLINE OFF)
 endif()
 
