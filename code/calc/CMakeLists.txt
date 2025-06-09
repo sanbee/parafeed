@@ -14,7 +14,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-target_sources(parafeed_parafeed PRIVATE calcinit.c)
-target_include_directories(parafeed_parafeed PUBLIC
+target_sources(parafeed PRIVATE calcinit.c)
+target_include_directories(parafeed PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>)
