@@ -35,7 +35,7 @@ message("subdir: CMAKE_CURRENT_BINARY_DIR=${CMAKE_CURRENT_BINARY_DIR}")
 if (GNUREADLINE)
 #target_link_libraries(parafeed_parafeed
 #  PUBLIC PkgConfig::readline)
-  target_link_libraries(parafeed_parafeed PUBLIC libreadline.so)
+  target_link_libraries(parafeed_parafeed PUBLIC ${READLINE_LIB})
   # compile definitions (like -DFOO)
   target_compile_definitions(parafeed_parafeed PUBLIC HAVE_STRING_H GNUREADLINE)
 else()

@@ -23,16 +23,21 @@ endif()
 find_path(READLINE_INCLUDE_DIR readline
           HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/include)
 
-# Search for the dir where libreadline.so may be found.  If found, add
+# Search for the dir where library "readline" may be found.  The name
+# is translated to platform-specific library file name.  If found, add
 # that path via link_directories() below.  This ends up as -L<PATH> in
 # the generated files for make.
-find_library(READLINE_LIB_DIR libreadline.so
-          HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/lib usr/lib64)
-
+find_library(READLINE_LIB readline)
+#  HINTS ${READLINE_ROOT_DIR} usr PATH_SUFFIXES lib lib64)
 
 if (GNUREADLINE
     AND NOT READLINE_INCLUDE_DIR STREQUAL READLINE_INCLUDE_DIR-NOTFOUND
     AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
+
+  message(STATUS "parafeed: !READLINE_LIB=" ${READLINE_LIB})
+  get_filename_component(READLINE_LIB_DIR ${READLINE_LIB} DIRECTORY)
+  message(STATUS "parafeed: !READLINE_LIB_DIR=" ${READLINE_LIB_DIR})
+
   message(STATUS "parafeed: READLINE_INCLUDE_DIR=" ${READLINE_INCLUDE_DIR})
   message(STATUS "parafeed: READLINE_LIB_DIR=" ${READLINE_LIB_DIR})
   include_directories (${READLINE_INCLUDE_DIR})
