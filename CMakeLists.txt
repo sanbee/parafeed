@@ -1,5 +1,23 @@
 cmake_minimum_required(VERSION 3.17)
 set(MAJOR_VERSION 1)
+# build dependencies
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
+
+# link dependencies
+find_package(PkgConfig REQUIRED)
+
+# C++17 is required for this project.
+set(CMAKE_CXX_STANDARD 17)
+# set(CMAKE_CXX_STANDARD_REQUIRED ON)
+option(CMAKE_CXX_STANDARD_REQUIRED "parafeed switch CMAKE_CXX_STANDARD_REQUIRED set to OFF" OFF)
+
+# # Set the default for using the GNU readline and histroy package
+# if(NOT DEFINED GNUREADLINE)
+#   set(GNUREADLINE ON)
+# endif()
+option(GNUREADLINE "parafeed switch GNUREADLINE set to ON" ON)
+
 project(
   parafeed
   VERSION ${MAJOR_VERSION}.0.0
@@ -13,9 +31,6 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   set(default_build_type Debug)
 endif()
 
-if(NOT DEFINED GNUREADLINE)
-  set(GNUREADLINE ON)
-endif()
 
 if (GNUREADLINE)
   find_package(PkgConfig)
@@ -56,9 +71,9 @@ else()
     set(GNUREADLINE OFF)
   endif()
 endif()
-  include_directories(${READLINE_INCLUDE_DIRS})
-  link_directories(${READLINE_LIBRARY_DIRS})
-  link_libraries(${READLINE_LIBRARIES})
+include_directories(${READLINE_INCLUDE_DIRS})
+link_directories(${READLINE_LIBRARY_DIRS})
+link_libraries(${READLINE_LIBRARIES})
 # if (GNUREADLINE)
 # 	message("parafeed: Using GNU readline library")
 # 	pkg_search_module(readline REQUIRED IMPORTED_TARGET readline)
@@ -100,25 +115,13 @@ file(RELATIVE_PATH relDir
   ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 
-# build dependencies
-find_package(BISON REQUIRED)
-find_package(FLEX REQUIRED)
-
-# link dependencies
-find_package(PkgConfig REQUIRED)
-
-
-
-# C++17 is required for this project.
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Allow setting the ABI on commandline.  If not set on commandline,
 # use complier's default ABI.
 if (DEFINED _GLIBCXX_USE_CXX11_ABI)
   list(APPEND CMAKE_MESSAGE_INDENT "     ")
   message("Building with -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_USE_CXX11_ABI=${_GLIBCXX_USE_CXX11_ABI}")
 else()
   list(APPEND CMAKE_MESSAGE_INDENT "     ")
   message("Building with the complier default ABI setting")
@@ -157,6 +160,15 @@ endif()
 add_subdirectory(code)
 message("top: CMAKE_CURRENT_SOURCE_DIR = ${CMAKE_CURRENT_SOURCE_DIR}")
 message("top: CMAKE_CURRENT_BINARY_DIR = ${CMAKE_CURRENT_BINARY_DIR}")
+
+# Enable testing support
+option(ENABLE_TESTING "Enable unit testing" OFF)
+if(ENABLE_TESTING)
+  enable_testing()
+  add_subdirectory(code/test/unittest)
+endif()
+
+# Add subdirectories
 
 # install all parafeed exports
 include(CMakePackageConfigHelpers)
