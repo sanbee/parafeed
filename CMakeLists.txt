@@ -39,14 +39,12 @@ endif()
 
 if(READLINE_FOUND)
   message(STATUS "Found Readline via pkg-config")
-  # include_directories(${READLINE_INCLUDE_DIRS})
-  # link_directories(${READLINE_LIBRARY_DIRS})
-  # link_libraries(${READLINE_LIBRARIES})
 else()
+  #
   # Search for the path to dir called "readline" using find_path.  If
   # found, include this via include_directories() below.  This ends up
   # as -I<PATH> in the generated files for make.
-  find_path(READLINE_INCLUDE_DIR readline
+  find_path(READLINE_INCLUDE_DIRS readline
     HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/include)
 
   # Search for the dir where library "readline" may be found.  The name
@@ -64,16 +62,22 @@ else()
 
     message(STATUS "parafeed: READLINE_INCLUDE_DIRS=" ${READLINE_INCLUDE_DIRS})
     message(STATUS "parafeed: READLINE_LIBRARY_DIRS=" ${READLINE_LIBRARY_DIRS})
+    set(READLINE_FOUND ON)
     # include_directories (${READLINE_INCLUDE_DIR})
     # link_directories(${READLINE_LIB_DIR})
   else()
-    message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
+    if (GNUREADLINE)
+      message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
+    endif()
     set(GNUREADLINE OFF)
   endif()
 endif()
-include_directories(${READLINE_INCLUDE_DIRS})
-link_directories(${READLINE_LIBRARY_DIRS})
-link_libraries(${READLINE_LIBRARIES})
+
+if (READLINE_FOUND)
+  include_directories(${READLINE_INCLUDE_DIRS})
+  link_directories(${READLINE_LIBRARY_DIRS})
+  link_libraries(${READLINE_LIBRARIES})
+endif()
 # if (GNUREADLINE)
 # 	message("parafeed: Using GNU readline library")
 # 	pkg_search_module(readline REQUIRED IMPORTED_TARGET readline)
