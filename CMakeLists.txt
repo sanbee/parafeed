@@ -31,53 +31,29 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   set(default_build_type Debug)
 endif()
 
+# find_package() will load CMAKE_MODULE_PATH/FindReadline.cmake if 
+# it can't find Readline.  FindReadline.cmake will be looked for
+# in CMAKE_MODULE_PATH.  FindReadline.cmake is sensitive to 
+# CMAKE_PREFIX_PATH setting.
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 if (GNUREADLINE)
   find_package(PkgConfig)
-  pkg_check_modules(READLINE readline)
+  find_package(Readline QUIET)
 endif()
 
 if(READLINE_FOUND)
-  message(STATUS "Found Readline via pkg-config")
+  message(STATUS "Found Readline via find_package()")
+  include_directories(${READLINE_INCLUDE_DIRS})
+#  link_directories(${READLINE_LIBRARY_DIRS})
+  link_libraries(${READLINE_LIBRARIES})
 else()
-  #
-  # Search for the path to dir called "readline" using find_path.  If
-  # found, include this via include_directories() below.  This ends up
-  # as -I<PATH> in the generated files for make.
-  find_path(READLINE_INCLUDE_DIRS readline
-    HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/include)
-
-  # Search for the dir where library "readline" may be found.  The name
-  # is translated to platform-specific library file name.  If found, add
-  # that path via link_directories() below.  This ends up as -L<PATH> in
-  # the generated files for make.
-  find_library(READLINE_LIB readline)
-  #  HINTS ${READLINE_ROOT_DIR} usr PATH_SUFFIXES lib lib64)
-
-  if (GNUREADLINE
-      AND NOT READLINE_INCLUDE_DIR STREQUAL READLINE_INCLUDE_DIR-NOTFOUND
-      AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
-
-    get_filename_component(READLINE_LIBRARY_DIRS ${READLINE_LIB} DIRECTORY)
-
-    message(STATUS "parafeed: READLINE_INCLUDE_DIRS=" ${READLINE_INCLUDE_DIRS})
-    message(STATUS "parafeed: READLINE_LIBRARY_DIRS=" ${READLINE_LIBRARY_DIRS})
-    set(READLINE_FOUND ON)
-    # include_directories (${READLINE_INCLUDE_DIR})
-    # link_directories(${READLINE_LIB_DIR})
-  else()
     if (GNUREADLINE)
       message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
     endif()
     set(GNUREADLINE OFF)
-  endif()
 endif()
 
-if (READLINE_FOUND)
-  include_directories(${READLINE_INCLUDE_DIRS})
-  link_directories(${READLINE_LIBRARY_DIRS})
-  link_libraries(${READLINE_LIBRARIES})
-endif()
 # if (GNUREADLINE)
 # 	message("parafeed: Using GNU readline library")
 # 	pkg_search_module(readline REQUIRED IMPORTED_TARGET readline)
