@@ -40,3 +40,29 @@ jobs:
         with:
           name: parafeed-artifacts-cxx${{ matrix.cxx_std }}
           path: build/
+
+      - name: Cache Spack clone
+        uses: actions/cache@v4
+        with:
+          path: spack
+          key: spack-v0.23.1-${{ runner.os }}
+          restore-keys: |
+            spack-v0.23.1-
+
+      - name: Clone Spack v0.23.1
+        if: steps.cache-spack.outputs.cache-hit != 'true'
+        run: |
+          git clone --branch v0.23.1 https://github.com/spack/spack.git
+
+      - name: Register local parafeed repo with Spack
+        run: |
+          ./spack/bin/spack repo add ./spack
+
+      - name: Create and activate Spack environment
+        run: |
+          ./spack/bin/spack env create parafeed-env
+          ./spack/bin/spack env activate parafeed-env
+
+      - name: Install parafeed with Spack
+        run: |
+          ./spack/bin/spack install parafeed/parafeed
