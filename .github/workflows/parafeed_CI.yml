@@ -56,7 +56,7 @@ jobs:
 
       - name: Register local parafeed repo with Spack
         run: |
-          ./spack/bin/spack repo add ./spack
+          ./spack/bin/spack repo add ./spack_package
 
       - name: Create and activate Spack environment
         run: |
