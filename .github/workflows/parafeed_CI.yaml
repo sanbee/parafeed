@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        cxx_std: [11, 17]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake pkg-config bison flex libreadline-dev
+
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -DENABLE_TESTING=ON -DCMAKE_CXX_STANDARD=${{ matrix.cxx_std }}
+
+      - name: Build
+        run: |
+          cmake --build build -- -j$(nproc)
+
+      - name: Run tests
+        run: |
+          cd build
+          ctest --output-on-failure
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: parafeed-artifacts-cxx${{ matrix.cxx_std }}
+          path: build/
+
+      - name: Check for changes in spack_package
+        id: spack_changes
+        run: |
+          if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^spack_package/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Cache Spack clone
+        if: steps.spack_changes.outputs.changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: spack
+          key: spack-v0.23.1-${{ runner.os }}
+          restore-keys: |
+            spack-v0.23.1-
+
+      - name: Clone Spack v0.23.1
+        if: steps.spack_changes.outputs.changed == 'true' && steps.cache-spack.outputs.cache-hit != 'true'
+        run: |
+          git clone --branch v0.23.1 https://github.com/spack/spack.git
+
+      - name: Register local parafeed repo with Spack
+        if: steps.spack_changes.outputs.changed == 'true'
+        run: |
+          ./spack/bin/spack repo add ./spack_package
+
+      - name: Create and activate and install Spack environment
+        if: steps.spack_changes.outputs.changed == 'true'
+        run: |
+          ./spack/bin/spack env create parafeed-env
+          . ./spack/share/spack/setup-env.sh
+          spack env activate parafeed-env
+          spack add parafeed
+          spack concretize 
+          spack install --jobs $(nproc)
+          spack env deactivate
+
+      - name: Skip Spack steps (no changes in spack_package)
+        if: steps.spack_changes.outputs.changed != 'true'
+        run: echo "No changes in spack_package, skipping Spack steps."
