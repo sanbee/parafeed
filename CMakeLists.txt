@@ -31,6 +31,40 @@ if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   set(default_build_type Debug)
 endif()
 
+# find_package() will load CMAKE_MODULE_PATH/FindReadline.cmake if 
+# it can't find Readline.  FindReadline.cmake will be looked for
+# in CMAKE_MODULE_PATH.  FindReadline.cmake is sensitive to 
+# CMAKE_PREFIX_PATH setting.
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+if (GNUREADLINE)
+  find_package(PkgConfig)
+  find_package(Readline QUIET)
+endif()
+
+if(READLINE_FOUND)
+  message(STATUS "Found Readline via find_package()")
+  include_directories(${READLINE_INCLUDE_DIRS})
+#  link_directories(${READLINE_LIBRARY_DIRS})
+  link_libraries(${READLINE_LIBRARIES})
+else()
+    if (GNUREADLINE)
+      message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
+    endif()
+    set(GNUREADLINE OFF)
+endif()
+
+# if (GNUREADLINE)
+# 	message("parafeed: Using GNU readline library")
+# 	pkg_search_module(readline REQUIRED IMPORTED_TARGET readline)
+# 	# get_target_property(_readline_interface_include_dirs
+# 	#   PkgConfig::readline INTERFACE_INCLUDE_DIRECTORIES)
+# 	add_library(readline SHARED IMPORTED)
+# 	#set_target_properties(readline PROPERTIES IMPORTED_LOCATION /usr/lib/x86_64-linux-gnu/libreadline.so)
+# 	set_target_properties(readline PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/include)
+# endif()
+
+# Set the default for using the GNU readline and histroy package
 
 if (GNUREADLINE)
   find_package(PkgConfig)
