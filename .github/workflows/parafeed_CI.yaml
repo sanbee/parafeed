@@ -58,14 +58,12 @@ jobs:
         run: |
           ./spack/bin/spack repo add ./spack_package
 
-      - name: Create and activate Spack environment
+      - name: Create and activate and install Spack environment
         run: |
           ./spack/bin/spack env create parafeed-env
           . ./spack/share/spack/setup-env.sh
           spack env activate parafeed-env
-
-      - name: Install parafeed with Spack
-        run: |
           spack add parafeed
-          spack concretize
+          spack concretize 
           spack install --jobs $(nproc)
+          spack env deactivate
