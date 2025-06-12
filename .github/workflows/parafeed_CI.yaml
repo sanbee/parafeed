@@ -66,4 +66,6 @@ jobs:
 
       - name: Install parafeed with Spack
         run: |
-          ./spack/bin/spack install parafeed/parafeed
+          spack add parafeed
+          spack concretize
+          spack install --jobs $(nproc)
