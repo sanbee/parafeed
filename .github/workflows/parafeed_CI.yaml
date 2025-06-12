@@ -61,7 +61,8 @@ jobs:
       - name: Create and activate Spack environment
         run: |
           ./spack/bin/spack env create parafeed-env
-          ./spack/bin/spack env activate parafeed-env
+          . ./spack/share/spack/setup-env.sh
+          spack env activate parafeed-env
 
       - name: Install parafeed with Spack
         run: |
