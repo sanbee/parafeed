@@ -9,12 +9,12 @@ class Parafeed(CMakePackage):
     """Parafeed is a C++ library to parse and interact with the commandline."""
 
     homepage = "https://github.com/sanbee/parafeed"
-    url      = "https://github.com/sanbee/parafeed/archive/refs/tags/v1.1.41.tar.gz"
+    url      = "https://github.com/sanbee/parafeed/archive/refs/tags/v1.1.43.tar.gz"
 
-    maintainers("preshanth", "sanbee", "sanbw")
+    maintainers("sanbee", "sanbw", "preshanth")
 
     # TODO: Check actual license in project. Replace "UNKNOWN" with actual SPDX identifier.
-    license("UNKNOWN", checked_by="sanbee")
+    license("GPL-3.0-only", checked_by="sanbee")
 
     version("1.1.41", sha256="a5cb034914cab8b661469f2f1aae6af7d88045d54f3535da8ff004a04cd8abd3")
     version("1.1.4",  sha256="9ca767aa1139516926456fff14fec466890caba5646e46f0553c7b648bb5510e")
