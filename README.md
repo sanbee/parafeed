@@ -20,7 +20,7 @@ While the hand-written `makefiles` have been tested with `make` version 3 only, 
 
 Successfully building and linking the test program `code/tstcpp` ensures that all libraries required by client codes are ready.  For now, copy all `code/libparafeed.a`, `code/*.h` and `code/calc/*.h` files to the required location for linking your application.
 
-The [![CI](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yml/badge.svg)](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yml) system triggers a build-and-test on changes to the `master` branch. 
+The [![CI](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yaml/badge.svg)](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yaml) system triggers a build-and-test on changes to the `master` branch. 
 
 
 ### Interfaces
