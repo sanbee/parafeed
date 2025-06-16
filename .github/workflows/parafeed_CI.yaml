@@ -46,7 +46,7 @@ jobs:
 	with:
 	 filters: |
           changed:
-		- 'spack_packages/**'
+		- 'spack_package/**'
 		
       - name: Cache Spack clone
         if: steps.spack_changes.outputs.changed == 'true'
