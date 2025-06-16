@@ -6,15 +6,22 @@ A library for an embedded user interface designed for ease of use for the progra
 ### Build System(s)
 _parafeed_ project can be built with the `cmake` tool.  Alternatively, it can also be built directly using the hand-written `makefiles`.
 
-CMake-based build system requires `cmake` version 3 or later.  To build, execute the `cmake` command in the top-most directory.  This will build the required `makefiles`.  Issuing the `make` command, also in the root directory, should build the _parafeed_ package.
+CMake-based build system requires `cmake` version 3 or later.  Use the following commands for an out-of-tree build, say in the `build` directory:
+```
+mkdir build
+cd build
+cmake <PATH TO CMakeLists.txt>
+gmake
+```
+The `-DGNUREADLINE=OFF` option to `cmake` will disable the use of the [GNU Readline library](https://en.wikipedia.org/wiki/GNU_Readline) for bash-style commandline editing and command history capabilities.  The `-DENABLE_TESTING=ON` option will enable unit testing.
+
 
 While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. Using the command `cd code; make -f nocmake_makefiles/makefile` should build the _parafeed_ project.
 
 Successfully building and linking the test program `code/tstcpp` ensures that all libraries required by client codes are ready.  For now, copy all `code/libparafeed.a`, `code/*.h` and `code/calc/*.h` files to the required location for linking your application.
 
-The CI system triggers a build-and-test on changes to the `master` branch. 
+The [![CI](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yaml/badge.svg)](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yaml) system triggers a build-and-test on changes to the `master` branch. 
 
-[![CI](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yml/badge.svg)](https://github.com/sanbee/parafeed/actions/workflows/parafeed_CI.yml)
 
 ### Interfaces
 The library `libparafeed.a` contains .o files from three independent libraries: `libsh.a`, `libshccl.a` and `libcalc.a`.  These can be built and linked-to separately as well in the order `libshccl.a libsh.a libcalc.a`.  For use in applications written in C and C++, `libparafeed.a` is sufficient.

@@ -66,64 +66,6 @@ endif()
 
 # Set the default for using the GNU readline and histroy package
 
-if (GNUREADLINE)
-  find_package(PkgConfig)
-  pkg_check_modules(READLINE readline)
-endif()
-
-if(READLINE_FOUND)
-  message(STATUS "Found Readline via pkg-config")
-else()
-  #
-  # Search for the path to dir called "readline" using find_path.  If
-  # found, include this via include_directories() below.  This ends up
-  # as -I<PATH> in the generated files for make.
-  find_path(READLINE_INCLUDE_DIRS readline
-    HINTS ${READLINE_ROOT_DIR} PATH_SUFFIXES usr usr/include)
-
-  # Search for the dir where library "readline" may be found.  The name
-  # is translated to platform-specific library file name.  If found, add
-  # that path via link_directories() below.  This ends up as -L<PATH> in
-  # the generated files for make.
-  find_library(READLINE_LIB readline)
-  #  HINTS ${READLINE_ROOT_DIR} usr PATH_SUFFIXES lib lib64)
-
-  if (GNUREADLINE
-      AND NOT READLINE_INCLUDE_DIR STREQUAL READLINE_INCLUDE_DIR-NOTFOUND
-      AND NOT READLINE_LIB_DIR STREQUAL READLINE_LIB_DIR-NOTFOUND)
-
-    get_filename_component(READLINE_LIBRARY_DIRS ${READLINE_LIB} DIRECTORY)
-
-    message(STATUS "parafeed: READLINE_INCLUDE_DIRS=" ${READLINE_INCLUDE_DIRS})
-    message(STATUS "parafeed: READLINE_LIBRARY_DIRS=" ${READLINE_LIBRARY_DIRS})
-    set(READLINE_FOUND ON)
-    # include_directories (${READLINE_INCLUDE_DIR})
-    # link_directories(${READLINE_LIB_DIR})
-  else()
-    if (GNUREADLINE)
-      message(WARNING "EEEeeeeks! GNU Readline package could not by found.  Setting GNUREADLINE=OFF")
-    endif()
-    set(GNUREADLINE OFF)
-  endif()
-endif()
-
-if (READLINE_FOUND)
-  include_directories(${READLINE_INCLUDE_DIRS})
-  link_directories(${READLINE_LIBRARY_DIRS})
-  link_libraries(${READLINE_LIBRARIES})
-endif()
-# if (GNUREADLINE)
-# 	message("parafeed: Using GNU readline library")
-# 	pkg_search_module(readline REQUIRED IMPORTED_TARGET readline)
-# 	# get_target_property(_readline_interface_include_dirs
-# 	#   PkgConfig::readline INTERFACE_INCLUDE_DIRECTORIES)
-# 	add_library(readline SHARED IMPORTED)
-# 	#set_target_properties(readline PROPERTIES IMPORTED_LOCATION /usr/lib/x86_64-linux-gnu/libreadline.so)
-# 	set_target_properties(readline PROPERTIES INTERFACE_INCLUDE_DIRECTORIES /usr/include)
-# endif()
-
-# Set the default for using the GNU readline and histroy package
-
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS
     "Setting build type to '${default_build_type}' as none was specified.")
