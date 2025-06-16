@@ -43,13 +43,14 @@ jobs:
 
       - uses: dorny/paths-filter@v3
         id: spack_changes
-	with:
-	 filters: |
-          changed:
-		- 'spack_packages/**'
-		
+        with:
+          filters: |
+            changed:
+              - 'spack_package/**'
+
       - name: Cache Spack clone
         if: steps.spack_changes.outputs.changed == 'true'
+        id: cache-spack
         uses: actions/cache@v4
         with:
           path: spack
@@ -70,8 +71,8 @@ jobs:
       - name: Create and activate and install Spack environment
         if: steps.spack_changes.outputs.changed == 'true'
         run: |
-          ./spack/bin/spack env create parafeed-env
           . ./spack/share/spack/setup-env.sh
+          spack env create parafeed-env
           spack env activate parafeed-env
           spack add parafeed
           spack concretize 
