@@ -21,10 +21,11 @@
 #define      ERROROBJ_H
 #include <string>
 #include <iostream>
+#include <exception>
 
 using namespace std;
 
-class ErrorObj{
+class ErrorObj: public std::exception{
  public:
   enum {Informational=100,Recoverable,Severe,Fatal};
   ErrorObj():Id(), Msg(), Src(), Message(),Level(0)
