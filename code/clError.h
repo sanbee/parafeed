@@ -44,8 +44,18 @@ public:
     this->Id = that.Id;
     this->Level = that.Level;
   }
+  ~clError() {};
 };
 
+class clNumParsingError: public clError
+{
+public:
+  clNumParsingError():clError() {};
+  clNumParsingError(const char *m, const char *i, int l=0): clError(m,i,l) {};
+  clNumParsingError(const string& m, const string& i, int l=0): clError(m,i,l) {};
+  clNumParsingError(const clNumParsingError& that) : clError(that) {};
+  ~clNumParsingError() {};
+};
 /*---------------------------------------------------------------------
   In the entire library, the following routine is used always when an
   exception is to be thrown.  

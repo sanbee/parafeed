@@ -161,7 +161,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 		if (clIsTrue(newval)==1) {Matched=1;}
 		else if (clIsFalse(newval)==1) {Matched=1;}
 	      }
-	    catch (boolError& x)
+	    catch (clBoolParsingError& x)
 	      {
 		throw(x);
 	      }
@@ -170,6 +170,15 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	  }
 	//	os << b;
 	newval=os.str();
+      }
+    else if (ISSET(S->Attributes, CL_INTEGERTYPE))
+      {
+	double d;
+	if ((n=calc((char *)v,&d)) < 0)
+	  {
+	    std::string mesg("Error in parsing value of \""+std::string(S->Name)+"\"");
+	    throw(clNumParsingError(mesg.c_str(),"VerifyVal",CL_SEVERE));
+	  }
       }
     else if (n > 0)
       {

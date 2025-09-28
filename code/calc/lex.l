@@ -31,8 +31,8 @@ int Calc_index;
 /*----------------------------------------------------------------------*/
     int calc_error(char *s)
     {
-        /*  ywarn(s, (char *) 0);*/
-        return 1;
+      ywarn(s, (char *) 0);
+      return 1;
     }
 /*----------------------------------------------------------------------*/
     int ywarn(char *s, char *t)
@@ -83,7 +83,7 @@ int Calc_index=0;
 #define unput(C) {Calc_line[Calc_index==0?Calc_index:--Calc_index]=C;}
 #define output(C) {fprintf(stderr,"%c",C);}
 #define ECHON /* {fprintf(stderr,"\"\\n\"\n");}*/
-#define ECHO  /*{fprintf(stderr,"\"%s\"\n",yytext);}*/
+#define ECHOSS(S) /* {fprintf(stderr,"%s: \"%s\"\n",S,yytext);}*/
 
 /*yy_scan_buffer(Calc_line,strlen(Calc_line));*/
 
@@ -156,12 +156,13 @@ DANG    ({DDEG}?({SPACE}?{DMIN})?({SPACE}?{DSEC})?)
                           }
 {HEXD}                    {
                             int i;
-                            ECHO;
+                            ECHOSS("HEXD");
                             sscanf(yytext+2,"%x",&i);calc_lval.val = i;
                             INCR_INDEX;
                             return NUMBER;
                           }
 {HANG}                    {/* Numer in the hour angle format */
+                           ECHOSS("HANG");
                            float a[3];
                            split3(yytext,yyleng,"hms",a);
                            calc_lval.val = (a[0]*60.0+a[1])*60.0+a[2];
@@ -170,6 +171,7 @@ DANG    ({DDEG}?({SPACE}?{DMIN})?({SPACE}?{DSEC})?)
 			   return NUMBER;
 			  }
 {DANG}                    {/* Number in the angular format */
+                           ECHOSS("DANG");
                            float a[3];
                            split3(yytext,yyleng,"d\'\"",a);
                            calc_lval.val = (a[0]*60.0+a[1])*60.0+a[2];
@@ -178,36 +180,37 @@ DANG    ({DDEG}?({SPACE}?{DMIN})?({SPACE}?{DSEC})?)
 			   return NUMBER;
 			  }
 {CREAL}                   {
-                            ECHO;
+                           ECHOSS("CREAL");
                             sscanf(yytext,"%lf",&calc_lval.val);
                             INCR_INDEX;
                             return NUMBER;
                           }
 {FREAL}                   {
                            float m,e; char c;
-			   ECHO;
+			   ECHOSS("FREAL");
 			   sscanf(yytext, "%f%c%f", &m,&c,&e);
 			   calc_lval.val = m*pow(10.0,e);
                             INCR_INDEX;
 			   return NUMBER;
 			  }
 atan2                     { Calc_Symbol *s;   /* A patch for atan2...*/
-			    ECHO;
+                            ECHOSS("atan2");
                             INCR_INDEX;
                             if ((s=calcget(yytext))!=0)
                             { calc_lval.symb=s; return s->type;}
                           }
 [a-zA-Z]+[a-zA-Z0-9]*      {
                             Calc_Symbol *s;
-			    ECHO;
                             INCR_INDEX;
                             if ((s=calcget(yytext))!=0) 
                              {
+			    ECHOSS("A-Z"+s->type);
                                  calc_lval.symb=s;
                                return s->type;
                              }
                             else
                               {
+			        ECHOSS("A-Z UserFunc");
 				s2.ufunc = UserFunc;
 				s2.Name = (char *)malloc(strlen(yytext)+1);
 				strcpy(s2.Name,yytext);
@@ -216,7 +219,4 @@ atan2                     { Calc_Symbol *s;   /* A patch for atan2...*/
 			      }
                           }
 \n                        {ECHON;return '\n';}
-.                         {ECHO;return yytext[0];}
-
-
-
+.                         {ECHOSS(".");return yytext[0];}

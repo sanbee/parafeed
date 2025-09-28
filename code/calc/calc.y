@@ -22,7 +22,7 @@
 #include <math.h>
 #include <calc.h>
 #include <stdlib.h>
-
+#include <stdio.h>
  static double
  fooUserFunc(char* s) { return 0.0; }
 
@@ -67,6 +67,7 @@ expr:     NUMBER                 { $$ = $1;                     }
 				     $$ = (*($1->ufunc))($1->Name);
                                      if ($1->Name) free($1->Name);
                                      $1->Name = NULL;
+				     return -2;
 				    }
 				   else
 				     {
