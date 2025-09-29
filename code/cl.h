@@ -230,7 +230,7 @@ int       dowarranty(char *);
 // #endif
   //int       clparseVal(Symbol *, int *, double *);
 #ifdef __cplusplus
-void      reportParseError(const Symbol& S, const int& N);
+void      reportParseError(clError& excp,const Symbol& S, const int& N);
 int       PrintVals(FILE *f,Symbol *S,unsigned int newline=1);
 #endif
 int       PrintKey(FILE *f, Symbol *S);

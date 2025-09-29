@@ -25,7 +25,7 @@
 #include <stdbool.h>
 #include <algorithm>
 #include <cctype>
-#include <boolError.h>
+#include <clError.h>
 
 //#include <clbool.h>
 #ifdef __cplusplus

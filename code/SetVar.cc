@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <cl.h>
 #include <cllib.h>
-#include <boolError.h>
+#include <clError.h>
 #ifdef __cplusplus
 #include <sstream>
 #include <algorithm>
@@ -154,7 +154,6 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	  }
 	else
 	  {
-	    //	    Matched=(clIsTrue(newval) || clIsFalse(newval));
 	    Matched=0;
 	    try
 	      {
@@ -168,7 +167,6 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 
 	    os << newval;
 	  }
-	//	os << b;
 	newval=os.str();
       }
     else if (ISSET(S->Attributes, CL_INTEGERTYPE))
@@ -177,7 +175,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	if ((n=calc((char *)v,&d)) < 0)
 	  {
 	    std::string mesg("Error in parsing value of \""+std::string(S->Name)+"\"");
-	    throw(clNumParsingError(mesg.c_str(),"VerifyVal",CL_SEVERE));
+	    throw(clNumParsingError(mesg.c_str(),"###Error",CL_SEVERE));
 	  }
       }
     else if (n > 0)
@@ -208,7 +206,7 @@ void SetVal(const char *v, Symbol *S, int i)
 {
   string vv;
   string trimmed=trim(string(v));
-  //  stripwhite(v);
+
   try
     {
       VerifyVal(trimmed.c_str(),S,vv);

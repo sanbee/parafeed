@@ -49,7 +49,6 @@ target_include_directories(parafeed PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 # install target
 set(header_list
-  boolError.h
   clbool.h
   clconvert.h
   clError.h
@@ -96,7 +95,7 @@ bison_target(ShellParser
   ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.cc
   COMPILE_FLAGS "-p sh_ -o shell.tab.cc"
   DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.h)
-#  set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c PROPERTY LANGUAGE CXX))
+  set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c PROPERTY LANGUAGE CXX)
 flex_target(ShellScanner
   shell.l
   ${CMAKE_CURRENT_BINARY_DIR}/shell.cc
@@ -112,10 +111,12 @@ bison_target(CalcParser
   ${CMAKE_CURRENT_BINARY_DIR}/y.tab.c
   COMPILE_FLAGS "-p calc_"
   DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/y.tab.h)
+  set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/shell.tab.c PROPERTY LANGUAGE CXX)
 flex_target(CalcScanner
   calc/lex.l
   ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c
   COMPILE_FLAGS "-Pcalc_")
+  #set_property(SOURCE ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.c PROPERTY LANGUAGE CXX)
 add_flex_bison_dependency(CalcScanner CalcParser)
 target_sources(parafeed
   PRIVATE ${BISON_CalcParser_OUTPUTS} ${FLEX_CalcScanner_OUTPUTS})
@@ -148,6 +149,7 @@ set(sh_sources
   yyerror.cc
   minmatch.cc
   isBool.cc)
+
 foreach(source IN LISTS sh_sources)
   set_property(SOURCE ${source} PROPERTY LANGUAGE CXX)
 endforeach()

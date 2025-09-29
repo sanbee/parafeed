@@ -43,8 +43,21 @@ public:
     this->Msg = that.Msg;
     this->Id = that.Id;
     this->Level = that.Level;
-  }
+  };
+  void set(const string& m, const string& i, int l=0)
+  {
+    Msg=m; Id=i; Level=l;
+  };
   ~clError() {};
+};
+
+class clBoolParsingError: public clError
+{
+public:
+  clBoolParsingError(): clError() {};
+  clBoolParsingError(const char *m, const char *i, int l=0): clError(m,i,l) {};
+  clBoolParsingError(const clBoolParsingError& that) 
+  {this->Msg = that.Msg; this->Id = that.Id; this->Level = that.Level;}
 };
 
 class clNumParsingError: public clError

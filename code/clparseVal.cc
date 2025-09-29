@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <clError.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,11 +32,12 @@ extern "C" {
    Convert the n th value of symbol S into a double
 ------------------------------------------------------------------------*/
 
-void reportParseError(const Symbol& S, const int& N)
+  void reportParseError(clError& excp, const Symbol& S, const int& N)
 {
   ostringstream os;
   os << "In conversion of " << S.Name << "[" << N << "]=" << S.Val[N];
-  clThrowUp(os.str().c_str(), "###Error", CL_FAIL);
+  excp.set(os.str().c_str(), "###Error", CL_FAIL);
+  throw(excp);
 }
 #ifdef __cplusplus
 	   }
@@ -62,7 +64,7 @@ int clparseVal(Symbol *S, int *Which, string& val)
 
 int clparseVal(Symbol *S, int *Which, double *d)
 {
-  unsigned int N = _ABS(*Which),n;
+  unsigned int N = _ABS(*Which);
 HANDLE_EXCEPTIONS(
   if (S != NULL)
     {
@@ -75,12 +77,19 @@ HANDLE_EXCEPTIONS(
 	  else if ((retVal=clIsFalse(val))==1) *d=0;
 	  //*d = clIsTrue(val);
 	  if (retVal == CL_UNKNOWNBOOL ) 
-	    reportParseError(*S, N-1);
+	    {
+	      clBoolParsingError clExcp;
+	      reportParseError(clExcp, *S, N-1);
+	    }
 	}
       else 
 	{
-	  n=calc((char *)S->Val[N-1].c_str(),d);
-	  if (n < 0) reportParseError(*S, N-1);
+	  int n=calc((char *)S->Val[N-1].c_str(),d);
+	  if (n < 0)
+	    {
+	      clNumParsingError clExcp;
+	      reportParseError(clExcp,*S, N-1);
+	    }
 	}
       return 1;
     }
