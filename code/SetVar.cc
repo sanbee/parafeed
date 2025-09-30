@@ -169,7 +169,8 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	  }
 	newval=os.str();
       }
-    else if (ISSET(S->Attributes, CL_INTEGERTYPE))
+    else if (ISSET(S->Attributes, CL_INTEGERTYPE)||
+	     ISSET(S->Attributes, CL_FLOATTYPE))
       {
 	double d;
 	if ((n=calc((char *)v,&d)) < 0)
