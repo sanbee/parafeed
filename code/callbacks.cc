@@ -30,7 +30,7 @@
 #include <string>
 #include <errno.h>
 #include <limits.h>
-#include <boolError.h>
+#include <clError.h>
 #include <sstream>
 #include <regex>
 //#include <strstream>

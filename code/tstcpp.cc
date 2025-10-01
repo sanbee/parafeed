@@ -114,7 +114,7 @@ void UI(bool restart, int argc, char **argv)
       }
       EndCL();
     }
-  catch (clError x)
+  catch (clError& x)
     {
       x << x << endl;
       clRetry();
