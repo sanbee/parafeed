@@ -50,7 +50,6 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
   else if (std::is_same<T, bool>::value)  {type_str="bool";  type_int=CL_BOOLTYPE;}
   else if (std::is_same<T, std::string>::value)
                                           {type_str="string";type_int=CL_STRINGTYPE;}
-
   HANDLE_EXCEPTIONS(
 		    if (n < 0)
 		      S=SearchVSymb((char *)Name.c_str(),cl_SymbTab);
@@ -76,27 +75,30 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 // Templated functions for NVal calls.  
 //
 template <class T>
-Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap &smap=SMap())
+Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap &smap=SMap(), bool dbg=false)
 {
   Symbol *S;
   std::ostringstream os;
+  uint type_int=CL_MIXEDTYPE;
 
-  if      (std::is_same<T, int>::value)   (m <= 0) ? os << "int[]"   : os << "int[" << m << "]";
-  else if (std::is_same<T, float>::value) (m <= 0) ? os << "float[]" : os << "float[" << m << "]";
-  else if (std::is_same<T, bool>::value)  (m <= 0) ? os << "bool[]"  : os << "bool[" << m << "]";
-  else if (std::is_same<T, std::string>::value) (m <= 0) ? os << "string[]" : os << "string[" << m << "]";
-    
+  if      (std::is_same<T, int>::value)   {(m <= 0) ? os << "int[]"   : os << "int[" << m << "]"; type_int=CL_INTEGERTYPE;}
+  else if (std::is_same<T, float>::value) {(m <= 0) ? os << "float[]" : os << "float[" << m << "]";type_int=CL_FLOATTYPE;}
+  else if (std::is_same<T, bool>::value)  {(m <= 0) ? os << "bool[]"  : os << "bool[" << m << "]";type_int=CL_BOOLTYPE;}
+  else if (std::is_same<T, std::string>::value) {(m <= 0) ? os << "string[]" : os << "string[" << m << "]";type_int=CL_STRINGTYPE;}
+
   HANDLE_EXCEPTIONS(
 		    S = SearchQSymb((char *)Name.c_str(), os.str());
-		    //
-		    // Remember the number of values set by the user.
-		    //
-		    setAutoDefaults(S,val);
 
 		    if (S!=NULL) 
 		      {
+			// Use templated function that works for all values of T
+			setAutoDefaults(S,val);
+
 			S->Class=CL_APPLNCLASS;
-			if (!smap.empty()) S->smap = smap;
+			if (dbg) S->Class=CL_DBGCLASS;
+			SETBIT(S->Attributes,type_int);
+			if (!smap.empty())
+			  S->smap = smap;
 		      }
 		    return S;
 		    );
