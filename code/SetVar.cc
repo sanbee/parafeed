@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <functional>
 extern "C" {
 
 /* #define getmem(a,b)   malloc((a))*/
@@ -127,8 +128,39 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 
   return ret;
 }
+
 /*----------------------------------------------------------------------*/
-  void VerifyVal(const char *v, Symbol *S,string& newval)
+ bool matchOpts(const std::string& val,const Symbol& S)
+  {
+    bool Matched=false;
+    for(auto opt : S.Options)
+      if (opt == val)
+	{
+	  Matched=true;
+	  break;
+	}
+    return Matched;
+  };
+
+  void noMatchException(const Symbol& S)
+  {
+    string msg;
+    msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
+    msg += S.Name; msg += "\"";
+    clError errObj;
+    errObj << msg.c_str() << endl;
+    if (!S.Options.empty())
+      {
+	msg = "###Informational: Valid options are ";
+	for(auto opt : S.Options)
+	  {msg += "\"" + opt;msg += "\" ";}
+	errObj << msg.c_str() << endl;
+      }
+  };
+/*----------------------------------------------------------------------*/
+  void VerifyVal(const char *v, Symbol *S,string& newval,
+		 std::function<bool(const std::string&, const Symbol& )> matchOptsLambda=matchOpts,
+		 std::function<void(const Symbol&)> noMatchExceptionLambda=noMatchException)
   {
     int n = S->Options.size();
     int Matched=1;
@@ -181,25 +213,11 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       }
     else if (n > 0)
       {
-	Matched=0;
-	for(int i=0; i<n; i++)
-	  if (S->Options[i] == v)
-	    {Matched=1;break;}
+	Matched=matchOptsLambda(std::string(v),*S);
       }
     if (!Matched)
       {
-	string msg;
-	msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
-	msg += S->Name; msg += "\"";
-	clError errObj;
-	errObj << msg.c_str() << endl;
-	if (n>0)
-	  {
-	    msg = "###Informational: Valid options are ";
-	    for(int i=0; i<n; i++)
-	      {msg += "\"" + S->Options[i];msg += "\" ";}
-	    errObj << msg.c_str() << endl;
-	  }
+	noMatchExceptionLambda(*S);
       }
   }
 /*----------------------------------------------------------------------*/
@@ -210,7 +228,7 @@ void SetVal(const char *v, Symbol *S, int i)
 
   try
     {
-      VerifyVal(trimmed.c_str(),S,vv);
+      VerifyVal(trimmed.c_str(),S,vv,matchOpts);
     }
   catch (clError& x)
     {

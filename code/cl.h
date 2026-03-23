@@ -19,7 +19,7 @@
 /* $Id: cl.h,v 2.0 1998/11/11 07:12:46 sanjay Exp sanjay $ */
 #if !defined(CL_H)
 #define CL_H
-
+#include <functional>
 /*
   Names of the environment variables and other default values used for
   user customizaion.
@@ -252,7 +252,9 @@ int  UnsetVar(Symbol *,int);
 int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
   //void SetVal(const char *, Symbol *, int);
 #ifdef __cplusplus
-void VerifyVal(const char *, Symbol *,string &);
+  void VerifyVal(const char *, Symbol *,string &,
+		 std::function<bool(const std::string&, const Symbol& S )> matchOptsLambda,
+		 std::function<void(const Symbol&)> noMatchExceptionLambda);
 #endif
 int  CopyVSymb(Symbol *, Symbol *,int);
 int  FreeVSymb(Symbol *);
