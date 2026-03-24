@@ -157,6 +157,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
 	errObj << msg.c_str() << endl;
       }
   };
+std::function<void(const Symbol&)> noMatchExceptionLambda_ptr=noMatchException;
 /*----------------------------------------------------------------------*/
   void VerifyVal(const char *v, Symbol *S,string& newval,
 		 std::function<bool(const std::string&, const Symbol& )> matchOptsLambda=matchOpts,
