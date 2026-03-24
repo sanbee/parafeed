@@ -28,16 +28,10 @@ void ErrorObj::SetSource(const char *s)
   if (s) {Src = s;}
 }
 
-std::string ErrorObj::what()
+const char* ErrorObj::what()
 {
-  std::string Message=Id+": "+Msg;
-  return Message;
-}
-
-const char* ErrorObj::what() const noexcept
-{
-  std::string tmp=what();
-  return tmp.c_str();
+  Message=Id+": "+Msg;
+  return Message.c_str();
 }
 
 ostream &operator<<(ostream& o, const ErrorObj &E)

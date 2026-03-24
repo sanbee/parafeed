@@ -28,16 +28,16 @@ using namespace std;
 class ErrorObj: public std::exception{
  public:
   enum {Informational=100,Recoverable,Severe,Fatal};
-  ErrorObj():Id(), Msg(), Src(),Level(0)
+  ErrorObj():Id(), Msg(), Src(), Message(),Level(0)
   {};
   //    Id.resize(0);Msg.resize(0);Src.resize(0);Message.resize(0);};
 
   ErrorObj(const char *m, const char *i, int l=0):
-    Id(i), Msg(m), Src(), Level(l) 
+    Id(i), Msg(m), Src(), Message(),Level(l) 
   {};
 
   ErrorObj(const string &m, const string &i, int l):
-    Id(i), Msg(m), Src(), Level(l)
+    Id(i), Msg(m), Src(), Message(),Level(l)
   {};
 
   ErrorObj(const ErrorObj& that);
@@ -47,8 +47,7 @@ class ErrorObj: public std::exception{
   void SetSource(const char *m=0);
   const char *Source()               {return Src.c_str();}
   int Severity()                     {return Level;}
-  const char* what() const noexcept;
-  std::string what();
+  const char *what();
 
   ostream &operator<<(const std::string& m) {return cerr << m;}
   ostream &operator<<(const char *m) {return cerr << m;}
@@ -56,7 +55,7 @@ class ErrorObj: public std::exception{
   friend ostream &operator<<(ostream& o,const ErrorObj&);
 
 protected:
-  string Id,Msg,Src;
+  string Id,Msg,Src,Message;
   int Level;
 };
 
