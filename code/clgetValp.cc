@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2000-2025, 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,8 +59,9 @@ int clgetValp(const std::string& Name, T& val, int& n, SMap smap=SMap())
   int N;
   HANDLE_EXCEPTIONS(
 		    S=clgetBaseCode(Name,val,n,smap);
-		    double d;
-		    if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
+		    T d;
+		    //if ((N=clparseVal(S,&n,d))>0) val = (T)d;
+		    if ((N=clparseVal(S,&n,d))>0) val = d;
 
 		    return N;
 		    );
@@ -68,23 +69,23 @@ int clgetValp(const std::string& Name, T& val, int& n, SMap smap=SMap())
 //
 //-------------------------------------------------------------------------
 //
-template <>
-int clgetValp<std::string>(const std::string&, std::string& val, int& n,SMap)=delete;
-//
-//----------------------------------------------------------------------
-//
-int clgetValp(const std::string& Name, std::string& val, int& n, SMap smap=SMap())
-{
-  Symbol *S;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    S=clgetBaseCode(Name,val,n,smap);
-		    std::string d;
-		    if ((N=clparseVal(S,&n,d))>0) val = d;
+// template <>
+// int clgetValp<std::string>(const std::string&, std::string& val, int& n,SMap)=delete;
+// //
+// //----------------------------------------------------------------------
+// //
+// int clgetValp(const std::string& Name, std::string& val, int& n, SMap smap=SMap())
+// {
+//   Symbol *S;
+//   int N;
+//   HANDLE_EXCEPTIONS(
+// 		    S=clgetBaseCode(Name,val,n,smap);
+// 		    std::string d;
+// 		    if ((N=clparseVal(S,&n,d))>0) val = d;
 
-		    return N;
-		    );
-}
+// 		    return N;
+// 		    );
+// }
 //
 //-------------------------------------------------------------------------
 //
@@ -100,40 +101,7 @@ template <class T>
 int clgetValp(const std::string& Name, std::vector<T>& val, int& m, const SMap smap=SMap())
 {
   Symbol *S;
-  double d;
-  HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,smap);
-		    int n0=S->NVals;
-		    int i=1;
-		    for(int j=0;j<n0;j++)
-		      {
-			if ((m=clparseVal(S,&i,&d))!=CL_FAIL)
-			  {
-			    if (m==0) {m=S->NVals=i-1;return i-1;}
-			    else 
-			      {
-				val.resize(i);
-				val[i-1] = (T)d;
-				i++;
-			      }
-			  }
-		      }
-		    m=S->NVals=i-1;
-		    return i-1;
-		    );
-
-}
-template <>
-int clgetValp<std::string>(const std::string&, std::vector<std::string>& val, int& n,const SMap)=delete;
-
-//
-//----------------------------------------------------------------------
-//
-int clgetValp(const std::string& Name, std::vector<std::string>& val, int& m, const SMap smap=SMap())
-{
-  Symbol *S;
-  std::string d;
-
+  T d;
   HANDLE_EXCEPTIONS(
 		    S=clgetNValBaseCode(Name,val,m,smap);
 		    int n0=S->NVals;
@@ -146,6 +114,7 @@ int clgetValp(const std::string& Name, std::vector<std::string>& val, int& m, co
 			    else 
 			      {
 				val.resize(i);
+				//val[i-1] = (T)d;
 				val[i-1] = d;
 				i++;
 			      }
@@ -154,7 +123,40 @@ int clgetValp(const std::string& Name, std::vector<std::string>& val, int& m, co
 		    m=S->NVals=i-1;
 		    return i-1;
 		    );
+
 }
+// template <>
+// int clgetValp<std::string>(const std::string&, std::vector<std::string>& val, int& n,const SMap)=delete;
+
+// //
+// //----------------------------------------------------------------------
+// //
+// int clgetValp(const std::string& Name, std::vector<std::string>& val, int& m, const SMap smap=SMap())
+// {
+//   Symbol *S;
+//   std::string d;
+
+//   HANDLE_EXCEPTIONS(
+// 		    S=clgetNValBaseCode(Name,val,m,smap);
+// 		    int n0=S->NVals;
+// 		    int i=1;
+// 		    for(int j=0;j<n0;j++)
+// 		      {
+// 			if ((m=clparseVal(S,&i,d))!=CL_FAIL)
+// 			  {
+// 			    if (m==0) {m=S->NVals=i-1;return i-1;}
+// 			    else 
+// 			      {
+// 				val.resize(i);
+// 				val[i-1] = d;
+// 				i++;
+// 			      }
+// 			  }
+// 		      }
+// 		    m=S->NVals=i-1;
+// 		    return i-1;
+// 		    );
+// }
 //
 //-------------------------------------------------------------------------
 //
@@ -162,26 +164,7 @@ template <class T>
 int dbgclgetValp(const std::string& Name, T& val, int& n, SMap smap=SMap())
 {
   Symbol *S;
-  double d;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    {
-		      S=clgetBaseCode(Name,val,n,smap,true);
-		      if ((N=clparseVal(S,&n,&d))>0) val = (T)d;
-		      return N;
-		    }
-		    );
-}
-//
-//----------------------------------------------------------------------
-//
-template <>
-int dbgclgetValp<std::string>(const std::string& Name, std::string& val, int& n, SMap smap)=delete;
-
-int dbgclgetValp(const std::string& Name, std::string& val, int& n, SMap smap=SMap())
-{
-  Symbol *S;
-  std::string d;
+  T d;
   int N;
   HANDLE_EXCEPTIONS(
 		    {
@@ -194,50 +177,71 @@ int dbgclgetValp(const std::string& Name, std::string& val, int& n, SMap smap=SM
 //
 //----------------------------------------------------------------------
 //
+// template <>
+// int dbgclgetValp<std::string>(const std::string& Name, std::string& val, int& n, SMap smap)=delete;
+
+// int dbgclgetValp(const std::string& Name, std::string& val, int& n, SMap smap=SMap())
+// {
+//   Symbol *S;
+//   std::string d;
+//   int N;
+//   HANDLE_EXCEPTIONS(
+// 		    {
+// 		      S=clgetBaseCode(Name,val,n,smap,true);
+// 		      if ((N=clparseVal(S,&n,d))>0) val = d;
+// 		      return N;
+// 		    }
+// 		    );
+// }
+//
+//----------------------------------------------------------------------
+//
 template <class T>
 int dbgclgetValp(const std::string& Name, std::vector<T>& val, int& n, SMap smap=SMap())
 {
   Symbol *S;
-  double d;
+  //  double d;
+  T d;
   int N;
   HANDLE_EXCEPTIONS(
 		    {
 		      S=clgetBaseCode(Name,val,n,smap,true);
 		      int i=1;
+		      val.resize(0);
 		      while(i <= n)
 			{
-			  if ((N=clparseVal(S,&n,&d))==CL_FAIL) return N;
+			  if ((N=clparseVal(S,&i,d))==CL_FAIL) return N;
 			  else if (N==0) break;
-			  else {val.push_back((T)d); i++;}
-			}
-		      return i-1;
-		    }
-		    );
-}
-template <>
-int dbgclgetValp<std::string>(const std::string& Name, std::vector<std::string>& val, int& n, SMap smap)=delete;
-//
-//----------------------------------------------------------------------
-//
-int dbgclgetValp(const std::string& Name, std::vector<std::string>& val, int& n, SMap smap=SMap())
-{
-  Symbol *S;
-  std::string d;
-  int N;
-  HANDLE_EXCEPTIONS(
-		    {
-		      S=clgetBaseCode(Name,val,n,smap,true);
-		      int i=1;
-		      while(i <= n)
-			{
-			  if ((N=clparseVal(S,&n,d))==CL_FAIL) return N;
-			  else if (N==0) break;
+			  //			  else {val.push_back((T)d); i++;}
 			  else {val.push_back(d); i++;}
 			}
-		      return i-1;
+		      return n=S->NVals=val.size();
 		    }
 		    );
 }
+// template <>
+// int dbgclgetValp<std::string>(const std::string& Name, std::vector<std::string>& val, int& n, SMap smap)=delete;
+// //
+// //----------------------------------------------------------------------
+// //
+// int dbgclgetValp(const std::string& Name, std::vector<std::string>& val, int& n, SMap smap=SMap())
+// {
+//   Symbol *S;
+//   std::string d;
+//   int N;
+//   HANDLE_EXCEPTIONS(
+// 		    S=clgetNValBaseCode(Name,val,n,smap,true);
+// 		    int i=1;
+// 		    val.resize(0);
+// 		    while(i <= n)
+// 		      {
+// 			if ((N=clparseVal(S,&i,d))==CL_FAIL) return N;
+// 			else if (N==0) break;
+// 			else {val.push_back(d); i++;}
+// 		      }
+// 		    return n=S->NVals=val.size();
+// 		    );
+// }
 
 //
 //----------------------------------------------------------------------
