@@ -65,22 +65,44 @@ int clgetValpVec(const std::string& Name, std::vector<T>& val, int& m, const SMa
 {
   Symbol *S;
   HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,smap,dbg);
+		    S=clgetNValBaseCode(Name,val,m,smap);
 		    int n0=S->NVals;
 		    int i=1;
-		    val.resize(0);
 		    for(int j=0;j<n0;j++)
 		      {
 			T d;
 			if ((m=clparseVal(S,&i,d))!=CL_FAIL)
 			  {
 			    if (m==0) break;
-			    else {val.push_back(d);i++;}
+			    else
+			      {
+				val.resize(i);
+				val[i-1] = d;
+				i++;
+			      }
 			  }
 		      }
-		    //m=S->NVals=i-1;
-		    return m=val.size();
+		    return m=S->NVals=i-1;
 		    );
+
+		    // S=clgetNValBaseCode(Name,val,m,smap,dbg);
+		    // int n0=S->NVals;
+		    // int i=1;
+		    // val.resize(0);
+		    // for(int j=0;j<n0;j++)
+		    //   {
+		    // 	T d;
+		    // 	if ((m=clparseVal(S,&i,d))!=CL_FAIL)
+		    // 	  {
+		    // 	    if (m==0) break;
+                    //        // What dosen't the following code
+                    //        // work when S is of STRING type?
+		    // 	    else {val.push_back(d);i++;}
+		    // 	  }
+		    //   }
+		    // //m=S->NVals=i-1;
+		    // return m=val.size();
+		    // );
 
 }
 //

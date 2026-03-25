@@ -113,15 +113,22 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       // Count the number of commas. Strip off leading and trailing white
       // spaces from val, copy into another buffer, take comma seperated
       // tokens from the new buffer and put it in Tab.
-      //  try
-      {
-	vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
-	unsigned ntokens=tokens.size();
-	pos->NVals=ntokens;
-	pos->Val.resize(pos->NVals);
-	for (unsigned i=0;i<ntokens;i++)
-	  SetVal(tokens[i].c_str(),pos,i);
-      }
+      vector<string> valBackup=pos->Val;
+      try
+	{
+	  vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
+	  unsigned ntokens=tokens.size();
+	  pos->NVals=ntokens;
+	  pos->Val.resize(pos->NVals);
+	  for (unsigned i=0;i<ntokens;i++)
+	    SetVal(tokens[i].c_str(),pos,i);
+	}
+      catch(clError& x)
+	{
+	  pos->NVals=valBackup.size();
+	  pos->Val=valBackup;
+	  throw(x);
+	}
     }
 
   if (dodoinp) doinp((char *)(string("-t ")+key).c_str());
@@ -233,7 +240,9 @@ void SetVal(const char *v, Symbol *S, int i)
     }
   catch (clError& x)
     {
-      cerr << x.what()  << " " << S->Val[i] << endl;
+      // Same as cerr << x.what(), except that the output
+      // stream is centrally specified in clError.
+      x << x << " at position " << i << endl;
       throw(x);
     }
 
@@ -242,25 +251,6 @@ void SetVal(const char *v, Symbol *S, int i)
   S->NVals=S->Val.size();
   S->Val[i]=vv;
   S->Used=0;
-
-  /* if ((unsigned int)i >= S->NVals) */
-  /*   { */
-  /*     S->Val = (char **)realloc(S->Val,sizeof(char **)*(i+1)); */
-  /*     len = S->NVals; */
-  /*     do S->Val[len++]=NULL; while (len < i); */
-  /*   } */
-
-  /* len=strlen(vv.c_str()); */
-
-  /* S->Val[i] = (char *)realloc(S->Val[i],len+1); */
-
-  /* if (strlen(vv.c_str())) */
-  /*   { */
-  /*     strncpy(S->Val[i],vv.c_str(),len+1); */
-  /*     S->Val[i][len] = '\0'; */
-  /*     if ((unsigned int)i>=S->NVals) S->NVals++; */
-  /*     S->Used=0; */
-  /*   } */
 }
 
 }
