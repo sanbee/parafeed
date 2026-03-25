@@ -30,7 +30,7 @@
 #ifndef CLGETVALP_H
 #define CLGETVALP_H
 #include <cllib.h>
-#include <shell.h>
+#include <clhashdefines.h>
 #include <support.h>
 #include <type_traits>
 #include <clgetBaseCode.h>

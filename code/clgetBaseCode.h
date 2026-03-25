@@ -30,7 +30,7 @@
 #ifndef CLGETBASECODE_H
 #define CLGETBASECODE_H
 #include <cllib.h>
-#include <shell.h>
+#include <clhashdefines.h>
 #include <support.h>
 #include <setAutoDefaults.h>
 #include <clparseVal.h>

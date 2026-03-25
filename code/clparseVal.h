@@ -21,7 +21,7 @@
 #define CLPARSEVAL_H
 #include <cl.h>
 
-#include <shell.h>
+#include <clhashdefines.h>
 #include <cllib.h>
 #include <cl.h>
 #include <string>

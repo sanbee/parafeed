@@ -21,7 +21,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
-#include <shell.h>
+#include <clhashdefines.h>
 #include <shell.tab.h>
 
 #ifdef __cplusplus

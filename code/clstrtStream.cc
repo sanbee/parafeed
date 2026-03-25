@@ -19,7 +19,6 @@
 /* $Id: clstrtStream.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
 #include <stdio.h>
 #include <cllib.h>
-#include <shell.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -20,7 +20,6 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <shell.h>
 #include <cllib.h>
 
 #ifdef __cplusplus

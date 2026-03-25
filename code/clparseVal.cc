@@ -20,7 +20,6 @@
 #include <shell.h>
 #include <cllib.h>
 #include <cl.h>
-//#include <string.h>
 #include <string>
 #include <vector>
 #include <sstream>
