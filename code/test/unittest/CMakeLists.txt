@@ -17,8 +17,9 @@ if(NOT GTest_FOUND)
   include(FetchContent)
   FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/release-1.12.1.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    GIT_REPOSITORY https://github.com/google/googletest
+    GIT_TAG release-1.12.1
+    GIT_SHALLOW TRUE
   )
   FetchContent_MakeAvailable(googletest)
 endif()
