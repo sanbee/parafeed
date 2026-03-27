@@ -271,6 +271,8 @@ void      clSetPrompt(const bool& prompt);
 }
 #endif
 #ifdef __cplusplus
+Symbol   *SearchVSymb(const char *Name);
+
 int       clgetFullp(const string& Arg,  int &N);
 int       clgetFullValp(const string& Name, string& Val);
 int       dbgclgetFullValp(const string& Name, string& Val);

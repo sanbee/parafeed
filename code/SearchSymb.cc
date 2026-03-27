@@ -37,7 +37,7 @@ extern "C" {
     return t;
   }
   /*----------------------------------------------------------------------*/
-  Symbol *SearchVSymb(const char *Name, Symbol *Tab)
+  Symbol *SearchVSymb(const char *Name, Symbol *Tab=cl_SymbTab)
   {
     return minmatch(Name,Tab);
   }
@@ -56,3 +56,8 @@ extern "C" {
 #ifdef __cplusplus
 	   }
 #endif
+  /*----------------------------------------------------------------------*/
+  Symbol *SearchVSymb(const char *Name)
+  {
+    return SearchVSymb(Name,cl_SymbTab);
+  }
