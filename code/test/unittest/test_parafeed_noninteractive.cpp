@@ -218,11 +218,11 @@ TEST_F(ParafeedTest, WrongDataType) {
     std::vector<std::string> args = {
         "test2",
         "help=noprompt",
-        "bool=true",
-        "oneint=not_int",                // Wrong data type
+        "bool=not_true",               // Wrong data type
+        "oneint=not_int",              // Wrong data type
         "string=showstrarr",
         "strarr=foo,bar",
-        "farray=1,2,3,4,5,6,7,8,9,10"
+        "farray=1,x,3,4,5,6,7,8,9,10" // One wrong data type
     };
     auto [argc, argv] = MakeArgv(args);
 
@@ -236,7 +236,7 @@ TEST_F(ParafeedTest, WrongDataType) {
     std::vector<float> farray(10);
     int i = 1;
 
-    clgetValp("bool", b, i);
+    EXPECT_THROW({clgetValp("bool", b, i);},clError);
     
     // Should fail due to wrong type 
     EXPECT_THROW({clgetValp("oneint", oneint, i);},clError);
@@ -245,7 +245,8 @@ TEST_F(ParafeedTest, WrongDataType) {
     int idx = 0;
     clgetValp("strarr", strarr, idx);
     int N = 10;
-    clgetValp("farray", farray, N);
+
+    EXPECT_THROW({clgetValp("farray", farray, N);},clError);
 
     EndCL();
 
