@@ -6,10 +6,31 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include <readline/readline.h>
 
 class ParafeedTest : public ::testing::Test {
 public:
-  ~ParafeedTest() {clCleanUp();}
+  //  std::function<int (char *, size_t)> backup_cl_shell_input_g;
+  ~ParafeedTest()
+  {
+    clCleanUp();
+    //    set_shell_input(backup_cl_shell_input_g);
+  }
+
+  static int test_shell_inp(char *buf, size_t len)
+  {
+    string str("go\n\0");
+    buf = (char *)str.c_str();
+    len=str.size()+1;
+    return (int)len;
+  }
+
+  void init()
+  {
+    // backup_cl_shell_input_g=get_shell_input();
+    // set_shell_input(test_shell_inp);
+  }
+
 protected:
     std::pair<int, char**> MakeArgv(const std::vector<std::string>& args) {
         char** argv = new char*[args.size()];
@@ -27,7 +48,9 @@ protected:
         delete[] argv;
     }
 };
-
+//
+//---------------------------------------------------------------------------------
+//
 TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     std::vector<std::string> args = {
         "test2",
@@ -46,6 +69,13 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     };
     auto [argc, argv] = MakeArgv(args);
 
+    // FILE* string_stream=NULL;
+    // string input_str("go");
+    // read_from_string(input_str);
+    // string_stream = fmemopen(const_cast<char*>(input_str.c_str()), input_str.size(), "r");
+    // rl_instream = string_stream;
+
+    init();
     BeginCL(argc, argv);
     clInteractive(0);
 
@@ -163,7 +193,7 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
 
 //     std::string unused;
 //     i = 1;
-//     clgetSValp("unknownparam", unused, i);
+//     clgetValp("unknownparam", unused, i);
 //     EndCL();
 
 //     FreeArgv(argc, argv);
@@ -236,18 +266,18 @@ TEST_F(ParafeedTest, WrongDataType) {
     std::vector<float> farray(10);
     int i = 1;
 
-    EXPECT_THROW({clgetValp("bool", b, i);},clError);
+    EXPECT_THROW(clgetValp("bool", b, i),clError);
     
     // Should fail due to wrong type 
-    EXPECT_THROW({clgetValp("oneint", oneint, i);},clError);
-
+    EXPECT_THROW(clgetValp("oneint", oneint, i),clError);
+    
     clgetValp("string", s, i);
     int idx = 0;
     clgetValp("strarr", strarr, idx);
     int N = 10;
 
-    EXPECT_THROW({clgetValp("farray", farray, N);},clError);
-
+    EXPECT_THROW(clgetValp("farray", farray, N),clError);
+    
     EndCL();
 
     FreeArgv(argc, argv);

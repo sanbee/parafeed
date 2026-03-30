@@ -28,6 +28,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include <functional>
   using namespace std;
 /*
    This piece is added only if commandline editing (via GNU Readline and
@@ -41,26 +42,20 @@
    be another #define here for lex to define input() using GNU Readline
    calls instead of gets().
 */
-//typedef yy_size_t cl_size_t;
-typedef int cl_size_t;
 extern char *sh_Prompt;
 char *sh_line=0;
-void (*CL_INPUT)(char *, int *, int)=NULL;
-void inp_readline(char *,cl_size_t &,int);
 
-#undef YY_INPUT
-#define YY_INPUT(buf,result,max_size) result=inp_readline(buf,max_size)
-    //#define YY_INPUT(buf,result,max_size) (*CL_INPUT)(buf,&result,max_size)
 static int inp_readline(char *buf,  size_t max_size)
 { 
   int  n,result; 
   static size_t index=0;   
-  rl_instream=stdin; 
-  rl_outstream=stderr; 
+  if (rl_instream == NULL) rl_instream=stdin;
+  if (rl_outstream == NULL) rl_outstream=stderr;
   if (index==0) 
     { 
       if (sh_line) free(sh_line);sh_line=0; 
-      sh_line = readline(sh_Prompt);
+      if (rl_instream == stdin)	sh_line = readline(sh_Prompt);
+      else                      sh_line = readline(NULL);
       if (sh_line) 
 	{
 	  stripwhite(sh_line); 
@@ -93,7 +88,13 @@ static int inp_readline(char *buf,  size_t max_size)
     }
   return result;
 }
-  /*
+std::function<int (char *, size_t)> cl_shell_input_g=inp_readline;
+void set_shell_input(std::function<int (char *, size_t)> inp_func) {cl_shell_input_g=inp_func;};
+std::function<int (char *, size_t)> get_shell_input() {return cl_shell_input_g;}
+//int inp_readline(char *,size_t);
+#undef YY_INPUT
+#define YY_INPUT(buf,result,max_size) {result=cl_shell_input_g(buf,max_size);}//inp_readline(buf,max_size)
+/*
 { \
   int  n; \
   static int index=0;   \

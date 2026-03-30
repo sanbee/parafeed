@@ -67,6 +67,8 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 			if (!smap.empty())
 			  S->smap = smap;
 		      }
+		    else
+		      throw(clError("Unknown keyword","###Error: ",CL_FATAL));
 		    )
     return S;
 };
@@ -100,6 +102,8 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap
 			if (!smap.empty())
 			  S->smap = smap;
 		      }
+		    else
+		      throw(clError("Unknown keyword","###Error: ",CL_FATAL));
 		    );
   return S;
 }
