@@ -1,60 +1,11 @@
-#include <gtest/gtest.h>
-#include <cl.h>
-#include <clgetValp.h>
-#include <clsh.h>
-#include <clinteract.h>
-#include <string>
-#include <vector>
-#include <cstring>
-#include <readline/readline.h>
-
-class ParafeedTest : public ::testing::Test {
-public:
-  //  std::function<int (char *, size_t)> backup_cl_shell_input_g;
-  ~ParafeedTest()
-  {
-    clCleanUp();
-    //    set_shell_input(backup_cl_shell_input_g);
-  }
-
-  static int test_shell_inp(char *buf, size_t len)
-  {
-    string str("go\n\0");
-    buf = (char *)str.c_str();
-    len=str.size()+1;
-    return (int)len;
-  }
-
-  void init()
-  {
-    // backup_cl_shell_input_g=get_shell_input();
-    // set_shell_input(test_shell_inp);
-  }
-
-protected:
-    std::pair<int, char**> MakeArgv(const std::vector<std::string>& args) {
-        char** argv = new char*[args.size()];
-        for (size_t i = 0; i < args.size(); ++i) {
-            argv[i] = new char[args[i].size() + 1];
-            std::strcpy(argv[i], args[i].c_str());
-        }
-        return {static_cast<int>(args.size()), argv};
-    }
-
-    void FreeArgv(int argc, char** argv) {
-        for (int i = 0; i < argc; ++i) {
-            delete[] argv[i];
-        }
-        delete[] argv;
-    }
-};
+#include <unittest/ParafeedTest.h>
 //
-//---------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------
 //
 TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     std::vector<std::string> args = {
         "test2",
-        "help=noprompt",
+        //"help=noprompt",
         "bool=true",
         "bool1=false",
         "int=42",
@@ -69,13 +20,7 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     };
     auto [argc, argv] = MakeArgv(args);
 
-    // FILE* string_stream=NULL;
-    // string input_str("go");
-    // read_from_string(input_str);
-    // string_stream = fmemopen(const_cast<char*>(input_str.c_str()), input_str.size(), "r");
-    // rl_instream = string_stream;
-
-    init();
+    sendCmd("go\n");
     BeginCL(argc, argv);
     clInteractive(0);
 
@@ -173,31 +118,31 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
 
 // below tests can be included when parafeed throws on these wrong usage.
 
-// TEST_F(ParafeedTest, PrintsErrorOnUnknownParameter) {
-//     std::vector<std::string> args = {
-//         "test2",
-//         "help=noprompt",
-//         "bool=true"
-// 	// "unknownparam=badvalue"  // This will add the named parameter to the symbol table.
-//                                     // The library allows user-defined symbols.
-//     };
-//     auto [argc, argv] = MakeArgv(args);
+TEST_F(ParafeedTest, PrintsErrorOnUnknownParameter) {
+    std::vector<std::string> args = {
+        "test2",
+        "help=noprompt",
+        "bool=true"
+	// "unknownparam=badvalue"  // This will add the named parameter to the symbol table.
+                                    // The library allows user-defined symbols.
+    };
+    auto [argc, argv] = MakeArgv(args);
 
-//     BeginCL(argc, argv);
-//     clInteractive(0);
+    BeginCL(argc, argv);
+    clInteractive(0);
 
-//     // Try accessing only the known parameter
-//     bool b = false;
-//     int i = 1;
-//     clgetValp("bool", b, i);
+    // Try accessing only the known parameter
+    bool b = false;
+    int i = 1;
+    clgetValp("bool", b, i);
 
-//     std::string unused;
-//     i = 1;
-//     clgetValp("unknownparam", unused, i);
-//     EndCL();
+    std::string unused;
+    i = 1;
+    clgetValp("unknownparam", unused, i);
+    EndCL();
 
-//     FreeArgv(argc, argv);
-// }
+    FreeArgv(argc, argv);
+}
 
 
 
@@ -257,7 +202,7 @@ TEST_F(ParafeedTest, WrongDataType) {
     auto [argc, argv] = MakeArgv(args);
 
     BeginCL(argc, argv);
-    clInteractive(0);
+    //    clInteractive(0);
 
     bool b = false;
     int oneint = 0;
@@ -283,4 +228,51 @@ TEST_F(ParafeedTest, WrongDataType) {
     FreeArgv(argc, argv);
 }
 
+//
+//--------------------------------------------------------------------
+// This does not yet work as expected.
+//
+// TEST_F(ParafeedTest, Interactive) {
+//     std::vector<std::string> args = {
+//         "test2",
+//         //"help=noprompt",
+//         "bool=1",               // Wrong data type
+//         "oneint=1",              // Wrong data type
+//         "string=showstrarr",
+//         "strarr=foo,bar",
+//         "farray=1,3,4,5,6,7,8,9,10" // One wrong data type
+//     };
+//     auto [argc, argv] = MakeArgv(args);
 
+//     clCleanUp();
+//     sendCmd("bool=true\noneint=100\ninp\ngo\n");
+//     //sendCmd("go\n");
+//     BeginCL(argc, argv);
+//     clInteractive(1);
+
+//     bool b = false;
+//     int oneint = 0;
+//     std::string s;
+//     std::vector<std::string> strarr;
+//     std::vector<float> farray(10);
+//     int i = 1;
+
+//     //    EXPECT_THROW(clgetValp("bool", b, i),clError);
+//     clgetValp("bool", b, i);
+    
+//     // Should fail due to wrong type 
+//     clgetValp("oneint", oneint, i);
+    
+//     clgetValp("string", s, i);
+//     int idx = 0;
+//     clgetValp("strarr", strarr, idx);
+//     int N = 10;
+
+//     clgetValp("farray", farray, N);
+    
+//     EndCL();
+
+//     EXPECT_EQ(oneint,100);
+
+//     FreeArgv(argc, argv);
+// }
