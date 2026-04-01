@@ -7,43 +7,107 @@ TEST_F(ParafeedTest, Interactive) {
     std::vector<std::string> args = {
         "test2",
         //"help=noprompt",
-        "bool=1",               // Wrong data type
-        "oneint=1",              // Wrong data type
+        "bool=1",
+        "oneint=x",
         "string=showstrarr",
         "strarr=foo,bar",
-        "farray=1,3,4,5,6,7,8,9,10" // One wrong data type
+        "farray=1,3,4,5,6,7,8,9,10"
     };
     auto [argc, argv] = MakeArgv(args);
 
     clCleanUp();
+    // sendCmd() sets the parser input stream to be the give string.
+    // The parses scans this string in the interactive shell (started
+    // in the EndCL() call below).
     sendCmd("bool=true\noneint=100\ninp\ngo\n");
-    //sendCmd("go\n");
+
     BeginCL(argc, argv);
     clInteractive(1);
 
     bool b = false;
     int oneint = 0;
-    std::string s;
-    std::vector<std::string> strarr;
-    std::vector<float> farray(10);
+    int N = 10;
     int i = 1;
 
-    //    EXPECT_THROW(clgetValp("bool", b, i),clError);
-    clgetValp("bool", b, i);
+    std::string s;
+    std::vector<std::string> strarr;
+    std::vector<float> farray(N);
+
+    i=1;clgetValp("bool", b, i);
     
-    // Should fail due to wrong type 
-    clgetValp("oneint", oneint, i);
+    i=1;
+
+    //
+    // The setting from argv is used in the first pass
+    // (a.k.a. "registeration pass").  Without the "help=noprompt"
+    // detected in this first pass, the EndCL() call starts the
+    // interactive shell, which triggers the the second pass on the
+    // "go" command (setjmp() called in EndCL() to restart execution
+    // from the location of the clInteractive() call).  In this second
+    // pass the interactive settings (here, vis the sendCmd() call)
+    // replaces the values which are then available in the clgetValp()
+    // calls.
+    //
+    if (cl_Pass == 0) // cl_Pass is a global parafeed lib. control
+		      // variable
+      EXPECT_THROW(clgetValp("oneint", oneint, i),clError);
+    else
+      clgetValp("oneint", oneint, i);
     
-    clgetValp("string", s, i);
-    int idx = 0;
-    clgetValp("strarr", strarr, idx);
-    int N = 10;
+    i=1;clgetValp("string", s, i);
+
+    i=0;clgetValp("strarr", strarr, i);
 
     clgetValp("farray", farray, N);
     
     EndCL();
 
+    // Expect the value as set interactively vis sendCmd()
     EXPECT_EQ(oneint,100);
+
+    FreeArgv(argc, argv);
+}
+
+TEST_F(ParafeedTest, InteractiveWrongType) {
+    std::vector<std::string> args = {
+        "test2",
+        //"help=noprompt",
+        "bool=1",
+        "oneint=1",
+        "string=showstrarr",
+        "strarr=foo,bar",
+        "farray=1,3,4,5,6,7,8,9,10"
+    };
+    auto [argc, argv] = MakeArgv(args);
+
+    clCleanUp();
+    // Interactively set the wrong type for bool
+    sendCmd("oneint=100\nbool=xtrue\ninp\ngo\n");
+
+    BeginCL(argc, argv);
+    clInteractive(1);
+
+    bool b = false;
+    int oneint = 0;
+    int N = 10;
+    int i = 1;
+    std::string s;
+    std::vector<std::string> strarr;
+    std::vector<float> farray(N);
+
+    i=1;clgetValp("bool", b, i);
+
+    i=1;clgetValp("oneint", oneint, i);
+
+    i=1;clgetValp("string", s, i);
+
+    i=0;clgetValp("strarr", strarr, i);
+
+    clgetValp("farray", farray, N);
+
+    // Exception thrown in the interactive shell due to illegal
+    // keyword setting (bool=xtrue) via sendCmd()
+    EXPECT_THROW(EndCL(),clError);
 
     FreeArgv(argc, argv);
 }
