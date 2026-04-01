@@ -5,7 +5,7 @@
 TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     std::vector<std::string> args = {
         "test2",
-        //"help=noprompt",
+        "help=noprompt",
         "bool=true",
         "bool1=false",
         "int=42",
@@ -20,7 +20,6 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     };
     auto [argc, argv] = MakeArgv(args);
 
-    sendCmd("go\n");
     BeginCL(argc, argv);
     clInteractive(0);
 
