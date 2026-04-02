@@ -130,7 +130,7 @@ extern int add_history(char *);
   Symbol   *AddQKey(const char *Name, const char *Type, 
 		    Symbol **Head, Symbol **Tail);
   int       ParseCmdLine(int, char **);
-  vector<string> clMakeArgvFromFile(const string& Name);
+  std::vector<std::string> clMakeArgvFromFile(const std::string& Name);
 
   int startShell();
   void clLoadSymb();
@@ -165,10 +165,10 @@ int       clgetNBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetNBVal(char  *Name, bool   *Val, int *N);
 
 #ifdef __cplusplus
-int       clTgetOptp(const string& Name, string& Type);
-int       clgetOptp(const string& Name);
-int       clgetNValsp(const string& Name);
-int       clSetOptions(const string& Name, const VString& options);
+int       clTgetOptp(const std::string& Name, std::string& Type);
+int       clgetOptp(const std::string& Name);
+int       clgetNValsp(const std::string& Name);
+int       clSetOptions(const std::string& Name, const VString& options);
 #endif
 
 void      clRestartShell();
@@ -184,9 +184,9 @@ int       clclearOptsList(char ***,int);
 int       clloadConfig(char *);
 void      clCleanUp();
 #ifdef __cplusplus
-int       clBoolCmp(const string&, const bool& cmpVal);
-int       clIsTrue(const string&);
-int       clIsFalse(const string&);
+int       clBoolCmp(const std::string&, const bool& cmpVal);
+int       clIsTrue(const std::string&);
+int       clIsFalse(const std::string&);
 #endif
 void      clReset();
 void      clRetry();
@@ -252,7 +252,7 @@ int  UnsetVar(Symbol *,int);
 int  SetVar(char *Name, char *val, Symbol *tab,short int force, short int fullmatch, short int doinp);
   //void SetVal(const char *, Symbol *, int);
 #ifdef __cplusplus
-  void VerifyVal(const char *, Symbol *,string &,
+  void VerifyVal(const char *, Symbol *,std::string &,
 		 std::function<bool(const std::string&, const Symbol& S )> matchOptsLambda,
 		 std::function<void(const Symbol&)> noMatchExceptionLambda);
 #endif
@@ -273,40 +273,90 @@ void      clSetPrompt(const bool& prompt);
 #ifdef __cplusplus
 Symbol   *SearchVSymb(const char *Name);
 
-int       clgetFullp(const string& Arg,  int &N);
-int       clgetFullValp(const string& Name, string& Val);
-int       dbgclgetFullValp(const string& Name, string& Val);
+int  clgetBaseCore(const std::string& Name, int& Val, int& N, SMap &smap);
+int  clgetFullValp(const std::string& Name, std::string& Val);
+int  dbgclgetFullValp(const std::string& Name, std::string& Val);
+int  clgetFullp(const std::string& Arg,  int &N);
+//
+//------------------------------------------------------------------------------------------------
+// Wrappers for clgetValp(...,T& val,...) and clgetValp(...,vector<T>&,...)
+//
+int  clgetIValp(const std::string& Name, int& Val, int& N);
+int  clgetFValp(const std::string& Name, float& Val, int& N);
+int  clgetBValp(const std::string& Name, bool& val, int& N);
+int  clgetSValp(const std::string& Name, std::string& Val, int& N);
+//------------------------------------------------------------------------------------------------
+int  clgetNIValp(const std::string& Key,  std::vector<int>& Val, int& m);
+int  clgetNFValp(const std::string& Name, std::vector<float>& Val, int& N);
+int  clgetNBValp(const std::string& Name, std::vector<bool>& val, int& N);
+int  clgetNSValp(const std::string& Name, std::vector<std::string>& Val, int& N);
+//
+//------------------------------------------------------------------------------------------------
+// Wrappers for clgetValp(...,T&,..., SMap&) and clgetValp(...,vector<T>&,...,SMap&)
+//
+int  clgetIValp(const std::string& Name, int& Val, int& N, SMap &smap);
+int  clgetFValp(const std::string& Name, float& Val, int& N, SMap &smap);
+int  clgetBValp(const std::string& Name, bool& Val, int& N, SMap &smap);
+int  clgetSValp(const std::string& Name, std::string& Val, int& N, SMap &smap);
+//------------------------------------------------------------------------------------------------
+int  clgetNIValp(const std::string& Name, std::vector<int>& Val, int& N, SMap &smap);
+int  clgetNFValp(const std::string& Name, std::vector<float>& Val, int& N, SMap &smap);
+int  clgetNBValp(const std::string& Name, std::vector<bool>& Val, int& N, SMap &smap);
+int  clgetNSValp(const std::string& Name, std::vector<std::string>& Val, int& N, SMap& smap);
+//
+//------------------------------------------------------------------------------------------------
+// Wrappers for clgetValp(...,T&,...,bool dbg=true) and clgetValp(...,vector<T>&,...,bool dbg=true)
+//
+int  dbgclgetIValp(const std::string& Name, int& Val, int& N);
+int  dbgclgetFValp(const std::string& Name, float& Val, int& N);
+int  dbgclgetBValp(const std::string& Name, bool& val, int& N);
+int  dbgclgetSValp(const std::string& Name, std::string& Val, int& N);
+//------------------------------------------------------------------------------------------------
+int  dbgclgetNIValp(const std::string& Key,  std::vector<int>& Val, int& m);
+int  dbgclgetNFValp(const std::string& Name, std::vector<float>& Val, int& N);
+int  dbgclgetNBValp(const std::string& Name, std::vector<bool>& val, int& N);
+int  dbgclgetNSValp(const std::string& Name, std::vector<std::string>& Val, int& N);
+//
+//------------------------------------------------------------------------------------------------
+// Wrappers for clgetValp(...,T&,...,SMap&, bool dbg=true) and clgetValp(...,vector<T>&,...,SMap&, bool dbg=true)
+//
+int  dbgclgetIValp(const std::string& Name, int& Val, int& N, SMap &smap);
+int  dbgclgetFValp(const std::string& Name, float& Val, int& N, SMap &smap);
+int  dbgclgetBValp(const std::string& Name, bool& val, int& N, SMap &smap);
+int  dbgclgetSValp(const std::string& Name, std::string& Val, int& N, SMap &smap);
+//------------------------------------------------------------------------------------------------
+int  dbgclgetNIValp(const std::string& Key,  std::vector<int>& Val, int& N, SMap &smap);
+int  dbgclgetNFValp(const std::string& Name, std::vector<float>& Val, int& N, SMap &smap);
+int  dbgclgetNBValp(const std::string& Name, std::vector<bool>& val, int& N, SMap &smap);
+int  dbgclgetNSValp(const std::string& Name, std::vector<std::string>& Val, int& N, SMap &smap);
+//
+//------------------------------------------------------------------------------------------------
+// Wrappers to translate dbgclget*() to cldbgget*()
+//
+int  cldbggetIValp(const std::string& Name, int& val, int& n);
+int  cldbggetFValp(const std::string& Name, float& val, int& n);
+int  cldbggetBValp(const std::string& Name, bool& val, int& n);
+int  cldbggetSValp(const std::string& Name, std::string& val, int& n);
 
-int       clgetIValp(const string& Name, int& Val, int& N);
-int       dbgclgetIValp(const string& Name, int& Val, int& N);
-int       clgetNIValp(const string& Key,  vector<int>& Val, int& m);
-int       dbgclgetNIValp(const string& Key,  int& Val, int& m);
+int  cldbggetIValp(const std::string& Name, int& val, int& n, SMap& smap);
+int  cldbggetFValp(const std::string& Name, float& val, int& n, SMap& smap);
+int  cldbggetBValp(const std::string& Name, bool& val, int& n, SMap& smap);
+int  cldbggetSValp(const std::string& Name, std::string& val, int& n, SMap& smap);
 
-int       clgetBValp(const string& Name, bool& val, int& N);
-int       dbgclgetBValp(const string& Name, bool& val, int& N);
-int       clgetNBValp(const string& Name, bool& val, int& N);
-int       dbgclgetNBValp(const string& Name, bool& val, int& N);
+int  cldbggetNIValp(const std::string& Key, std::vector<int>& val, int& m);
+int  cldbggetNFValp(const std::string& Key, std::vector<float>& val, int& m);
+int  cldbggetNBValp(const std::string& Key, std::vector<bool>& val, int& m);
+int  cldbggetNSValp(const std::string& Key, std::vector<std::string>& val, int& m);
 
-int       clgetFValp(const string& Name, float& Val, int& N);
-int       dbgclgetFValp(const string& Name, float& Val, int& N);
-int       clgetNFValp(const string& Name, vector<float>& Val, int& N);
-int       dbgclgetNFValp(const string& Name, float& Val, int& N);
+int  cldbggetNIValp(const std::string& Key, std::vector<int>& val, int& m, SMap& smap);
+int  cldbggetNFValp(const std::string& Key, std::vector<float>& val, int& m, SMap& smap);
+int  cldbggetNBValp(const std::string& Key, std::vector<bool>& val, int& m, SMap& smap);
+int  cldbggetNSValp(const std::string& Key, std::vector<std::string>& val, int& m, SMap& smap);
 
-int       clgetSValp(const string& Name, string& Val, int& N);
-int       dbgclgetSValp(const string& Name, string& Val, int& N);
-int       clgetNSValp(const string& Name, vector<string>& Val, int& N);
-int       dbgclgetNSValp(const string& Name, vector<string>& Val, int& N);
-int       clgetSValp(const string& Name, string& Val, int& N, SMap &smap);
-int       clgetFValp(const string& Name, float& Val, int& N, SMap &smap);
-int       clgetBValp(const string& Name, bool& Val, int& N, SMap &smap);
-int       clgetIValp(const string& Name, int& Val, int& N, SMap &smap);
 
-//int       clgetNSValp(const string& Name, string& Val, int& N, SMap &smap);
-int       clgetNFValp(const string& Name, float& Val, int& N, SMap &smap);
-int       clgetNBValp(const string& Name, bool& Val, int& N, SMap &smap);
-int       clgetNIValp(const string& Name, int& Val, int& N, SMap &smap);
-int       clgetBaseCore(const string& Name, int& Val, int& N, SMap &smap);
-void      clTextColouring(const string& text, const unsigned int textType, string& startSeq, string& endSeq);
+void clTextColouring(const std::string& text, const unsigned int textType,
+		     std::string& startSeq, string& endSeq);
+
 extern std::function<int (char *, size_t)> cl_shell_input_g;
 void set_shell_input(std::function<int (char *, size_t)> inp_func);
 std::function<int (char *, size_t)> get_shell_input();
@@ -315,4 +365,3 @@ std::function<int (char *, size_t)> get_shell_input();
 #include <clconvert.h>
 #endif
 #endif
-
