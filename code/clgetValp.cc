@@ -65,7 +65,7 @@ int clgetValpVec(const std::string& Name, std::vector<T>& val, int& m, const SMa
 {
   Symbol *S;
   HANDLE_EXCEPTIONS(
-		    S=clgetNValBaseCode(Name,val,m,smap);
+		    S=clgetNValBaseCode(Name,val,m,smap,dbg);
 		    int n0=S->NVals;
 		    int i=1;
 		    for(int j=0;j<n0;j++)

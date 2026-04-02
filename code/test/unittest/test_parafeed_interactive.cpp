@@ -16,8 +16,8 @@ TEST_F(ParafeedTest, Interactive) {
     auto [argc, argv] = MakeArgv(args);
 
     clCleanUp();
-    // sendCmd() sets the parser input stream to be the give string.
-    // The parses scans this string in the interactive shell (started
+    // sendCmd() sets the parser input stream to be the given string.
+    // The parser scans this string in the interactive shell (started
     // in the EndCL() call below).
     sendCmd("bool=true\noneint=100\ninp\ngo\n");
 
@@ -41,10 +41,10 @@ TEST_F(ParafeedTest, Interactive) {
     // The setting from argv is used in the first pass
     // (a.k.a. "registeration pass").  Without the "help=noprompt"
     // detected in this first pass, the EndCL() call starts the
-    // interactive shell, which triggers the the second pass on the
-    // "go" command (setjmp() called in EndCL() to restart execution
-    // from the location of the clInteractive() call).  In this second
-    // pass the interactive settings (here, vis the sendCmd() call)
+    // interactive shell, which triggers the second pass on the "go"
+    // command (setjmp() called in EndCL() to restart execution from
+    // the location of the clInteractive() call).  In this second pass
+    // the interactive settings (here, vis the sendCmd() call)
     // replaces the values which are then available in the clgetValp()
     // calls.
     //
