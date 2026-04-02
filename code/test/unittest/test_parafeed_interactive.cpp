@@ -1,7 +1,6 @@
 #include <unittest/ParafeedTest.h>
 //
 //--------------------------------------------------------------------
-// This does not yet work as expected.
 //
 TEST_F(ParafeedTest, Interactive) {
     std::vector<std::string> args = {

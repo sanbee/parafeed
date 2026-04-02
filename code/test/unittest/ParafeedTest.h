@@ -6,10 +6,12 @@
 #include <string>
 #include <vector>
 #include <cstring>
+#include <algorithm>
 #include <readline/readline.h>
 
 string cmd_g;
 bool firstPass=true;
+size_t cmd_pos_g=0;
 class ParafeedTest : public ::testing::Test {
 public:
   ~ParafeedTest()
@@ -18,6 +20,7 @@ public:
     // Reset the input mechanism for the scanner/parser
     set_shell_input(backup_cl_shell_input_g);
     firstPass=true;
+    cmd_pos_g=0;
   }
 
   //------------------------------------------------------------------
@@ -25,21 +28,24 @@ public:
   // string (here the global cmd_g variable).
   static int test_shell_inp(char *buf, size_t max_size)
   {
-    int i=0;
-    for (auto c : cmd_g) buf[i++]=c;
+    if (!firstPass || cmd_pos_g >= cmd_g.size()) return 0;
 
-    i=0;
-    if (firstPass) {i=cmd_g.size();firstPass=false;}
-    
-    return i;
+    const size_t n_to_copy = std::min(max_size, cmd_g.size() - cmd_pos_g);
+    std::memcpy(buf, cmd_g.data() + cmd_pos_g, n_to_copy);
+    cmd_pos_g += n_to_copy;
+    if (cmd_pos_g >= cmd_g.size()) firstPass=false;
+    return static_cast<int>(n_to_copy);
   }
 
   //------------------------------------------------------------------
-  // Save the current input function for the scanner before setting
-  // the scanner another function.
+  // Set the string for the scanner in test_shell_inp().  Save the
+  // current input function for the scanner before resetting the
+  // scanner
   void sendCmd(const string& cmd)
   {
     cmd_g=cmd;
+    firstPass=true;
+    cmd_pos_g=0;
     backup_cl_shell_input_g=get_shell_input();
     set_shell_input(test_shell_inp);
   }
