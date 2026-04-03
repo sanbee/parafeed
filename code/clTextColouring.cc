@@ -29,7 +29,10 @@ extern int clBreakStr(const string& str, string& Name, string& val);
 
 void clTextColouring(const string& text, const unsigned int textType,string& startSeq,string& endSeq)
 {
-  string term(getenv("TERM"));
+  //string term(getenv("TERM"));
+  const char *termEnv = getenv("TERM");
+  string term = termEnv ? termEnv : "";
+
   if ((term.find("xterm") != std::string::npos) && // The current terminal cannot display colours
       (term.find("vt200") != std::string::npos)
       )

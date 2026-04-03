@@ -1,4 +1,6 @@
 #include <unittest/ParafeedTest.h>
+#include <cstdlib>
+
 //
 // ---------------------------------------------------------------------------------
 //
@@ -113,6 +115,23 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
 
     EndCL();
     FreeArgv(argc, argv);
+}
+
+TEST_F(ParafeedTest, TextColouringHandlesMissingTermEnvironment) {
+    const char* originalTerm = std::getenv("TERM");
+    std::string originalTermValue = originalTerm ? originalTerm : "";
+
+    unsetenv("TERM");
+
+    std::string startSeq;
+    std::string endSeq;
+    EXPECT_NO_THROW(clTextColouring("keyword", CL_HIDDENKEYWORD, startSeq, endSeq));
+
+    if (originalTerm) {
+        setenv("TERM", originalTermValue.c_str(), 1);
+    } else {
+        unsetenv("TERM");
+    }
 }
 
 // below tests can be included when parafeed throws on these wrong usage.
