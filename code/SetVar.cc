@@ -28,6 +28,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cctype>
+#include <functional>
 extern "C" {
 
 /* #define getmem(a,b)   malloc((a))*/
@@ -112,23 +113,62 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       // Count the number of commas. Strip off leading and trailing white
       // spaces from val, copy into another buffer, take comma seperated
       // tokens from the new buffer and put it in Tab.
-      //  try
-      {
-	vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
-	unsigned ntokens=tokens.size();
-	pos->NVals=ntokens;
-	pos->Val.resize(pos->NVals);
-	for (unsigned i=0;i<ntokens;i++)
-	  SetVal(tokens[i].c_str(),pos,i);
-      }
+      vector<string> valBackup=pos->Val;
+      try
+	{
+	  vector<string> tokens = clstrtokp(trim(string(val)),',',CL_ESC);
+	  unsigned ntokens=tokens.size();
+	  pos->NVals=ntokens;
+	  pos->Val.resize(pos->NVals);
+	  for (unsigned i=0;i<ntokens;i++)
+	    SetVal(tokens[i].c_str(),pos,i);
+	}
+      catch(clError& x)
+	{
+	  pos->NVals=valBackup.size();
+	  pos->Val=valBackup;
+	  throw(x);
+	}
     }
 
   if (dodoinp) doinp((char *)(string("-t ")+key).c_str());
 
   return ret;
 }
+
 /*----------------------------------------------------------------------*/
-  void VerifyVal(const char *v, Symbol *S,string& newval)
+ bool matchOpts(const std::string& val,const Symbol& S)
+  {
+    bool Matched=false;
+    for(auto opt : S.Options)
+      if (opt == val)
+	{
+	  Matched=true;
+	  break;
+	}
+    return Matched;
+  };
+
+  void noMatchException(const Symbol& S)
+  {
+    string msg;
+    msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
+    msg += S.Name; msg += "\"";
+    clError errObj;
+    errObj << msg.c_str() << endl;
+    if (!S.Options.empty())
+      {
+	msg = "###Informational: Valid options are ";
+	for(auto opt : S.Options)
+	  {msg += "\"" + opt;msg += "\" ";}
+	errObj << msg.c_str() << endl;
+      }
+  };
+std::function<void(const Symbol&)> noMatchExceptionLambda_ptr=noMatchException;
+/*----------------------------------------------------------------------*/
+  void VerifyVal(const char *v, Symbol *S,string& newval,
+		 std::function<bool(const std::string&, const Symbol& )> matchOptsLambda=matchOpts,
+		 std::function<void(const Symbol&)> noMatchExceptionLambda=noMatchException)
   {
     int n = S->Options.size();
     int Matched=1;
@@ -181,25 +221,11 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
       }
     else if (n > 0)
       {
-	Matched=0;
-	for(int i=0; i<n; i++)
-	  if (S->Options[i] == v)
-	    {Matched=1;break;}
+	Matched=matchOptsLambda(std::string(v),*S);
       }
     if (!Matched)
       {
-	string msg;
-	msg = "###Warning:       Value did not match any factory supplied options for keyword \"";
-	msg += S->Name; msg += "\"";
-	clError errObj;
-	errObj << msg.c_str() << endl;
-	if (n>0)
-	  {
-	    msg = "###Informational: Valid options are ";
-	    for(int i=0; i<n; i++)
-	      {msg += "\"" + S->Options[i];msg += "\" ";}
-	    errObj << msg.c_str() << endl;
-	  }
+	noMatchExceptionLambda(*S);
       }
   }
 /*----------------------------------------------------------------------*/
@@ -210,11 +236,13 @@ void SetVal(const char *v, Symbol *S, int i)
 
   try
     {
-      VerifyVal(trimmed.c_str(),S,vv);
+      VerifyVal(trimmed.c_str(),S,vv,matchOpts);
     }
   catch (clError& x)
     {
-      cerr << x.what()  << " " << S->Val[i] << endl;
+      // Same as cerr << x.what(), except that the output
+      // stream is centrally specified in clError.
+      x << x << " at position " << i << endl;
       throw(x);
     }
 
@@ -223,25 +251,6 @@ void SetVal(const char *v, Symbol *S, int i)
   S->NVals=S->Val.size();
   S->Val[i]=vv;
   S->Used=0;
-
-  /* if ((unsigned int)i >= S->NVals) */
-  /*   { */
-  /*     S->Val = (char **)realloc(S->Val,sizeof(char **)*(i+1)); */
-  /*     len = S->NVals; */
-  /*     do S->Val[len++]=NULL; while (len < i); */
-  /*   } */
-
-  /* len=strlen(vv.c_str()); */
-
-  /* S->Val[i] = (char *)realloc(S->Val[i],len+1); */
-
-  /* if (strlen(vv.c_str())) */
-  /*   { */
-  /*     strncpy(S->Val[i],vv.c_str(),len+1); */
-  /*     S->Val[i][len] = '\0'; */
-  /*     if ((unsigned int)i>=S->NVals) S->NVals++; */
-  /*     S->Used=0; */
-  /*   } */
 }
 
 }

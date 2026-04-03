@@ -19,7 +19,7 @@
 /* $Id: clgetConfigFile.c,v 2.1 1999/03/19 04:29:49 sanjay Exp sanjay $ */
 #include <string.h>
 #include <stdio.h>
-#include <shell.h>
+#include <clhashdefines.h>
 #include <cllib.h>
 #include <libgen.h>
 

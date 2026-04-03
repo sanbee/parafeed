@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2000-2025, 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 #include <shell.h>
 #include <cllib.h>
 #include <cl.h>
-//#include <string.h>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -42,6 +41,7 @@ extern "C" {
 #ifdef __cplusplus
 	   }
 #endif
+
 int clparseVal(Symbol *S, int *Which, string& val)
 {
   unsigned int N = _ABS(*Which);
@@ -59,40 +59,4 @@ int clparseVal(Symbol *S, int *Which, string& val)
   else
     return CL_FAIL;
 
-}
-
-
-int clparseVal(Symbol *S, int *Which, double *d)
-{
-  unsigned int N = _ABS(*Which);
-HANDLE_EXCEPTIONS(
-  if (S != NULL)
-    {
-      if (N > S->NVals) return 0;
-      if (ISSET(S->Attributes,CL_BOOLTYPE))
-	{
-	  int retVal;
-	  string val(S->Val[N-1]);
-	  if ((retVal=clIsTrue(val))==1) *d=1;
-	  else if ((retVal=clIsFalse(val))==1) *d=0;
-	  //*d = clIsTrue(val);
-	  if (retVal == CL_UNKNOWNBOOL ) 
-	    {
-	      clBoolParsingError clExcp;
-	      reportParseError(clExcp, *S, N-1);
-	    }
-	}
-      else 
-	{
-	  int n=calc((char *)S->Val[N-1].c_str(),d);
-	  if (n < 0)
-	    {
-	      clNumParsingError clExcp;
-	      reportParseError(clExcp,*S, N-1);
-	    }
-	}
-      return 1;
-    }
-  else return CL_FAIL;
-)
 }

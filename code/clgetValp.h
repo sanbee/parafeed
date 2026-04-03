@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2000-2025, 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,54 +30,8 @@
 #ifndef CLGETVALP_H
 #define CLGETVALP_H
 #include <cllib.h>
-#include <shell.h>
+#include <clhashdefines.h>
 #include <support.h>
-//#include <setAutoDefaults.h>
 #include <type_traits>
 #include <clgetBaseCode.h>
-//#include <clgetValp.cc>
-//
-// //
-//----------------------------------------------------------------------
-// The templated API-level function that can be used in the applications.
-// The clget?Valp() functions are wrappers around this function for
-// backward compatibility.
-//
-// int clgetValp(const string& Name, std::string& val, int& n, SMap& smap);
-// template <class T>
-// int clgetValp(const string& Name, T& val, int& n, SMap& smap);
-// //
-// //-------------------------------------------------------------------------
-// //
-// template <class T>
-// int clgetValp(const string& Name, T& val, int& n);
-
-//
-//-------------------------------------------------------------------------
-//
-// template <class T>
-// int dbgclgetValp(const string& Name, T& val, int& n, SMap& smap);
-
-// //
-// //-------------------------------------------------------------------------
-// //
-// template <class T>
-// int dbgclgetValp(const string& Name, T& val, int& n);
-
-//
-//----------------------------------------------------------------------
-// The templated API-level function that can be used in the applications.
-// The clgetN?Valp() functions are wrappers around this function for
-// backward compatibility.
-//
-// template <class T>
-// int clgetNValp(const string& Name, vector<T>& val, int& m, const SMap &smap);
-
-// template <class T>
-// int clgetNValp(const string& Name, vector<T>& val, int& m);
-
-// int clgetNValp(const string& Name, vector<string>& val, int& m, const SMap &smap);
-
-// int clgetNValp(const string& Name, vector<string>& val, int& m);
-
 #endif

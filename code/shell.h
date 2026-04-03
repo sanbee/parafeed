@@ -22,14 +22,12 @@
 #include <stdio.h>
 #include <math.h>
 #include <clshelldefs.h>
+#include <clhashdefines.h>
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
 
-#define CL_FAIL -1      
-#define CL_ESC  '\\'    /* The character used for 'escaping' chars. */
-                     /* in a string                              */
 /* Bits to determine what needs to be copied in Copy[V,C]Symb routines. */
 #define  COPYNAME        1
 #define  COPYCLASS       2

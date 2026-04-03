@@ -21,7 +21,6 @@
 #define SETAUTODEFAULTS_H
 #include <stdio.h>
 #include <string.h>
-#include <shell.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>

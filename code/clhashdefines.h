@@ -44,6 +44,10 @@
 #define CL_ALLOWHIDDEN 1              // keyword value change, no warning issued
 #define CL_ALLOWHIDDEN_WITHWARNING 2  // keyword value change, warning issued
 
+#define CL_FAIL -1      
+#define CL_ESC  '\\'    /* The character used for 'escaping' chars. */
+                     /* in a string                              */
+
 #define SETBIT(V,MASK)    ((V) |= (MASK))  // Bitwise OR with the mask
 #define RESETBIT(V,MASK)  ((V) &= ~(MASK)) // Bitwise AND with the complement of the mask
 #define ISSET(V,MASK)     ((((V) & (MASK))==(MASK)))

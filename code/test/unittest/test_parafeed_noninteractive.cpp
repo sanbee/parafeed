@@ -1,31 +1,9 @@
-#include <gtest/gtest.h>
-#include <cl.h>
-#include <clgetValp.h>
-#include <clsh.h>
-#include <clinteract.h>
-#include <string>
-#include <vector>
-#include <cstring>
+#include <unittest/ParafeedTest.h>
+#include <cstdlib>
 
-class ParafeedTest : public ::testing::Test {
-protected:
-    std::pair<int, char**> MakeArgv(const std::vector<std::string>& args) {
-        char** argv = new char*[args.size()];
-        for (size_t i = 0; i < args.size(); ++i) {
-            argv[i] = new char[args[i].size() + 1];
-            std::strcpy(argv[i], args[i].c_str());
-        }
-        return {static_cast<int>(args.size()), argv};
-    }
-
-    void FreeArgv(int argc, char** argv) {
-        for (int i = 0; i < argc; ++i) {
-            delete[] argv[i];
-        }
-        delete[] argv;
-    }
-};
-
+//
+// ---------------------------------------------------------------------------------
+//
 TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     std::vector<std::string> args = {
         "test2",
@@ -139,18 +117,34 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly) {
     FreeArgv(argc, argv);
 }
 
+TEST_F(ParafeedTest, TextColouringHandlesMissingTermEnvironment) {
+    const char* originalTerm = std::getenv("TERM");
+    std::string originalTermValue = originalTerm ? originalTerm : "";
+
+    unsetenv("TERM");
+
+    std::string startSeq;
+    std::string endSeq;
+    EXPECT_NO_THROW(clTextColouring("keyword", CL_HIDDENKEYWORD, startSeq, endSeq));
+
+    if (originalTerm) {
+        setenv("TERM", originalTermValue.c_str(), 1);
+    } else {
+        unsetenv("TERM");
+    }
+}
+
 // below tests can be included when parafeed throws on these wrong usage.
-/*
+
 TEST_F(ParafeedTest, PrintsErrorOnUnknownParameter) {
     std::vector<std::string> args = {
         "test2",
         "help=noprompt",
-        "bool=true",
-        "unknownparam=badvalue"  // This should cause an error message
+        "bool=true"
+	// "unknownparam=badvalue"  // This will add the named parameter to the symbol table.
+                                    // The library allows user-defined symbols.
     };
     auto [argc, argv] = MakeArgv(args);
-
-    ::testing::internal::CaptureStdout();  // Begin capturing stderr
 
     BeginCL(argc, argv);
     clInteractive(0);
@@ -162,22 +156,12 @@ TEST_F(ParafeedTest, PrintsErrorOnUnknownParameter) {
 
     std::string unused;
     i = 1;
-    clgetSValp("unknownparam", unused, i);
-
+    clgetValp("unknownparam", unused, i);
     EndCL();
 
-    std::string errOutput = ::testing::internal::GetCapturedStdout();
-    std::cerr << "Captured stderr: \n" << errOutput << std::endl;
-
     FreeArgv(argc, argv);
-
-    // Check that the error message contains the expected output
-    EXPECT_NE(errOutput.find("undefined symbol"), std::string::npos)
-        << "Expected error message about undefined symbol not found in stdout:\n" << errOutput;
-
-
 }
-*/
+
 
 
 /*TEST_F(ParafeedTest, MissingRequiredParam) {
@@ -221,24 +205,22 @@ TEST_F(ParafeedTest, PrintsErrorOnUnknownParameter) {
     EXPECT_NE(output.find("###Error"), std::string::npos)
         << "Expected error message for missing 'strarr' not found in stdout:\n" << output;
 }
-
+*/
 
 TEST_F(ParafeedTest, WrongDataType) {
     std::vector<std::string> args = {
         "test2",
         "help=noprompt",
-        "bool=true",
-        "oneint=not_int",                // Wrong data type
+        "bool=not_true",               // Wrong data type
+        "oneint=not_int",              // Wrong data type
         "string=showstrarr",
         "strarr=foo,bar",
-        "farray=1,2,3,4,5,6,7,8,9,10"
+        "farray=1,x,3,4,5,6,7,8,9,10" // One wrong data type
     };
     auto [argc, argv] = MakeArgv(args);
 
-    ::testing::internal::CaptureStdout();  
-
     BeginCL(argc, argv);
-    clInteractive(0);
+    //    clInteractive(0);
 
     bool b = false;
     int oneint = 0;
@@ -247,26 +229,68 @@ TEST_F(ParafeedTest, WrongDataType) {
     std::vector<float> farray(10);
     int i = 1;
 
-    clgetValp("bool", b, i);
+    EXPECT_THROW(clgetValp("bool", b, i),clError);
     
     // Should fail due to wrong type 
-    clgetValp("oneint", oneint, i);
-
+    EXPECT_THROW(clgetValp("oneint", oneint, i),clError);
+    
     clgetValp("string", s, i);
     int idx = 0;
     clgetValp("strarr", strarr, idx);
     int N = 10;
-    clgetValp("farray", farray, N);
 
+    EXPECT_THROW(clgetValp("farray", farray, N),clError);
+    
     EndCL();
 
-    std::string output = ::testing::internal::GetCapturedStdout();
     FreeArgv(argc, argv);
+}
 
+//
+//--------------------------------------------------------------------
+// This does not yet work as expected.
+//
+// TEST_F(ParafeedTest, Interactive) {
+//     std::vector<std::string> args = {
+//         "test2",
+//         //"help=noprompt",
+//         "bool=1",               // Wrong data type
+//         "oneint=1",              // Wrong data type
+//         "string=showstrarr",
+//         "strarr=foo,bar",
+//         "farray=1,3,4,5,6,7,8,9,10" // One wrong data type
+//     };
+//     auto [argc, argv] = MakeArgv(args);
 
-    EXPECT_NE(output.find("###Error"), std::string::npos)
-        << "Expected error for wrong data type for 'oneint' not found:\n" << output;
+//     clCleanUp();
+//     sendCmd("bool=true\noneint=100\ninp\ngo\n");
+//     //sendCmd("go\n");
+//     BeginCL(argc, argv);
+//     clInteractive(1);
 
-}*/
+//     bool b = false;
+//     int oneint = 0;
+//     std::string s;
+//     std::vector<std::string> strarr;
+//     std::vector<float> farray(10);
+//     int i = 1;
 
+//     //    EXPECT_THROW(clgetValp("bool", b, i),clError);
+//     clgetValp("bool", b, i);
+    
+//     // Should fail due to wrong type 
+//     clgetValp("oneint", oneint, i);
+    
+//     clgetValp("string", s, i);
+//     int idx = 0;
+//     clgetValp("strarr", strarr, idx);
+//     int N = 10;
 
+//     clgetValp("farray", farray, N);
+    
+//     EndCL();
+
+//     EXPECT_EQ(oneint,100);
+
+//     FreeArgv(argc, argv);
+// }

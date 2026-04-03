@@ -17,8 +17,9 @@ if(NOT GTest_FOUND)
   include(FetchContent)
   FetchContent_Declare(
     googletest
-    URL https://github.com/google/googletest/archive/release-1.12.1.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    GIT_REPOSITORY https://github.com/google/googletest
+    GIT_TAG release-1.12.1
+    GIT_SHALLOW TRUE
   )
   FetchContent_MakeAvailable(googletest)
 endif()
@@ -34,11 +35,17 @@ add_executable(ParafeedTests ${TEST_SOURCES})
 
 # Link with Google Test
 target_include_directories(ParafeedTests PRIVATE
-	"${CMAKE_SOURCE_DIR}/code") 
+	"${CMAKE_SOURCE_DIR}/code/test") 
 target_link_libraries(ParafeedTests GTest::gtest_main parafeed)
 
 
+set(TEST_SOURCES  test_parafeed_interactive.cpp)
+add_executable(iParafeedTests ${TEST_SOURCES})
+target_include_directories(iParafeedTests PRIVATE "${CMAKE_SOURCE_DIR}/code/test")
+# Link with Google Test
+target_link_libraries(iParafeedTests GTest::gtest_main parafeed)
+
 # Add the test executable as a test target
 add_test(NAME ParafeedTests COMMAND ParafeedTests)
-
+add_test(NAME iParafeedTests COMMAND iParafeedTests)
 

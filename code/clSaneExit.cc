@@ -18,7 +18,6 @@
  */
 /* $Id: clSaneExit.c,v 2.0 1998/11/11 07:12:54 sanjay Exp $ */
 #include <cllib.h>
-#include <shell.h>
 
 #ifdef __cplusplus
 extern "C" {

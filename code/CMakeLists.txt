@@ -1,6 +1,6 @@
 # -*- cmake -*-
 # /*
-#  * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+#  * Copyright (c) 2000-2025, 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
 #  *
 #  * This program is free software; you can redistribute it and/or modify
 #  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,6 @@ set(header_list
   support.h
   iosupport.h
   SymbTab.h
-  clparseVal.h
   clgetValp.h
   clgetValp.cc
 )
