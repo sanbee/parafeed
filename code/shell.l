@@ -29,6 +29,7 @@
 #include <readline/history.h>
 #include <stdlib.h>
 #include <functional>
+#include <cstdlib>
   using namespace std;
 /*
    This piece is added only if commandline editing (via GNU Readline and
@@ -49,6 +50,15 @@ static int inp_readline(char *buf,  size_t max_size)
 { 
   int  n,result; 
   static size_t index=0;   
+  //
+  // Set the TERM env variable if it does not exist.  readline() call
+  // seg. faults if TERM env variable does not exist.  readline()
+  // (perhaps due to terminfo) is robust to the value of the TERM
+  // variable -- a blank seems sufficient for it to figure out the
+  // capabilities of the terminal (at least it does not seg. fault).
+  //
+  if (getenv("TERM")==NULL) setenv("TERM","",1);
+
   if (rl_instream == NULL) rl_instream=stdin;
   if (rl_outstream == NULL) rl_outstream=stderr;
   if (index==0) 
