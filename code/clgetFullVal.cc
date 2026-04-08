@@ -21,6 +21,7 @@
 #include <support.h>
 #include <setAutoDefaults.h>
 #include <clparseVal.h>
+#include <clgetValp.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

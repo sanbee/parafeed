@@ -33,5 +33,10 @@
 #include <clhashdefines.h>
 #include <support.h>
 #include <type_traits>
-#include <clgetBaseCode.h>
+///#include <clgetBaseCode.h>
+//
+//
+//----------------------------------------------------------------------
+//
+#include <clgetValp.cc>
 #endif

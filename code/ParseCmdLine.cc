@@ -28,7 +28,7 @@
 #include <support.h>
 #include <sstream>
 #include <clstring.h>
-//#include <clgetValp.h>
+#include <clgetValp.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -454,8 +454,9 @@ int EndCL()
 
   cl_RegistrationMode=0;
   //  i = clgetSVal("help",val,&i);
-  i = clgetSValp("help",strVal,i);
-  DeleteVar("help",&cl_SymbTab,&cl_TabTail);
+  string help("help");
+  i = clgetSValp(help,strVal,i);
+  DeleteVar((char *)help.c_str(),&cl_SymbTab,&cl_TabTail);
 
   //  if (!cl_NoPrompt) loadDefaults(0);
   //  if (!strcmp(val,"doc")) 

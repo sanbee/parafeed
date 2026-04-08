@@ -18,7 +18,7 @@ TEST_F(ParafeedTest, Interactive) {
     // sendCmd() sets the parser input stream to be the given string.
     // The parser scans this string in the interactive shell (started
     // in the EndCL() call below).
-    sendCmd("bool=true\noneint=100\ninp\ngo\n");
+    sendCmd("bool=true\n oneint=100\n fullval=this is full val\n inp\n go\n");
 
     BeginCL(argc, argv);
     clInteractive(1);
@@ -31,6 +31,7 @@ TEST_F(ParafeedTest, Interactive) {
     std::string s;
     std::vector<std::string> strarr;
     std::vector<float> farray(N);
+    string fullVal="this is the default value";
 
     i=1;clgetValp("bool", b, i);
     
@@ -58,11 +59,14 @@ TEST_F(ParafeedTest, Interactive) {
     i=0;clgetValp("strarr", strarr, i);
 
     clgetValp("farray", farray, N);
+
+    i=0;clgetFullValp("fullval",fullVal);
     
     EndCL();
 
     // Expect the value as set interactively vis sendCmd()
     EXPECT_EQ(oneint,100);
+    EXPECT_EQ(fullVal,"this is full val");
 
     FreeArgv(argc, argv);
 }
@@ -81,7 +85,7 @@ TEST_F(ParafeedTest, InteractiveWrongType) {
 
     clCleanUp();
     // Interactively set the wrong type for bool
-    sendCmd("oneint=100\nbool=xtrue\ninp\ngo\n");
+    sendCmd("oneint=100\n bool=xtrue\n inp\n go\n");
 
     BeginCL(argc, argv);
     clInteractive(1);
