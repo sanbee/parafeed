@@ -12,7 +12,8 @@
 string cmd_g;
 bool firstPass=true;
 size_t cmd_pos_g=0;
-class ParafeedTest : public ::testing::Test {
+class ParafeedTest : public ::testing::Test
+{
 public:
   ~ParafeedTest()
   {
@@ -53,19 +54,22 @@ public:
   std::function<int (char *, size_t)> backup_cl_shell_input_g;
 
 protected:
-    std::pair<int, char**> MakeArgv(const std::vector<std::string>& args) {
-        char** argv = new char*[args.size()];
-        for (size_t i = 0; i < args.size(); ++i) {
-            argv[i] = new char[args[i].size() + 1];
-            std::strcpy(argv[i], args[i].c_str());
-        }
-        return {static_cast<int>(args.size()), argv};
-    }
-
-    void FreeArgv(int argc, char** argv) {
-        for (int i = 0; i < argc; ++i) {
-            delete[] argv[i];
-        }
-        delete[] argv;
-    }
+  std::pair<int, char**> MakeArgv(const std::vector<std::string>& args)
+  {
+    char** argv = new char*[args.size()];
+    for (size_t i = 0; i < args.size(); ++i)
+      {
+	argv[i] = new char[args[i].size() + 1];
+	std::strcpy(argv[i], args[i].c_str());
+      }
+    return {static_cast<int>(args.size()), argv};
+  }
+  void FreeArgv(int argc, char** argv)
+  {
+    for (int i = 0; i < argc; ++i)
+      {
+	delete[] argv[i];
+      }
+    delete[] argv;
+  }
 };
