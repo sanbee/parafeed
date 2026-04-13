@@ -1,32 +1,46 @@
 #include <unittest/ParafeedTest.h>
 #include <cstdlib>
-
+#include <fstream>
 //
 // ---------------------------------------------------------------------------------
 //
-TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly)
-{
-  std::vector<std::string> args =
+//
+//--------------------------------------------------------------------
+// Factored out re-usable code into global functions
+//
+auto canonicalArgs=[](std::string defFile=std::string(),
+		      std::string help=std::string(),
+		      bool writeDefFile=false)
+ {
+  std::vector<std::string> args
     {
      "test2",
-     "help=noprompt",
      "bool=true",
      "bool1=false",
      "int=42",
      "dbgint=77",
      "float=2.71",
-     "oneint=123",
+     "oneint=100+23",
      "string=showstrarr",
      "strarr=val1,val2",
      "fullval=custom_value",
      "dbgfullval=debug_value",
      "farray=9.9,8.8,7.7"
     };
-  auto [argc, argv] = MakeArgv(args);
+  if (writeDefFile && !defFile.empty())
+    {
+      std::ofstream ofs(defFile);
+      for(int i=1;i<args.size();i++) ofs << args[i] << endl;
+    }
 
-  BeginCL(argc, argv);
-  clInteractive(0);
+  if (!help.empty()) args.push_back(help);
 
+  return args;
+ };
+
+//--------------------------------------------------------------------
+auto canonicalTest=[]()
+ {
   int i;
 
   // bool
@@ -115,6 +129,23 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly)
   EXPECT_FLOAT_EQ(fv[1], 8.8f);
   EXPECT_FLOAT_EQ(fv[2], 7.7f);
 
+  //  EndCL();
+
+ };
+//
+//--------------------------------------------------------------------
+//
+TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly)
+{
+  std::vector<std::string> args=canonicalArgs("","help=noprompt",false);
+  auto [argc, argv] = MakeArgv(args);
+
+  BeginCL(argc, argv);
+  {
+    clInteractive(0);
+
+    canonicalTest();
+  }
   EndCL();
   FreeArgv(argc, argv);
 }
@@ -321,4 +352,217 @@ TEST_F(ParafeedTest, Interactive)
   EXPECT_EQ(oneint,100);
 
   FreeArgv(argc, argv);
+}
+
+//
+//--------------------------------------------------------------------
+// Test help=params mode
+//
+TEST_F(ParafeedTest, ParamsMode)
+{
+  std::vector<std::string> args =
+    {
+     "test2",
+     "help=params"
+    };
+  auto [argc, argv] = MakeArgv(args);
+
+  ::testing::internal::CaptureStdout();
+
+  BeginCL(argc, argv);
+
+  clInteractive(0);
+
+  bool b = false;
+  int oneint = 0;
+  int N = 10;
+  int i = 1;
+
+  std::string s;
+  std::vector<std::string> strarr;
+  std::vector<float> farray(N);
+
+  i=1;clgetValp("bool", b, i);
+
+  i=1;clgetValp("oneint", oneint, i);
+
+  i=1;clgetValp("string", s, i);
+
+  i=0;clgetValp("strarr", strarr, i);
+
+  clgetValp("farray", farray, N);
+
+  EndCL();
+  std::string expected_output="%%N:test2\n%%P:bool:bool:0:\n%%P:oneint:int:0:\n%%P:string:string::\n%%P:strarr:string[]::\n%%P:farray:float[10]:0,0,0,0,0,0,0,0,0,0:\n";
+
+  std::string output = ::testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output,expected_output);
+  //  cout << output << endl;
+
+
+  FreeArgv(argc, argv);
+}
+//
+//--------------------------------------------------------------------
+// Test help=def[,Name] mode
+//
+TEST_F(ParafeedTest, DefMode)
+{
+  std::vector<std::string> args =
+    {
+     "test2",
+     "help=def"
+    };
+  auto [argc, argv] = MakeArgv(args);
+
+  // help=def will look for test2.def file to load the parameters
+  // and throw an exception since test2.def does not exist
+  EXPECT_THROW(BeginCL(argc, argv),clError);
+
+  clInteractive(0);
+
+  bool b = false;
+  int oneint = 0;
+  int N = 10;
+  int i = 1;
+
+  std::string s;
+  std::vector<std::string> strarr;
+  std::vector<float> farray(N);
+
+  i=1;clgetValp("bool", b, i);
+
+  i=1;clgetValp("oneint", oneint, i);
+
+  i=1;clgetValp("string", s, i);
+
+  i=0;clgetValp("strarr", strarr, i);
+
+  clgetValp("farray", farray, N);
+
+  EndCL();
+
+  FreeArgv(argc, argv);
+}
+//
+//--------------------------------------------------------------------
+//
+TEST_F(ParafeedTest, DefModeWithDefFile)
+{
+  std::string defFile0="test2.def", defFile1="tt.def";
+  std::vector<std::string> args;
+  clCleanUp();
+
+  cout << "[INFO]: With help=def," << defFile0
+       << " BeginCL() will look for test2.def "
+       << "file to load the parameters and find it."
+       << endl;
+  args=canonicalArgs(defFile0,"help=def,"+defFile0,true);
+
+  for(auto s : args) cout << s << " "; cout << endl;
+  auto [argc, argv] = MakeArgv(args);
+
+  BeginCL(argc, argv);
+  FreeArgv(argc, argv);
+
+  canonicalTest();
+
+  EndCL();
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+}
+//
+//--------------------------------------------------------------------
+//
+TEST_F(ParafeedTest, DefModeWithoutDefFileError)
+{
+  std::string defFile0="test2.def", defFile1="tt.def";
+  std::vector<std::string> args;
+  clCleanUp();
+
+  cout << "[INFO]: With help=def"
+       << " by default BeginCL() will look for test2.def "
+       << "file to load the parameters and find it."
+       << endl;
+  // With help="def" by default BeginCL() will look for
+  // test2.def file to load the parameters and find it.
+  args=canonicalArgs(defFile0,"help=def",true);
+
+  for(auto s : args) cout << s << " "; cout << endl;
+  auto [argc, argv] = MakeArgv(args);
+
+  BeginCL(argc, argv);
+  FreeArgv(argc, argv);
+
+  canonicalTest();
+
+  EndCL();
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+}
+//
+//--------------------------------------------------------------------
+//
+TEST_F(ParafeedTest, DefModeWithDefFileError)
+{
+  std::string defFile0="test2.def", defFile1="tt.def";
+  std::vector<std::string> args;
+  clCleanUp();
+
+  cout << "[INFO]: With help=def"
+       << " by default BeginCL() will look for " << defFile0
+       << " file to load the parameters and not find it,"
+       << " and throw an exception."
+       << endl;
+  // With help="def" BeginCL() will look for
+  // test2.def file to load the parameters and not find it,
+  // and throw an exception
+  args=canonicalArgs(defFile0,"help=def",false);
+
+  for(auto s : args) cout << s << " "; cout << endl;
+  auto [argc, argv] = MakeArgv(args);
+
+  EXPECT_THROW(BeginCL(argc, argv),clError);
+  FreeArgv(argc, argv);
+
+  canonicalTest();
+
+  EndCL();
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+}
+//
+//--------------------------------------------------------------------
+//
+TEST_F(ParafeedTest, DefModeWithWrongDefFile)
+{
+  std::string defFile0="test2.def", defFile1="tt.def";
+  std::vector<std::string> args;
+  clCleanUp();
+
+  cout << "[INFO]: With help=def,"+defFile1
+       << " BeginCL() will look for " << defFile1
+       << " file to load the parameters and not find it,"
+       << " and throw an exception."
+       << endl;
+  // With help="def,+defFile1 BeginCL() will look for
+  // tt.def file to load the parameters and not find it,
+  // and throw an exception
+  args=canonicalArgs(defFile0,"help=def,"+defFile1,false);
+
+  for(auto s : args) cout << s << " "; cout << endl;
+  auto [argc, argv] = MakeArgv(args);
+
+  EXPECT_THROW(BeginCL(argc, argv),clError);
+  FreeArgv(argc, argv);
+
+  canonicalTest();
+
+  EndCL();
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
 }
