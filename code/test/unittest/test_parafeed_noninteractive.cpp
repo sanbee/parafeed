@@ -393,12 +393,16 @@ TEST_F(ParafeedTest, ParamsMode)
   clgetValp("farray", farray, N);
 
   EndCL();
-  std::string expected_output="%%N:test2\n%%P:bool:bool:0:\n%%P:oneint:int:0:\n%%P:string:string::\n%%P:strarr:string[]::\n%%P:farray:float[10]:0,0,0,0,0,0,0,0,0,0:\n";
+  std::string expected_output=
+    "%%N:test2\n"
+    "%%P:bool:bool:0:\n"
+    "%%P:oneint:int:0:\n"
+    "%%P:string:string::\n"
+    "%%P:strarr:string[]::\n"
+    "%%P:farray:float[10]:0,0,0,0,0,0,0,0,0,0:\n";
 
   std::string output = ::testing::internal::GetCapturedStdout();
   EXPECT_EQ(output,expected_output);
-  //  cout << output << endl;
-
 
   FreeArgv(argc, argv);
 }
@@ -451,7 +455,6 @@ TEST_F(ParafeedTest, DefModeWithDefFile)
 {
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
-  clCleanUp();
 
   cout << "[INFO]: With help=def," << defFile0
        << " BeginCL() will look for test2.def "
@@ -479,7 +482,6 @@ TEST_F(ParafeedTest, DefModeWithoutDefFileError)
 {
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
-  clCleanUp();
 
   cout << "[INFO]: With help=def"
        << " by default BeginCL() will look for test2.def "
@@ -509,7 +511,6 @@ TEST_F(ParafeedTest, DefModeWithDefFileError)
 {
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
-  clCleanUp();
 
   cout << "[INFO]: With help=def"
        << " by default BeginCL() will look for " << defFile0
@@ -541,7 +542,6 @@ TEST_F(ParafeedTest, DefModeWithWrongDefFile)
 {
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
-  clCleanUp();
 
   cout << "[INFO]: With help=def,"+defFile1
        << " BeginCL() will look for " << defFile1
