@@ -44,7 +44,7 @@ auto canonicalArgs=[]()
 			"int=42",
 			"dbgint=77",
 			"float=2.71",
-			"oneint=100+23",
+			"oneint=atan(1)*4/PI*100+23",
 			"string=showstrarr",
 			"strarr=val1,val2",
 			"fullval=custom_value",
@@ -189,6 +189,12 @@ public:
     std::memcpy(buf, cmd_g.data() + cmd_pos_g, n_to_copy);
     cmd_pos_g += n_to_copy;
     if (cmd_pos_g >= cmd_g.size()) firstPass=false;
+
+    // Show the buffer passed to the caller (shell.l::YYINPUT).
+    cerr << "< ";
+    for(uint i=0;i<n_to_copy;i++) cerr << buf[i];
+    cerr << "---------------" << endl;
+
     return static_cast<int>(n_to_copy);
   }
 

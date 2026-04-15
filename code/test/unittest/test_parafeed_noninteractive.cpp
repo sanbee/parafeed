@@ -323,13 +323,13 @@ TEST_F(ParafeedTest, DefModeWithDefFile)
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
 
-  cout << "[INFO]: With help=def," << defFile0
+  cerr << "[INFO]: With help=def," << defFile0
        << " BeginCL() will look for test2.def "
        << "file to load the parameters and find it."
        << endl;
   args=makeCanonicalArgs(defFile0,"help=def,"+defFile0,true);
 
-  for(auto s : args) cout << s << " "; cout << endl;
+  for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
 
   BeginCL(argc, argv);
@@ -350,7 +350,7 @@ TEST_F(ParafeedTest, DefModeWithoutDefFileError)
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
 
-  cout << "[INFO]: With help=def"
+  cerr << "[INFO]: With help=def"
        << " by default BeginCL() will look for " << defFile0
        << "file to load the parameters and find it."
        << endl;
@@ -358,7 +358,7 @@ TEST_F(ParafeedTest, DefModeWithoutDefFileError)
   // test2.def file to load the parameters and find it.
   args=makeCanonicalArgs(defFile0,"help=def",true);
 
-  for(auto s : args) cout << s << " "; cout << endl;
+  for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
 
   BeginCL(argc, argv);
@@ -379,7 +379,7 @@ TEST_F(ParafeedTest, DefModeWithDefFileError)
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
 
-  cout << "[INFO]: With help=def"
+  cerr << "[INFO]: With help=def"
        << " by default BeginCL() will look for " << defFile1
        << " file to load the parameters and not find it,"
        << " and throw an exception."
@@ -389,7 +389,7 @@ TEST_F(ParafeedTest, DefModeWithDefFileError)
   // and throw an exception
   args=makeCanonicalArgs(defFile1,"help=def",false);
 
-  for(auto s : args) cout << s << " "; cout << endl;
+  for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
 
   EXPECT_THROW(BeginCL(argc, argv),clError);
@@ -410,7 +410,7 @@ TEST_F(ParafeedTest, DefModeWithWrongDefFile)
   std::string defFile0="test2.def", defFile1="tt.def";
   std::vector<std::string> args;
 
-  cout << "[INFO]: With help=def,"+defFile1
+  cerr << "[INFO]: With help=def,"+defFile1
        << " BeginCL() will look for " << defFile1
        << " file to load the parameters and not find it,"
        << " and throw an exception."
@@ -420,7 +420,7 @@ TEST_F(ParafeedTest, DefModeWithWrongDefFile)
   // and throw an exception
   args=makeCanonicalArgs(defFile0,"help=def,"+defFile1,false);
 
-  for(auto s : args) cout << s << " "; cout << endl;
+  for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
 
   EXPECT_THROW(BeginCL(argc, argv),clError);

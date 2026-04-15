@@ -24,13 +24,9 @@
 // dbgclgetValp() and dbgclgetNValp(). These use the templated
 // clgetBaseCode() and clparseVal().
 //
-// Templates for std::string type is deleted and overloaded since
-// val = (T)d cannot work the same way for string as it works
-// for float,int, bool types.
-//
 // For directly using clget?Valp() interface, nothing else is required
 // other than these templates.  This usage is recommended.  For
-// backward compatibility, the clget[SIBF][N]Valp() functions are
+// backward compatibility, the [dbg]clget[SIBF][N]Valp() functions are
 // implemented which are wrappers around clgetValp() functions.  These
 // functions are still in use in other parts of the library -- so
 // these are required even internally for now.  Similar functions may

@@ -1,6 +1,10 @@
 #include <unittest/ParafeedTest.h>
 //
 //--------------------------------------------------------------------
+// Test for incorrect values in argv.  Here, oneint=x, instead of a
+// valid number.  In the first pass (cl_Pass==0), an exception should
+// be thrown.  The second pass, after the correct input to the parser
+// ("oneint=100"), no exception should be thrown.
 //
 TEST_F(ParafeedTest, Interactive)
 {
@@ -73,6 +77,9 @@ TEST_F(ParafeedTest, Interactive)
 }
 //
 //--------------------------------------------------------------------
+// Test for incorrect values set in the interactive shell (here,
+// bool=xtrue).  The interactive shell, started in EndCL(), should
+// throw and exception.
 //
 TEST_F(ParafeedTest, InteractiveWrongType)
 {
@@ -120,25 +127,33 @@ TEST_F(ParafeedTest, InteractiveWrongType)
 }
 //
 //--------------------------------------------------------------------
+// Test Complementary load: Load defFile with a "!" at the end to set
+// only those variables from the defFile which aren't already set.  In
+// practice this applies only to keys that take string values and are
+// currently blank.  All other keys would be set one way or another --
+// either as factory defaults, or via app.def or via user interaction.
 //
 TEST_F(ParafeedTest, InteractiveComplementaryLoad)
 {
   std::string defFile="tt.def";
-  std::vector<std::string>   args=canonicalArgs();
+  std::vector<std::string>   args=makeCanonicalArgs(defFile,"",true);
 
-  //  std::replace(args.begin(), args.end(), +"strarr=val1,val2", +"strarr=");
-
-  makeDefFile(args,defFile,"",true);
-
-  // Interactively set the wrong type for bool
+  //
+  // defFile sets strarr=val1,val2.  Set strarr to something else
+  // interactively, do a complementary load and test that it has the
+  // values set interactively (and not val1,val2).
+  //
   sendCmd("strarr=blah1,blah2\n load "+defFile+"!\n inp\n go\n");
- 
+
   auto [argc, argv] = MakeArgv(args);
   std::vector<std::string> strarr;
+
   BeginCL(argc, argv);
+
   clInteractive(1);
+
   int i=0;clgetValp("strarr", strarr, i);
-  //  for(auto s : strarr) cout << s << endl;
+
   EndCL();
 
   ASSERT_EQ(strarr.size(), 2u);
