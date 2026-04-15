@@ -71,7 +71,9 @@ TEST_F(ParafeedTest, Interactive)
 
   FreeArgv(argc, argv);
 }
-
+//
+//--------------------------------------------------------------------
+//
 TEST_F(ParafeedTest, InteractiveWrongType)
 {
   std::vector<std::string> args =
@@ -115,4 +117,33 @@ TEST_F(ParafeedTest, InteractiveWrongType)
   EXPECT_THROW(EndCL(),clError);
 
   FreeArgv(argc, argv);
+}
+//
+//--------------------------------------------------------------------
+//
+TEST_F(ParafeedTest, InteractiveComplementaryLoad)
+{
+  std::string defFile="tt.def";
+  std::vector<std::string>   args=canonicalArgs();
+
+  //  std::replace(args.begin(), args.end(), +"strarr=val1,val2", +"strarr=");
+
+  makeDefFile(args,defFile,"",true);
+
+  // Interactively set the wrong type for bool
+  sendCmd("strarr=blah1,blah2\n load "+defFile+"!\n inp\n go\n");
+ 
+  auto [argc, argv] = MakeArgv(args);
+  std::vector<std::string> strarr;
+  BeginCL(argc, argv);
+  clInteractive(1);
+  int i=0;clgetValp("strarr", strarr, i);
+  //  for(auto s : strarr) cout << s << endl;
+  EndCL();
+
+  ASSERT_EQ(strarr.size(), 2u);
+  EXPECT_EQ(strarr[0], "blah1");
+  EXPECT_EQ(strarr[1], "blah2");
+
+  std::remove(defFile.c_str());
 }
