@@ -1,12 +1,54 @@
 #include <unittest/ParafeedTest.h>
 //
+// Test the canonical Args setting in the interactive mode.  This has
+// "bool1=false int=42" setting.  Check that bool1=false exposes
+// "int", and "int=42" keeps "float" hidden.
+//
+TEST_F(ParafeedTest, InteractiveCanonical)
+{
+  std::vector<std::string> args=makeCanonicalArgs("","help=dbg",false);
+  auto [argc, argv] = MakeArgv(args);
+  sendCmd("go\n");
+  BeginCL(argc, argv);
+  {
+    clInteractive(0);
+
+    canonicalTest();
+
+    // Get a pointer to the named symbol from the internal symbol
+    // table.
+    //
+    // The following keys should be of the CL_DBGCLASS class and
+    // CL_DBG_ON==true.  In the interactive shell, these keys will be
+    // visible.
+    //
+    Symbol *S;
+    S=SearchVSymb("dbgint");
+    EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+
+    S=SearchVSymb("dbgfullval");
+    EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+
+    if (cl_Pass > 0)
+      {
+	S=SearchVSymb("int");
+	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,1);
+
+	S=SearchVSymb("float");
+	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,0);
+      }
+  }
+  EndCL();
+  FreeArgv(argc, argv);
+}
+//
 //--------------------------------------------------------------------
 // Test for incorrect values in argv.  Here, oneint=x, instead of a
 // valid number.  In the first pass (cl_Pass==0), an exception should
 // be thrown.  The second pass, after the correct input to the parser
 // ("oneint=100"), no exception should be thrown.
 //
-TEST_F(ParafeedTest, Interactive)
+TEST_F(ParafeedTest, InteractiveWrongArgv)
 {
   std::vector<std::string> args =
     {
@@ -136,8 +178,8 @@ TEST_F(ParafeedTest, InteractiveWrongType)
 TEST_F(ParafeedTest, InteractiveComplementaryLoad)
 {
   std::string defFile="tt.def";
+  std::remove(defFile.c_str());
   std::vector<std::string>   args=makeCanonicalArgs(defFile,"",true);
-
   //
   // defFile sets strarr=val1,val2.  Set strarr to something else
   // interactively, do a complementary load and test that it has the

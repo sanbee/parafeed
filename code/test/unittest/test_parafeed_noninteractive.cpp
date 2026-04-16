@@ -12,6 +12,17 @@ TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly)
     clInteractive(0);
 
     canonicalTest();
+    //
+    // The following keys should be of the CL_DBGCLASS class and
+    // CL_DBG_ON==false.
+    //
+    Symbol *S;
+    S=SearchVSymb("dbgint");
+    EXPECT_EQ(!CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+
+    S=SearchVSymb("dbgfullval");
+    EXPECT_EQ(!CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+
   }
   EndCL();
   FreeArgv(argc, argv);
@@ -327,6 +338,10 @@ TEST_F(ParafeedTest, DefModeWithDefFile)
        << " BeginCL() will look for test2.def "
        << "file to load the parameters and find it."
        << endl;
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+
   args=makeCanonicalArgs(defFile0,"help=def,"+defFile0,true);
 
   for(auto s : args) cerr << s << " "; cerr << endl;
@@ -354,8 +369,13 @@ TEST_F(ParafeedTest, DefModeWithoutDefFileError)
        << " by default BeginCL() will look for " << defFile0
        << "file to load the parameters and find it."
        << endl;
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+  //
   // With help="def" by default BeginCL() will look for
   // test2.def file to load the parameters and find it.
+  //
   args=makeCanonicalArgs(defFile0,"help=def",true);
 
   for(auto s : args) cerr << s << " "; cerr << endl;
@@ -384,9 +404,14 @@ TEST_F(ParafeedTest, DefModeWithDefFileError)
        << " file to load the parameters and not find it,"
        << " and throw an exception."
        << endl;
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+  //
   // With help="def" BeginCL() will look for
   // test2.def file to load the parameters and not find it,
   // and throw an exception
+  //
   args=makeCanonicalArgs(defFile1,"help=def",false);
 
   for(auto s : args) cerr << s << " "; cerr << endl;
@@ -415,9 +440,14 @@ TEST_F(ParafeedTest, DefModeWithWrongDefFile)
        << " file to load the parameters and not find it,"
        << " and throw an exception."
        << endl;
+
+  std::remove(defFile0.c_str());
+  std::remove(defFile1.c_str());
+  //
   // With help="def,+defFile1 BeginCL() will look for
   // tt.def file to load the parameters and not find it,
   // and throw an exception
+  //
   args=makeCanonicalArgs(defFile0,"help=def,"+defFile1,false);
 
   for(auto s : args) cerr << s << " "; cerr << endl;
