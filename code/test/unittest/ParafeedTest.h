@@ -214,22 +214,59 @@ public:
   std::function<int (char *, size_t)> backup_cl_shell_input_g;
 
 protected:
-  std::pair<int, char**> MakeArgv(const std::vector<std::string>& args)
+  // C-style argv array
+  std::vector<char*> argv_p;
+
+  //
+  // Code inspired from an example on Stackoverflow.  This does not
+  // need explicit memory allocation, and therefore leak-free.
+  // However, the generated argc,argv pair is not available outside
+  // the class instance.
+  //
+  std::pair<int, char**> MakeArgv(std::vector<std::string>& string_args)
   {
-    char** argv = new char*[args.size()];
-    for (size_t i = 0; i < args.size(); ++i)
-      {
-	argv[i] = new char[args[i].size() + 1];
-	std::strcpy(argv[i], args[i].c_str());
-      }
-    return {static_cast<int>(args.size()), argv};
+    argv_p.resize(0);
+    // .data() provides the char* pointer needed for C-style arrays
+    // push these into the class data member, available for the life
+    // of the class instantiation
+    for (auto& s : string_args)
+#if __cplusplus == 199711L
+      // Code specific to C++98
+      argv_p.push_back((char *)(s.c_str()));
+#else
+      argv_p.push_back(s.data());
+#endif
+
+    // The following was in the original example, but seems not necessary
+    //    argv.push_back(nullptr);
+
+    return std::pair<int, char**>(static_cast<int>(argv_p.size()), argv_p.data());
   }
-  void FreeArgv(int argc, char** argv)
-  {
-    for (int i = 0; i < argc; ++i)
-      {
-	delete[] argv[i];
-      }
-    delete[] argv;
-  }
+
+  // Dummy method.
+  inline void FreeArgv(int argc, char **argv) {};
+
+  //
+  // The code below generates the argc,argv pair that is usable
+  // outside the class scope, but it requires explicity freeing the
+  // allocate memory without which there will be a memory leak.
+  //
+  // std::pair<int, char**> MakeArgv(const std::vector<std::string>& args)
+  // {
+  //   char** argv = new char*[args.size()];
+  //   for (size_t i = 0; i < args.size(); ++i)
+  //     {
+  // 	argv[i] = new char[args[i].size() + 1];
+  // 	std::strcpy(argv[i], args[i].c_str());
+  //     }
+  //   return {static_cast<int>(args.size()), argv};
+  // }
+  // void FreeArgv(int argc, char** argv)
+  // {
+  //   for (int i = 0; i < argc; ++i)
+  //     {
+  // 	delete[] argv[i];
+  //     }
+  //   delete[] argv;
+  // }
 };
