@@ -37,6 +37,8 @@ void clCleanUp()
   cl_RegistrationMode=1;
   cl_Pass = 0;
   cl_SymbLoaded= 0;
+  cl_InteractiveShell=0;
+  cl_NoPrompt=0;
 }
 
 #ifdef __cplusplus

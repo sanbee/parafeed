@@ -238,11 +238,6 @@ extern "C" {
 	    if ((fd1=creat(err,0644))<0)
 	      {
 		perror(out);
-		/*
-		  if (clThrowUp("In STDERR redirection.","###Error",
-		  CL_SEVERE)==CL_SEVERE)
-		  exit(-1);
-		*/
 		clThrowUp("In STDERR redirection.","###Error",
 			  CL_SEVERE);
 	      }

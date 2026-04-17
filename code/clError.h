@@ -69,6 +69,16 @@ public:
   clNumParsingError(const clNumParsingError& that) : clError(that) {};
   ~clNumParsingError() {};
 };
+
+class clExit: public clError
+{
+public:
+  clExit():clError() {};
+  clExit(const char *m, const char *i, int l=0): clError(m,i,l) {};
+  clExit(const string& m, const string& i, int l=0): clError(m,i,l) {};
+  clExit(const clExit& that) : clError(that) {};
+  ~clExit() {};
+};
 /*---------------------------------------------------------------------
   In the entire library, the following routine is used always when an
   exception is to be thrown.  

@@ -17,15 +17,8 @@
  *
  */
 //
-// Generic baseclass type functions that are called in clget?Valp()
-// functions.
-//
-// The code is separated into clgetBaseCode() and clgetGenericValp()
-// functions since the code to return the value from the Symbol is
-// differen, at least for T=string.  clgetGenericValp() function has
-// this code for T=int,float,bool and is therefore usable for
-// realizing clget{I,F,B}Valp() functions. clgetSValp() calls
-// clgetBaseCode() directly.
+// API level include file to use clgetValp() style, or
+// clget[N][IFBS]Val() style function.
 //
 #ifndef CLGETVALP_H
 #define CLGETVALP_H
@@ -33,5 +26,9 @@
 #include <clhashdefines.h>
 #include <support.h>
 #include <type_traits>
-#include <clgetBaseCode.h>
+//
+//----------------------------------------------------------------------
+// Templated code and wrapper functions
+//
+#include <clgetValp.cc>
 #endif
