@@ -12,7 +12,7 @@
 #include <fstream>
 
 string cmd_g;
-bool firstPass=true;
+bool firstPass_g=true;
 size_t cmd_pos_g=0;
 //
 //--------------------------------------------------------------------
@@ -20,57 +20,55 @@ size_t cmd_pos_g=0;
 //
 auto makeDefFile=[](std::vector<std::string>& args,
 		    std::string defFile=std::string(),
-		    std::string help=std::string(),
-		    bool writeDefFile=false)
-		 {
-		   if (!defFile.empty())
-		     {
-		       std::ofstream ofs(defFile);
-		       for(int i=1;i<args.size();i++) ofs << args[i] << endl;
-		     }
+		    std::string help=std::string())
+{
+  if (!defFile.empty())
+    {
+      std::ofstream ofs(defFile);
+      for(int i=1;i<args.size();i++) ofs << args[i] << endl;
+    }
 
-		   if (!help.empty()) args.push_back(help);
-		 };
+  if (!help.empty()) args.push_back(help);
+};
 //
 //--------------------------------------------------------------------
 //
 auto canonicalArgs=[]()
-		   {
-		     std::vector<std::string> args
-		       {
-			"test2",
-			"bool=true",
-			"bool1=false",
-			"int=42",
-			"dbgint=77",
-			"float=2.71",
-			"oneint=atan(1)*4/PI*100+23",
-			"string=showstrarr",
-			"strarr=val1,val2",
-			"fullval=custom_value",
-			"dbgfullval=debug_value",
-			"farray=9.9,8.8,7.7"
-		       };
+{
+  std::vector<std::string> args
+    {
+     "test2",
+     "bool=true",
+     "bool1=false",
+     "int=42",
+     "dbgint=77",
+     "float=2.71",
+     "oneint=atan(1)*4/PI*100+23",
+     "string=showstrarr",
+     "strarr=val1,val2",
+     "fullval=custom_value",
+     "dbgfullval=debug_value",
+     "farray=9.9,8.8,7.7"
+    };
 
-		     return args;
-		   };
+  return args;
+};
 //
 //--------------------------------------------------------------------
 //
 auto makeCanonicalArgs=[](std::string defFile=std::string(),
-			  std::string help=std::string(),
-			  bool writeDefFile=false)
- {
-   auto args=canonicalArgs();
-  makeDefFile(args,defFile,help,writeDefFile);
+			  std::string help=std::string())
+{
+  auto args=canonicalArgs();
+  makeDefFile(args,defFile,help);
 
   return args;
- };
+};
 //
 //--------------------------------------------------------------------
 //
 auto canonicalTest=[]()
- {
+{
   int i;
 
   // bool
@@ -158,14 +156,10 @@ auto canonicalTest=[]()
   EXPECT_FLOAT_EQ(fv[0], 9.9f);
   EXPECT_FLOAT_EQ(fv[1], 8.8f);
   EXPECT_FLOAT_EQ(fv[2], 7.7f);
-
-  //  EndCL();
-
- };
+};
 //
 //--------------------------------------------------------------------
 //
-
 class ParafeedTest : public ::testing::Test
 {
 public:
@@ -174,21 +168,21 @@ public:
     clCleanUp();
     // Reset the input mechanism for the scanner/parser
     set_shell_input(backup_cl_shell_input_g);
-    firstPass=true;
+    firstPass_g=true;
     cmd_pos_g=0;
   }
-
+  //
   //------------------------------------------------------------------
   // Function that can supply the input to the scanner/parser from a
   // string (here the global cmd_g variable).
   static int test_shell_inp(char *buf, size_t max_size)
   {
-    if (!firstPass || cmd_pos_g >= cmd_g.size()) return 0;
+    if (!firstPass_g || cmd_pos_g >= cmd_g.size()) return 0;
 
     const size_t n_to_copy = std::min(max_size, cmd_g.size() - cmd_pos_g);
     std::memcpy(buf, cmd_g.data() + cmd_pos_g, n_to_copy);
     cmd_pos_g += n_to_copy;
-    if (cmd_pos_g >= cmd_g.size()) firstPass=false;
+    if (cmd_pos_g >= cmd_g.size()) firstPass_g=false;
 
     // Show the buffer passed to the caller (shell.l::YYINPUT).
     cerr << "< ";
@@ -197,7 +191,7 @@ public:
 
     return static_cast<int>(n_to_copy);
   }
-
+  //
   //------------------------------------------------------------------
   // Set the string for the scanner in test_shell_inp().  Save the
   // current input function for the scanner before resetting the
@@ -205,7 +199,7 @@ public:
   void sendCmd(const string& cmd)
   {
     cmd_g=cmd;
-    firstPass=true;
+    firstPass_g=true;
     cmd_pos_g=0;
     backup_cl_shell_input_g=get_shell_input();
     set_shell_input(test_shell_inp);
@@ -219,16 +213,17 @@ protected:
 
   //
   // Code inspired from an example on Stackoverflow.  This does not
-  // need explicit memory allocation, and therefore leak-free.
+  // need explicit memory allocation, and therefore is leak-free.
   // However, the generated argc,argv pair is not available outside
-  // the class instance.
+  // the scope if the argv_p variable (which currently is the class
+  // scope).
   //
   std::pair<int, char**> MakeArgv(std::vector<std::string>& string_args)
   {
     argv_p.resize(0);
     // .data() provides the char* pointer needed for C-style arrays
     // push these into the class data member, available for the life
-    // of the class instantiation
+    // of the class instance.
     for (auto& s : string_args)
 #if __cplusplus == 199711L
       // Code specific to C++98

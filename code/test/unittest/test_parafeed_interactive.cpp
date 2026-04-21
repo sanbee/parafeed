@@ -6,7 +6,7 @@
 //
 TEST_F(ParafeedTest, InteractiveCanonical)
 {
-  std::vector<std::string> args=makeCanonicalArgs("","help=dbg",false);
+  std::vector<std::string> args=makeCanonicalArgs("","help=dbg");
   auto [argc, argv] = MakeArgv(args);
   sendCmd("go\n");
   BeginCL(argc, argv);
@@ -179,7 +179,7 @@ TEST_F(ParafeedTest, InteractiveComplementaryLoad)
 {
   std::string defFile="tt.def";
   std::remove(defFile.c_str());
-  std::vector<std::string>   args=makeCanonicalArgs(defFile,"",true);
+  std::vector<std::string>   args=makeCanonicalArgs(defFile,"");
   //
   // defFile sets strarr=val1,val2.  Set strarr to something else
   // interactively, do a complementary load and test that it has the

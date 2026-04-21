@@ -4,7 +4,7 @@
 //
 TEST_F(ParafeedTest, ParsesClgetValpParametersCorrectly)
 {
-  std::vector<std::string> args=makeCanonicalArgs("","help=noprompt",false);
+  std::vector<std::string> args=makeCanonicalArgs("","help=noprompt");
   auto [argc, argv] = MakeArgv(args);
 
   BeginCL(argc, argv);
@@ -342,7 +342,7 @@ TEST_F(ParafeedTest, DefModeWithDefFile)
   std::remove(defFile0.c_str());
   std::remove(defFile1.c_str());
 
-  args=makeCanonicalArgs(defFile0,"help=def,"+defFile0,true);
+  args=makeCanonicalArgs(defFile0,"help=def,"+defFile0);
 
   for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
@@ -376,7 +376,7 @@ TEST_F(ParafeedTest, DefModeWithoutDefFileError)
   // With help="def" by default BeginCL() will look for
   // test2.def file to load the parameters and find it.
   //
-  args=makeCanonicalArgs(defFile0,"help=def",true);
+  args=makeCanonicalArgs(defFile0,"help=def");
 
   for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
@@ -400,8 +400,9 @@ TEST_F(ParafeedTest, DefModeWithDefFileError)
   std::vector<std::string> args;
 
   cerr << "[INFO]: With help=def"
-       << " by default BeginCL() will look for " << defFile1
-       << " file to load the parameters and not find it,"
+       << " by default BeginCL() will look for " << defFile0
+       << " file to load the parameters and not find it (since, "
+       << defFile1 << " is saved)"
        << " and throw an exception."
        << endl;
 
@@ -412,7 +413,7 @@ TEST_F(ParafeedTest, DefModeWithDefFileError)
   // test2.def file to load the parameters and not find it,
   // and throw an exception
   //
-  args=makeCanonicalArgs(defFile1,"help=def",false);
+  args=makeCanonicalArgs(defFile1,"help=def");
 
   for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
@@ -437,7 +438,8 @@ TEST_F(ParafeedTest, DefModeWithWrongDefFile)
 
   cerr << "[INFO]: With help=def,"+defFile1
        << " BeginCL() will look for " << defFile1
-       << " file to load the parameters and not find it,"
+       << " file to load the parameters and not find it (since "
+       << defFile0 << " is saved)"
        << " and throw an exception."
        << endl;
 
@@ -448,7 +450,7 @@ TEST_F(ParafeedTest, DefModeWithWrongDefFile)
   // tt.def file to load the parameters and not find it,
   // and throw an exception
   //
-  args=makeCanonicalArgs(defFile0,"help=def,"+defFile1,false);
+  args=makeCanonicalArgs(defFile0,"help=def,"+defFile1);
 
   for(auto s : args) cerr << s << " "; cerr << endl;
   auto [argc, argv] = MakeArgv(args);
