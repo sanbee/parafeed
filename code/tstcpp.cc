@@ -114,6 +114,10 @@ void UI(bool restart, int argc, char **argv)
       }
       EndCL();
     }
+  catch (clExit& x)
+    {
+      exit(0);
+    }
   catch (clError& x)
     {
       x << x << endl;

@@ -176,11 +176,11 @@ set(shccl_sources
   ParseCmdLine.cc
   clparseVal.cc
   InstallSymb.cc
-  clgetSVal.cc
-  clgetNSVal.cc
+#  clgetSVal.cc
+#  clgetNSVal.cc
   clgetFullVal.cc
 
-  clgetValp.cc
+#  clgetValp.cc
   clStartInteractive.cc
   clRestartShell.cc
   clfInteractive.cc

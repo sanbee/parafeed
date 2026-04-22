@@ -37,6 +37,7 @@
 #ifdef GNUREADLINE
 #include <readline/history.h>
 #endif
+extern unsigned short cl_NoPrompt;
 
 #ifdef __cplusplus
 using namespace std;
@@ -108,6 +109,7 @@ END{									\
   /*----------------------------------------------------------------------*/
   int doinp(char *arg)
   {
+    if (cl_NoPrompt) return 0;
     auto printer = [](FILE *fd, Symbol *t)
 		   {
 		     PrintKey(stderr, t);
@@ -702,7 +704,7 @@ int dosavefd(FILE *fd, const std::vector<std::string>& opts)
 	if (S->Class==CL_DBGCLASS)
 	  cout << "\t***This keyword is exposed with a command-line argument of \"help=dbg\"***" << endl;
       }
-    exit(0);
+    //    exit(0);
     return 1;
   }
   /*----------------------------------------------------------------------*/
@@ -729,7 +731,7 @@ int dosavefd(FILE *fd, const std::vector<std::string>& opts)
 	    cout << endl;
 	  }
       }
-    exit(0);
+    //    exit(0);
     return 1;
   }
   /*----------------------------------------------------------------------*/

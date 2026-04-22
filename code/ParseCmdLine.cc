@@ -28,7 +28,7 @@
 #include <support.h>
 #include <sstream>
 #include <clstring.h>
-//#include <clgetValp.h>
+#include <clgetValp.h>
   /*#include <signal.h>*/
 #ifdef __cplusplus
 #ifdef _GNU_SOURCE
@@ -385,7 +385,7 @@ int startShell()
 	  {
 	    loadDefaults(1); cl_defaultsLoaded=1;
 	  }
-	if (doInp)
+	if (doInp && !cl_NoPrompt)
 	  {
 	    //
 	    // Why is this required?  This gets called anyway via
@@ -454,8 +454,9 @@ int EndCL()
 
   cl_RegistrationMode=0;
   //  i = clgetSVal("help",val,&i);
-  i = clgetSValp("help",strVal,i);
-  DeleteVar("help",&cl_SymbTab,&cl_TabTail);
+  string help("help");
+  i = clgetSValp(help,strVal,i);
+  DeleteVar((char *)help.c_str(),&cl_SymbTab,&cl_TabTail);
 
   //  if (!cl_NoPrompt) loadDefaults(0);
   //  if (!strcmp(val,"doc")) 
@@ -476,6 +477,7 @@ int EndCL()
 	  if (!cl_defaultsLoaded) {loadDefaults(1);cl_defaultsLoaded=1;}
 	}
       //      DeleteVar("help",&cl_SymbTab,&cl_TabTail);
+      cl_NoPrompt=1;
       if (strVal=="doc") doprintdoc(strVal.c_str());
       else doprintparams(strVal.c_str());
     }
@@ -495,7 +497,7 @@ int EndCL()
 	if (arg[strlen(arg)-1]==')') arg[strlen(arg)-1] = '\0';
       doexplain(arg);
       free(val_t);
-      exit(0);
+      throw(clExit("Exiting due to explain mode", "###Informational", CL_INFORMATIONAL));
     }
   else if (strVal=="def")
     {
@@ -511,8 +513,7 @@ int EndCL()
       if (cl_DOCLEANUP) clCleanUp();
       if (cl_DryRun==1)
 	{
-	  clThrowUp("Exiting in EndCL() due to dryrun mode", "###Informational", CL_INFORMATIONAL);
-	  exit(0);
+	  throw(clExit("Exiting in EndCL() due to dryrun mode", "###Informational", CL_INFORMATIONAL));
 	}
       return i;
     }
@@ -529,9 +530,8 @@ int EndCL()
   save_hist(var,(char *)CL_HIST_DEFAULT);
 #endif
   if (cl_DryRun==1)
-    {
-      exit(0);
-    }
+    throw(clExit("Exiting in EndCL() due to dryrun mode", "###Informational", CL_INFORMATIONAL));
+
   return 1;
 }
 /*------------------------------------------------------------------------
