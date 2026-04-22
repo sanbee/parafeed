@@ -33,17 +33,7 @@ extern "C" {
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
-// int clgetSVal(const char *Name, char *val, int *n)
-// {
-//   HANDLE_EXCEPTIONS(
-// 		    string valp;
-// 		    int r;
-// 		    if ((r = clgetSValp(std::string(Name), valp, *n))!= CL_FAIL)
-// 		      strncpy(val,valp.c_str(),valp.size()+1);
-// 		    return r;
-// 		    );
-// }
-  int clgetSVal(const char *Name, char *val, int *n, SMap smap, bool dbg)
+int clgetSVal(const char *Name, char *val, int *n, SMap smap, bool dbg)
 {
   HANDLE_EXCEPTIONS(
 		    string valp;
@@ -57,15 +47,8 @@ extern "C" {
 	   }
 #endif
 
-//#ifdef __cplusplus
+#ifdef __cplusplus
 
-// int clgetSValp(const string &Name, string& val, int& n)
-// {
-//   HANDLE_EXCEPTIONS(
-// 		    SMap emptyMap;
-// 		    return clgetSValp(Name, val, n, emptyMap);
-// 		    );
-// }
 int clgetSValp(const string& Name, string& val, int& n, SMap &smap,bool dbg=false)
 {
   Symbol *S;
@@ -90,4 +73,4 @@ HANDLE_EXCEPTIONS(
 		    return CL_FAIL;
 		  );
 }
-//#endif
+#endif
