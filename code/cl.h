@@ -151,8 +151,6 @@ int       clgetIVal(char  *Name, int   *Val, int *N);
 int       dbgclgetIVal(char  *Name, int   *Val, int *N);
 int       clgetFVal(char  *Name, float *Val, int *N);
 int       dbgclgetFVal(char  *Name, float *Val, int *N);
-int       clgetSVal(const char  *Name, char  *Val, int *N,SMap smap=SMap(),bool dbg=false);
-int       dbgclgetSVal(const char  *Name, char  *Val, int *N);
 int       clgetNIVal(char *Key,  int   *Val, int *m);
 int       dbgclgetNIVal(char *Key,  int   *Val, int *m);
 int       clgetNFVal(char *Name, float *Val, int *N);
@@ -163,6 +161,9 @@ int       clgetBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetBVal(char  *Name, bool   *Val, int *N);
 int       clgetNBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetNBVal(char  *Name, bool   *Val, int *N);
+
+int       clgetSVal(const char  *Name, char  *Val, int *N,SMap smap=SMap(),bool dbg=false);
+inline int       dbgclgetSVal(const char  *Name, char  *Val, int *N) {return clgetSVal(Name,Val,N,SMap(),true);};
 
 #ifdef __cplusplus
 int       clTgetOptp(const std::string& Name, std::string& Type);

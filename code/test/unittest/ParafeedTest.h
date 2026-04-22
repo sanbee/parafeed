@@ -67,6 +67,112 @@ auto makeCanonicalArgs=[](std::string defFile=std::string(),
 //
 //--------------------------------------------------------------------
 //
+auto FactoryCanonicalTest=[]()
+{
+  int i;
+
+  // bool
+  bool b = false;
+  SMap watchPoints;
+  VString exposedKeys = {"bool1"};
+  watchPoints["1"] = exposedKeys;
+  i = 1;
+  clgetValp("bool", b, i, watchPoints);
+  EXPECT_FALSE(b);
+
+  // bool1
+  bool b1 = true;
+  ClearMap(watchPoints);
+  exposedKeys = {"int"};
+  watchPoints["0"] = exposedKeys;
+  i = 1;
+  clgetValp("bool1", b1, i, watchPoints);
+  EXPECT_TRUE(b1);
+
+  // int
+  int intVal = 0;
+  ClearMap(watchPoints);
+  exposedKeys = {"float"};
+  watchPoints["1"] = exposedKeys;
+  i = 1;
+  clgetValp("int", intVal, i, watchPoints);
+  EXPECT_EQ(intVal, 0);
+
+  // dbgint
+  int dbgInt = 10;
+  i = 1;
+  cldbggetValp("dbgint", dbgInt, i);
+  EXPECT_EQ(dbgInt, 10);
+
+  // float
+  float fVal = 10.96f;
+  i = 1;
+  clgetValp("float", fVal, i);
+  EXPECT_FLOAT_EQ(fVal, 10.96f);
+
+  // oneint
+  int oneintVal = 3;
+  i = 1;
+  clgetValp("oneint", oneintVal, i);
+  EXPECT_EQ(oneintVal, 3);
+
+  // string
+  std::string str;
+  ClearMap(watchPoints);
+  exposedKeys = {"strarr"};
+  watchPoints["showstrarr"] = exposedKeys;
+  exposedKeys = {"fullval"};
+  watchPoints["showfullval"] = exposedKeys;
+  str = "showstrarr";
+  i = 1;
+  clgetValp("string", str, i, watchPoints);
+  EXPECT_EQ(str, "showstrarr");
+
+  // {
+  //   char sstr[100];
+  //   clgetSVal("string", sstr, &i, watchPoints);
+  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
+  //   EXPECT_EQ(sstr, str);
+
+  //   clgetSVal("string", sstr, &i);
+  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
+  //   EXPECT_EQ(sstr, str);
+  // }
+
+  // fullval
+  std::string fullVal;
+  i = 0;
+  clgetFullValp("fullval", fullVal);
+  EXPECT_EQ(fullVal, "");
+
+  // dbgfullval
+  std::string dbgFullVal="This is dbg full val factory setting";
+  i = 0;
+  dbgclgetFullValp("dbgfullval", dbgFullVal);
+  EXPECT_EQ(dbgFullVal, "This is dbg full val factory setting");
+
+  // strarr
+  VString strarr={"v1","v2"};
+  i = 0;
+  clgetValp("strarr", strarr, i);
+  ASSERT_EQ(strarr.size(), 2u);
+  EXPECT_EQ(strarr[0], "v1");
+  EXPECT_EQ(strarr[1], "v2");
+
+  // farray
+  std::vector<float> fv={3.14,2*3.14,3*3.14};
+
+  cerr << "########## " << fv.size() << endl;
+  int N = 0;
+  int count = clgetValp("farray", fv, N);
+  EXPECT_EQ(count, 3);
+  EXPECT_FLOAT_EQ(fv[0], 3.14f);
+  EXPECT_FLOAT_EQ(fv[1], 2*3.14f);
+  EXPECT_FLOAT_EQ(fv[2], 3*3.14f);
+};
+//
+//--------------------------------------------------------------------
+//
 auto canonicalTest=[]()
 {
   int i;
@@ -160,7 +266,7 @@ auto canonicalTest=[]()
   EXPECT_EQ(strarr[1], "val2");
 
   // farray
-  std::vector<float> fv(3);
+  std::vector<float> fv;
   int N = 3;
   int count = clgetValp("farray", fv, N);
   EXPECT_EQ(count, 3);

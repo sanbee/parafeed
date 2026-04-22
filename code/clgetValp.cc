@@ -64,6 +64,8 @@ int clgetValpVec(const std::string& Name, std::vector<T>& val, int& m, const SMa
   HANDLE_EXCEPTIONS(
 		    S=clgetNValBaseCode(Name,val,m,smap,dbg);
 		    int n0=S->NVals;
+		    if (n0==0) n0=S->DefaultVal.size();
+		    cerr << "???? " << n0 << endl;
 		    int i=1;
 		    for(int j=0;j<n0;j++)
 		      {

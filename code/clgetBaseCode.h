@@ -95,6 +95,11 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap
 		      {
 			// Use templated function that works for all values of T
 			setAutoDefaults(S,val);
+			if (type_int == CL_FLOATTYPE)
+			  {
+			    cerr << ">>>> " << S->NVals << endl;
+			    for(auto f : S->DefaultVal) cerr << ">>>> " << f << endl;
+			  }
 
 			S->Class=CL_APPLNCLASS;
 			if (dbg) S->Class=CL_DBGCLASS;
