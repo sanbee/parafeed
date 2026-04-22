@@ -1,38 +1,43 @@
 #include <unittest/ParafeedTest.h>
+//
+// Test for default factory settings (i.e., defaults in the compiled
+// code).
 TEST_F(ParafeedTest, InteractiveFactoryCanonical)
 {
   //  std::vector<std::string> args=makeCanonicalArgs("","help=dbg");
   std::vector<std::string> args={"test2","help=dbg"};
   auto [argc, argv] = MakeArgv(args);
-  sendCmd("inp\n go\n");
+  sendCmd("go\n");
   BeginCL(argc, argv);
   {
     clInteractive(0);
 
     FactoryCanonicalTest();
 
-    // // Get a pointer to the named symbol from the internal symbol
-    // // table.
-    // //
-    // // The following keys should be of the CL_DBGCLASS class and
-    // // CL_DBG_ON==true.  In the interactive shell, these keys will be
-    // // visible.
-    // //
-    // Symbol *S;
-    // S=SearchVSymb("dbgint");
-    // EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+    // Get a pointer to the named symbol from the internal symbol
+    // table.
+    //
+    // The following keys should be of the CL_DBGCLASS class and
+    // CL_DBG_ON==true.  In the interactive shell, these keys will be
+    // visible.
+    //
+    Symbol *S;
+    S=SearchVSymb("dbgint");
+    EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
 
-    // S=SearchVSymb("dbgfullval");
-    // EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+    S=SearchVSymb("dbgfullval");
+    EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
 
-    // if (cl_Pass > 0)
-    //   {
-    // 	S=SearchVSymb("int");
-    // 	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,1);
+    if (cl_Pass > 0)
+      {
+	// default settings are bool=false.  That hides "int", which
+	// hides "float"
+	S=SearchVSymb("int");
+	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,0);
 
-    // 	S=SearchVSymb("float");
-    // 	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,0);
-    //   }
+	S=SearchVSymb("float");
+	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,0);
+      }
   }
   EndCL();
   FreeArgv(argc, argv);

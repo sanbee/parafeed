@@ -33,21 +33,22 @@ int clparseVal(Symbol *S, int *Which, T &d)
 {
   unsigned int N = _ABS(*Which);
   string val;
-  std::vector<std::string> inputVal;
 HANDLE_EXCEPTIONS(
   if (S != NULL)
     {
-      if (N <= S->NVals) inputVal=S->Val;
-      // else
-      // 	if (N <= S->DefaultVal.size()) inputVal=S->DefaultVal;
-      else return 0;
-      //if (N > S->NVals) return 0;
+      // Transfer S-DefaultVal to S->Val if S->NVals == 0.  Is this
+      // always the correct thing to do?
+      if (S->NVals == 0)
+	{
+	  S->Val=S->DefaultVal;
+	  S->NVals = S->Val.size();
+	};
+      if (N > S->NVals) return 0;
 
       if (ISSET(S->Attributes,CL_BOOLTYPE))
 	{
 	  int retVal;
-	  //	  val=S->Val[N-1];
-	  val=inputVal[N-1];
+	  val=S->Val[N-1];
 	  if ((retVal=clIsTrue(val))==1) d=1;
 	  else if ((retVal=clIsFalse(val))==1) d=0;
 	  //*d = clIsTrue(val);
@@ -60,7 +61,7 @@ HANDLE_EXCEPTIONS(
       else
 	{
 	  double dd=d;
-	  int n=calc((char *)inputVal[N-1].c_str(),&dd);
+	  int n=calc((char *)S->Val[N-1].c_str(),&dd);
 	  d=dd;
 	  if (n < 0)
 	    {

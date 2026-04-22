@@ -163,7 +163,7 @@ int       clgetNBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetNBVal(char  *Name, bool   *Val, int *N);
 
 int       clgetSVal(const char  *Name, char  *Val, int *N,SMap smap=SMap(),bool dbg=false);
-inline int       dbgclgetSVal(const char  *Name, char  *Val, int *N) {return clgetSVal(Name,Val,N,SMap(),true);};
+inline int       dbgclgetSVal(const char  *Name, char  *Val, int *N, SMap smap=SMap()) {return clgetSVal(Name,Val,N,smap,true);};
 
 #ifdef __cplusplus
 int       clTgetOptp(const std::string& Name, std::string& Type);

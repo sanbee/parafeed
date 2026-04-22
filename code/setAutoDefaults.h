@@ -38,7 +38,8 @@ void setAutoDefaults(Symbol *S, T const & val)
 {
   std::vector<T> tmp;
   tmp.push_back(val);
-  setAutoDefaults(S, tmp);
+  // If S->Val.size() == 0, always set S->Val = S->DefaultVal;
+  setAutoDefaults(S, tmp,true);
   return;
 }
 /*---------------------------------------------------------------------------*/
@@ -59,7 +60,7 @@ void setAutoDefaults(Symbol *S, const vector<T>& val,const bool def2val=false)
 	  S->DefaultVal[i] = os.str();
 	}
     }
-    
+
   if (def2val)
     {
       if (S->Val.size() == 0)
