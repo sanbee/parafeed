@@ -128,16 +128,16 @@ auto canonicalTest=[]()
   clgetValp("string", str, i, watchPoints);
   EXPECT_EQ(str, "showstrarr");
 
-  // {
-  //   char sstr[100];
-  //   clgetSVal("string", sstr, &i, watchPoints);
-  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
-  //   EXPECT_EQ(sstr, str);
+  {
+    char sstr[100];
+    clgetSVal("string", sstr, &i, watchPoints);
+    //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
+    EXPECT_EQ(sstr, str);
 
-  //   clgetSVal("string", sstr, &i);
-  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
-  //   EXPECT_EQ(sstr, str);
-  // }
+    clgetSVal("string", sstr, &i);
+    //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
+    EXPECT_EQ(sstr, str);
+  }
 
   // fullval
   std::string fullVal;

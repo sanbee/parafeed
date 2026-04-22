@@ -17,19 +17,19 @@
  *
  */
 /* $Id: clgetSVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
-#include <cllib.h>
-#include <clhashdefines.h>
-#include <string>
+#include <clgetBaseCode.h>
 #include <support.h>
-#include <iostream>
-#include <algorithm>
-#include <clstring.h>
+//#include <cllib.h>
+//#include <string>
+//#include <clhashdefines.h>
+//#include <clstring.h>
+//#include <iostream>
+//#include <algorithm>
 //#include <setAutoDefaults.h>
-//#include <clgetBaseCode.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 /*------------------------------------------------------------------------
    Return the Nth value of Name as a string
 ------------------------------------------------------------------------*/
@@ -43,11 +43,21 @@ extern "C" {
 // 		    return r;
 // 		    );
 // }
+  int clgetSVal(const char *Name, char *val, int *n, SMap smap, bool dbg)
+{
+  HANDLE_EXCEPTIONS(
+		    string valp;
+		    int r;
+		    if ((r = clgetSValp(std::string(Name), valp, *n,smap,dbg))!= CL_FAIL)
+		      strncpy(val,valp.c_str(),valp.size()+1);
+		    return r;
+		    );
+}
 #ifdef __cplusplus
 	   }
 #endif
 
-#ifdef __cplusplus
+//#ifdef __cplusplus
 
 // int clgetSValp(const string &Name, string& val, int& n)
 // {
@@ -56,26 +66,28 @@ extern "C" {
 // 		    return clgetSValp(Name, val, n, emptyMap);
 // 		    );
 // }
-// int clgetSValp(const string& Name, string& val, int& n, SMap &smap)
-// {
-//   Symbol *S;
-//   unsigned int N;
+int clgetSValp(const string& Name, string& val, int& n, SMap &smap,bool dbg=false)
+{
+  Symbol *S;
+  unsigned int N;
 
-// HANDLE_EXCEPTIONS(
-// 		  S = clgetBaseCode(Name, val, n, smap);
-// 		  N = _ABS(n);
-// 		  if (S!=NULL) 
-// 		    {
-// 		      if (N <= S->NVals) 
-// 			{
-// 			  val = trim(S->Val[N-1]);
-// 			  return val.size();
-// 			}
-// 		      else 
-// 			return CL_FAIL;
-// 		    }
-// 		  else
-// 		    return CL_FAIL;
-// 		  );
-// }
-#endif
+HANDLE_EXCEPTIONS(
+		  S = clgetBaseCode(Name, val, n, smap,dbg);
+
+		  N = _ABS(n);
+		  if (S!=NULL)
+		    {
+		      if (N <= S->NVals)
+			{
+			  val = trim(S->Val[N-1]);
+			  //			  val = S->Val[N-1];
+			  return val.size();
+			}
+		      else
+			return CL_FAIL;
+		    }
+		  else
+		    return CL_FAIL;
+		  );
+}
+//#endif

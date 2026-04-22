@@ -151,7 +151,7 @@ int       clgetIVal(char  *Name, int   *Val, int *N);
 int       dbgclgetIVal(char  *Name, int   *Val, int *N);
 int       clgetFVal(char  *Name, float *Val, int *N);
 int       dbgclgetFVal(char  *Name, float *Val, int *N);
-int       clgetSVal(const char  *Name, char  *Val, int *N);
+int       clgetSVal(const char  *Name, char  *Val, int *N,SMap smap=SMap(),bool dbg=false);
 int       dbgclgetSVal(const char  *Name, char  *Val, int *N);
 int       clgetNIVal(char *Key,  int   *Val, int *m);
 int       dbgclgetNIVal(char *Key,  int   *Val, int *m);
@@ -277,6 +277,7 @@ int  clgetBaseCore(const std::string& Name, int& Val, int& N, SMap &smap);
 int  clgetFullValp(const std::string& Name, std::string& Val);
 int  dbgclgetFullValp(const std::string& Name, std::string& Val);
 int  clgetFullp(const std::string& Arg,  int &N);
+int  clgetSValp(const std::string& Name, std::string& Val, int& N, SMap &smap,bool dbg);
 //
 //------------------------------------------------------------------------------------------------
 // Wrappers for clgetValp(...,T& val,...) and clgetValp(...,vector<T>&,...)
