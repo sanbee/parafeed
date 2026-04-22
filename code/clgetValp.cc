@@ -159,7 +159,7 @@ inline int clgetBValp(const std::string& Name, bool& val, int& n, SMap &smap)   
 inline int clgetNBValp(const std::string& Name, std::vector<bool>& val, int& n)            {return clgetValp(Name,val,n);}
 inline int clgetNBValp(const std::string& Name, std::vector<bool>& val, int& n, SMap &smap){return clgetValp(Name,val,n,smap);}
 
-inline int clgetSVal(const char *Name, char *val, int *n) {return clgetValp(std::string(Name), *val, *n);}
+//inline int clgetSVal(const char *Name, char *val, int *n) {return clgetValp(std::string(Name), *val, *n);}
 inline int clgetSValp(const std::string& Name, std::string& val, int &n)                                {return clgetValp(Name,val,n);}
 inline int clgetSValp(const std::string& Name, std::string& val, int& n, SMap &smap)                    {return clgetValp(Name,val,n,smap);}
 inline int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n)                  {return clgetValp(Name,val,n);}
