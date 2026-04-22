@@ -20,10 +20,10 @@
 #include <shell.h>
 #include <cllib.h>
 #include <cl.h>
-#include <string>
-#include <vector>
 #include <sstream>
-#include <clError.h>
+//#include <string>
+//#include <vector>
+//#include <clError.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

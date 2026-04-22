@@ -21,13 +21,12 @@
 #define CLPARSEVAL_H
 #include <cl.h>
 
-#include <clhashdefines.h>
-#include <cllib.h>
-#include <cl.h>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <clError.h>
+//#include <clhashdefines.h>
+//#include <cllib.h>
+//#include <string>
+//#include <vector>
+//#include <sstream>
+//#include <clError.h>
 
 template <class T>
 int clparseVal(Symbol *S, int *Which, T &d)

@@ -17,11 +17,8 @@
  *
  */
 /* $Id: clgetFullVal.c,v 2.0 1998/11/11 07:13:01 sanjay Exp $ */
-#include <cllib.h>
-#include <support.h>
 #include <setAutoDefaults.h>
-#include <clparseVal.h>
-#include <clgetValp.h>
+#include <cl.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
