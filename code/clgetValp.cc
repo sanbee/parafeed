@@ -65,7 +65,6 @@ int clgetValpVec(const std::string& Name, std::vector<T>& val, int& m, const SMa
 		    S=clgetNValBaseCode(Name,val,m,smap,dbg);
 		    int n0=S->NVals;
 		    if (n0==0) n0=S->DefaultVal.size();
-		    cerr << "???? " << n0 << endl;
 		    int i=1;
 		    for(int j=0;j<n0;j++)
 		      {
@@ -141,7 +140,7 @@ int dbgclgetValp(const std::string& Name, std::vector<T>& val, int& n, SMap smap
 // These calls are used in other parts of parafeed code.  This file
 // therefore needs to be compiled into the libparafeed library for
 // internal linking.
-// 
+//
 
 template<class T>
 inline int cldbggetValp(const std::string& Name, T& val, int& n)                             {return dbgclgetValp(Name,val,n);}

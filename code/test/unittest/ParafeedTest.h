@@ -66,7 +66,7 @@ auto makeCanonicalArgs=[](std::string defFile=std::string(),
 };
 //
 //--------------------------------------------------------------------
-//
+// 
 auto FactoryCanonicalTest=[]()
 {
   int i;
@@ -128,16 +128,31 @@ auto FactoryCanonicalTest=[]()
   clgetValp("string", str, i, watchPoints);
   EXPECT_EQ(str, "showstrarr");
 
-  // {
-  //   char sstr[100];
-  //   clgetSVal("string", sstr, &i, watchPoints);
-  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
-  //   EXPECT_EQ(sstr, str);
-
-  //   clgetSVal("string", sstr, &i);
-  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
-  //   EXPECT_EQ(sstr, str);
-  // }
+  // Test backward compatible API: [dbg]clgetSVal(...,[watchPoints])
+  {
+    char sstr[100];
+    clgetSVal("string", sstr, &i, watchPoints);
+    //    EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
+    EXPECT_EQ(str, sstr);
+  }
+  {
+    char sstr[100];
+    clgetSVal("string", sstr, &i);
+    //    EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
+    EXPECT_EQ(str, sstr);
+  }
+  {
+    char sstr[100];
+    dbgclgetSVal("string", sstr, &i,watchPoints);
+    //EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
+    EXPECT_EQ(sstr, str);
+  }
+  {
+    char sstr[100];
+    dbgclgetSVal("string", sstr, &i);
+    //EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
+    EXPECT_EQ(sstr, str);
+  }
 
   // fullval
   std::string fullVal;
@@ -162,7 +177,6 @@ auto FactoryCanonicalTest=[]()
   // farray
   std::vector<float> fv={3.14,2*3.14,3*3.14};
 
-  cerr << "########## " << fv.size() << endl;
   int N = 0;
   int count = clgetValp("farray", fv, N);
   EXPECT_EQ(count, 3);

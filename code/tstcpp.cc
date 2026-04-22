@@ -32,7 +32,7 @@ void UI(bool restart, int argc, char **argv)
 {
   int i,j=0,dj=11,oi=0,N;
   float f=0;
-  vector<float> fv;
+  vector<float> fv(10);
   VString strarr;
   string str;
   string fullVal="this is the default value";
