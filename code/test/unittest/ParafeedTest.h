@@ -129,29 +129,38 @@ auto FactoryCanonicalTest=[]()
   EXPECT_EQ(str, "showstrarr");
 
   // Test backward compatible API: [dbg]clgetSVal(...,[watchPoints])
+  // ensuring that sstr goes out of scope after each call to
+  // clgetSVal().
   {
     char sstr[100];
     clgetSVal("string", sstr, &i, watchPoints);
-    //    EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
-    EXPECT_EQ(str, sstr);
+    EXPECT_EQ(string("showstrarr"),sstr);
   }
   {
     char sstr[100];
     clgetSVal("string", sstr, &i);
-    //    EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
-    EXPECT_EQ(str, sstr);
+    EXPECT_EQ(string("showstrarr"),sstr);
   }
   {
     char sstr[100];
     dbgclgetSVal("string", sstr, &i,watchPoints);
-    //EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
-    EXPECT_EQ(sstr, str);
+    EXPECT_EQ(string("showstrarr"),sstr);
   }
   {
     char sstr[100];
     dbgclgetSVal("string", sstr, &i);
-    //EXPECT_EQ("showstrarr",sstr);// DOES NOT WORK!
-    EXPECT_EQ(sstr, str);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  // Check for clgetSVal(string&, char *, int *, SMap) interface.
+  {
+    char sstr[100];
+    clgetSVal(string("string"), sstr, &i, watchPoints);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  {
+    char sstr[100];
+    dbgclgetSVal(string("string"), sstr, &i);
+    EXPECT_EQ(string("showstrarr"),sstr);
   }
 
   // fullval
