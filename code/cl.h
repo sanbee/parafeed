@@ -56,7 +56,7 @@
                                   {         \
                                     throw;  \
                                   }
-                                
+
 
 #else
 #define HANDLE_EXCEPTIONS(str)  str
@@ -73,9 +73,9 @@ extern "C" {
 #define CL_SEVERE    -20
 #define CL_FATAL     -10
 #define CL_WARNING   -5
-  /* 
+  /*
      Define readline stuff as readline.h is
-     NOT ANSI C 
+     NOT ANSI C
   */
 #ifdef __cplusplus
 /*
@@ -127,7 +127,7 @@ extern int add_history(char *);
   Symbol   *IntallSymb(char *, char *, Symbol *);
   Symbol   *SearchQSymb(const std::string& Name, const std::string& Type);
   Symbol   *SearchVSymb(const char *Name, Symbol *Tab);
-  Symbol   *AddQKey(const char *Name, const char *Type, 
+  Symbol   *AddQKey(const char *Name, const char *Type,
 		    Symbol **Head, Symbol **Tail);
   int       ParseCmdLine(int, char **);
   std::vector<std::string> clMakeArgvFromFile(const std::string& Name);
@@ -197,7 +197,7 @@ std::string      stripwhitep (std::string& str);
 int       redirect(char *, char *);
 void      yyerror(char *);
 int       clgetConfigFile(char *, char *);
-int       AddCmd(const char *Name, char *Doc, int (*func)(char *), 
+int       AddCmd(const char *Name, char *Doc, int (*func)(char *),
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
 int       BreakStrp(const std::string& str, std::string& Name, std::string& Val,

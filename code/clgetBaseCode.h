@@ -56,7 +56,7 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 		    else
 		      S=SearchQSymb((char *)Name.c_str(),type_str);
 
-		    if (S!=NULL) 
+		    if (S!=NULL)
 		      {
 			// Use templated function that works for all values of T
 			setAutoDefaults(S,val);
@@ -74,7 +74,7 @@ Symbol* clgetBaseCode(const string& Name, T& val, int& n, SMap &smap=SMap(), boo
 };
 
 //
-// Templated functions for NVal calls.  
+// Templated functions for NVal calls.
 //
 template <class T>
 Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap &smap=SMap(), bool dbg=false)
@@ -91,7 +91,7 @@ Symbol *clgetNValBaseCode(const string& Name, vector<T>& val, int& m, const SMap
   HANDLE_EXCEPTIONS(
 		    S = SearchQSymb((char *)Name.c_str(), os.str());
 
-		    if (S!=NULL) 
+		    if (S!=NULL)
 		      {
 			// Use templated function that works for all values of T
 			setAutoDefaults(S,val);

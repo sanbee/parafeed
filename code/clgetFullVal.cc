@@ -91,7 +91,7 @@ Symbol* clgetFullValpBase(const string& Name, string& val, bool dbg)
 			// Do not modify val if S->Val is empty.  The
 			// in-comming val may have a default value
 			// that is not yet tranferred to S-Val.
-			if (S->NVals > 0) 
+			if (S->NVals > 0)
 			  val = vecStr2Str(S->Val);
 		      }
 		    );

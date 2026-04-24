@@ -37,19 +37,19 @@ extern "C" {
 // std::string trim(const std::string &s);
 
 const std::string CL_STRING_WHITESPACE = " \n\r\t\f\v";
- 
+
 inline std::string ltrim(const std::string &s)
 {
     size_t start = s.find_first_not_of(CL_STRING_WHITESPACE);
     return (start == std::string::npos) ? std::string("") : s.substr(start);
 }
- 
+
 inline std::string rtrim(const std::string &s)
 {
     size_t end = s.find_last_not_of(CL_STRING_WHITESPACE);
     return (end == std::string::npos) ? std::string("") : s.substr(0, end + 1);
 }
- 
+
 inline std::string trim(const std::string &s) {
   string tt=rtrim(ltrim(s));
   return tt;

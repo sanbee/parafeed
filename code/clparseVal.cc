@@ -45,15 +45,15 @@ extern "C" {
 int clparseVal(Symbol *S, int *Which, string& val)
 {
   unsigned int N = _ABS(*Which);
-  
-  if (S!=NULL) 
+
+  if (S!=NULL)
     {
-      if (N <= S->NVals) 
+      if (N <= S->NVals)
 	{
 	  val = trim(S->Val[N-1]);
 	  return val.size();
 	}
-      else 
+      else
 	return CL_FAIL;
     }
   else
