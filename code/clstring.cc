@@ -43,7 +43,7 @@ int ntok(char *str, const char *sep,char esc)
       if (!STRING && str[i]==sep[0] && (str[i-1] != esc)) count++;
     }
   if (STRING && str[i]=='"' && str[i-1] != esc) STRING=0;
-  if (i>=N && STRING) 
+  if (i>=N && STRING)
     {
       fprintf(stderr,"###Error: Missing \'\"\'\n");
       return -1;
@@ -51,13 +51,13 @@ int ntok(char *str, const char *sep,char esc)
   return count+1;
 }
 /*------------------------------------------------------------------------
-  Given a null terminated string, this will write the string on the file 
-  pointed to by fd.  Special characters ',','"' and esc are escaped 
+  Given a null terminated string, this will write the string on the file
+  pointed to by fd.  Special characters ',','"' and esc are escaped
   using the char. esc.
 ------------------------------------------------------------------------*/
 int tokenize(FILE *fd, char *str, const char *sep,char esc)
 {
-  while(*str) 
+  while(*str)
     {
       //if (!strncmp(str,"/*",2))
       //	  {
@@ -89,10 +89,10 @@ char *clstrtok(char *str, const char *sep,char esc)
      if (!strncmp(&t[i],"/*",2))
        {
 	 while(i < len)
-	   if (!strncmp(&t[i++],"*/",2)) 
+	   if (!strncmp(&t[i++],"*/",2))
 	     {i++;break;}
        }
-     if (!STRING && t[i] == esc) 
+     if (!STRING && t[i] == esc)
        {
 	 int j=i+1;
 	 while (j<=len) {t[j-1]=t[j];j++;}
@@ -101,7 +101,7 @@ char *clstrtok(char *str, const char *sep,char esc)
      else if (!STRING && t[i]==sep[0]) break;
      else
        {
-	 if (t[i]=='"')     
+	 if (t[i]=='"')
 	   {
 	     int j=i+1;
 	     while (j<=len) {t[j-1]=t[j];j++;}
@@ -116,25 +116,25 @@ char *clstrtok(char *str, const char *sep,char esc)
  if (prev >= len) return NULL;
  else t[i]='\0';
  return &t[prev];
-} 
+}
 
 /*------------------------------------------------------------------------
    Bunch of functions to remove whitespaces from a given string
 ------------------------------------------------------------------------*/
 // const std::string WHITESPACE = " \n\r\t\f\v";
- 
+
 // std::string ltrim(const std::string &s)
 // {
 //     size_t start = s.find_first_not_of(WHITESPACE);
 //     return (start == std::string::npos) ? std::string("") : s.substr(start);
 // }
- 
+
 // std::string rtrim(const std::string &s)
 // {
 //     size_t end = s.find_last_not_of(WHITESPACE);
 //     return (end == std::string::npos) ? std::string("") : s.substr(0, end + 1);
 // }
- 
+
 // std::string trim(const std::string &s) {
 //   string tt=rtrim(ltrim(s));
 //   return tt;

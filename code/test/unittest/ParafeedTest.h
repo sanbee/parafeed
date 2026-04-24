@@ -66,7 +66,7 @@ auto makeCanonicalArgs=[](std::string defFile=std::string(),
 };
 //
 //--------------------------------------------------------------------
-// 
+//
 auto FactoryCanonicalTest=[]()
 {
   int i;
