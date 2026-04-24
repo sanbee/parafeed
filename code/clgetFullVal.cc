@@ -28,27 +28,28 @@ extern "C" {
   int clgetFullVal(char *Name, char **val)
   {
     int n,i,len=0;
-    char tmp[FILENAME_MAX];
+    //    char tmp[FILENAME_MAX];
+    std::string tmp;
 
     if (!*val) free(*val); *val=NULL;
     if ((n=clgetNVals(Name))>0)
       {
 	for (i=1;i<=n;i++)
 	  {
-	    clgetSVal(Name,tmp,&i);
-	    len += strlen(tmp)+1;
+	    clgetSValp(string(Name),tmp,i);
+	    len += strlen(tmp.c_str())+1;
 	  }
 
 	*val = (char *)getmem(len,"clgetFullVal");
 	for (i=0;i<len;i++) (*val)[i]=' ';
-	i=1; clgetSVal(Name,tmp,&i);
-	strcpy(*val,tmp);
+	i=1; clgetSValp(string(Name),tmp,i);
+	strcpy(*val,tmp.c_str());
 
 	for (i=2;i<=n;i++)
 	  {
 	    strcat(*val,",");
-	    clgetSVal(Name,tmp,&i);
-	    strcat(*val,tmp);
+	    clgetSValp(string(Name),tmp,i);
+	    strcat(*val,tmp.c_str());
 	  }
 	*(*val+strlen(*val))='\0';
       }
