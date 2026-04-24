@@ -185,13 +185,27 @@ auto FactoryCanonicalTest=[]()
 
   // farray
   std::vector<float> fv={3.14,2*3.14,3*3.14};
-
+  std::vector<float> fv0;
   int N = 0;
-  int count = clgetValp("farray", fv, N);
+  int count;
+
+  // Test that the values returned after the "go" command are actually
+  // filled from internal symbol table.
+  if (cl_Pass == 0)
+    {
+      // Registeration Pass: fv is used for factory setting.
+      count = clgetValp("farray", fv, N);
+    }
+  else
+    {
+      // Get the values in a vector different from the vector used to
+      // set the defaults (fv)
+      count = clgetValp("farray", fv0, N);
+      EXPECT_FLOAT_EQ(fv0[0], 3.14f);
+      EXPECT_FLOAT_EQ(fv0[1], 2*3.14f);
+      EXPECT_FLOAT_EQ(fv0[2], 3*3.14f);
+    }
   EXPECT_EQ(count, 3);
-  EXPECT_FLOAT_EQ(fv[0], 3.14f);
-  EXPECT_FLOAT_EQ(fv[1], 2*3.14f);
-  EXPECT_FLOAT_EQ(fv[2], 3*3.14f);
 };
 //
 //--------------------------------------------------------------------
