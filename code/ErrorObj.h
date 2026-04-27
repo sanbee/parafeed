@@ -33,7 +33,7 @@ class ErrorObj: public std::exception{
   //    Id.resize(0);Msg.resize(0);Src.resize(0);Message.resize(0);};
 
   ErrorObj(const char *m, const char *i, int l=0):
-    Id(i), Msg(m), Src(), Message(),Level(l) 
+    Id(i), Msg(m), Src(), Message(),Level(l)
   {};
 
   ErrorObj(const string &m, const string &i, int l):
@@ -43,10 +43,12 @@ class ErrorObj: public std::exception{
   ErrorObj(const ErrorObj& that);
   ~ErrorObj()
   {};
-  
+
   void SetSource(const char *m=0);
+  void SetMsg(const string& m) {Msg=m;}
   const char *Source()               {return Src.c_str();}
   int Severity()                     {return Level;}
+  string GetMsg() {return Msg;};
   const char *what();
 
   ostream &operator<<(const std::string& m) {return cerr << m;}

@@ -84,6 +84,105 @@ TEST_F(ParafeedTest, InteractiveCanonical)
   EndCL();
   FreeArgv(argc, argv);
 }
+
+TEST_F(ParafeedTest, InteractiveDefFile)
+{
+  std::vector<std::string> args =
+    {
+     "test2",
+     //"help=noprompt",
+     "bool=x",
+     "oneint=xy",
+     "string=showstrarr",
+     "strarr=foo,barrr",
+     "farray=1,3,4,5,6,7,8,9,10"
+    };
+
+  std::string defFile("test2.def");
+  std::remove(defFile.c_str());
+  makeDefFile(args,defFile);
+
+  args={"test2"};
+
+  auto [argc, argv] = MakeArgv(args);
+
+  // sendCmd() sets the parser input stream to be the given string.
+  // The parser scans this string in the interactive shell (started
+  // in the EndCL() call below).
+
+  sendCmd("bool=true\n strarr=foo,bar\n oneint=100\n fullval=this is full val\n inp\n go\n");
+
+  BeginCL(argc, argv);
+  clInteractive(1);
+
+  bool b = false;
+  int oneint = 0;
+  int N = 10;
+  int i = 1;
+
+  std::string s;
+  std::vector<std::string> strarr;
+  std::vector<float> farray(N);
+  string fullVal="this is the default value";
+
+  i=1;clgetValp("bool", b, i);
+
+  i=1;
+
+  //
+  // The setting from argv is used in the first pass
+  // (a.k.a. "registeration pass").  Without the "help=noprompt"
+  // detected in this first pass, the EndCL() call starts the
+  // interactive shell, which triggers the second pass on the "go"
+  // command (setjmp() called in EndCL() to restart execution from
+  // the location of the clInteractive() call).  In this second pass
+  // the interactive settings (here, vis the sendCmd() call)
+  // replaces the values which are then available in the clgetValp()
+  // calls.
+  //
+  // if (cl_Pass == 0) // cl_Pass is a global parafeed lib. control
+  //   // variable
+  //   EXPECT_THROW(clgetValp("oneint", oneint, i),clError);
+  // else
+    clgetValp("oneint", oneint, i);
+
+  i=1;clgetValp("string", s, i);
+
+  i=0;clgetValp("strarr", strarr, i);
+
+  clgetValp("farray", farray, N);
+
+  i=0;clgetFullValp("fullval",fullVal);
+
+  try
+    {
+      if (cl_Pass == 0)
+	{
+	  // Registraction pass should throw clExit() exception
+	  cerr << "[INFO] parafeed Registeration pass..." << endl;
+	  EXPECT_THROW(EndCL(),clExit);
+	}
+      else
+	{
+	  // This should never be reached.
+	  cerr << "[INFO] parafeed post-regsitration pass..." << endl;
+	  EndCL();
+
+	  // Expect the value as set interactively vis sendCmd()
+	  EXPECT_EQ(oneint,100);
+	  EXPECT_EQ(fullVal,"this is full val");
+	}
+    }
+  catch(clExit& x)
+    {
+      x << x << endl;
+    }
+
+  std::remove(defFile.c_str());
+  FreeArgv(argc, argv);
+}
+
+
 //
 //--------------------------------------------------------------------
 // Test for incorrect values in argv.  Here, oneint=x, instead of a

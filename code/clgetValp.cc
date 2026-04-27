@@ -164,11 +164,11 @@ inline int clgetNBValp(const std::string& Name, std::vector<bool>& val, int& n, 
 inline int       clgetSVal(const string& Name, char  *Val, int *N, SMap smap=SMap()) {return clgetSVal(Name.c_str(),Val,N,smap,false);};
 inline int       dbgclgetSVal(const string& Name, char  *Val, int *N, SMap smap=SMap()) {return clgetSVal(Name.c_str(),Val,N,smap,true);};
 
-inline int clgetSValp(const std::string& Name, std::string& val, int &n)                                {return clgetValp(Name,val,n);}
-inline int clgetSValp(const std::string& Name, std::string& val, int& n, SMap &smap)                    {return clgetValp(Name,val,n,smap);}
-inline int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n)                  {return clgetValp(Name,val,n);}
-inline int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n, SMap &smap)      {return clgetValp(Name,val,n,smap);}
-inline int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n, const SMap smap) {return clgetValp(Name,val,n,smap);}
+int clgetSValp(const std::string& Name, std::string& val, int &n)                                {return clgetValp(Name,val,n);}
+int clgetSValp(const std::string& Name, std::string& val, int& n, SMap &smap)                    {return clgetValp(Name,val,n,smap);}
+int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n)                  {return clgetValp(Name,val,n);}
+int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n, SMap &smap)      {return clgetValp(Name,val,n,smap);}
+int clgetNSValp(const std::string& Name, std::vector<std::string>& val, int& n, const SMap smap) {return clgetValp(Name,val,n,smap);}
 
 inline int cldbggetIValp(const std::string& Name, int& val, int& n)                        {return dbgclgetValp(Name,val,n);}
 inline int cldbggetFValp(const std::string& Name, float& val, int& n)                      {return dbgclgetValp(Name,val,n);}

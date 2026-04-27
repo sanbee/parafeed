@@ -383,7 +383,7 @@ int startShell()
       {
 	if (!cl_defaultsLoaded)  /* Load the defaults */
 	  {
-	    loadDefaults(1); cl_defaultsLoaded=1;
+	    loadDefaults(0); cl_defaultsLoaded=1;
 	  }
 	if (doInp && !cl_NoPrompt)
 	  {

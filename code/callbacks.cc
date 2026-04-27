@@ -487,6 +487,7 @@ int dosavefd(FILE *fd, const std::vector<std::string>& opts)
 
     ifs.open(defFile.c_str());
 
+    std::stringstream errorMessages;
     if (!ifs.good())
       {
 	clThrowUp(std::string("Error in opening file \"")+defFile+std::string("\""), "###Error", CL_FATAL);
@@ -495,54 +496,72 @@ int dosavefd(FILE *fd, const std::vector<std::string>& opts)
     else
       {
 	Symbol *pos;
-	
+	uint lineNo=0;
 	while(!ifs.eof())
 	  {
 	    string line;
-	    if (getline(ifs,line))
+	    try
 	      {
-		stripwhitep(line);
-		if ((line.size() > 0) && (line[0] != '#'))
+		if (getline(ifs,line))
 		  {
-		    // Separate the line into name and value strings
-		    // separated by the first '=' char.  Strip the
-		    // white spaces.
-		    std::string Name_str, Val_str;
-		    BreakStrp(line,Name_str,Val_str);
-		    stripwhitep(Name_str);
-		    stripwhitep(Val_str);
-
-		    // Seperate the Name string into scope and Name
-		    // string seperated by ':'
-		    std::string Scope_str;
-		    BreakStrp(Name_str, Scope_str, Name_str,"::");
-		    stripwhitep(Name_str);
-		    stripwhitep(Scope_str);
-		    if (Name_str == Scope_str) Scope_str="";
-
-		    pos = NULL;
-		    if ((Scope_str == "") || (Scope_str == ProgName()))
+		    lineNo++;
+		    stripwhitep(line);
+		    if ((line.size() > 0) && (line[0] != '#'))
 		      {
-			if (Complement)
+			// Separate the line into name and value strings
+			// separated by the first '=' char.  Strip the
+			// white spaces.
+			std::string Name_str, Val_str;
+			BreakStrp(line,Name_str,Val_str);
+			stripwhitep(Name_str);
+			stripwhitep(Val_str);
+
+			// Seperate the Name string into scope and Name
+			// string seperated by ':'
+			std::string Scope_str;
+			BreakStrp(Name_str, Scope_str, Name_str,"::");
+			stripwhitep(Name_str);
+			stripwhitep(Scope_str);
+			if (Name_str == Scope_str) Scope_str="";
+
+			pos = NULL;
+			if ((Scope_str == "") || (Scope_str == ProgName()))
 			  {
-			    pos=SearchVSymbFullMatch(Name_str.c_str(),
-						     cl_SymbTab);
-			    if ((pos == (Symbol *)NULL))
-			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,
-					 &cl_TabTail);
-			    if ((pos->NVals == 0))
-			      pos = (Symbol *)NULL;
-			  }
-			if (pos==NULL)
-			  {
-			    if (doregister)
-			      pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
-			    SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),
-				   cl_SymbTab,0,1,cl_do_doinp);
+			    if (Complement)
+			      {
+				pos=SearchVSymbFullMatch(Name_str.c_str(),
+							 cl_SymbTab);
+				if ((pos == (Symbol *)NULL))
+				  pos=AddVar(Name_str.c_str(),&cl_SymbTab,
+					     &cl_TabTail);
+				if ((pos->NVals == 0))
+				  pos = (Symbol *)NULL;
+			      }
+			    if (pos==NULL)
+			      {
+				if (doregister)
+				  pos=AddVar(Name_str.c_str(),&cl_SymbTab,&cl_TabTail);
+				SetVar((char*)Name_str.c_str(),(char *)Val_str.c_str(),
+				       cl_SymbTab,0,1,cl_do_doinp);
+			      }
 			  }
 		      }
 		  }
 	      }
+	    catch(clError& x)
+	      {
+		errorMessages
+		  << "In " << defFile << ":" << lineNo << endl
+		  << x
+		  << endl << "-----------------------" << endl;
+	      }
+	  }
+	if (!errorMessages.str().empty())
+	  {
+	    clExit x("","###Error",CL_INFORMATIONAL);
+	    x.SetMsg(errorMessages.str());
+	    x << x << endl;
+	    throw(x);
 	  }
 	// Set all symbols loaded in the table to USERCLASS.  The ones
 	// that get queried (via clget*Val() functions) are converted
