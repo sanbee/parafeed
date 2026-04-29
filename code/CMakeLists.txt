@@ -180,7 +180,7 @@ set(shccl_sources
 #  clgetNSVal.cc
   clgetFullVal.cc
 
-#  clgetValp.cc
+  clgetValp.cc
   clStartInteractive.cc
   clRestartShell.cc
   clfInteractive.cc

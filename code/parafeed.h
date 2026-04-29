@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2025, 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,19 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-//
-// API level include file to use clgetValp() style, or
-// clget[N][IFBS]Val() style function.
-//
-#ifndef CLGETVALP_H
-#define CLGETVALP_H
-#include <cllib.h>
-#include <clhashdefines.h>
-#include <support.h>
-#include <type_traits>
-//
-//----------------------------------------------------------------------
-// Templated code and wrapper functions
-//
+#include <cl.h>
+#include <clsh.h>
+#include <clinteract.h>
+//#include <vector>
+//#include <exception>
 //#include <clgetValp.cc>
-#endif

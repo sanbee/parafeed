@@ -17,13 +17,10 @@
  *
  */
 /* $Id: tst2.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
-#include <cl.h>
-#include <clsh.h>
-#include <clinteract.h>
 #include <stdio.h>
 #include <vector>
 #include <exception>
-//#include <clgetValp.cc>
+#include <parafeed.h>
 /*
    Test program to test the embedded shell via the commandline library
 */
