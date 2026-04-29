@@ -49,6 +49,7 @@ target_include_directories(parafeed PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 # install target
 set(header_list
+  parafeed.h
   clbool.h
   clconvert.h
   clError.h

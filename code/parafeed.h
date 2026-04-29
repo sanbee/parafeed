@@ -16,9 +16,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+#if !defined(PARAFEED_H)
+#define PARAFEED_H
 #include <cl.h>
 #include <clsh.h>
 #include <clinteract.h>
+#include <clgetValp.cc>
 //#include <vector>
 //#include <exception>
-//#include <clgetValp.cc>
+#endif
