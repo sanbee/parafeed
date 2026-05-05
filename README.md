@@ -11,9 +11,17 @@ CMake-based build system requires `cmake` version 3 or later.  Use the following
 mkdir build
 cd build
 cmake <PATH TO CMakeLists.txt>
-gmake
+make
 ```
-The `-DGNUREADLINE=OFF` option to `cmake` will disable the use of the [GNU Readline library](https://en.wikipedia.org/wiki/GNU_Readline) for bash-style commandline editing and command history capabilities.  The `-DENABLE_TESTING=ON` option will enable unit testing.
+The `-DGNUREADLINE=OFF` option to `cmake` will disable the use of the [GNU Readline library](https://en.wikipedia.org/wiki/GNU_Readline) for bash-style commandline editing and command history capabilities.  The `-DENABLE_TESTING=ON` option also builds the application for unit testing, which can be executed by the following commands
+
+```
+make test
+
+or
+
+ctest
+```
 
 
 While the hand-written `makefiles` have been tested with `make` version 3 only, they do not depend on a specific version of `make`.  These `makefiles` are in the `code/nocmake_makefiles` directory. Using the command `cd code; make -f nocmake_makefiles/makefile` should build the _parafeed_ project.
