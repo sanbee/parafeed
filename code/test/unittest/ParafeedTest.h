@@ -85,7 +85,6 @@ auto makeCanonicalArgs=[](std::string defFile=std::string(),
 auto FactoryCanonicalTest=[]()
 {
   int i;
-
   // bool
   bool b = false;
   SMap watchPoints;
@@ -199,28 +198,28 @@ auto FactoryCanonicalTest=[]()
   EXPECT_EQ(strarr[1], "v2");
 
   // farray
-  std::vector<float> fv={3.14,2*3.14,3*3.14};
-  std::vector<float> fv0;
   int N = 0;
   int count;
 
   // Test that the values returned after the "go" command are actually
   // filled from internal symbol table.
+
+  // Registeration Pass: fv is used for factory setting.
+  std::vector<float> fv={3.14,2*3.14,3*3.14};
   if (cl_Pass == 0)
     {
-      // Registeration Pass: fv is used for factory setting.
       count = clgetValp("farray", fv, N);
     }
   else
     {
       // Get the values in a vector different from the vector used to
       // set the defaults (fv)
+      std::vector<float> fv0;
       count = clgetValp("farray", fv0, N);
-      EXPECT_FLOAT_EQ(fv0[0], 3.14f);
-      EXPECT_FLOAT_EQ(fv0[1], 2*3.14f);
-      EXPECT_FLOAT_EQ(fv0[2], 3*3.14f);
+      EXPECT_EQ(fv0,fv);
     }
-  EXPECT_EQ(count, 3);
+  EXPECT_EQ(count, fv.size());
+  EXPECT_EQ(count, N);
 };
 //
 //--------------------------------------------------------------------
