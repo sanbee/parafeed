@@ -21,26 +21,34 @@
 #define CLPARSEVAL_H
 #include <cl.h>
 
-#include <clhashdefines.h>
-#include <cllib.h>
-#include <cl.h>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <clError.h>
+//#include <clhashdefines.h>
+//#include <cllib.h>
+//#include <string>
+//#include <vector>
+//#include <sstream>
+//#include <clError.h>
 
 template <class T>
 int clparseVal(Symbol *S, int *Which, T &d)
 {
   unsigned int N = _ABS(*Which);
+  string val;
 HANDLE_EXCEPTIONS(
   if (S != NULL)
     {
+      // Transfer S-DefaultVal to S->Val if S->NVals == 0.  Is this
+      // always the correct thing to do?
+      if (S->NVals == 0)
+	{
+	  S->Val=S->DefaultVal;
+	  S->NVals = S->Val.size();
+	};
       if (N > S->NVals) return 0;
+
       if (ISSET(S->Attributes,CL_BOOLTYPE))
 	{
 	  int retVal;
-	  string val(S->Val[N-1]);
+	  val=S->Val[N-1];
 	  if ((retVal=clIsTrue(val))==1) d=1;
 	  else if ((retVal=clIsFalse(val))==1) d=0;
 	  //*d = clIsTrue(val);

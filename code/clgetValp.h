@@ -30,5 +30,5 @@
 //----------------------------------------------------------------------
 // Templated code and wrapper functions
 //
-#include <clgetValp.cc>
+//#include <clgetValp.cc>
 #endif

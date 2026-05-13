@@ -1,6 +1,4 @@
 /* $Id: tst2.c,v 2.0 1998/11/11 07:13:02 sanjay Exp $ */
-#include <cl.h>
-#include <clsh.h>
 /*
  * Copyright (c) 2000-2021, 2022 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
@@ -19,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include <clinteract.h>
+#include <parafeed.h>
 #include <stdio.h>
 /*
    Test program to test the embedded shell via the commandline library

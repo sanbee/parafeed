@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2012, 2013 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ * Copyright (c) 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -383,7 +383,7 @@ int startShell()
       {
 	if (!cl_defaultsLoaded)  /* Load the defaults */
 	  {
-	    loadDefaults(1); cl_defaultsLoaded=1;
+	    loadDefaults(0); cl_defaultsLoaded=1;
 	  }
 	if (doInp && !cl_NoPrompt)
 	  {

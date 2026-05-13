@@ -1,4 +1,65 @@
+/*
+ * Copyright (c) 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
 #include <unittest/ParafeedTest.h>
+//
+// Test for default factory settings (i.e., defaults in the compiled
+// code).
+TEST_F(ParafeedTest, InteractiveFactoryCanonical)
+{
+  //  std::vector<std::string> args=makeCanonicalArgs("","help=dbg");
+  std::vector<std::string> args={"test2","help=dbg"};
+  auto [argc, argv] = MakeArgv(args);
+  sendCmd("go\n");
+  BeginCL(argc, argv);
+  {
+    clInteractive(0);
+
+    FactoryCanonicalTest();
+
+    // Get a pointer to the named symbol from the internal symbol
+    // table.
+    //
+    // The following keys should be of the CL_DBGCLASS class and
+    // CL_DBG_ON==true.  In the interactive shell, these keys will be
+    // visible.
+    //
+    Symbol *S;
+    S=SearchVSymb("dbgint");
+    EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+
+    S=SearchVSymb("dbgfullval");
+    EXPECT_EQ(CL_DBG_ON && S->Class==CL_DBGCLASS, true);
+
+    if (cl_Pass > 0)
+      {
+	// default settings are bool=false.  That hides "int", which
+	// hides "float"
+	S=SearchVSymb("int");
+	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,0);
+
+	S=SearchVSymb("float");
+	EXPECT_NE(S,nullptr);      EXPECT_EQ(S->Exposed,0);
+      }
+  }
+  EndCL();
+  FreeArgv(argc, argv);
+}
 //
 // Test the canonical Args setting in the interactive mode.  This has
 // "bool1=false int=42" setting.  Check that bool1=false exposes
@@ -41,6 +102,110 @@ TEST_F(ParafeedTest, InteractiveCanonical)
   EndCL();
   FreeArgv(argc, argv);
 }
+//
+// Test the most standard way of running an application in the default
+// mode.  The test2.def file, with error, is written before starting
+// the UI.  EndCL() should throw clExit exception, which is reported,
+// before it can start the interactive shell.
+//
+TEST_F(ParafeedTest, InteractiveDefFile)
+{
+  std::vector<std::string> args =
+    {
+     "test2",
+     //"help=noprompt",
+     "bool=x",
+     "oneint=xy",
+     "string=showstrarr",
+     "strarr=foo,barrr",
+     "farray=1,3,4,5,6,7,8,9,10"
+    };
+
+  std::string defFile("test2.def");
+  std::remove(defFile.c_str());
+  makeDefFile(args,defFile);
+
+  args={"test2"};
+
+  auto [argc, argv] = MakeArgv(args);
+
+  // sendCmd() sets the parser input stream to be the given string.
+  // The parser scans this string in the interactive shell (started
+  // in the EndCL() call below).
+
+  sendCmd("bool=true\n strarr=foo,bar\n oneint=100\n fullval=this is full val\n inp\n go\n");
+
+  BeginCL(argc, argv);
+  clInteractive(1);
+
+  bool b = false;
+  int oneint = 0;
+  int N = 10;
+  int i = 1;
+
+  std::string s;
+  std::vector<std::string> strarr;
+  std::vector<float> farray(N);
+  string fullVal="this is the default value";
+
+  i=1;clgetValp("bool", b, i);
+
+  i=1;
+
+  //
+  // The setting from argv is used in the first pass
+  // (a.k.a. "registeration pass").  Without the "help=noprompt"
+  // detected in this first pass, the EndCL() call starts the
+  // interactive shell, which triggers the second pass on the "go"
+  // command (setjmp() called in EndCL() to restart execution from
+  // the location of the clInteractive() call).  In this second pass
+  // the interactive settings (here, vis the sendCmd() call)
+  // replaces the values which are then available in the clgetValp()
+  // calls.
+  //
+  // if (cl_Pass == 0) // cl_Pass is a global parafeed lib. control
+  //   // variable
+  //   EXPECT_THROW(clgetValp("oneint", oneint, i),clError);
+  // else
+    clgetValp("oneint", oneint, i);
+
+  i=1;clgetValp("string", s, i);
+
+  i=0;clgetValp("strarr", strarr, i);
+
+  clgetValp("farray", farray, N);
+
+  i=0;clgetFullValp("fullval",fullVal);
+
+  try
+    {
+      if (cl_Pass == 0)
+	{
+	  // Registraction pass should throw clExit() exception
+	  cerr << "[INFO] parafeed Registeration pass..." << endl;
+	  EXPECT_THROW(EndCL(),clExit);
+	}
+      else
+	{
+	  // This should never be reached.
+	  cerr << "[INFO] parafeed post-regsitration pass..." << endl;
+	  EndCL();
+
+	  // Expect the value as set interactively vis sendCmd()
+	  EXPECT_EQ(oneint,100);
+	  EXPECT_EQ(fullVal,"this is full val");
+	}
+    }
+  catch(clExit& x)
+    {
+      x << x << endl;
+    }
+
+  std::remove(defFile.c_str());
+  FreeArgv(argc, argv);
+}
+
+
 //
 //--------------------------------------------------------------------
 // Test for incorrect values in argv.  Here, oneint=x, instead of a

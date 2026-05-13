@@ -1,8 +1,23 @@
+/*
+ * Copyright (c) 2026 S. Bhatnagar (bhatnagar dot sanjay at gmail dot com)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+#include <parafeed.h>
 #include <gtest/gtest.h>
-#include <cl.h>
-#include <clgetValp.h>
-#include <clsh.h>
-#include <clinteract.h>
 #include <string>
 #include <vector>
 #include <cstring>
@@ -63,6 +78,148 @@ auto makeCanonicalArgs=[](std::string defFile=std::string(),
   makeDefFile(args,defFile,help);
 
   return args;
+};
+//
+//--------------------------------------------------------------------
+//
+auto FactoryCanonicalTest=[]()
+{
+  int i;
+  // bool
+  bool b = false;
+  SMap watchPoints;
+  VString exposedKeys = {"bool1"};
+  watchPoints["1"] = exposedKeys;
+  i = 1;
+  clgetValp("bool", b, i, watchPoints);
+  EXPECT_FALSE(b);
+
+  // bool1
+  bool b1 = true;
+  ClearMap(watchPoints);
+  exposedKeys = {"int"};
+  watchPoints["0"] = exposedKeys;
+  i = 1;
+  clgetValp("bool1", b1, i, watchPoints);
+  EXPECT_TRUE(b1);
+
+  // int
+  int intVal = 0;
+  ClearMap(watchPoints);
+  exposedKeys = {"float"};
+  watchPoints["1"] = exposedKeys;
+  i = 1;
+  clgetValp("int", intVal, i, watchPoints);
+  EXPECT_EQ(intVal, 0);
+
+  // dbgint
+  int dbgInt = 10;
+  i = 1;
+  cldbggetValp("dbgint", dbgInt, i);
+  EXPECT_EQ(dbgInt, 10);
+
+  // float
+  float fVal = 10.96f;
+  i = 1;
+  clgetValp("float", fVal, i);
+  EXPECT_FLOAT_EQ(fVal, 10.96f);
+
+  // oneint
+  int oneintVal = 3;
+  i = 1;
+  clgetValp("oneint", oneintVal, i);
+  EXPECT_EQ(oneintVal, 3);
+
+  // string
+  std::string str;
+  ClearMap(watchPoints);
+  exposedKeys = {"strarr"};
+  watchPoints["showstrarr"] = exposedKeys;
+  exposedKeys = {"fullval"};
+  watchPoints["showfullval"] = exposedKeys;
+  str = "showstrarr";
+  i = 1;
+  clgetValp("string", str, i, watchPoints);
+  EXPECT_EQ(str, "showstrarr");
+
+  // Test backward compatible API: [dbg]clgetSVal(...,[watchPoints])
+  // ensuring that sstr goes out of scope after each call to
+  // clgetSVal().
+  {
+    char sstr[100];
+    clgetSVal("string", sstr, &i, watchPoints);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  {
+    char sstr[100];
+    clgetSVal("string", sstr, &i);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  {
+    char sstr[100];
+    dbgclgetSVal("string", sstr, &i,watchPoints);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  {
+    char sstr[100];
+    dbgclgetSVal("string", sstr, &i);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  // Check for clgetSVal(string&, char *, int *, SMap) interface.
+  {
+    char sstr[100];
+    clgetSVal(string("string"), sstr, &i, watchPoints);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+  {
+    char sstr[100];
+    dbgclgetSVal(string("string"), sstr, &i);
+    EXPECT_EQ(string("showstrarr"),sstr);
+  }
+
+  // fullval
+  std::string fullVal;
+  i = 0;
+  clgetFullValp("fullval", fullVal);
+  EXPECT_EQ(fullVal, "");
+
+  // dbgfullval
+  std::string dbgFullVal="This is dbg full val factory setting";
+  i = 0;
+  dbgclgetFullValp("dbgfullval", dbgFullVal);
+  EXPECT_EQ(dbgFullVal, "This is dbg full val factory setting");
+
+  // strarr
+  VString strarr={"v1","v2"};
+  i = 0;
+  clgetValp("strarr", strarr, i);
+  ASSERT_EQ(strarr.size(), 2u);
+  EXPECT_EQ(strarr[0], "v1");
+  EXPECT_EQ(strarr[1], "v2");
+
+  // farray
+  int N = 0;
+  int count;
+
+  // Test that the values returned after the "go" command are actually
+  // filled from internal symbol table.
+
+  // Registeration Pass: fv is used for factory setting.
+  std::vector<float> fv={3.14,2*3.14,3*3.14};
+  if (cl_Pass == 0)
+    {
+      count = clgetValp("farray", fv, N);
+    }
+  else
+    {
+      // Get the values in a vector different from the vector used to
+      // set the defaults (fv)
+      std::vector<float> fv0;
+      count = clgetValp("farray", fv0, N);
+      EXPECT_EQ(fv0,fv);
+    }
+  EXPECT_EQ(count, fv.size());
+  EXPECT_EQ(count, N);
 };
 //
 //--------------------------------------------------------------------
@@ -128,16 +285,16 @@ auto canonicalTest=[]()
   clgetValp("string", str, i, watchPoints);
   EXPECT_EQ(str, "showstrarr");
 
-  // {
-  //   char sstr[100];
-  //   clgetSVal("string", sstr, &i, watchPoints);
-  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
-  //   EXPECT_EQ(sstr, str);
+  {
+    char sstr[100];
+    clgetSVal("string", sstr, &i, watchPoints);
+    //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
+    EXPECT_EQ(sstr, str);
 
-  //   clgetSVal("string", sstr, &i);
-  //   //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
-  //   EXPECT_EQ(sstr, str);
-  // }
+    clgetSVal("string", sstr, &i);
+    //EXPECT_EQ(sstr, "showstrarr");// DOES NOT WORK!
+    EXPECT_EQ(sstr, str);
+  }
 
   // fullval
   std::string fullVal;
@@ -160,7 +317,7 @@ auto canonicalTest=[]()
   EXPECT_EQ(strarr[1], "val2");
 
   // farray
-  std::vector<float> fv(3);
+  std::vector<float> fv;
   int N = 3;
   int count = clgetValp("farray", fv, N);
   EXPECT_EQ(count, 3);

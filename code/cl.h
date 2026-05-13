@@ -56,7 +56,7 @@
                                   {         \
                                     throw;  \
                                   }
-                                
+
 
 #else
 #define HANDLE_EXCEPTIONS(str)  str
@@ -73,9 +73,9 @@ extern "C" {
 #define CL_SEVERE    -20
 #define CL_FATAL     -10
 #define CL_WARNING   -5
-  /* 
+  /*
      Define readline stuff as readline.h is
-     NOT ANSI C 
+     NOT ANSI C
   */
 #ifdef __cplusplus
 /*
@@ -127,7 +127,7 @@ extern int add_history(char *);
   Symbol   *IntallSymb(char *, char *, Symbol *);
   Symbol   *SearchQSymb(const std::string& Name, const std::string& Type);
   Symbol   *SearchVSymb(const char *Name, Symbol *Tab);
-  Symbol   *AddQKey(const char *Name, const char *Type, 
+  Symbol   *AddQKey(const char *Name, const char *Type,
 		    Symbol **Head, Symbol **Tail);
   int       ParseCmdLine(int, char **);
   std::vector<std::string> clMakeArgvFromFile(const std::string& Name);
@@ -151,8 +151,6 @@ int       clgetIVal(char  *Name, int   *Val, int *N);
 int       dbgclgetIVal(char  *Name, int   *Val, int *N);
 int       clgetFVal(char  *Name, float *Val, int *N);
 int       dbgclgetFVal(char  *Name, float *Val, int *N);
-int       clgetSVal(const char  *Name, char  *Val, int *N);
-int       dbgclgetSVal(const char  *Name, char  *Val, int *N);
 int       clgetNIVal(char *Key,  int   *Val, int *m);
 int       dbgclgetNIVal(char *Key,  int   *Val, int *m);
 int       clgetNFVal(char *Name, float *Val, int *N);
@@ -163,6 +161,9 @@ int       clgetBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetBVal(char  *Name, bool   *Val, int *N);
 int       clgetNBVal(char  *Name, bool   *Val, int *N);
 int       dbgclgetNBVal(char  *Name, bool   *Val, int *N);
+
+int       clgetSVal(const char  *Name, char  *Val, int *N,SMap smap=SMap(),bool dbg=false);
+inline int       dbgclgetSVal(const char  *Name, char  *Val, int *N, SMap smap=SMap()) {return clgetSVal(Name,Val,N,smap,true);};
 
 #ifdef __cplusplus
 int       clTgetOptp(const std::string& Name, std::string& Type);
@@ -196,7 +197,7 @@ std::string      stripwhitep (std::string& str);
 int       redirect(char *, char *);
 void      yyerror(char *);
 int       clgetConfigFile(char *, char *);
-int       AddCmd(const char *Name, char *Doc, int (*func)(char *), 
+int       AddCmd(const char *Name, char *Doc, int (*func)(char *),
 		 CmdSymbol **Head, CmdSymbol **Tail);
 int       BreakStr(char *, char **, char **);
 int       BreakStrp(const std::string& str, std::string& Name, std::string& Val,
@@ -277,6 +278,7 @@ int  clgetBaseCore(const std::string& Name, int& Val, int& N, SMap &smap);
 int  clgetFullValp(const std::string& Name, std::string& Val);
 int  dbgclgetFullValp(const std::string& Name, std::string& Val);
 int  clgetFullp(const std::string& Arg,  int &N);
+int  clgetSValp(const std::string& Name, std::string& Val, int& N, SMap &smap,bool dbg);
 //
 //------------------------------------------------------------------------------------------------
 // Wrappers for clgetValp(...,T& val,...) and clgetValp(...,vector<T>&,...)

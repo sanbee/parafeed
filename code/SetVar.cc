@@ -87,7 +87,7 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   if(pos==0) return -2;
     // if (pos->Exposed!=1)
     //   {
-    // 	string msg="Attempted modification of a hidden variable (named \'" + string(pos->Name) + "\')."; 
+    // 	string msg="Attempted modification of a hidden variable (named \'" + string(pos->Name) + "\').";
     // 	//clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
     // 	clError x(msg.c_str(),"###Error",CL_INFORMATIONAL);
     // 	throw(x);
@@ -97,12 +97,12 @@ int UnsetVar(Symbol *S, int setFactoryDefaults)
   if (!Force)
     if (pos->Class == CL_USERCLASS)
       {
-	string msg="Attempted modification of a shell-constant (named \'" + string(pos->Name) + "\').  Ignored."; 
+	string msg="Attempted modification of a shell-constant (named \'" + string(pos->Name) + "\').  Ignored.";
 	clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
 	return -2;
       }
 
-  if ((val==NULL) || (strlen(val) == 0)) 
+  if ((val==NULL) || (strlen(val) == 0))
     {
       ret= UnsetVar(pos,1);
     }
@@ -176,7 +176,7 @@ std::function<void(const Symbol&)> noMatchExceptionLambda_ptr=noMatchException;
     newval=v;
     // if (S->Exposed!=1)
     //   {
-    // 	string msg="Attempted modification of a hidden variable (named \'" + string(S->Name) + "\')."; 
+    // 	string msg="Attempted modification of a hidden variable (named \'" + string(S->Name) + "\').";
     // 	//clThrowUp(msg.c_str(),"###Error",CL_INFORMATIONAL);
     // 	clError x(msg.c_str(),"###Error",CL_INFORMATIONAL);
     // 	throw(x);
@@ -242,7 +242,12 @@ void SetVal(const char *v, Symbol *S, int i)
     {
       // Same as cerr << x.what(), except that the output
       // stream is centrally specified in clError.
-      x << x << " at position " << i << endl;
+      std::stringstream msg;
+
+      msg << x.GetMsg();
+      if (i > 0)  msg << " at position " << i;
+      //x << msg.str().c_str() << endl;
+      x.SetMsg(msg.str());
       throw(x);
     }
 

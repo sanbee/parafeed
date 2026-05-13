@@ -49,6 +49,7 @@ target_include_directories(parafeed PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 # install target
 set(header_list
+  parafeed.h
   clbool.h
   clconvert.h
   clError.h
@@ -176,11 +177,11 @@ set(shccl_sources
   ParseCmdLine.cc
   clparseVal.cc
   InstallSymb.cc
-#  clgetSVal.cc
+  clgetSVal.cc
 #  clgetNSVal.cc
   clgetFullVal.cc
 
-#  clgetValp.cc
+  clgetValp.cc
   clStartInteractive.cc
   clRestartShell.cc
   clfInteractive.cc
