@@ -412,7 +412,7 @@ command-line and their effect:
 
   * `help=def[,<FILE>]`
 > > The application will run in the `noprompt` mode and attempt to load the keyword settings from the `<FILE>` as if it was used with the `load` command in the interactive shell (but without starting the interactive shell).  If `<FILE>` is omitted, the application attempts to load the default `.def` file (`<APPLICATION NAME>.def`).  For `help=def,` the application exits with an error message.
-> > `Exclusive load` by append `!` at the end of `<FILE>` is supported (see help for the `load` command).
+> > `Exclusive load` is supported, by append `!` at the end of `<FILE>` (see help for the `load` command).
 
 ## Example ##
 Here is a typical screen-shot of an application using _parafeed_ for user interface, when started in the interactive mode:
