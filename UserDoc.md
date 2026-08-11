@@ -125,6 +125,10 @@ Following is a short description of the shell commands:
 > > from the file `./<Application Name>.def`.  If this file is already present when the application is
 > > started, it is loaded automatically.  Alternatively, it can load settings from a file provided as an argument
 > > to the `load` command.
+> >
+> > If the `FILE` name ends with `!`, value for only those keywords
+> > is set from the `FILE` that are not set via the command-line or via
+> > commands in the interative session.  This mechanism is referred to as `exclusive load`.
 
   * `edit`:
 > > Edit the keyword values in an editor of choice specified by the environment variable
@@ -408,6 +412,7 @@ command-line and their effect:
 
   * `help=def[,<FILE>]`
 > > The application will run in the `noprompt` mode and attempt to load the keyword settings from the `<FILE>` as if it was used with the `load` command in the interactive shell (but without starting the interactive shell).  If `<FILE>` is omitted, the application attempts to load the default `.def` file (`<APPLICATION NAME>.def`).  For `help=def,` the application exits with an error message.
+> > `Exclusive load` by append `!` at the end of `<FILE>` is supported (see help for the `load` command).
 
 ## Example ##
 Here is a typical screen-shot of an application using _parafeed_ for user interface, when started in the interactive mode:
